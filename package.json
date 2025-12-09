@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@tanstack/react-router": "^1.140.0",
+    "antd": "^6.1.0",
     "dayjs": "^1.11.19",
     "react": "^19.2.1",
     "react-dom": "^19.2.1"
@@ -54,6 +55,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@unocss/eslint-config": "^66.5.10",
+    "@unocss/vite": "^66.5.10",
     "@vitejs/plugin-react": "^5.1.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint-plugin-react": "^7.37.5",
