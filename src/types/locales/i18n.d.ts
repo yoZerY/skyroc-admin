@@ -1,0 +1,42 @@
+/**
+ * i18n type definition
+ * This file aggregates all i18n type definitions from separate module files
+ *
+ * Type files are organized by module:
+ * - route.d.ts: Route related types
+ * - common.d.ts: Common UI text types
+ * - form.d.ts: Form validation types
+ * - datatable.d.ts: Datatable types
+ * - icon.d.ts: Icon types
+ * - dropdown.d.ts: Dropdown types
+ * - page.d.ts: Page specific types
+ * - request.d.ts: Request types
+ * - system.d.ts: System types
+ * - theme.d.ts: Theme types
+ *
+ * All type files are automatically included by TypeScript and merged into the App.I18n namespace
+ */
+
+declare namespace I18n {
+  type LangType = 'en-US' | 'zh-CN';
+
+  type LangOption = {
+    key: LangType;
+    label: string;
+  };
+
+  type Schema = {
+    translation: {
+      common: Common;
+      datatable: Datatable;
+      dropdown: Record<App.Global.DropdownKey, string>;
+      form: Form;
+      icon: Icon;
+      page: Page;
+      request: Request;
+      route: Route;
+      system: System;
+      theme: Theme;
+    };
+  };
+}
