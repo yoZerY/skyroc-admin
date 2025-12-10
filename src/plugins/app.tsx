@@ -4,6 +4,7 @@ import { createElement } from 'react';
 import { globalConfig } from '@/config';
 
 import { $t } from '../locales';
+import { router } from '@/features/router';
 
 export function setupAppVersionNotification() {
   // Update check interval in milliseconds
@@ -26,37 +27,23 @@ export function setupAppVersionNotification() {
 
     isShow = true;
 
-    window.$notification?.open({
-      btn: (() => {
-        return createElement(
-          'div',
-          { style: { display: 'flex', gap: '12px', justifyContent: 'end', width: '325px' } },
-          [
-            createElement(
-              Button,
+    const handleCancel = () => {
+      globalConfig.notification?.destroy();
+    };
 
-              {
-                key: 'cancel',
-                onClick() {
-                  window.$notification?.destroy();
-                }
-              },
-              $t('system.updateCancel')
-            ),
-            createElement(
-              Button,
-              {
-                key: 'ok',
-                onClick() {
-                  location.reload();
-                },
-                type: 'primary'
-              },
-              $t('sys')
-            )
-          ]
-        );
-      })(),
+    const handleOk = () => {
+      router.navigate()
+    };
+
+    globalConfig.notification?.open({
+      btn: <div className='flex gap-3 justify-end w-325px'>
+        <Button key='cancel' onClick={handleCancel}>
+          { $t('system.updateCancel') }
+        </Button>
+        <Button key='ok' onClick={location.reload()} type='primary'>
+          { $t('system.updateConfirm') }
+        </Button>
+      </div>,
       description: $t('system.updateContent'),
       message: $t('system.updateTitle'),
       onClose() {
