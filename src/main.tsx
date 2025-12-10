@@ -6,6 +6,7 @@ import { setupAppVersionNotification } from './plugins/app';
 import { setupDayjs } from './plugins/dayjs';
 import { setupIconifyOffline } from './plugins/iconify';
 import './plugins/assets';
+import { setupNProgress } from './plugins/nprogress';
 
 function setupApp() {
   const container = document.getElementById('root');
@@ -19,6 +20,8 @@ function setupApp() {
   setupI18n();
 
   setupDayjs();
+
+  setupNProgress();
 
   setupIconifyOffline();
 
