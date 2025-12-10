@@ -1,7 +1,8 @@
 import type { WatermarkProps } from 'antd';
-import type { MessageInstance } from 'antd/es/message/interface';
+import type { ArgsProps as MessageArgsProps, MessageInstance, TypeOpen } from 'antd/es/message/interface';
+import type { ModalFunc } from 'antd/es/modal/confirm';
 import type { HookAPI as ModalHookAPI } from 'antd/es/modal/useModal';
-import type { NotificationInstance } from 'antd/es/notification/interface';
+import type { ArgsProps, NotificationInstance } from 'antd/es/notification/interface';
 
 const _ui = {
   message: null as MessageInstance | null,
@@ -17,9 +18,12 @@ export function initAntdProvider(message: MessageInstance, modal: ModalHookAPI, 
 
 function createConfig() {
   return {
+    /** - 是否自动检测更新 */
+    automaticallyDetectUpdate: true,
     // ======Lang Config======
     /** - 默认语言配置 */
     defaultLang: 'zh-CN',
+
     /** - 默认语言选项 */
     get defaultLangOptions(): I18n.LangOption[] {
       return [
@@ -33,7 +37,7 @@ function createConfig() {
         }
       ];
     },
-
+    localIconPrefix: import.meta.env.VITE_ICON_LOCAL_PREFIX,
     // ======Antd UI Config======
     /** - antd 消息实例 */
     get message(): MessageInstance {
@@ -76,3 +80,79 @@ function createConfig() {
 }
 
 export const globalConfig = createConfig();
+
+export function showNotification(config: ArgsProps) {
+  return globalConfig.notification.open(config);
+}
+
+export function destroyNotification(key?: React.Key) {
+  return globalConfig.notification.destroy(key);
+}
+
+export function showSuccessNotification(config: ArgsProps) {
+  return globalConfig.notification.success(config);
+}
+
+export function showErrorNotification(config: ArgsProps) {
+  return globalConfig.notification.error(config);
+}
+
+export function showInfoNotification(config: ArgsProps) {
+  return globalConfig.notification.info(config);
+}
+
+export function showWarningNotification(config: ArgsProps) {
+  return globalConfig.notification.warning(config);
+}
+
+export function showMessage(config: MessageArgsProps) {
+  return globalConfig.message.open(config);
+}
+
+export function destroyMessage(key?: React.Key) {
+  return globalConfig.message.destroy(key);
+}
+
+export const showSuccessMessage: TypeOpen = (...args) => {
+  return globalConfig.message.success(...args);
+};
+
+export const showErrorMessage: TypeOpen = (...args) => {
+  return globalConfig.message.error(...args);
+};
+
+export const showInfoMessage: TypeOpen = (...args) => {
+  return globalConfig.message.info(...args);
+};
+
+export const showWarningMessage: TypeOpen = (...args) => {
+  return globalConfig.message.warning(...args);
+};
+
+export const showLoadingMessage: TypeOpen = (...args) => {
+  return globalConfig.message.loading(...args);
+};
+
+export const showModal: ModalFunc = (...args) => {
+  return globalConfig.modal.confirm(...args);
+};
+
+export const showConfirmModal: ModalFunc = (...args) => {
+  return globalConfig.modal.confirm(...args);
+};
+
+export const showInfoModal: ModalFunc = (...args) => {
+  return globalConfig.modal.info(...args);
+};
+
+export const showSuccessModal: ModalFunc = (...args) => {
+  return globalConfig.modal.success(...args);
+};
+
+export const showErrorModal: ModalFunc = (...args) => {
+  return globalConfig.modal.error(...args);
+};
+
+export const showWarningModal: ModalFunc = (...args) => {
+  return globalConfig.modal.warning(...args);
+};
