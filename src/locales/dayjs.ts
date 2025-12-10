@@ -2,7 +2,7 @@ import { locale } from 'dayjs';
 
 import 'dayjs/locale/zh-cn';
 import 'dayjs/locale/en';
-import { config } from '@/config';
+import { globalConfig } from '@/config';
 
 /**
  * Set dayjs locale
@@ -15,5 +15,5 @@ export function setDayjsLocale() {
     'zh-CN': 'zh-cn'
   } satisfies Record<I18n.LangType, string>;
 
-  locale(localMap[config.defaultLang]);
+  locale(localMap[globalConfig.defaultLang]);
 }

@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import { config } from '@/config';
+import { globalConfig } from '@/config';
 
 import locales from './locale';
 
@@ -13,7 +13,7 @@ export async function setupI18n() {
     interpolation: {
       escapeValue: false
     },
-    lng: config.defaultLang,
+    lng: globalConfig.defaultLang,
     resources: locales
   });
 }
