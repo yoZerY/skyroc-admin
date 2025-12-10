@@ -6,6 +6,9 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const AApp: typeof import('antd').App
+  const AConfigProvider: typeof import('antd').ConfigProvider
+  const AWatermark: typeof import('antd').Watermark
   const Activity: typeof import('react').Activity
   const Fragment: typeof import('react').Fragment
   const Suspense: typeof import('react').Suspense
