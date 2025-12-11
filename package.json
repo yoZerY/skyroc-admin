@@ -31,7 +31,6 @@
     "commit:zh": "sa git-commit -l=zh-cn",
     "dev": "vite --mode test",
     "dev:prod": "vite --mode prod",
-    "gen-route": "sa gen-route",
     "lint": "eslint . --fix",
     "preview": "vite preview",
     "release": "sa release",
@@ -57,6 +56,7 @@
   "devDependencies": {
     "@iconify/json": "^2.2.416",
     "@iconify/react": "^6.0.2",
+    "@sa/scripts": "workspace:*",
     "@sa/uno-preset": "workspace:*",
     "@soybeanjs/eslint-config": "^1.7.4",
     "@tanstack/devtools-vite": "^0.3.12",
