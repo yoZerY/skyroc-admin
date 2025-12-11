@@ -1,0 +1,241 @@
+import { getPaletteColorByNumber } from '@sa/color';
+import { atom, useAtom } from 'jotai';
+import { useMemo } from 'react';
+
+import { initThemeSettingsFn } from './shared';
+
+export const initThemeSettings = initThemeSettingsFn();
+
+const themeAtom = atom(initThemeSettings);
+
+/**
+ * Format date
+ */
+function formatDate(date: Date, format: string) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return format
+    .replace('YYYY', String(year))
+    .replace('MM', month)
+    .replace('DD', day)
+    .replace('HH', hours)
+    .replace('mm', minutes)
+    .replace('ss', seconds);
+}
+
+export const useTheme = () => {
+  /** Theme settings */
+  const [settings, setSettings] = useAtom(themeAtom);
+
+  /** Preferred color scheme */
+  const osTheme = usePreferredColorScheme();
+
+  const { now: watermarkTime, pause: pauseWatermarkTime, resume: resumeWatermarkTime } = useNow(1000);
+
+  /** Dark mode */
+  const darkMode = useMemo(() => {
+    if (settings.themeScheme === 'auto') {
+      return osTheme.isDarkMode;
+    }
+    return settings.themeScheme === 'dark';
+  }, [settings.themeScheme, osTheme]);
+
+  /** grayscale mode */
+  const grayscaleMode = settings.grayscale;
+
+  /** colourWeakness mode */
+  const colourWeaknessMode = settings.colourWeakness;
+
+  /** Theme colors */
+  const themeColors = useMemo(() => {
+    const { isInfoFollowPrimary, otherColor, themeColor } = settings;
+    const colors: Theme.ThemeColor = {
+      primary: themeColor,
+      ...otherColor,
+      info: isInfoFollowPrimary ? themeColor : otherColor.info
+    };
+    return colors;
+  }, [settings.themeColor, settings.otherColor, settings.isInfoFollowPrimary]);
+
+  /** Settings json */
+  const settingsJson = useMemo(() => JSON.stringify(settings), [settings]);
+
+  /** Watermark time date formatter */
+  const formattedWatermarkTime = useMemo(() => {
+    const { watermark } = settings;
+    return formatDate(watermarkTime, watermark.timeFormat);
+  }, [watermarkTime, settings.watermark.timeFormat]);
+
+  /** Watermark content */
+  const watermarkContent = useMemo(() => {
+    const { watermark } = settings;
+
+    // Note: In React version, we might need to get userInfo from auth context
+    // For now, we'll just use the watermark settings
+    // if (watermark.enableUserName && authStore.userInfo.userName) {
+    //   return authStore.userInfo.userName;
+    // }
+
+    if (watermark.enableTime) {
+      return formattedWatermarkTime;
+    }
+
+    return watermark.text;
+  }, [settings.watermark, formattedWatermarkTime]);
+
+  /**
+   * Set theme scheme
+   *
+   * @param themeScheme
+   */
+  const setThemeScheme = (themeScheme: UnionKey.ThemeScheme) => {
+    setSettings(prev => ({ ...prev, themeScheme }));
+  };
+
+  /**
+   * Set grayscale value
+   *
+   * @param isGrayscale
+   */
+  const setGrayscale = (isGrayscale: boolean) => {
+    setSettings(prev => ({ ...prev, grayscale: isGrayscale }));
+  };
+
+  /**
+   * Set colourWeakness value
+   *
+   * @param isColourWeakness
+   */
+  const setColourWeakness = (isColourWeakness: boolean) => {
+    setSettings(prev => ({ ...prev, colourWeakness: isColourWeakness }));
+  };
+
+  /** Toggle theme scheme */
+  const toggleThemeScheme = () => {
+    const themeSchemes: UnionKey.ThemeScheme[] = ['light', 'dark', 'auto'];
+
+    const index = themeSchemes.findIndex(item => item === settings.themeScheme);
+
+    const nextIndex = index === themeSchemes.length - 1 ? 0 : index + 1;
+
+    const nextThemeScheme = themeSchemes[nextIndex];
+
+    setThemeScheme(nextThemeScheme);
+  };
+
+  /**
+   * Update theme colors
+   *
+   * @param key Theme color key
+   * @param color Theme color
+   */
+  const updateThemeColors = (key: Theme.ThemeColorKey, color: string) => {
+    let colorValue = color;
+
+    if (settings.recommendColor) {
+      // get a color palette by provided color and color name, and use the suitable color
+      colorValue = getPaletteColorByNumber(color, 500, true);
+    }
+
+    setSettings(prev => {
+      if (key === 'primary') {
+        return { ...prev, themeColor: colorValue };
+      }
+      return {
+        ...prev,
+        otherColor: {
+          ...prev.otherColor,
+          [key]: colorValue
+        }
+      };
+    });
+  };
+
+  /**
+   * Set theme layout
+   *
+   * @param mode Theme layout mode
+   */
+  const setThemeLayout = (mode: UnionKey.ThemeLayoutMode) => {
+    setSettings(prev => ({
+      ...prev,
+      layout: {
+        ...prev.layout,
+        mode
+      }
+    }));
+  };
+
+  /**
+   * Set watermark enable user name
+   *
+   * @param enable Whether to enable user name watermark
+   */
+  const setWatermarkEnableUserName = (enable: boolean) => {
+    setSettings(prev => ({
+      ...prev,
+      watermark: {
+        ...prev.watermark,
+        enableUserName: enable,
+        enableTime: enable ? false : prev.watermark.enableTime
+      }
+    }));
+  };
+
+  /**
+   * Set watermark enable time
+   *
+   * @param enable Whether to enable time watermark
+   */
+  const setWatermarkEnableTime = (enable: boolean) => {
+    setSettings(prev => ({
+      ...prev,
+      watermark: {
+        ...prev.watermark,
+        enableTime: enable,
+        enableUserName: enable ? false : prev.watermark.enableUserName
+      }
+    }));
+  };
+
+  /** Only run timer when watermark is visible and time display is enabled */
+  const updateWatermarkTimer = () => {
+    const { watermark } = settings;
+
+    const shouldRunTimer = watermark.visible && watermark.enableTime;
+
+    if (shouldRunTimer) {
+      resumeWatermarkTime();
+    } else {
+      pauseWatermarkTime();
+    }
+  };
+
+  return {
+    settings,
+    // Settings properties
+    ...settings,
+    // Computed values
+    darkMode,
+    themeColors,
+    settingsJson,
+    watermarkContent,
+    grayscaleMode,
+    colourWeaknessMode,
+    // Methods
+    setGrayscale,
+    setColourWeakness,
+    setThemeScheme,
+    toggleThemeScheme,
+    updateThemeColors,
+    updateWatermarkTimer,
+    setThemeLayout,
+    setWatermarkEnableUserName,
+    setWatermarkEnableTime
+  };
+};

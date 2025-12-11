@@ -58,7 +58,9 @@ declare global {
   const useInsertionEffect: typeof import('react').useInsertionEffect
   const useLayoutEffect: typeof import('react').useLayoutEffect
   const useMemo: typeof import('react').useMemo
+  const useNow: typeof import('../hooks/use-now').useNow
   const useOptimistic: typeof import('react').useOptimistic
+  const usePreferredColorScheme: typeof import('../hooks/use-preferred-color-scheme').usePreferredColorScheme
   const useReducer: typeof import('react').useReducer
   const useRef: typeof import('react').useRef
   const useState: typeof import('react').useState
@@ -70,4 +72,7 @@ declare global {
   // @ts-ignore
   export type { FC } from 'react'
   import('react')
+  // @ts-ignore
+  export type { ThemeName } from '../hooks/use-preferred-color-scheme'
+  import('../hooks/use-preferred-color-scheme')
 }

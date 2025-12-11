@@ -4,7 +4,9 @@ import { showNotification } from '@/config';
 import { $t } from '@/locales';
 
 import logo from '../logo.svg';
+
 import '../App.css';
+import { router } from '@/features/router';
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -18,10 +20,13 @@ const UPDATE_NOTIFICATION_KEY = 'update-notification';
 let isShow = false;
 
 const handleCancel = () => {
+  console.log('handleCancel');
   isShow = false;
 };
 
 const handleOk = () => {
+  showErrorMessage('223224');
+
   isShow = false;
 };
 
@@ -68,7 +73,7 @@ function App() {
           onClick={() =>
             showNotification({
               actions: (
-                <div className="flex gap-3 justify-end w-325px">
+                <div className="w-325px flex justify-end gap-3">
                   <AButton
                     key="cancel"
                     onClick={handleCancel}
