@@ -13,10 +13,14 @@ const langAtom = atom(globalConfig.defaultLang);
 export const useLang = () => {
   const [locale, setLocale] = useAtom<I18n.LangType>(langAtom);
 
+  const { i18n } = useTranslation();
+
   function changeLocale(lang: I18n.LangType) {
     setLng(lang);
 
     setLocale(lang);
+
+    i18n.changeLanguage(lang);
 
     localStg.set('lang', lang);
   }
