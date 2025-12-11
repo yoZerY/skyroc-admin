@@ -18,7 +18,7 @@ export function setupAutoImport(viteEnv: Env.ImportMeta) {
   return AutoImport({
     dirs: ['src/hooks/**', 'src/components/**', 'src/config.ts'],
     dts: 'src/types/auto-imports.d.ts',
-    imports: ['react', { from: 'react', imports: ['FC'], type: true }],
+    imports: ['react', { from: 'react', imports: ['FC'], type: true }, 'react-i18next', 'ahooks'],
     include: [TSR_SPLIT_RE],
     resolvers: [
       autoImportAntd,
