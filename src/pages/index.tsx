@@ -7,7 +7,9 @@ import ThemeSchemaSwitch from '@/features/theme/ThemeSchemaSwitch';
 import { $t } from '@/locales';
 
 import logo from '../logo.svg';
+
 import '../App.css';
+import LangSwitch from '@/features/lang/LangSwitch';
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -46,6 +48,8 @@ function App() {
         />
         <IconGridiconsFullscreenExit />
         <IconGridiconsFullscreen />
+
+        <LangSwitch />
 
         <p>
           Edit2 <code>src/routes/index.tsx</code> and save to reload.

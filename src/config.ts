@@ -1,9 +1,10 @@
-/* eslint-disable sort/object-properties */
 import type { WatermarkProps } from 'antd';
 import type { ArgsProps as MessageArgsProps, MessageInstance, TypeOpen } from 'antd/es/message/interface';
 import type { ModalFunc } from 'antd/es/modal/confirm';
 import type { HookAPI as ModalHookAPI } from 'antd/es/modal/useModal';
 import type { ArgsProps, NotificationInstance } from 'antd/es/notification/interface';
+
+import { localStg } from './utils/storage';
 
 const _ui = {
   message: null as MessageInstance | null,
@@ -31,7 +32,9 @@ function createConfig() {
     localIconPrefix: import.meta.env.VITE_ICON_LOCAL_PREFIX,
     // ======Lang Config======
     /** - 默认语言配置 */
-    defaultLang: 'zh-CN',
+    get defaultLang(): I18n.LangType {
+      return localStg.get('lang') || 'zh-CN';
+    },
 
     /** - 默认语言选项 */
     get defaultLangOptions(): I18n.LangOption[] {

@@ -9,6 +9,7 @@ declare global {
   const AApp: typeof import('antd').App
   const AButton: typeof import('antd').Button
   const AConfigProvider: typeof import('antd').ConfigProvider
+  const ADropdown: typeof import('antd').Dropdown
   const ASegmented: typeof import('antd').Segmented
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark

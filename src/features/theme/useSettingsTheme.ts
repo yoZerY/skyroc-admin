@@ -9,6 +9,9 @@ export const initThemeSettings = initThemeSettingsFn();
 
 const themeAtom = atom(initThemeSettings);
 
+/**
+ *  -  reset function not completed
+ */
 export const useSettingsTheme = () => {
   /** Theme settings */
   const [settings, setSettings] = useAtom(themeAtom);
