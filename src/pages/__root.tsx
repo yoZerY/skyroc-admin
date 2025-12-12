@@ -1,32 +1,17 @@
-import { TanStackDevtools } from '@tanstack/react-devtools';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
+import ErrorPage from './error';
 import GlobalLoading from './loading';
 import NotFound from './not-found';
 
 const Root = () => {
-  return (
-    <>
-      <Outlet />
-      <TanStackDevtools
-        config={{
-          position: 'bottom-right'
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />
-          }
-        ]}
-      />
-    </>
-  );
+  return <Outlet />;
 };
 
 export const Route = createRootRoute({
   component: Root,
   notFoundComponent: NotFound,
+  errorComponent: ErrorPage,
   pendingMs: 10,
   pendingComponent: GlobalLoading
 });

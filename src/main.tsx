@@ -1,12 +1,15 @@
 import { createRoot } from 'react-dom/client';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import App from './App';
+import FallbackRender from './components/ErrorBoundary.tsx';
 import { setupI18n } from './locales';
 import { setupAppVersionNotification } from './plugins/app';
 import { setupDayjs } from './plugins/dayjs';
 import { setupIconifyOffline } from './plugins/iconify';
-import './plugins/assets';
 import { setupNProgress } from './plugins/nprogress';
+
+import './plugins/assets';
 
 function setupApp() {
   const container = document.getElementById('app');
@@ -15,7 +18,11 @@ function setupApp() {
 
   const root = createRoot(container);
 
-  root.render(<App />);
+  root.render(
+    <ErrorBoundary fallbackRender={FallbackRender}>
+      <App />
+    </ErrorBoundary>
+  );
 
   setupI18n();
 

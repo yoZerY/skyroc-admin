@@ -31,6 +31,9 @@ function createConfig() {
     /** - 是否自动检测更新 */
     automaticallyDetectUpdate: true,
 
+    /** - 是否开发环境 */
+    isDev: import.meta.env.DEV,
+
     localIconPrefix: import.meta.env.VITE_ICON_LOCAL_PREFIX,
 
     // ======Theme Config======
