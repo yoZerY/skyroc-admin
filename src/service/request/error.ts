@@ -32,6 +32,7 @@ export async function backEndFail(
   // when the backend response code is in `logoutCodes`, it means the user will be logged out and redirected to login page
   const logoutCodes = import.meta.env.VITE_SERVICE_LOGOUT_CODES?.split(',') || [];
   if (logoutCodes.includes(responseCode)) {
+    showErrorMessage($t('request.logoutMsg'));
     handleLogout();
     return null;
   }
