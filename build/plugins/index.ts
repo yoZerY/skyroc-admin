@@ -20,7 +20,8 @@ export function setupVitePlugins(viteEnv: Env.ImportMeta, buildTime: string) {
     /** - React */
     react({
       babel: {
-        plugins: ['babel-plugin-react-compiler']
+        plugins: ['babel-plugin-react-compiler'],
+        presets: ['jotai/babel/preset']
       }
     }),
     setupUnocss(viteEnv),
