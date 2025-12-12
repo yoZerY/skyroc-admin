@@ -17,6 +17,7 @@ declare global {
   const Activity: typeof import('react').Activity
   const ButtonIcon: typeof import('../components/ButtonIcon').default
   const DarkModeContainer: typeof import('../components/DarkModeContainer').default
+  const ExceptionBase: typeof import('../components/ExceptionBase').default
   const FilpText: typeof import('../components/FilpText').default
   const Fragment: typeof import('react').Fragment
   const IconGridiconsFullscreen: typeof import('~icons/gridicons/fullscreen.tsx').default
