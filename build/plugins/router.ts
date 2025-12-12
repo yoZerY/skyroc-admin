@@ -5,7 +5,7 @@ export function setupRouterPlugins() {
     tanstackRouter({
       autoCodeSplitting: true,
       generatedRouteTree: './src/features/router/routeTree.gen.ts',
-      routeFileIgnorePattern: '(?:^|/)(components|modules)/|(?:^|/)(loading|error|not-found)\\.',
+      routeFileIgnorePattern: '(?:^|/)(components|modules)(?:/|$)|(?:^|/)(loading|error|not-found)(?:.tsx?|$)',
       routesDirectory: './src/pages',
       target: 'react'
     })
