@@ -14,6 +14,8 @@ export const router = createRouter({
   context: {},
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
+  defaultPendingMs: 10,
+  defaultPendingMinMs: 1000,
   defaultStructuralSharing: true,
   routeTree,
   scrollRestoration: true
