@@ -1,43 +1,36 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
-import { REG_PHONE } from '@/constants/reg';
 import { useFormRules } from '@/features/form/use-rules';
 
-interface FormModel {
+type FormValues = {
   code: string;
-  confirmPassword: string;
-  password: string;
   phone: string;
-}
+};
 
-const Register = () => {
-  const { t } = useTranslation();
+const CodeLogin = () => {
+  const [form] = AForm.useForm<FormValues>();
 
   const { getCaptcha, isCounting, label, loading } = useCaptcha();
 
+  const { t } = useTranslation();
+
+  const { formRules } = useFormRules();
+
   const navigate = useNavigate();
 
-  const [form] = AForm.useForm<FormModel>();
-
-  const phone = AForm.useWatch('phone', form);
-
-  const isValidPhone = REG_PHONE.test(phone);
-
-  const { createConfirmPwdRule, formRules } = useFormRules();
-
-  function handleSubmit(params: FormModel) {
+  function handleSubmit(params: FormValues) {
     console.log(params);
 
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
   }
 
-  function navigateUp() {
-    navigate({ to: '..' });
+  function sendCaptcha() {
+    getCaptcha('17260711111');
   }
 
-  function sendCaptcha() {
-    getCaptcha(phone);
+  function navigateUp() {
+    navigate({ to: '..' });
   }
 
   useKeyPress('enter', () => {
@@ -46,7 +39,7 @@ const Register = () => {
 
   return (
     <>
-      <h3 className="text-18px text-primary font-medium">{t('page.login.register.title')}</h3>
+      <h3 className="text-18px text-primary font-medium">{t('page.login.codeLogin.title')}</h3>
       <AForm
         className="pt-24px"
         form={form}
@@ -56,22 +49,17 @@ const Register = () => {
           name="phone"
           rules={formRules.phone}
         >
-          <AInput
-            placeholder={t('page.login.common.phonePlaceholder')}
-            size="large"
-          />
+          <AInput placeholder={t('page.login.common.phonePlaceholder')} />
         </AForm.Item>
+
         <AForm.Item
           name="code"
           rules={formRules.code}
         >
           <div className="w-full flex-y-center gap-16px">
-            <AInput
-              placeholder={t('page.login.common.codePlaceholder')}
-              size="large"
-            />
+            <AInput placeholder={t('page.login.common.codePlaceholder')} />
             <AButton
-              disabled={!isValidPhone || isCounting}
+              disabled={isCounting}
               loading={loading}
               size="large"
               onClick={sendCaptcha}
@@ -79,21 +67,6 @@ const Register = () => {
               {label}
             </AButton>
           </div>
-        </AForm.Item>
-        <AForm.Item
-          name="password"
-          rules={formRules.pwd}
-        >
-          <AInput placeholder={t('page.login.common.passwordPlaceholder')} />
-        </AForm.Item>
-        <AForm.Item
-          name="confirmPassword"
-          rules={createConfirmPwdRule(form)}
-        >
-          <AInput
-            placeholder={t('page.login.common.confirmPasswordPlaceholder')}
-            size="large"
-          />
         </AForm.Item>
         <ASpace
           className="w-full"
@@ -124,6 +97,6 @@ const Register = () => {
   );
 };
 
-export const Route = createFileRoute('/login/register')({
-  component: Register
+export const Route = createFileRoute('/(auth)/login/code-login')({
+  component: CodeLogin
 });

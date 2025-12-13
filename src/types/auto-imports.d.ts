@@ -10,13 +10,17 @@ declare global {
   const AButton: typeof import('antd').Button
   const ACard: typeof import('antd').Card
   const ACheckbox: typeof import('antd').Checkbox
+  const ACol: typeof import('antd').Col
   const AConfigProvider: typeof import('antd').ConfigProvider
   const ADivider: typeof import('antd').Divider
   const ADropdown: typeof import('antd').Dropdown
   const AForm: typeof import('antd').Form
   const AInput: typeof import('antd').Input
+  const AList: typeof import('antd').List
+  const ARow: typeof import('antd').Row
   const ASegmented: typeof import('antd').Segmented
   const ASpace: typeof import('antd').Space
+  const AStatistic: typeof import('antd').Statistic
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark
   const Activity: typeof import('react').Activity
@@ -28,8 +32,11 @@ declare global {
   const Fragment: typeof import('react').Fragment
   const IconGridiconsFullscreen: typeof import('~icons/gridicons/fullscreen.tsx').default
   const IconGridiconsFullscreenExit: typeof import('~icons/gridicons/fullscreen-exit.tsx').default
+  const IconLocalBanner: typeof import('~icons/local/banner.tsx').default
   const IconLocalLogo: typeof import('~icons/local/logo.tsx').default
+  const NumberTicker: typeof import('../components/NumberTicker').default
   const PinToggler: typeof import('../components/PinToggler').default
+  const SkyrocAvatar: typeof import('../components/SkyrocAvatar').default
   const Suspense: typeof import('react').Suspense
   const SvgIcon: typeof import('../components/SvgIcon').default
   const SystemLogo: typeof import('../components/SystemLogo').default
@@ -66,6 +73,7 @@ declare global {
   const use: typeof import('react').use
   const useActionState: typeof import('react').useActionState
   const useAntdTable: typeof import('ahooks').useAntdTable
+  const useArray: typeof import('../hooks/use-array').default
   const useAsyncEffect: typeof import('ahooks').useAsyncEffect
   const useBoolean: typeof import('ahooks').useBoolean
   const useCallback: typeof import('react').useCallback
@@ -74,7 +82,8 @@ declare global {
   const useContext: typeof import('react').useContext
   const useControllableValue: typeof import('ahooks').useControllableValue
   const useCookieState: typeof import('ahooks').useCookieState
-  const useCountDown: typeof import('../hooks/use-count-down').default
+  const useCountDown: typeof import('ahooks').useCountDown
+  const useCountDownTimer: typeof import('../hooks/use-count-down-timer').default
   const useCounter: typeof import('ahooks').useCounter
   const useCreation: typeof import('ahooks').useCreation
   const useDebounce: typeof import('ahooks').useDebounce
@@ -88,6 +97,7 @@ declare global {
   const useDrag: typeof import('ahooks').useDrag
   const useDrop: typeof import('ahooks').useDrop
   const useDynamicList: typeof import('ahooks').useDynamicList
+  const useEcharts: typeof import('../hooks/use-echarts').useEcharts
   const useEffect: typeof import('react').useEffect
   const useEffectEvent: typeof import('react').useEffectEvent
   const useEventEmitter: typeof import('ahooks').useEventEmitter
@@ -170,6 +180,9 @@ declare global {
   // @ts-ignore
   export type { FC } from 'react'
   import('react')
+  // @ts-ignore
+  export type { ECOption } from '../hooks/use-echarts'
+  import('../hooks/use-echarts')
   // @ts-ignore
   export type { ThemeName } from '../hooks/use-preferred-color-scheme'
   import('../hooks/use-preferred-color-scheme')

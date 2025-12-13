@@ -61,9 +61,15 @@ const Login = () => {
     navigate({ to: '/login/register' });
   }
 
+  function goCodeLogin() {
+    navigate({ to: '/login/code-login' });
+  }
+
   useKeyPress('enter', () => {
     form.submit();
   });
+
+  console.log('22');
 
   return (
     <>
@@ -120,6 +126,7 @@ const Login = () => {
             <AButton
               block
               className="flex-1"
+              onClick={goCodeLogin}
             >
               {t(loginModuleRecord['code-login']) as string}
             </AButton>
@@ -154,7 +161,10 @@ const LoginSearchSchema = z.object({
   redirect: z.string().startsWith('/').optional()
 });
 
-export const Route = createFileRoute('/login/')({
+export const Route = createFileRoute('/(auth)/login/')({
   component: Login,
+  staticData: {
+    constant: true
+  },
   validateSearch: LoginSearchSchema
 });
