@@ -36,7 +36,9 @@ function createConfig() {
 
     localIconPrefix: import.meta.env.VITE_ICON_LOCAL_PREFIX,
 
+    /// //////////////////////////////////////////////////////////////////////////////
     // ======Theme Config======
+    /// //////////////////////////////////////////////////////////////////////////////
     /** - 默认主题配置 */
     get defaultThemeColor(): string {
       return localStg.get('themeColor') || themeSettings.themeColor;
@@ -45,7 +47,9 @@ function createConfig() {
       return localStg.get('darkMode') || themeSettings.themeScheme === 'dark';
     },
 
+    /// //////////////////////////////////////////////////////////////////////////////
     // ======Lang Config======
+    /// //////////////////////////////////////////////////////////////////////////////
     /** - 默认语言配置 */
     get defaultLang(): I18n.LangType {
       return localStg.get('lang') || 'zh-CN';
@@ -64,7 +68,9 @@ function createConfig() {
       ];
     },
 
+    /// //////////////////////////////////////////////////////////////////////////////
     // ======Antd UI Config======
+    /// //////////////////////////////////////////////////////////////////////////////
     /** - antd 消息实例 */
     get message(): MessageInstance {
       if (!_ui.message) {
