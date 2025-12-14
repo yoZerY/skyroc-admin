@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { REG_PHONE } from '@/constants/reg';
 import { useFormRules } from '@/features/form/use-rules';
@@ -15,8 +15,6 @@ const Register = () => {
 
   const { getCaptcha, isCounting, label, loading } = useCaptcha();
 
-  const navigate = useNavigate();
-
   const [form] = AForm.useForm<FormModel>();
 
   const phone = AForm.useWatch('phone', form);
@@ -30,10 +28,6 @@ const Register = () => {
 
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
-  }
-
-  function navigateUp() {
-    navigate({ to: '..' });
   }
 
   function sendCaptcha() {
@@ -110,14 +104,14 @@ const Register = () => {
             {t('common.confirm')}
           </AButton>
 
-          <AButton
+          <ButtonLink
             block
             shape="round"
             size="large"
-            onClick={navigateUp}
+            to=".."
           >
             {t('page.login.common.back')}
-          </AButton>
+          </ButtonLink>
         </ASpace>
       </AForm>
     </>

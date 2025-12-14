@@ -1,5 +1,6 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
+import { REG_PHONE } from '@/constants/reg';
 import { useFormRules } from '@/features/form/use-rules';
 
 type FormValues = {
@@ -16,7 +17,9 @@ const CodeLogin = () => {
 
   const { formRules } = useFormRules();
 
-  const navigate = useNavigate();
+  const phone = AForm.useWatch('phone', form);
+
+  const isValidPhone = REG_PHONE.test(phone);
 
   function handleSubmit(params: FormValues) {
     console.log(params);
@@ -26,11 +29,7 @@ const CodeLogin = () => {
   }
 
   function sendCaptcha() {
-    getCaptcha('17260711111');
-  }
-
-  function navigateUp() {
-    navigate({ to: '..' });
+    getCaptcha(phone);
   }
 
   useKeyPress('enter', () => {
@@ -59,7 +58,7 @@ const CodeLogin = () => {
           <div className="w-full flex-y-center gap-16px">
             <AInput placeholder={t('page.login.common.codePlaceholder')} />
             <AButton
-              disabled={isCounting}
+              disabled={!isValidPhone || isCounting}
               loading={loading}
               size="large"
               onClick={sendCaptcha}
@@ -83,14 +82,14 @@ const CodeLogin = () => {
             {t('common.confirm')}
           </AButton>
 
-          <AButton
+          <ButtonLink
             block
             shape="round"
             size="large"
-            onClick={navigateUp}
+            to=".."
           >
             {t('page.login.common.back')}
-          </AButton>
+          </ButtonLink>
         </ASpace>
       </AForm>
     </>

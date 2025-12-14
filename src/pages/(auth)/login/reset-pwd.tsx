@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { useFormRules } from '@/features/form/use-rules';
 
@@ -14,8 +14,6 @@ const ResetPwd = () => {
 
   const [form] = AForm.useForm<FormModel>();
 
-  const navigate = useNavigate();
-
   const { createConfirmPwdRule, formRules } = useFormRules();
 
   function handleSubmit(params: FormModel) {
@@ -23,10 +21,6 @@ const ResetPwd = () => {
 
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
-  }
-
-  function navigateUp() {
-    navigate({ to: '..' });
   }
 
   useKeyPress('enter', () => {
@@ -94,14 +88,14 @@ const ResetPwd = () => {
             {t('common.confirm')}
           </AButton>
 
-          <AButton
+          <ButtonLink
             block
             shape="round"
             size="large"
-            onClick={navigateUp}
+            to=".."
           >
             {t('page.login.common.back')}
-          </AButton>
+          </ButtonLink>
         </ASpace>
       </AForm>
     </>
