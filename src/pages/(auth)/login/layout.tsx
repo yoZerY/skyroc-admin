@@ -1,6 +1,7 @@
 import { getPaletteColorByNumber, mixColor } from '@sa/color';
-import { Outlet, createFileRoute, useLocation } from '@tanstack/react-router';
+import { Outlet, createFileRoute, redirect, useLocation } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
+import z from 'zod';
 
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 
@@ -61,6 +62,16 @@ const LoginLayout = () => {
   );
 };
 
+const LoginSearchSchema = z.object({
+  redirect: z.string().startsWith('/').optional()
+});
+
 export const Route = createFileRoute('/(auth)/login')({
-  component: LoginLayout
+  component: LoginLayout,
+  validateSearch: LoginSearchSchema,
+  beforeLoad: ({ context, search }) => {
+    if (context.isLoggedIn) {
+      throw redirect({ to: search.redirect || globalConfig.defaultHome });
+    }
+  }
 });
