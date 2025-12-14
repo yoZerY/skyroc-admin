@@ -18,6 +18,7 @@ import { Route as authLoginOutRouteImport } from './../../pages/(auth)/login-out
 import { Route as authLoginLayoutRouteImport } from './../../pages/(auth)/login/layout'
 import { Route as authLoginIndexRouteImport } from './../../pages/(auth)/login/index'
 import { Route as adminHomeIndexRouteImport } from './../../pages/(admin)/home/index'
+import { Route as adminAboutIndexRouteImport } from './../../pages/(admin)/about/index'
 import { Route as authLoginResetPwdRouteImport } from './../../pages/(auth)/login/reset-pwd'
 import { Route as authLoginRegisterRouteImport } from './../../pages/(auth)/login/register'
 import { Route as authLoginCodeLoginRouteImport } from './../../pages/(auth)/login/code-login'
@@ -66,6 +67,11 @@ const adminHomeIndexRoute = adminHomeIndexRouteImport.update({
   path: '/home/',
   getParentRoute: () => adminLayoutRoute,
 } as any)
+const adminAboutIndexRoute = adminAboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => adminLayoutRoute,
+} as any)
 const authLoginResetPwdRoute = authLoginResetPwdRouteImport.update({
   id: '/reset-pwd',
   path: '/reset-pwd',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/login/code-login': typeof authLoginCodeLoginRoute
   '/login/register': typeof authLoginRegisterRoute
   '/login/reset-pwd': typeof authLoginResetPwdRoute
+  '/about': typeof adminAboutIndexRoute
   '/home': typeof adminHomeIndexRoute
   '/login/': typeof authLoginIndexRoute
 }
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/login/code-login': typeof authLoginCodeLoginRoute
   '/login/register': typeof authLoginRegisterRoute
   '/login/reset-pwd': typeof authLoginResetPwdRoute
+  '/about': typeof adminAboutIndexRoute
   '/home': typeof adminHomeIndexRoute
   '/login': typeof authLoginIndexRoute
 }
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/(auth)/login/code-login': typeof authLoginCodeLoginRoute
   '/(auth)/login/register': typeof authLoginRegisterRoute
   '/(auth)/login/reset-pwd': typeof authLoginResetPwdRoute
+  '/(admin)/about/': typeof adminAboutIndexRoute
   '/(admin)/home/': typeof adminHomeIndexRoute
   '/(auth)/login/': typeof authLoginIndexRoute
 }
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/login/code-login'
     | '/login/register'
     | '/login/reset-pwd'
+    | '/about'
     | '/home'
     | '/login/'
   fileRoutesByTo: FileRoutesByTo
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/login/code-login'
     | '/login/register'
     | '/login/reset-pwd'
+    | '/about'
     | '/home'
     | '/login'
   id:
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/(auth)/login/code-login'
     | '/(auth)/login/register'
     | '/(auth)/login/reset-pwd'
+    | '/(admin)/about/'
     | '/(admin)/home/'
     | '/(auth)/login/'
   fileRoutesById: FileRoutesById
@@ -239,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof adminHomeIndexRouteImport
       parentRoute: typeof adminLayoutRoute
     }
+    '/(admin)/about/': {
+      id: '/(admin)/about/'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof adminAboutIndexRouteImport
+      parentRoute: typeof adminLayoutRoute
+    }
     '/(auth)/login/reset-pwd': {
       id: '/(auth)/login/reset-pwd'
       path: '/reset-pwd'
@@ -264,10 +283,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface adminLayoutRouteChildren {
+  adminAboutIndexRoute: typeof adminAboutIndexRoute
   adminHomeIndexRoute: typeof adminHomeIndexRoute
 }
 
 const adminLayoutRouteChildren: adminLayoutRouteChildren = {
+  adminAboutIndexRoute: adminAboutIndexRoute,
   adminHomeIndexRoute: adminHomeIndexRoute,
 }
 
