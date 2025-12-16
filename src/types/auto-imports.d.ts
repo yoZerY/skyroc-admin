@@ -15,9 +15,11 @@ declare global {
   const ADescriptions: typeof import('antd').Descriptions
   const ADivider: typeof import('antd').Divider
   const ADropdown: typeof import('antd').Dropdown
+  const AEmpty: typeof import('antd').Empty
   const AForm: typeof import('antd').Form
   const AInput: typeof import('antd').Input
   const AList: typeof import('antd').List
+  const AModal: typeof import('antd').Modal
   const ARow: typeof import('antd').Row
   const ASegmented: typeof import('antd').Segmented
   const ASpace: typeof import('antd').Space
@@ -26,6 +28,7 @@ declare global {
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark
   const Activity: typeof import('react').Activity
+  const BeyondHiding: typeof import('../components/BeyondHiding').default
   const ButtonIcon: typeof import('../components/ButtonIcon').default
   const ButtonLink: typeof import('../components/ButtonLink').default
   const DarkModeContainer: typeof import('../components/DarkModeContainer').default
@@ -33,10 +36,17 @@ declare global {
   const ExceptionBase: typeof import('../components/ExceptionBase').default
   const FilpText: typeof import('../components/FilpText').default
   const Fragment: typeof import('react').Fragment
+  const FullScreen: typeof import('../components/FullScreen').default
+  const IconAntDesignEnterOutlined: typeof import('~icons/ant-design/enter-outlined.tsx').default
   const IconGridiconsFullscreen: typeof import('~icons/gridicons/fullscreen.tsx').default
   const IconGridiconsFullscreenExit: typeof import('~icons/gridicons/fullscreen-exit.tsx').default
   const IconLocalBanner: typeof import('~icons/local/banner.tsx').default
   const IconLocalLogo: typeof import('~icons/local/logo.tsx').default
+  const IconMdiArrowDownThin: typeof import('~icons/mdi/arrow-down-thin.tsx').default
+  const IconMdiArrowUpThin: typeof import('~icons/mdi/arrow-up-thin.tsx').default
+  const IconMdiKeyboardEsc: typeof import('~icons/mdi/keyboard-esc.tsx').default
+  const IconMdiKeyboardReturn: typeof import('~icons/mdi/keyboard-return.tsx').default
+  const IconUilSearch: typeof import('~icons/uil/search.tsx').default
   const LookForward: typeof import('../components/LookForward').default
   const NumberTicker: typeof import('../components/NumberTicker').default
   const PinToggler: typeof import('../components/PinToggler').default
@@ -55,6 +65,7 @@ declare global {
   const forwardRef: typeof import('react').forwardRef
   const globalConfig: typeof import('../config').globalConfig
   const initAntdProvider: typeof import('../config').initAntdProvider
+  const initNProgress: typeof import('../config').initNProgress
   const lazy: typeof import('react').lazy
   const memo: typeof import('react').memo
   const showConfirmModal: typeof import('../config').showConfirmModal

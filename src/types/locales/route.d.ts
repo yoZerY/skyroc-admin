@@ -1,5 +1,5 @@
 declare namespace I18n {
-  type AllPaths = import('@/features/router/routeTree.gen').FileRoutesByFullPath;
+  type AllPaths = import('@/features/router/routeTree.gen').FileRoutesByTo;
 
   type RouteKey = keyof AllPaths;
 
