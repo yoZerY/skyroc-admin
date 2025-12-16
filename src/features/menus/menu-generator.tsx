@@ -4,7 +4,7 @@ import { globalConfig } from '@/config';
 import { routeTree } from '@/features/router/routeTree.gen';
 import { $t } from '@/locales';
 
-function findLayoutRoute(layoutIds: string[]): AnyRoute[] {
+function findLayoutRoute(layoutIds: Router.RouteId[]): AnyRoute[] {
   const menuRoutes: AnyRoute[] = [];
 
   // 遍历路由树查找
@@ -96,12 +96,12 @@ export class MenuGenerator {
 
   isGenerated = false;
 
-  menuMap = new Map<string, App.Global.AdminLayout.Menu[]>();
+  menuMap = new Map<Router.RouteId, App.Global.AdminLayout.Menu[]>();
 
   /**
    * 生成菜单
    */
-  generate(): Map<string, App.Global.AdminLayout.Menu[]> {
+  generate(): Map<Router.RouteId, App.Global.AdminLayout.Menu[]> {
     if (!this.isGenerated) {
       this.isGenerated = true;
     }

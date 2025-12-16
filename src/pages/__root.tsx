@@ -1,7 +1,6 @@
 import { Outlet, createRootRouteWithContext, useLocation } from '@tanstack/react-router';
 
-import { menuGenerator } from '@/features/menus/menu-generator';
-import { AUTH_QUERY_KEYS, queryUserInfoOptions } from '@/service/api';
+import { AUTH_QUERY_KEYS, ROUTE_QUERY_KEYS, queryMenusOptions, queryUserInfoOptions } from '@/service/api';
 import { localStg } from '@/utils/storage';
 
 import ErrorPage from './error';
@@ -35,6 +34,13 @@ export const Route = createRootRouteWithContext<Router.RouterContext>()({
         const data = await context.queryClient.ensureQueryData(queryUserInfoOptions(enabled));
 
         contextData.info = data;
+      }
+      const isInitMenus = Boolean(context.queryClient.getQueryData(ROUTE_QUERY_KEYS.USER_ROUTES));
+
+      if (!isInitMenus) {
+        const data = await context.queryClient.ensureQueryData(queryMenusOptions());
+
+        contextData.menus = data;
       }
     }
 

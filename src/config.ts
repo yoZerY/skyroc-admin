@@ -40,7 +40,7 @@ function createConfig() {
     /** - 是否开发环境 */
     isDev: import.meta.env.DEV,
     /** - 生成菜单的布局 */
-    genMenuLayouts: ['/(admin)'] as string[],
+    genMenuLayouts: ['/(admin)'] as Router.RouteId[],
     /** - 默认首页 */
     defaultHome: import.meta.env.VITE_ROUTE_HOME,
 

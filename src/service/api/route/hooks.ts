@@ -1,4 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
+
+import { menuGenerator } from '@/features/menus/menu-generator';
+import { queryClient } from '@/service/queryClient';
+
+import { AUTH_QUERY_KEYS } from '../auth/keys';
 
 import { fetchGetBackendRoutes, fetchGetConstantRoutes, fetchIsRouteExist } from './api';
 import { ROUTE_QUERY_KEYS } from './keys';
@@ -19,6 +24,19 @@ export function useConstantRoutesQuery(enabled = true) {
   });
 }
 
+export const queryMenusOptions = () => {
+  const enabled = Boolean(queryClient.getQueryData(AUTH_QUERY_KEYS.USER_INFO));
+  return queryOptions({
+    enabled,
+    queryFn: async () => {
+      return await menuGenerator.generate();
+    },
+    gcTime: Infinity,
+    staleTime: Infinity,
+    queryKey: ROUTE_QUERY_KEYS.USER_ROUTES
+  });
+};
+
 /**
  * Get user routes query hook
  *
@@ -27,14 +45,9 @@ export function useConstantRoutesQuery(enabled = true) {
  *
  * @param enabled - Whether to enable the query (default: true)
  */
-export function useUserRoutesQuery(enabled = true) {
-  return useQuery({
-    enabled,
-    gcTime: Infinity,
-    queryFn: fetchGetBackendRoutes,
-    queryKey: ROUTE_QUERY_KEYS.USER_ROUTES,
-    staleTime: Infinity
-  });
+export function useUserRoutesQuery() {
+  const options = queryMenusOptions();
+  return useQuery(options);
 }
 
 /**
