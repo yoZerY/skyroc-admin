@@ -33,6 +33,7 @@ const LoginLayout = () => {
       >
         <div className="w-400px lt-sm:w-300px">
           <Header />
+
           <AnimatePresence
             initial={false}
             mode="wait"
@@ -73,5 +74,9 @@ export const Route = createFileRoute('/(auth)/login')({
     if (context.isLoggedIn) {
       throw redirect({ to: search.redirect || globalConfig.defaultHome });
     }
+  },
+  staticData: {
+    title: 'login',
+    i18nKey: 'route.login'
   }
 });

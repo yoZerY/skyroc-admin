@@ -97,5 +97,9 @@ const CodeLogin = () => {
 };
 
 export const Route = createFileRoute('/(auth)/login/code-login')({
-  component: CodeLogin
+  component: CodeLogin,
+  staticData: {
+    title: 'code-login',
+    i18nKey: 'route.login_code-login'
+  }
 });

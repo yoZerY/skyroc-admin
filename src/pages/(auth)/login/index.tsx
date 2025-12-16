@@ -141,5 +141,9 @@ const Login = () => {
 };
 
 export const Route = createFileRoute('/(auth)/login/')({
-  component: Login
+  component: Login,
+  staticData: {
+    title: 'login',
+    i18nKey: 'route.login'
+  }
 });

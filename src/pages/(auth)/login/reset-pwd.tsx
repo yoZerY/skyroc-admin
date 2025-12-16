@@ -103,5 +103,9 @@ const ResetPwd = () => {
 };
 
 export const Route = createFileRoute('/(auth)/login/reset-pwd')({
-  component: ResetPwd
+  component: ResetPwd,
+  staticData: {
+    title: 'login_reset-pwd',
+    i18nKey: 'route.login_reset-pwd'
+  }
 });

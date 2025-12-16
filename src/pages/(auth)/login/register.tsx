@@ -119,5 +119,9 @@ const Register = () => {
 };
 
 export const Route = createFileRoute('/(auth)/login/register')({
-  component: Register
+  component: Register,
+  staticData: {
+    title: 'login_register',
+    i18nKey: 'route.login_register'
+  }
 });

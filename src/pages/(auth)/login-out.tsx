@@ -5,5 +5,9 @@ const LoginOut = () => {
 };
 
 export const Route = createFileRoute('/(auth)/login-out')({
-  component: LoginOut
+  component: LoginOut,
+  staticData: {
+    title: 'login-out',
+    i18nKey: 'route.login-out'
+  }
 });
