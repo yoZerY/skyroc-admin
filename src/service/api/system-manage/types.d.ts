@@ -35,7 +35,7 @@ declare namespace Api {
      * - "1": 男
      * - "2": 女
      */
-    type UserGender = import('../enums').UserGenderValue;
+    type UserGender = import('../../enums').UserGenderValue;
 
     /** 用户 */
     type User = Common.CommonRecord<{
@@ -68,7 +68,7 @@ declare namespace Api {
      * - "1": 目录
      * - "2": 菜单
      */
-    type MenuType = import('../enums').MenuTypeValue;
+    type MenuType = import('../../enums').MenuTypeValue;
 
     /** 菜单按钮 */
     type MenuButton = {
@@ -88,7 +88,7 @@ declare namespace Api {
      * - "1": iconify 图标
      * - "2": 本地图标
      */
-    type IconType = import('../enums').IconTypeValue;
+    type IconType = import('../../enums').IconTypeValue;
 
     /** 菜单的路由属性 */
     type MenuPropsOfRoute = Pick<

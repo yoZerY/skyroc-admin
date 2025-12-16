@@ -1,5 +1,6 @@
-import { request } from '../request';
-import { SYSTEM_MANAGE_URLS } from '../urls';
+import { request } from '../../request';
+
+import { SYSTEM_MANAGE_URLS } from './urls';
 
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {

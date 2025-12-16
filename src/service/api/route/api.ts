@@ -1,5 +1,6 @@
-import { request } from '../request';
-import { ROUTE_URLS } from '../urls';
+import { request } from '../../request';
+
+import { ROUTE_URLS } from './urls';
 
 /** get constant routes */
 export function fetchGetConstantRoutes() {

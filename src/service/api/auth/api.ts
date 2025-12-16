@@ -1,5 +1,6 @@
-import { request } from '../request';
-import { AUTH_URLS } from '../urls';
+import { request } from '../../request';
+
+import { AUTH_URLS } from './urls';
 
 /**
  * Login

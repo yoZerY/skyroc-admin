@@ -2,17 +2,17 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { localStg } from '@/utils/storage';
 
-import { fetchGetUserInfo, fetchLogin, fetchRefreshToken } from '../api';
-import { MUTATION_KEYS, QUERY_KEYS } from '../keys';
+import { fetchGetUserInfo, fetchLogin, fetchRefreshToken } from './api';
+import { AUTH_MUTATION_KEYS, AUTH_QUERY_KEYS } from './keys';
 
 /**
- * Login hook
+ * Login mutation hook
  *
  * @example
- *   const { mutate: login, isPending } = useLogin();
+ *   const { mutate: login, isPending } = useLoginMutation();
  *   login({ userName: 'admin', password: '123456' });
  */
-export function useLogin() {
+export function useLoginMutation() {
   return useMutation({
     mutationFn: (params: Api.Auth.LoginParams) => fetchLogin(params),
     retry: false
@@ -20,14 +20,12 @@ export function useLogin() {
 }
 
 /**
- * Get user info hook
+ * Get user info query hook
  *
  * @example
- *   const { data: userInfo, isLoading } = useUserInfo();
- *
- * @param enabled - Whether to enable the query (default: true)
+ *   const { data: userInfo, isLoading } = useUserInfoQuery();
  */
-export function useUserInfo() {
+export function useUserInfoQuery() {
   const hasToken = Boolean(localStg.get('token'));
 
   return useQuery({
@@ -40,22 +38,22 @@ export function useUserInfo() {
       userName: ''
     }),
     queryFn: fetchGetUserInfo,
-    queryKey: QUERY_KEYS.AUTH.USER_INFO,
+    queryKey: AUTH_QUERY_KEYS.USER_INFO,
     retry: false,
     staleTime: Infinity
   });
 }
 
 /**
- * Refresh token hook
+ * Refresh token mutation hook
  *
  * @example
- *   const { mutate: refreshToken } = useRefreshToken();
+ *   const { mutate: refreshToken } = useRefreshTokenMutation();
  *   refreshToken('your-refresh-token');
  */
-export function useRefreshToken() {
+export function useRefreshTokenMutation() {
   return useMutation({
     mutationFn: (refreshToken: string) => fetchRefreshToken(refreshToken),
-    mutationKey: MUTATION_KEYS.AUTH.REFRESH_TOKEN
+    mutationKey: AUTH_MUTATION_KEYS.REFRESH_TOKEN
   });
 }
