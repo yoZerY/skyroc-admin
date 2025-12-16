@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
-import { useLogin, useUserInfo } from '@/service/hooks';
+import { useLoginMutation, useUserInfoQuery } from '@/service/api';
 import { localStg } from '@/utils/storage';
 
 import { useAuth } from './use-auth';
@@ -8,7 +8,7 @@ import { useAuth } from './use-auth';
 export function useInitLogin() {
   const { endLoading, loading, startLoading } = useLoading();
 
-  const search = useSearch({ from: '/login/' });
+  const search = useSearch({ from: '/(auth)/login/' });
 
   const { t } = useTranslation();
 
@@ -16,9 +16,9 @@ export function useInitLogin() {
 
   const navigate = useNavigate();
 
-  const { mutate: toLogin } = useLogin();
+  const { mutate: toLogin } = useLoginMutation();
 
-  const { refetch: refetchUserInfo } = useUserInfo();
+  const { refetch: refetchUserInfo } = useUserInfoQuery();
 
   async function login(params: Api.Auth.LoginParams, redirect = true) {
     if (loading) return;
