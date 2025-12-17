@@ -35,7 +35,7 @@ const ThemeDrawer = () => {
       <SimpleScrollbar>
         <div className="min-h-400px overflow-x-hidden px-24px pb-24px pt-8px">
           <ASegmented<string>
-            classNames={{ root: 'w-full mb-16px', item: 'flex-1 py-4px font-500' }}
+            classNames={{ root: 'w-full mb-16px', item: 'flex-1 py-2px font-500' }}
             options={options}
             value={activeTab}
             onChange={setActiveTab}

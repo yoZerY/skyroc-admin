@@ -40,8 +40,6 @@ export const useAdminMenus = () => {
 
   const allMenus = queryClient.getQueryData<Api.Route.Menus>(ROUTE_QUERY_KEYS.USER_ROUTES);
 
-  console.log('222');
-
   const menus = allMenus?.get('/(admin)') || [];
 
   const { activeMenu, hideInMenu } = route.staticData;
