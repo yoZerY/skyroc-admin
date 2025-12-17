@@ -40,9 +40,7 @@ export const Route = createRootRouteWithContext<Router.RouterContext>()({
       const isInitMenus = Boolean(context.queryClient.getQueryData(ROUTE_QUERY_KEYS.USER_ROUTES));
 
       if (!isInitMenus) {
-        const data = await context.queryClient.ensureQueryData(queryMenusOptions());
-
-        contextData.menus = data;
+        await context.queryClient.ensureQueryData(queryMenusOptions());
       }
     }
 

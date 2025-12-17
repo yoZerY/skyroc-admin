@@ -6,7 +6,6 @@ declare namespace Router {
   interface RouterContext {
     info?: Api.Auth.UserInfo;
     isLoggedIn: boolean;
-    menus: Map<RouteId, App.Global.AdminLayout.Menu[]>;
     queryClient: QueryClient;
     token: string;
   }

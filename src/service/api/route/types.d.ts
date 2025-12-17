@@ -4,6 +4,8 @@
  * 后端 API 模块：路由模块
  */
 declare namespace Api {
+  type FileRoutesById = import('@/features/router/routeTree.gen').FileRoutesById;
+
   namespace Route {
     /** 优雅常量路由类型 */
     type ElegantConstRoute = import('@soybean-react/vite-plugin-react-router').ElegantConstRoute;
@@ -29,6 +31,8 @@ declare namespace Api {
       /** 用户可访问的路由列表 */
       routes: BackendRoute[];
     }
+
+    type Menus = Map<keyof FileRoutesById, App.Global.AdminLayout.Menu[]>;
 
     interface BackendRoute {
       children?: BackendRoute[];

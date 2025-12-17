@@ -16,7 +16,6 @@ import { routeTree } from './routeTree.gen';
 export const router = createRouter({
   context: {
     token: undefined!,
-    menus: undefined!,
     isLoggedIn: false,
     queryClient,
     info: undefined

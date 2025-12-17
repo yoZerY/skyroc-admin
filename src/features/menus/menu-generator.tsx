@@ -25,15 +25,17 @@ function findLayoutRoute(layoutIds: Router.RouteId[]): AnyRoute[] {
 
 function transformRouteToMenu(
   route: AnyRoute,
-  layoutAuth: AnyRoute['options']['staticData']['auth']
+  layoutAuth: AnyRoute['options']['staticData']['auth'],
+  options: { depth?: number; parentPath?: string[] } = {}
 ): App.Global.AdminLayout.Menu | null {
+  const { depth = 1, parentPath = [] } = options;
   const { staticData } = route.options;
 
   if (!staticData) {
     return null;
   }
 
-  const { i18nKey, icon = globalConfig.defaultIcon, localIcon, title } = staticData;
+  const { i18nKey, icon = globalConfig.defaultIcon, localIcon, order = 0, title } = staticData;
 
   // 解析最终的权限配置（路由 > layout）
   const label = i18nKey ? $t(i18nKey) : title;
@@ -48,6 +50,9 @@ function transformRouteToMenu(
     ),
     key: route.id,
     label: <BeyondHiding title={label} />,
+    order: order ?? undefined,
+    depth,
+    parentkeys: parentPath.join('-'),
     path: route.fullPath,
     title: label
   };
@@ -58,15 +63,23 @@ function transformRouteToMenu(
     const childMenus: App.Global.AdminLayout.Menu[] = [];
 
     Object.values(route.children).forEach((childRoute: any) => {
-      const childMenu = transformRouteToMenu(childRoute, layoutAuth);
+      const childMenu = transformRouteToMenu(childRoute, layoutAuth, {
+        depth: depth + 1,
+        parentPath: [...parentPath, route.id]
+      });
       if (childMenu) {
         childMenus.push(childMenu);
       }
     });
 
-    // Only add children if there are valid child menus
+    // Sort children by order at current level
+    // 在当前层级按 order 排序
     if (childMenus.length > 0) {
-      menu.children = childMenus;
+      menu.children = childMenus.sort((a, b) => {
+        const orderA = a.order ?? 0;
+        const orderB = b.order ?? 0;
+        return orderA - orderB;
+      });
     }
   }
 
@@ -83,9 +96,17 @@ function generateStaticMenus(
     return [];
   }
 
-  return children
+  const menus = children
     .map(route => transformRouteToMenu(route, layoutAuth))
     .filter(Boolean) as App.Global.AdminLayout.Menu[];
+
+  // Sort top-level menus by order
+  // 对顶层菜单按 order 排序
+  return menus.sort((a, b) => {
+    const orderA = a.order ?? 0;
+    const orderB = b.order ?? 0;
+    return orderA - orderB;
+  });
 }
 
 /**

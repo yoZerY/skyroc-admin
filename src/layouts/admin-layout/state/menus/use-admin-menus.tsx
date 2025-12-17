@@ -2,7 +2,13 @@ import type { RouteMatch } from '@tanstack/react-router';
 import { useMatch } from '@tanstack/react-router';
 import { atom, useAtom } from 'jotai';
 
-import { globalStore } from '@/features/jotai/store';
+import { useLang } from '@/features/lang/use-lang';
+import { ROUTE_QUERY_KEYS } from '@/service/api';
+import { queryClient } from '@/service/queryClient';
+
+interface MenusAtom {
+  activeFirstLevelMenuKey: string;
+}
 
 /**
  * Get active first level menu key
@@ -21,20 +27,22 @@ export function getActiveFirstLevelMenuKey(route: RouteMatch<any, any, any, any,
   return `/${firstLevelRouteName}`;
 }
 
-const menusAtom = atom<{
-  activeFirstLevelMenuKey: string;
-  menus: App.Global.AdminLayout.Menu[];
-}>({
-  menus: [],
+const menusAtom = atom<MenusAtom>({
   activeFirstLevelMenuKey: ''
 });
 
 export const useAdminMenus = () => {
   const [menuState, setMenuState] = useAtom(menusAtom);
 
-  const { activeFirstLevelMenuKey, menus } = menuState;
+  const { activeFirstLevelMenuKey } = menuState;
 
   const route = useMatch({ strict: false });
+
+  const allMenus = queryClient.getQueryData<Api.Route.Menus>(ROUTE_QUERY_KEYS.USER_ROUTES);
+
+  console.log('222');
+
+  const menus = allMenus?.get('/(admin)') || [];
 
   const { activeMenu, hideInMenu } = route.staticData;
 
@@ -44,15 +52,11 @@ export const useAdminMenus = () => {
 
   const selectedKey = [routeName];
 
-  const firstLevelMenus = useMemo(
-    () =>
-      menus.map(menu => {
-        const { children: _, ...rest } = menu;
+  const firstLevelMenus = menus.map(menu => {
+    const { children: _, ...rest } = menu;
 
-        return rest;
-      }),
-    [menus]
-  );
+    return rest;
+  });
 
   const secondLevelMenus = menus.find(item => item.key === activeFirstLevelMenuKey)?.children || [];
 
@@ -82,10 +86,3 @@ export const useAdminMenus = () => {
     changeActiveFirstLevelMenuKey
   };
 };
-
-export function initMenus(menus: App.Global.AdminLayout.Menu[]) {
-  globalStore.set(menusAtom, prev => ({
-    ...prev,
-    menus
-  }));
-}

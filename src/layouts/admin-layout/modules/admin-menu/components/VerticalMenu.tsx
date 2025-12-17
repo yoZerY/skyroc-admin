@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SimpleScrollbar } from '@sa/materials';
 import { useNavigate } from '@tanstack/react-router';
 import type { MenuProps } from 'antd';
@@ -5,43 +6,10 @@ import type { MenuProps } from 'antd';
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 import { useAdminMenus } from '@/layouts/admin-layout/state/menus/use-admin-menus';
 import { useAdminState } from '@/layouts/admin-layout/state/use-admin-state';
-
-interface LevelKeysProps {
-  children?: LevelKeysProps[];
-  key?: string;
-}
-
-const getLevelKeys = (items1: LevelKeysProps[]) => {
-  const key: Record<string, number> = {};
-  const func = (items2: LevelKeysProps[], level = 1) => {
-    items2.forEach(item => {
-      if (item.key) {
-        key[item.key] = level;
-      }
-      if (item.children) {
-        func(item.children, level + 1);
-      }
-    });
-  };
-  func(items1);
-  return key;
-};
-
-const getSelectedMenuKeyPath = (matches: Router.Route['matched']) => {
-  const result = matches.reduce((acc: string[], match, index) => {
-    if (index < matches.length - 1 && match.pathname) {
-      acc.push(match.pathname);
-    }
-    return acc;
-  }, []);
-
-  return result;
-};
+import { buildMenuMap, getParentKeysByMenuMap } from '@/utils/menu';
 
 const VerticalMenu = memo(() => {
-  const { menus: allMenus, route, secondLevelMenus, selectedKey } = useAdminMenus();
-
-  const levelKeys = useMemo(() => getLevelKeys(allMenus), [allMenus]);
+  const { menus: allMenus, secondLevelMenus, selectedKey } = useAdminMenus();
 
   const { isOnlyExpandCurrentParentMenu, layout } = useSettingsTheme();
 
@@ -51,14 +19,27 @@ const VerticalMenu = memo(() => {
 
   const isVerticalMix = layout.mode === 'vertical-mix';
 
-  const { siderCollapse: inlineCollapsed } = useAdminState();
+  const { siderCollapse } = useAdminState();
 
-  const [stateOpenKeys, setStateOpenKeys] = useState<string[]>(
-    inlineCollapsed ? [] : getSelectedMenuKeyPath(route.matched)
-  );
+  const inlineCollapsed = isVerticalMix ? false : siderCollapse;
+
+  const menus = isMix ? secondLevelMenus : allMenus;
+
+  // Build menu map for fast lookup (only rebuild when menus change)
+  const menuMap = useMemo(() => buildMenuMap(menus), [menus]);
+
+  // Get default open keys based on selected menu
+  const defaultOpenKeys = useMemo(() => {
+    if (!selectedKey[0]) return [];
+    return getParentKeysByMenuMap(menuMap, selectedKey[0]);
+  }, [selectedKey, menuMap]);
+
+  const [stateOpenKeys, setStateOpenKeys] = useState<string[]>(inlineCollapsed ? [] : defaultOpenKeys);
 
   const handleClickMenu: MenuProps['onSelect'] = menuInfo => {
-    navigate({ to: menuInfo.key });
+    console.log('menuInfo', menuInfo);
+
+    // navigate({ to: menuInfo.key });
   };
 
   const onOpenChange: MenuProps['onOpenChange'] = keys => {
@@ -71,46 +52,46 @@ const VerticalMenu = memo(() => {
 
     // open
     if (currentOpenKey && isOnlyExpandCurrentParentMenu) {
-      const repeatIndex = keys
-        .filter(key => key !== currentOpenKey)
-        .findIndex(key => levelKeys[key] === levelKeys[currentOpenKey]);
+      const currentMenu = menuMap.get(currentOpenKey);
+      const currentDepth = currentMenu?.depth || 0;
 
       setStateOpenKeys(
-        keys
-          // remove repeat key
-          .filter((_, index) => index !== repeatIndex)
-          // remove current level all child
-          .filter(key => levelKeys[key] <= levelKeys[currentOpenKey])
+        keys.filter(key => {
+          const menu = menuMap.get(key);
+          return menu && menu.depth <= currentDepth;
+        })
       );
     } else {
-      // // close
+      // close
       setStateOpenKeys(keys);
     }
   };
 
+  // Update open keys when route changes
   useEffect(() => {
     if (inlineCollapsed || isVerticalMix) return;
-    setStateOpenKeys(getSelectedMenuKeyPath(route.matched));
-  }, [route, inlineCollapsed, isVerticalMix]);
+    if (!selectedKey[0]) return;
 
-  useUpdateEffect(() => {
-    if (inlineCollapsed || isVerticalMix) return;
+    const openKeys = getParentKeysByMenuMap(menuMap, selectedKey[0]);
+    setStateOpenKeys(openKeys);
+  }, [selectedKey, inlineCollapsed, isVerticalMix]);
 
-    const names = route.matched
-      .slice(isMix ? 1 : 0, -1)
-      .map(item => item.pathname)
-      .filter(Boolean) as string[];
-
-    setStateOpenKeys(names || []);
+  // Update open keys when collapse state changes
+  useEffect(() => {
+    if (inlineCollapsed) {
+      setStateOpenKeys([]);
+    } else if (!isVerticalMix) {
+      setStateOpenKeys(defaultOpenKeys);
+    }
   }, [isMix, inlineCollapsed]);
 
   return (
     <SimpleScrollbar>
       <AMenu
         className="size-full transition-300 border-0!"
-        inlineCollapsed={isVerticalMix ? false : inlineCollapsed}
+        inlineCollapsed={inlineCollapsed}
         inlineIndent={18}
-        items={isMix ? secondLevelMenus : allMenus}
+        items={menus as MenuProps['items']}
         mode="inline"
         openKeys={stateOpenKeys}
         selectedKeys={selectedKey}

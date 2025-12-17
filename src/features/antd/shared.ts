@@ -7,7 +7,9 @@ import { theme as antdTheme } from 'antd';
  * @param colors Theme colors
  * @param darkMode Is dark mode
  */
-export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, tokens: Theme.ThemeSetting['tokens']) {
+export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, settings: Theme.ThemeSetting) {
+  const { themeRadius, tokens } = settings;
+
   const { darkAlgorithm, defaultAlgorithm } = antdTheme;
 
   const { error, info, primary, success, warning } = colors;
@@ -38,7 +40,7 @@ export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, tokens
       colorError: error,
       colorInfo: info,
       colorPrimary: primary,
-      borderRadius: 8,
+      borderRadius: themeRadius,
       colorSuccess: success,
       colorWarning: warning
     }

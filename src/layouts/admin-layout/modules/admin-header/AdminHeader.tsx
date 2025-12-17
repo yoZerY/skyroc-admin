@@ -80,7 +80,7 @@ const GlobalHeader = memo(() => {
         {/* {!isMobile && !showMenu && <GlobalBreadcrumb className="ml-12px" />} */}
       </div>
 
-      <div className="h-full flex-y-center justify-end">
+      <div className="h-full flex-y-center justify-end gap-2">
         <AdminSearch />
 
         {!isMobile && (

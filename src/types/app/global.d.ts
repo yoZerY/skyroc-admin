@@ -59,6 +59,14 @@ declare namespace App.Global {
     interface Menu {
       /** The menu children */
       children?: Menu[];
+      /**
+       * Menu depth level (using dot notation to avoid React DOM warning)
+       *
+       * @example
+       *   // Root menu: menu.depth = 1
+       *   // Second level: menu.depth = 2
+       */
+      depth: number;
       /** The menu i18n key */
       i18nKey?: I18n.I18nKey | null;
       /** The menu icon */
@@ -71,6 +79,22 @@ declare namespace App.Global {
       key: string;
       /** The menu label */
       label: React.ReactNode;
+      /**
+       * Menu order for sorting (using hyphen to avoid React DOM warning)
+       *
+       * @default 0
+       */
+      order?: number;
+      /**
+       * All parent menu keys joined by comma (using dot notation to avoid React DOM warning)
+       *
+       * Use `menu['parentkeys']?.split(',')` to convert back to array
+       *
+       * @example
+       *   // For menu structure: Dashboard > Analytics > Report
+       *   // Report's parent.keys would be: '/dashboard,/dashboard/analytics'
+       */
+      parentkeys?: string;
       /** The tab route path */
       path: RoutePath;
       /** The tooltip title */
