@@ -11,9 +11,9 @@ import { getAntdTheme } from './shared';
 const AntdProvider = ({ children }: PropsWithChildren) => {
   const { locale } = useLang();
 
-  const { darkMode, themeColors, tokens, watermark } = useSettingsTheme();
+  const { darkMode, settings, themeColors, watermark } = useSettingsTheme();
 
-  const antdTheme = getAntdTheme(themeColors, darkMode, tokens);
+  const antdTheme = getAntdTheme(themeColors, darkMode, settings);
 
   const watermarkContent = watermark.visible ? watermark.text || globalConfig.watermarkText : '';
 

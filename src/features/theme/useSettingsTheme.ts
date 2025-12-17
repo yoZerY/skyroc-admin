@@ -196,6 +196,10 @@ export const useSettingsTheme = () => {
     }
   };
 
+  function reset() {
+    setSettings(initThemeSettings);
+  }
+
   return {
     settings,
     // Settings properties
@@ -217,6 +221,7 @@ export const useSettingsTheme = () => {
     setThemeLayout,
     setWatermarkEnableUserName,
     setWatermarkEnableTime,
-    setSettings
+    setSettings,
+    reset
   };
 };

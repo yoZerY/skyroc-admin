@@ -109,6 +109,8 @@ declare namespace Theme {
     themeRadius: number;
     /** Theme scheme */
     themeScheme: UnionKey.ThemeScheme;
+    /** Theme text size */
+    themeTextSize: number;
     /** define some theme settings tokens, will transform to css variables */
     tokens: {
       dark?: {

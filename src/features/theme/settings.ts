@@ -13,6 +13,7 @@ export const themeSettings: Theme.ThemeSetting = {
     error: '#f5222d'
   },
   isInfoFollowPrimary: true,
+  themeTextSize: 14,
   layout: {
     mode: 'vertical',
     scrollMode: 'content'

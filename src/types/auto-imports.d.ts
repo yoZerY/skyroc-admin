@@ -12,13 +12,17 @@ declare global {
   const ACard: typeof import('antd').Card
   const ACheckbox: typeof import('antd').Checkbox
   const ACol: typeof import('antd').Col
+  const AColorPicker: typeof import('antd').ColorPicker
   const AConfigProvider: typeof import('antd').ConfigProvider
   const ADescriptions: typeof import('antd').Descriptions
   const ADivider: typeof import('antd').Divider
+  const ADrawer: typeof import('antd').Drawer
   const ADropdown: typeof import('antd').Dropdown
   const AEmpty: typeof import('antd').Empty
+  const AFlex: typeof import('antd').Flex
   const AForm: typeof import('antd').Form
   const AInput: typeof import('antd').Input
+  const AInputNumber: typeof import('antd').InputNumber
   const AList: typeof import('antd').List
   const AMenu: typeof import('antd').Menu
   const AModal: typeof import('antd').Modal
@@ -26,6 +30,7 @@ declare global {
   const ASegmented: typeof import('antd').Segmented
   const ASpace: typeof import('antd').Space
   const AStatistic: typeof import('antd').Statistic
+  const ASwitch: typeof import('antd').Switch
   const ATag: typeof import('antd').Tag
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark
@@ -101,6 +106,7 @@ declare global {
   const useContext: typeof import('react').useContext
   const useControllableValue: typeof import('ahooks').useControllableValue
   const useCookieState: typeof import('ahooks').useCookieState
+  const useCopy: typeof import('../hooks/use-copy').default
   const useCountDown: typeof import('ahooks').useCountDown
   const useCountDownTimer: typeof import('../hooks/use-count-down-timer').default
   const useCounter: typeof import('ahooks').useCounter

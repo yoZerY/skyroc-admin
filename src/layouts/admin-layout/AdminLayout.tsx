@@ -8,9 +8,11 @@ import GlobalContent from './modules/AdminContent';
 import GlobalFooter from './modules/AdminFooter';
 import GlobalSider from './modules/AdminSider';
 import AdminHeader from './modules/admin-header/AdminHeader';
-import GlobalMenu from './modules/admin-menu/AdminMenu';
+import AdminMenu from './modules/admin-menu/AdminMenu';
 import { useAdminMenus } from './state/menus/use-admin-menus';
 import { useAdminState } from './state/use-admin-state';
+
+const ThemeDrawer = lazy(() => import('./modules/theme-drawer/ThemeDrawer'));
 
 const AdminLayout = () => {
   const { contentXScrollable, fullContent, isMobile, mixSiderFixed, siderCollapse, toggleSiderCollapse } =
@@ -91,7 +93,11 @@ const AdminLayout = () => {
     >
       <GlobalContent />
 
-      <GlobalMenu />
+      <AdminMenu />
+
+      <Suspense fallback={null}>
+        <ThemeDrawer />
+      </Suspense>
     </AdminLayoutComponent>
   );
 };

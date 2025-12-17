@@ -3,6 +3,7 @@ declare namespace I18n {
     appearance: {
       colourWeakness: string;
       grayscale: string;
+      isOnlyExpandCurrentParentMenu: string;
       preset: {
         apply: string;
         applySuccess: string;
@@ -16,17 +17,20 @@ declare namespace I18n {
       };
       recommendColor: string;
       recommendColorDesc: string;
+      themeBase: {
+        radius: string;
+        textSize: string;
+        title: string;
+      };
       themeColor: {
         followPrimary: string;
         title: string;
       } & Record<Theme.ThemeColorKey, string>;
-      themeRadius: {
-        title: string;
-      };
       themeSchema: { title: string } & Record<UnionKey.ThemeScheme, string>;
     };
     configOperation: {
       copyConfig: string;
+      copyFailedMsg: string;
       copySuccessMsg: string;
       resetConfig: string;
       resetSuccessMsg: string;
