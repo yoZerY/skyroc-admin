@@ -1,8 +1,9 @@
 import type { AnyRoute } from '@tanstack/react-router';
+import { Translation } from 'react-i18next';
 
 import { globalConfig } from '@/config';
 import { routeTree } from '@/features/router/routeTree.gen';
-import { $t } from '@/locales';
+import { reactI18nextInstance } from '@/locales';
 
 function findLayoutRoute(layoutIds: Router.RouteId[]): AnyRoute[] {
   const menuRoutes: AnyRoute[] = [];
@@ -37,8 +38,7 @@ function transformRouteToMenu(
 
   const { i18nKey, icon = globalConfig.defaultIcon, localIcon, order = 0, title } = staticData;
 
-  // 解析最终的权限配置（路由 > layout）
-  const label = i18nKey ? $t(i18nKey) : title;
+  const label = <Translation i18n={reactI18nextInstance}>{t => (i18nKey ? t(i18nKey) : title)}</Translation>;
 
   const menu: App.Global.AdminLayout.Menu = {
     icon: (
@@ -49,12 +49,13 @@ function transformRouteToMenu(
       />
     ),
     key: route.id,
+    // 保存 i18nKey 和 title，在渲染时动态翻译
     label: <BeyondHiding title={label} />,
     order: order ?? undefined,
     depth,
     parentkeys: parentPath.join('-'),
     path: route.fullPath,
-    title: label
+    title: label as unknown as string
   };
 
   // 递归处理子路由
@@ -112,7 +113,7 @@ function generateStaticMenus(
 /**
  * 菜单生成器
  */
-export class MenuGenerator {
+class MenuGenerator {
   private mode = globalConfig.routeMode;
 
   isGenerated = false;

@@ -2,7 +2,6 @@ import type { RouteMatch } from '@tanstack/react-router';
 import { useMatch } from '@tanstack/react-router';
 import { atom, useAtom } from 'jotai';
 
-import { useLang } from '@/features/lang/use-lang';
 import { ROUTE_QUERY_KEYS } from '@/service/api';
 import { queryClient } from '@/service/queryClient';
 

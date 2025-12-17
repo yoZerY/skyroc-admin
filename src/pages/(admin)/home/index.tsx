@@ -7,7 +7,17 @@ import LineChart from './modules/LineChart';
 import PieChart from './modules/PieChart';
 import ProjectNews from './modules/ProjectNews';
 
-const Home = () => {
+export const Route = createFileRoute('/(admin)/home/')({
+  component: Home,
+  staticData: {
+    i18nKey: 'route.home',
+    icon: 'mdi:monitor-dashboard',
+    order: 1,
+    title: 'home'
+  }
+});
+
+function Home() {
   return (
     <ASpace
       className="w-full"
@@ -48,14 +58,4 @@ const Home = () => {
       </ARow>
     </ASpace>
   );
-};
-
-export const Route = createFileRoute('/(admin)/home/')({
-  component: Home,
-  staticData: {
-    i18nKey: 'route.home',
-    icon: 'mdi:monitor-dashboard',
-    order: 1,
-    title: 'home'
-  }
-});
+}
