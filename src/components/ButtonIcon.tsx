@@ -47,7 +47,7 @@ const computeClass = (className: string) => {
   let clsStr = className;
 
   if (!clsStr.includes('h-')) {
-    clsStr += ' h-36px';
+    clsStr += ' h-32px';
   }
 
   if (!clsStr.includes('text-')) {
@@ -59,7 +59,7 @@ const computeClass = (className: string) => {
 
 const ButtonIcon = ({
   children,
-  className = 'h-36px text-icon',
+  className = 'h-32px text-icon',
   classNames,
   icon,
   styles,
@@ -91,7 +91,7 @@ const ButtonIcon = ({
       {...tooltipProps}
     >
       <Comp
-        className={clsx(classNames?.button, cls)}
+        className={clsx(cls, '!px-6px', classNames?.button)}
         {...typeProps}
         {...rest}
         styles={styles?.button}
