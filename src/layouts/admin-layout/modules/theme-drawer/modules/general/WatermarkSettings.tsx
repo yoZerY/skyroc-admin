@@ -53,22 +53,25 @@ const WatermarkSettings = () => {
         />
       </SettingItem>
 
-      <AnimatedItem
-        className="flex-col-stretch gap-12px"
-        itemKey="enableCustomText"
-        visible={watermark.visible}
+      <AnimatePresence
+        initial={false}
+        mode="popLayout"
       >
-        <SettingItem label={t('theme.general.watermark.enableCustomText')}>
-          <ASwitch
-            checked={watermark.enableCustomText}
-            onChange={handleEnableCustomTextChange}
-          />
-        </SettingItem>
-      </AnimatedItem>
-
-      <AnimatePresence mode="popLayout">
         <AnimatedItem
-          itemKey="text"
+          className="flex-col-stretch gap-12px"
+          key="enableCustomText"
+          visible={watermark.visible}
+        >
+          <SettingItem label={t('theme.general.watermark.enableCustomText')}>
+            <ASwitch
+              checked={watermark.enableCustomText}
+              onChange={handleEnableCustomTextChange}
+            />
+          </SettingItem>
+        </AnimatedItem>
+
+        <AnimatedItem
+          key="text"
           visible={watermark.visible && watermark.enableCustomText}
         >
           <SettingItem label={t('theme.general.watermark.text')}>
@@ -84,7 +87,7 @@ const WatermarkSettings = () => {
 
         <AnimatedItem
           className="flex-col-stretch gap-12px"
-          itemKey="enableUserName"
+          key="enableUserName"
           visible={watermark.visible}
         >
           <SettingItem label={t('theme.general.watermark.enableUserName')}>
@@ -96,7 +99,7 @@ const WatermarkSettings = () => {
         </AnimatedItem>
 
         <AnimatedItem
-          itemKey="enableTime"
+          key="enableTime"
           visible={watermark.visible}
         >
           <SettingItem label={t('theme.general.watermark.enableTime')}>
@@ -108,7 +111,7 @@ const WatermarkSettings = () => {
         </AnimatedItem>
 
         <AnimatedItem
-          itemKey="timeFormat"
+          key="timeFormat"
           visible={watermark.visible && watermark.enableTime}
         >
           <SettingItem label={t('theme.general.watermark.timeFormat')}>
