@@ -1,5 +1,6 @@
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 
+import AnimatedCollapse from '../../components/AnimatedCollapse';
 import SettingItem from '../../components/SettingItem';
 
 const HeaderSettings = () => {
@@ -57,14 +58,14 @@ const HeaderSettings = () => {
         />
       </SettingItem>
 
-      {header.breadcrumb.visible && (
+      <AnimatedCollapse visible={header.breadcrumb.visible}>
         <SettingItem label={t('theme.layout.header.breadcrumb.showIcon')}>
           <ASwitch
             checked={header.breadcrumb.showIcon}
             onChange={handleBreadcrumbShowIconChange}
           />
         </SettingItem>
-      )}
+      </AnimatedCollapse>
     </div>
   );
 };

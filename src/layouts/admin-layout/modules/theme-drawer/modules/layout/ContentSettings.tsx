@@ -2,6 +2,7 @@ import { themePageAnimationModeOptions, themeScrollModeOptions } from '@/constan
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 import { translateOptions } from '@/utils/common';
 
+import AnimatedCollapse from '../../components/AnimatedCollapse';
 import SettingItem from '../../components/SettingItem';
 
 const ContentSettings = () => {
@@ -75,7 +76,7 @@ const ContentSettings = () => {
         />
       </SettingItem>
 
-      {page.animate && (
+      <AnimatedCollapse visible={page.animate}>
         <SettingItem label={t('theme.layout.content.page.mode.title')}>
           <ASelect
             className="w-120px"
@@ -85,16 +86,16 @@ const ContentSettings = () => {
             onChange={handlePageAnimateModeChange}
           />
         </SettingItem>
-      )}
+      </AnimatedCollapse>
 
-      {isWrapperScrollMode && (
+      <AnimatedCollapse visible={isWrapperScrollMode}>
         <SettingItem label={t('theme.layout.content.fixedHeaderAndTab')}>
           <ASwitch
             checked={fixedHeaderAndTab}
             onChange={handleFixedHeaderAndTabChange}
           />
         </SettingItem>
-      )}
+      </AnimatedCollapse>
     </div>
   );
 };

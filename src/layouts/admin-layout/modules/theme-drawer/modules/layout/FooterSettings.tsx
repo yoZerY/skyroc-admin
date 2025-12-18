@@ -1,5 +1,6 @@
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 
+import AnimatedCollapse from '../../components/AnimatedCollapse';
 import SettingItem from '../../components/SettingItem';
 
 const FooterSettings = () => {
@@ -46,16 +47,16 @@ const FooterSettings = () => {
         />
       </SettingItem>
 
-      {footer.visible && isWrapperScrollMode && (
+      <AnimatedCollapse visible={footer.visible && isWrapperScrollMode}>
         <SettingItem label={t('theme.layout.footer.fixed')}>
           <ASwitch
             checked={footer.fixed}
             onChange={handleFixedChange}
           />
         </SettingItem>
-      )}
+      </AnimatedCollapse>
 
-      {footer.visible && (
+      <AnimatedCollapse visible={footer.visible}>
         <SettingItem label={t('theme.layout.footer.height')}>
           <AInputNumber
             className="w-120px"
@@ -65,16 +66,16 @@ const FooterSettings = () => {
             onChange={handleHeightChange}
           />
         </SettingItem>
-      )}
+      </AnimatedCollapse>
 
-      {footer.visible && isMixHorizontalMode && (
+      <AnimatedCollapse visible={footer.visible && isMixHorizontalMode}>
         <SettingItem label={t('theme.layout.footer.right')}>
           <ASwitch
             checked={footer.right}
             onChange={handleRightChange}
           />
         </SettingItem>
-      )}
+      </AnimatedCollapse>
     </div>
   );
 };
