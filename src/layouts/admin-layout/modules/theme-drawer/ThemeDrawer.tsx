@@ -1,4 +1,8 @@
 import { SimpleScrollbar } from '@sa/materials';
+import { AnimatePresence, motion } from 'motion/react';
+
+import { themeTabsOptions } from '@/constants/app';
+import { translateOptions } from '@/utils/common';
 
 import { useAdminState } from '../../state/use-admin-state';
 
@@ -13,9 +17,9 @@ const ThemeDrawer = () => {
 
   const { t } = useTranslation();
 
-  const options = [t('theme.tabs.appearance'), t('theme.tabs.layout'), t('theme.tabs.general'), t('theme.tabs.preset')];
+  const options = translateOptions(themeTabsOptions);
 
-  const [activeTab, setActiveTab] = useState<string>(options[0]);
+  const [activeTab, setActiveTab] = useState<string>(options[0].value);
 
   return (
     <ADrawer
@@ -41,10 +45,26 @@ const ThemeDrawer = () => {
             onChange={setActiveTab}
           />
 
-          {activeTab === options[0] && <Appearance />}
-          {activeTab === options[1] && <ThemeLayout />}
-          {activeTab === options[2] && <ThemeGeneral />}
-          {activeTab === options[3] && <ThemePreset />}
+          <AnimatePresence
+            initial={false}
+            mode="wait"
+          >
+            <motion.div
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: 10 }}
+              key={activeTab}
+              transition={{
+                duration: 0.2,
+                ease: [0.22, 1, 0.36, 1]
+              }}
+            >
+              {activeTab === options[0].value && <Appearance />}
+              {activeTab === options[1].value && <ThemeLayout />}
+              {activeTab === options[2].value && <ThemeGeneral />}
+              {activeTab === options[3].value && <ThemePreset />}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </SimpleScrollbar>
     </ADrawer>

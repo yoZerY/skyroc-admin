@@ -12,6 +12,15 @@ export const loginModuleRecord: Record<UnionKey.LoginModule, I18n.I18nKey> = {
   'reset-pwd': 'page.login.resetPwd.title'
 };
 
+export const themeTabsRecord: Record<string, I18n.I18nKey> = {
+  appearance: 'theme.tabs.appearance',
+  layout: 'theme.tabs.layout',
+  general: 'theme.tabs.general',
+  preset: 'theme.tabs.preset'
+};
+
+export const themeTabsOptions = transformRecordToOption(themeTabsRecord);
+
 export const themeLayoutModeRecord: Record<UnionKey.ThemeLayoutMode, I18n.I18nKey> = {
   vertical: 'theme.layout.layoutMode.vertical',
   'vertical-mix': 'theme.layout.layoutMode.vertical-mix',

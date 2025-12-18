@@ -12,6 +12,7 @@ const ContentSettings = () => {
   const isWrapperScrollMode = layout.scrollMode === 'wrapper';
 
   const scrollModeOptions = translateOptions(themeScrollModeOptions);
+
   const pageAnimationModeOptions = translateOptions(themePageAnimationModeOptions);
 
   const updateLayout = (patch: Partial<typeof layout>) => {
