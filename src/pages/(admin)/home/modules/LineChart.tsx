@@ -7,7 +7,7 @@ const LineChart = () => {
 
   const { domRef, updateOptions } = useEcharts(() => ({
     grid: {
-      bottom: '3%',
+      top: '3%',
       containLabel: true,
       left: '3%',
       right: '4%'
