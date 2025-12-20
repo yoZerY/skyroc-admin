@@ -11,6 +11,10 @@ interface Props {
   mode: HorizontalMenuMode;
 }
 
+function stripRootType(menus: App.Global.AdminLayout.Menu[]): App.Global.AdminLayout.Menu[] {
+  return menus.filter(({ type: _ }) => _ !== 'divider').map(({ type: _, ...rest }) => rest);
+}
+
 function findChildren(menus: App.Global.AdminLayout.Menu[], key: string) {
   return menus.find(item => item.key === key)?.children || [];
 }
@@ -43,6 +47,8 @@ const HorizontalMenu: FC<Props> = memo(props => {
 
   const allMenus = getMenus();
 
+  const strippedMenus = stripRootType(allMenus);
+
   /**
    * 处理菜单点击
    * - FirstLevel 模式：选择一级菜单，如果有子菜单且 autoSelectFirstMenu 开启，自动选择最深层级菜单
@@ -73,7 +79,7 @@ const HorizontalMenu: FC<Props> = memo(props => {
     <AMenu
       className="size-full transition-400 border-0!"
       inlineIndent={18}
-      items={allMenus as MenuProps['items']}
+      items={strippedMenus as MenuProps['items']}
       mode="horizontal"
       selectedKeys={mode === HorizontalMenuMode.FirstLevel ? [activeFirstLevelMenuKey] : selectedKey}
       style={{ lineHeight: `${header.height}px` }}
