@@ -16,12 +16,33 @@ import { Route as errors404RouteImport } from './../../pages/(errors)/404'
 import { Route as errors403RouteImport } from './../../pages/(errors)/403'
 import { Route as authLoginOutRouteImport } from './../../pages/(auth)/login-out'
 import { Route as authLoginLayoutRouteImport } from './../../pages/(auth)/login/layout'
+import { Route as adminMultiMenuLayoutRouteImport } from './../../pages/(admin)/multi-menu/layout'
+import { Route as adminManageLayoutRouteImport } from './../../pages/(admin)/manage/layout'
+import { Route as adminExceptionLayoutRouteImport } from './../../pages/(admin)/exception/layout'
 import { Route as authLoginIndexRouteImport } from './../../pages/(auth)/login/index'
+import { Route as adminMultiMenuIndexRouteImport } from './../../pages/(admin)/multi-menu/index'
+import { Route as adminManageIndexRouteImport } from './../../pages/(admin)/manage/index'
 import { Route as adminHomeIndexRouteImport } from './../../pages/(admin)/home/index'
+import { Route as adminExceptionIndexRouteImport } from './../../pages/(admin)/exception/index'
 import { Route as adminAboutIndexRouteImport } from './../../pages/(admin)/about/index'
 import { Route as authLoginResetPwdRouteImport } from './../../pages/(auth)/login/reset-pwd'
 import { Route as authLoginRegisterRouteImport } from './../../pages/(auth)/login/register'
 import { Route as authLoginCodeLoginRouteImport } from './../../pages/(auth)/login/code-login'
+import { Route as adminException500RouteImport } from './../../pages/(admin)/exception/500'
+import { Route as adminException404RouteImport } from './../../pages/(admin)/exception/404'
+import { Route as adminException403RouteImport } from './../../pages/(admin)/exception/403'
+import { Route as adminMultiMenuSecondLayoutRouteImport } from './../../pages/(admin)/multi-menu/second/layout'
+import { Route as adminMultiMenuFirstLayoutRouteImport } from './../../pages/(admin)/multi-menu/first/layout'
+import { Route as adminMultiMenuSecondIndexRouteImport } from './../../pages/(admin)/multi-menu/second/index'
+import { Route as adminMultiMenuFirstIndexRouteImport } from './../../pages/(admin)/multi-menu/first/index'
+import { Route as adminManageUserIndexRouteImport } from './../../pages/(admin)/manage/user/index'
+import { Route as adminManageRoleIndexRouteImport } from './../../pages/(admin)/manage/role/index'
+import { Route as adminManageMenuIndexRouteImport } from './../../pages/(admin)/manage/menu/index'
+import { Route as adminMultiMenuFirstChildRouteImport } from './../../pages/(admin)/multi-menu/first/child'
+import { Route as adminManageUserIdRouteImport } from './../../pages/(admin)/manage/user/$id'
+import { Route as adminMultiMenuSecondChildLayoutRouteImport } from './../../pages/(admin)/multi-menu/second/child/layout'
+import { Route as adminMultiMenuSecondChildIndexRouteImport } from './../../pages/(admin)/multi-menu/second/child/index'
+import { Route as adminMultiMenuSecondChildHomeRouteImport } from './../../pages/(admin)/multi-menu/second/child/home'
 
 const adminLayoutRoute = adminLayoutRouteImport.update({
   id: '/(admin)',
@@ -57,15 +78,45 @@ const authLoginLayoutRoute = authLoginLayoutRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const adminMultiMenuLayoutRoute = adminMultiMenuLayoutRouteImport.update({
+  id: '/multi-menu',
+  path: '/multi-menu',
+  getParentRoute: () => adminLayoutRoute,
+} as any)
+const adminManageLayoutRoute = adminManageLayoutRouteImport.update({
+  id: '/manage',
+  path: '/manage',
+  getParentRoute: () => adminLayoutRoute,
+} as any)
+const adminExceptionLayoutRoute = adminExceptionLayoutRouteImport.update({
+  id: '/exception',
+  path: '/exception',
+  getParentRoute: () => adminLayoutRoute,
+} as any)
 const authLoginIndexRoute = authLoginIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => authLoginLayoutRoute,
 } as any)
+const adminMultiMenuIndexRoute = adminMultiMenuIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => adminMultiMenuLayoutRoute,
+} as any)
+const adminManageIndexRoute = adminManageIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
 const adminHomeIndexRoute = adminHomeIndexRouteImport.update({
   id: '/home/',
   path: '/home/',
   getParentRoute: () => adminLayoutRoute,
+} as any)
+const adminExceptionIndexRoute = adminExceptionIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => adminExceptionLayoutRoute,
 } as any)
 const adminAboutIndexRoute = adminAboutIndexRouteImport.update({
   id: '/about/',
@@ -87,20 +138,124 @@ const authLoginCodeLoginRoute = authLoginCodeLoginRouteImport.update({
   path: '/code-login',
   getParentRoute: () => authLoginLayoutRoute,
 } as any)
+const adminException500Route = adminException500RouteImport.update({
+  id: '/500',
+  path: '/500',
+  getParentRoute: () => adminExceptionLayoutRoute,
+} as any)
+const adminException404Route = adminException404RouteImport.update({
+  id: '/404',
+  path: '/404',
+  getParentRoute: () => adminExceptionLayoutRoute,
+} as any)
+const adminException403Route = adminException403RouteImport.update({
+  id: '/403',
+  path: '/403',
+  getParentRoute: () => adminExceptionLayoutRoute,
+} as any)
+const adminMultiMenuSecondLayoutRoute =
+  adminMultiMenuSecondLayoutRouteImport.update({
+    id: '/second',
+    path: '/second',
+    getParentRoute: () => adminMultiMenuLayoutRoute,
+  } as any)
+const adminMultiMenuFirstLayoutRoute =
+  adminMultiMenuFirstLayoutRouteImport.update({
+    id: '/first',
+    path: '/first',
+    getParentRoute: () => adminMultiMenuLayoutRoute,
+  } as any)
+const adminMultiMenuSecondIndexRoute =
+  adminMultiMenuSecondIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => adminMultiMenuSecondLayoutRoute,
+  } as any)
+const adminMultiMenuFirstIndexRoute =
+  adminMultiMenuFirstIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => adminMultiMenuFirstLayoutRoute,
+  } as any)
+const adminManageUserIndexRoute = adminManageUserIndexRouteImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
+const adminManageRoleIndexRoute = adminManageRoleIndexRouteImport.update({
+  id: '/role/',
+  path: '/role/',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
+const adminManageMenuIndexRoute = adminManageMenuIndexRouteImport.update({
+  id: '/menu/',
+  path: '/menu/',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
+const adminMultiMenuFirstChildRoute =
+  adminMultiMenuFirstChildRouteImport.update({
+    id: '/child',
+    path: '/child',
+    getParentRoute: () => adminMultiMenuFirstLayoutRoute,
+  } as any)
+const adminManageUserIdRoute = adminManageUserIdRouteImport.update({
+  id: '/user/$id',
+  path: '/user/$id',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
+const adminMultiMenuSecondChildLayoutRoute =
+  adminMultiMenuSecondChildLayoutRouteImport.update({
+    id: '/child',
+    path: '/child',
+    getParentRoute: () => adminMultiMenuSecondLayoutRoute,
+  } as any)
+const adminMultiMenuSecondChildIndexRoute =
+  adminMultiMenuSecondChildIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => adminMultiMenuSecondChildLayoutRoute,
+  } as any)
+const adminMultiMenuSecondChildHomeRoute =
+  adminMultiMenuSecondChildHomeRouteImport.update({
+    id: '/home',
+    path: '/home',
+    getParentRoute: () => adminMultiMenuSecondChildLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/exception': typeof adminExceptionLayoutRouteWithChildren
+  '/manage': typeof adminManageLayoutRouteWithChildren
+  '/multi-menu': typeof adminMultiMenuLayoutRouteWithChildren
   '/login': typeof authLoginLayoutRouteWithChildren
   '/login-out': typeof authLoginOutRoute
   '/403': typeof errors403Route
   '/404': typeof errors404Route
   '/500': typeof errors500Route
+  '/multi-menu/first': typeof adminMultiMenuFirstLayoutRouteWithChildren
+  '/multi-menu/second': typeof adminMultiMenuSecondLayoutRouteWithChildren
+  '/exception/403': typeof adminException403Route
+  '/exception/404': typeof adminException404Route
+  '/exception/500': typeof adminException500Route
   '/login/code-login': typeof authLoginCodeLoginRoute
   '/login/register': typeof authLoginRegisterRoute
   '/login/reset-pwd': typeof authLoginResetPwdRoute
   '/about': typeof adminAboutIndexRoute
+  '/exception/': typeof adminExceptionIndexRoute
   '/home': typeof adminHomeIndexRoute
+  '/manage/': typeof adminManageIndexRoute
+  '/multi-menu/': typeof adminMultiMenuIndexRoute
   '/login/': typeof authLoginIndexRoute
+  '/multi-menu/second/child': typeof adminMultiMenuSecondChildLayoutRouteWithChildren
+  '/manage/user/$id': typeof adminManageUserIdRoute
+  '/multi-menu/first/child': typeof adminMultiMenuFirstChildRoute
+  '/manage/menu': typeof adminManageMenuIndexRoute
+  '/manage/role': typeof adminManageRoleIndexRoute
+  '/manage/user': typeof adminManageUserIndexRoute
+  '/multi-menu/first/': typeof adminMultiMenuFirstIndexRoute
+  '/multi-menu/second/': typeof adminMultiMenuSecondIndexRoute
+  '/multi-menu/second/child/home': typeof adminMultiMenuSecondChildHomeRoute
+  '/multi-menu/second/child/': typeof adminMultiMenuSecondChildIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -108,44 +263,101 @@ export interface FileRoutesByTo {
   '/403': typeof errors403Route
   '/404': typeof errors404Route
   '/500': typeof errors500Route
+  '/exception/403': typeof adminException403Route
+  '/exception/404': typeof adminException404Route
+  '/exception/500': typeof adminException500Route
   '/login/code-login': typeof authLoginCodeLoginRoute
   '/login/register': typeof authLoginRegisterRoute
   '/login/reset-pwd': typeof authLoginResetPwdRoute
   '/about': typeof adminAboutIndexRoute
+  '/exception': typeof adminExceptionIndexRoute
   '/home': typeof adminHomeIndexRoute
+  '/manage': typeof adminManageIndexRoute
+  '/multi-menu': typeof adminMultiMenuIndexRoute
   '/login': typeof authLoginIndexRoute
+  '/manage/user/$id': typeof adminManageUserIdRoute
+  '/multi-menu/first/child': typeof adminMultiMenuFirstChildRoute
+  '/manage/menu': typeof adminManageMenuIndexRoute
+  '/manage/role': typeof adminManageRoleIndexRoute
+  '/manage/user': typeof adminManageUserIndexRoute
+  '/multi-menu/first': typeof adminMultiMenuFirstIndexRoute
+  '/multi-menu/second': typeof adminMultiMenuSecondIndexRoute
+  '/multi-menu/second/child/home': typeof adminMultiMenuSecondChildHomeRoute
+  '/multi-menu/second/child': typeof adminMultiMenuSecondChildIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(admin)': typeof adminLayoutRouteWithChildren
+  '/(admin)/exception': typeof adminExceptionLayoutRouteWithChildren
+  '/(admin)/manage': typeof adminManageLayoutRouteWithChildren
+  '/(admin)/multi-menu': typeof adminMultiMenuLayoutRouteWithChildren
   '/(auth)/login': typeof authLoginLayoutRouteWithChildren
   '/(auth)/login-out': typeof authLoginOutRoute
   '/(errors)/403': typeof errors403Route
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
+  '/(admin)/multi-menu/first': typeof adminMultiMenuFirstLayoutRouteWithChildren
+  '/(admin)/multi-menu/second': typeof adminMultiMenuSecondLayoutRouteWithChildren
+  '/(admin)/exception/403': typeof adminException403Route
+  '/(admin)/exception/404': typeof adminException404Route
+  '/(admin)/exception/500': typeof adminException500Route
   '/(auth)/login/code-login': typeof authLoginCodeLoginRoute
   '/(auth)/login/register': typeof authLoginRegisterRoute
   '/(auth)/login/reset-pwd': typeof authLoginResetPwdRoute
   '/(admin)/about/': typeof adminAboutIndexRoute
+  '/(admin)/exception/': typeof adminExceptionIndexRoute
   '/(admin)/home/': typeof adminHomeIndexRoute
+  '/(admin)/manage/': typeof adminManageIndexRoute
+  '/(admin)/multi-menu/': typeof adminMultiMenuIndexRoute
   '/(auth)/login/': typeof authLoginIndexRoute
+  '/(admin)/multi-menu/second/child': typeof adminMultiMenuSecondChildLayoutRouteWithChildren
+  '/(admin)/manage/user/$id': typeof adminManageUserIdRoute
+  '/(admin)/multi-menu/first/child': typeof adminMultiMenuFirstChildRoute
+  '/(admin)/manage/menu/': typeof adminManageMenuIndexRoute
+  '/(admin)/manage/role/': typeof adminManageRoleIndexRoute
+  '/(admin)/manage/user/': typeof adminManageUserIndexRoute
+  '/(admin)/multi-menu/first/': typeof adminMultiMenuFirstIndexRoute
+  '/(admin)/multi-menu/second/': typeof adminMultiMenuSecondIndexRoute
+  '/(admin)/multi-menu/second/child/home': typeof adminMultiMenuSecondChildHomeRoute
+  '/(admin)/multi-menu/second/child/': typeof adminMultiMenuSecondChildIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/exception'
+    | '/manage'
+    | '/multi-menu'
     | '/login'
     | '/login-out'
     | '/403'
     | '/404'
     | '/500'
+    | '/multi-menu/first'
+    | '/multi-menu/second'
+    | '/exception/403'
+    | '/exception/404'
+    | '/exception/500'
     | '/login/code-login'
     | '/login/register'
     | '/login/reset-pwd'
     | '/about'
+    | '/exception/'
     | '/home'
+    | '/manage/'
+    | '/multi-menu/'
     | '/login/'
+    | '/multi-menu/second/child'
+    | '/manage/user/$id'
+    | '/multi-menu/first/child'
+    | '/manage/menu'
+    | '/manage/role'
+    | '/manage/user'
+    | '/multi-menu/first/'
+    | '/multi-menu/second/'
+    | '/multi-menu/second/child/home'
+    | '/multi-menu/second/child/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -153,27 +365,63 @@ export interface FileRouteTypes {
     | '/403'
     | '/404'
     | '/500'
+    | '/exception/403'
+    | '/exception/404'
+    | '/exception/500'
     | '/login/code-login'
     | '/login/register'
     | '/login/reset-pwd'
     | '/about'
+    | '/exception'
     | '/home'
+    | '/manage'
+    | '/multi-menu'
     | '/login'
+    | '/manage/user/$id'
+    | '/multi-menu/first/child'
+    | '/manage/menu'
+    | '/manage/role'
+    | '/manage/user'
+    | '/multi-menu/first'
+    | '/multi-menu/second'
+    | '/multi-menu/second/child/home'
+    | '/multi-menu/second/child'
   id:
     | '__root__'
     | '/'
     | '/(admin)'
+    | '/(admin)/exception'
+    | '/(admin)/manage'
+    | '/(admin)/multi-menu'
     | '/(auth)/login'
     | '/(auth)/login-out'
     | '/(errors)/403'
     | '/(errors)/404'
     | '/(errors)/500'
+    | '/(admin)/multi-menu/first'
+    | '/(admin)/multi-menu/second'
+    | '/(admin)/exception/403'
+    | '/(admin)/exception/404'
+    | '/(admin)/exception/500'
     | '/(auth)/login/code-login'
     | '/(auth)/login/register'
     | '/(auth)/login/reset-pwd'
     | '/(admin)/about/'
+    | '/(admin)/exception/'
     | '/(admin)/home/'
+    | '/(admin)/manage/'
+    | '/(admin)/multi-menu/'
     | '/(auth)/login/'
+    | '/(admin)/multi-menu/second/child'
+    | '/(admin)/manage/user/$id'
+    | '/(admin)/multi-menu/first/child'
+    | '/(admin)/manage/menu/'
+    | '/(admin)/manage/role/'
+    | '/(admin)/manage/user/'
+    | '/(admin)/multi-menu/first/'
+    | '/(admin)/multi-menu/second/'
+    | '/(admin)/multi-menu/second/child/home'
+    | '/(admin)/multi-menu/second/child/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -237,6 +485,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(admin)/multi-menu': {
+      id: '/(admin)/multi-menu'
+      path: '/multi-menu'
+      fullPath: '/multi-menu'
+      preLoaderRoute: typeof adminMultiMenuLayoutRouteImport
+      parentRoute: typeof adminLayoutRoute
+    }
+    '/(admin)/manage': {
+      id: '/(admin)/manage'
+      path: '/manage'
+      fullPath: '/manage'
+      preLoaderRoute: typeof adminManageLayoutRouteImport
+      parentRoute: typeof adminLayoutRoute
+    }
+    '/(admin)/exception': {
+      id: '/(admin)/exception'
+      path: '/exception'
+      fullPath: '/exception'
+      preLoaderRoute: typeof adminExceptionLayoutRouteImport
+      parentRoute: typeof adminLayoutRoute
+    }
     '/(auth)/login/': {
       id: '/(auth)/login/'
       path: '/'
@@ -244,12 +513,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginIndexRouteImport
       parentRoute: typeof authLoginLayoutRoute
     }
+    '/(admin)/multi-menu/': {
+      id: '/(admin)/multi-menu/'
+      path: '/'
+      fullPath: '/multi-menu/'
+      preLoaderRoute: typeof adminMultiMenuIndexRouteImport
+      parentRoute: typeof adminMultiMenuLayoutRoute
+    }
+    '/(admin)/manage/': {
+      id: '/(admin)/manage/'
+      path: '/'
+      fullPath: '/manage/'
+      preLoaderRoute: typeof adminManageIndexRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
     '/(admin)/home/': {
       id: '/(admin)/home/'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof adminHomeIndexRouteImport
       parentRoute: typeof adminLayoutRoute
+    }
+    '/(admin)/exception/': {
+      id: '/(admin)/exception/'
+      path: '/'
+      fullPath: '/exception/'
+      preLoaderRoute: typeof adminExceptionIndexRouteImport
+      parentRoute: typeof adminExceptionLayoutRoute
     }
     '/(admin)/about/': {
       id: '/(admin)/about/'
@@ -279,15 +569,226 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginCodeLoginRouteImport
       parentRoute: typeof authLoginLayoutRoute
     }
+    '/(admin)/exception/500': {
+      id: '/(admin)/exception/500'
+      path: '/500'
+      fullPath: '/exception/500'
+      preLoaderRoute: typeof adminException500RouteImport
+      parentRoute: typeof adminExceptionLayoutRoute
+    }
+    '/(admin)/exception/404': {
+      id: '/(admin)/exception/404'
+      path: '/404'
+      fullPath: '/exception/404'
+      preLoaderRoute: typeof adminException404RouteImport
+      parentRoute: typeof adminExceptionLayoutRoute
+    }
+    '/(admin)/exception/403': {
+      id: '/(admin)/exception/403'
+      path: '/403'
+      fullPath: '/exception/403'
+      preLoaderRoute: typeof adminException403RouteImport
+      parentRoute: typeof adminExceptionLayoutRoute
+    }
+    '/(admin)/multi-menu/second': {
+      id: '/(admin)/multi-menu/second'
+      path: '/second'
+      fullPath: '/multi-menu/second'
+      preLoaderRoute: typeof adminMultiMenuSecondLayoutRouteImport
+      parentRoute: typeof adminMultiMenuLayoutRoute
+    }
+    '/(admin)/multi-menu/first': {
+      id: '/(admin)/multi-menu/first'
+      path: '/first'
+      fullPath: '/multi-menu/first'
+      preLoaderRoute: typeof adminMultiMenuFirstLayoutRouteImport
+      parentRoute: typeof adminMultiMenuLayoutRoute
+    }
+    '/(admin)/multi-menu/second/': {
+      id: '/(admin)/multi-menu/second/'
+      path: '/'
+      fullPath: '/multi-menu/second/'
+      preLoaderRoute: typeof adminMultiMenuSecondIndexRouteImport
+      parentRoute: typeof adminMultiMenuSecondLayoutRoute
+    }
+    '/(admin)/multi-menu/first/': {
+      id: '/(admin)/multi-menu/first/'
+      path: '/'
+      fullPath: '/multi-menu/first/'
+      preLoaderRoute: typeof adminMultiMenuFirstIndexRouteImport
+      parentRoute: typeof adminMultiMenuFirstLayoutRoute
+    }
+    '/(admin)/manage/user/': {
+      id: '/(admin)/manage/user/'
+      path: '/user'
+      fullPath: '/manage/user'
+      preLoaderRoute: typeof adminManageUserIndexRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
+    '/(admin)/manage/role/': {
+      id: '/(admin)/manage/role/'
+      path: '/role'
+      fullPath: '/manage/role'
+      preLoaderRoute: typeof adminManageRoleIndexRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
+    '/(admin)/manage/menu/': {
+      id: '/(admin)/manage/menu/'
+      path: '/menu'
+      fullPath: '/manage/menu'
+      preLoaderRoute: typeof adminManageMenuIndexRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
+    '/(admin)/multi-menu/first/child': {
+      id: '/(admin)/multi-menu/first/child'
+      path: '/child'
+      fullPath: '/multi-menu/first/child'
+      preLoaderRoute: typeof adminMultiMenuFirstChildRouteImport
+      parentRoute: typeof adminMultiMenuFirstLayoutRoute
+    }
+    '/(admin)/manage/user/$id': {
+      id: '/(admin)/manage/user/$id'
+      path: '/user/$id'
+      fullPath: '/manage/user/$id'
+      preLoaderRoute: typeof adminManageUserIdRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
+    '/(admin)/multi-menu/second/child': {
+      id: '/(admin)/multi-menu/second/child'
+      path: '/child'
+      fullPath: '/multi-menu/second/child'
+      preLoaderRoute: typeof adminMultiMenuSecondChildLayoutRouteImport
+      parentRoute: typeof adminMultiMenuSecondLayoutRoute
+    }
+    '/(admin)/multi-menu/second/child/': {
+      id: '/(admin)/multi-menu/second/child/'
+      path: '/'
+      fullPath: '/multi-menu/second/child/'
+      preLoaderRoute: typeof adminMultiMenuSecondChildIndexRouteImport
+      parentRoute: typeof adminMultiMenuSecondChildLayoutRoute
+    }
+    '/(admin)/multi-menu/second/child/home': {
+      id: '/(admin)/multi-menu/second/child/home'
+      path: '/home'
+      fullPath: '/multi-menu/second/child/home'
+      preLoaderRoute: typeof adminMultiMenuSecondChildHomeRouteImport
+      parentRoute: typeof adminMultiMenuSecondChildLayoutRoute
+    }
   }
 }
 
+interface adminExceptionLayoutRouteChildren {
+  adminException403Route: typeof adminException403Route
+  adminException404Route: typeof adminException404Route
+  adminException500Route: typeof adminException500Route
+  adminExceptionIndexRoute: typeof adminExceptionIndexRoute
+}
+
+const adminExceptionLayoutRouteChildren: adminExceptionLayoutRouteChildren = {
+  adminException403Route: adminException403Route,
+  adminException404Route: adminException404Route,
+  adminException500Route: adminException500Route,
+  adminExceptionIndexRoute: adminExceptionIndexRoute,
+}
+
+const adminExceptionLayoutRouteWithChildren =
+  adminExceptionLayoutRoute._addFileChildren(adminExceptionLayoutRouteChildren)
+
+interface adminManageLayoutRouteChildren {
+  adminManageIndexRoute: typeof adminManageIndexRoute
+  adminManageUserIdRoute: typeof adminManageUserIdRoute
+  adminManageMenuIndexRoute: typeof adminManageMenuIndexRoute
+  adminManageRoleIndexRoute: typeof adminManageRoleIndexRoute
+  adminManageUserIndexRoute: typeof adminManageUserIndexRoute
+}
+
+const adminManageLayoutRouteChildren: adminManageLayoutRouteChildren = {
+  adminManageIndexRoute: adminManageIndexRoute,
+  adminManageUserIdRoute: adminManageUserIdRoute,
+  adminManageMenuIndexRoute: adminManageMenuIndexRoute,
+  adminManageRoleIndexRoute: adminManageRoleIndexRoute,
+  adminManageUserIndexRoute: adminManageUserIndexRoute,
+}
+
+const adminManageLayoutRouteWithChildren =
+  adminManageLayoutRoute._addFileChildren(adminManageLayoutRouteChildren)
+
+interface adminMultiMenuFirstLayoutRouteChildren {
+  adminMultiMenuFirstChildRoute: typeof adminMultiMenuFirstChildRoute
+  adminMultiMenuFirstIndexRoute: typeof adminMultiMenuFirstIndexRoute
+}
+
+const adminMultiMenuFirstLayoutRouteChildren: adminMultiMenuFirstLayoutRouteChildren =
+  {
+    adminMultiMenuFirstChildRoute: adminMultiMenuFirstChildRoute,
+    adminMultiMenuFirstIndexRoute: adminMultiMenuFirstIndexRoute,
+  }
+
+const adminMultiMenuFirstLayoutRouteWithChildren =
+  adminMultiMenuFirstLayoutRoute._addFileChildren(
+    adminMultiMenuFirstLayoutRouteChildren,
+  )
+
+interface adminMultiMenuSecondChildLayoutRouteChildren {
+  adminMultiMenuSecondChildHomeRoute: typeof adminMultiMenuSecondChildHomeRoute
+  adminMultiMenuSecondChildIndexRoute: typeof adminMultiMenuSecondChildIndexRoute
+}
+
+const adminMultiMenuSecondChildLayoutRouteChildren: adminMultiMenuSecondChildLayoutRouteChildren =
+  {
+    adminMultiMenuSecondChildHomeRoute: adminMultiMenuSecondChildHomeRoute,
+    adminMultiMenuSecondChildIndexRoute: adminMultiMenuSecondChildIndexRoute,
+  }
+
+const adminMultiMenuSecondChildLayoutRouteWithChildren =
+  adminMultiMenuSecondChildLayoutRoute._addFileChildren(
+    adminMultiMenuSecondChildLayoutRouteChildren,
+  )
+
+interface adminMultiMenuSecondLayoutRouteChildren {
+  adminMultiMenuSecondChildLayoutRoute: typeof adminMultiMenuSecondChildLayoutRouteWithChildren
+  adminMultiMenuSecondIndexRoute: typeof adminMultiMenuSecondIndexRoute
+}
+
+const adminMultiMenuSecondLayoutRouteChildren: adminMultiMenuSecondLayoutRouteChildren =
+  {
+    adminMultiMenuSecondChildLayoutRoute:
+      adminMultiMenuSecondChildLayoutRouteWithChildren,
+    adminMultiMenuSecondIndexRoute: adminMultiMenuSecondIndexRoute,
+  }
+
+const adminMultiMenuSecondLayoutRouteWithChildren =
+  adminMultiMenuSecondLayoutRoute._addFileChildren(
+    adminMultiMenuSecondLayoutRouteChildren,
+  )
+
+interface adminMultiMenuLayoutRouteChildren {
+  adminMultiMenuFirstLayoutRoute: typeof adminMultiMenuFirstLayoutRouteWithChildren
+  adminMultiMenuSecondLayoutRoute: typeof adminMultiMenuSecondLayoutRouteWithChildren
+  adminMultiMenuIndexRoute: typeof adminMultiMenuIndexRoute
+}
+
+const adminMultiMenuLayoutRouteChildren: adminMultiMenuLayoutRouteChildren = {
+  adminMultiMenuFirstLayoutRoute: adminMultiMenuFirstLayoutRouteWithChildren,
+  adminMultiMenuSecondLayoutRoute: adminMultiMenuSecondLayoutRouteWithChildren,
+  adminMultiMenuIndexRoute: adminMultiMenuIndexRoute,
+}
+
+const adminMultiMenuLayoutRouteWithChildren =
+  adminMultiMenuLayoutRoute._addFileChildren(adminMultiMenuLayoutRouteChildren)
+
 interface adminLayoutRouteChildren {
+  adminExceptionLayoutRoute: typeof adminExceptionLayoutRouteWithChildren
+  adminManageLayoutRoute: typeof adminManageLayoutRouteWithChildren
+  adminMultiMenuLayoutRoute: typeof adminMultiMenuLayoutRouteWithChildren
   adminAboutIndexRoute: typeof adminAboutIndexRoute
   adminHomeIndexRoute: typeof adminHomeIndexRoute
 }
 
 const adminLayoutRouteChildren: adminLayoutRouteChildren = {
+  adminExceptionLayoutRoute: adminExceptionLayoutRouteWithChildren,
+  adminManageLayoutRoute: adminManageLayoutRouteWithChildren,
+  adminMultiMenuLayoutRoute: adminMultiMenuLayoutRouteWithChildren,
   adminAboutIndexRoute: adminAboutIndexRoute,
   adminHomeIndexRoute: adminHomeIndexRoute,
 }

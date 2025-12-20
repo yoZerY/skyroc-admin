@@ -9,6 +9,6 @@ export const Route = createFileRoute('/')({
     throw redirect({ to: '/login' });
   },
   staticData: {
-    title: 'skyroc-admin'
+    title: 'SkyrocAdmin'
   }
 });

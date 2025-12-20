@@ -27,7 +27,7 @@ declare namespace Router {
        *
        * It defines which menu should be activated when entering the route
        */
-      activeMenu?: RoutePath | null;
+      activeMenu?: string | null;
 
       /**
        * Whether to hide the route in the menu

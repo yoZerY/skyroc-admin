@@ -48,11 +48,11 @@ export const useAdminMenus = () => {
 
   const { activeMenu, hide } = currentMenu?.menu || {};
 
+  const openKeys = currentMenu?.parentKeys || [];
+
   const routeName = (hide ? activeMenu : currentMenu?.key) || currentMenu?.key || '';
 
   const selectedKey = [routeName];
-
-  const openKeys = currentMenu?.parentKeys || [];
 
   const firstLevelMenus = menus.map(menu => {
     const { children: _, ...rest } = menu;

@@ -11,9 +11,11 @@ export const Route = createFileRoute('/(admin)/home/')({
   component: Home,
   staticData: {
     i18nKey: 'route.home',
-    icon: 'mdi:monitor-dashboard',
-    order: 1,
-    title: 'home'
+    title: 'home',
+    menu: {
+      icon: 'mdi:monitor-dashboard',
+      order: 1
+    }
   }
 });
 
