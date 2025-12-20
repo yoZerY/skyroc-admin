@@ -7,19 +7,7 @@ import '@/styles/css/darkMode.css';
 const DarkMode = () => {
   const { t } = useTranslation();
 
-  const {
-    colourWeakness,
-    grayscale,
-    isOnlyExpandCurrentParentMenu,
-    setColourWeakness,
-    setGrayscale,
-    setSettings,
-    sider
-  } = useSettingsTheme();
-
-  const handleIsOnlyExpandCurrentParentMenuChange = (value: boolean) => {
-    setSettings({ isOnlyExpandCurrentParentMenu: value });
-  };
+  const { colourWeakness, grayscale, setColourWeakness, setGrayscale, setSettings, sider } = useSettingsTheme();
 
   const handleSiderInvertedChange = (value: boolean) => {
     setSettings({ sider: { ...sider, inverted: value } });
@@ -48,13 +36,6 @@ const DarkMode = () => {
         <ASwitch
           checked={colourWeakness}
           onChange={setColourWeakness}
-        />
-      </SettingItem>
-
-      <SettingItem label={t('theme.appearance.isOnlyExpandCurrentParentMenu')}>
-        <ASwitch
-          checked={isOnlyExpandCurrentParentMenu}
-          onChange={handleIsOnlyExpandCurrentParentMenuChange}
         />
       </SettingItem>
     </div>
