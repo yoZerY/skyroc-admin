@@ -20,17 +20,19 @@ const VerticalMenu = memo(() => {
 
   const { siderCollapse } = useAdminState();
 
-  const inlineCollapsed = siderCollapse;
-
   const {
     darkMode,
     layout: { mode },
     sider
   } = useSettingsTheme();
 
-  const isVerticalMix = mode === 'vertical-mix';
-
   const isVerticalHybridHeaderFirst = mode === 'top-hybrid-header-first';
+
+  const isVertical = mode === 'vertical';
+
+  const inlineCollapsed = isVertical || isVerticalHybridHeaderFirst ? siderCollapse : false;
+
+  const isVerticalMix = mode === 'vertical-mix';
 
   const isMix = mode.includes('first');
 
