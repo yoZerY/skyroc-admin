@@ -14,7 +14,8 @@ export const Route = createFileRoute('/(admin)/home/')({
     title: 'home',
     menu: {
       icon: 'mdi:monitor-dashboard',
-      order: 1
+      order: 1,
+      extra: 'Demo'
     }
   }
 });

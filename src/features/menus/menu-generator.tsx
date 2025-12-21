@@ -1,8 +1,10 @@
 import type { AnyRoute } from '@tanstack/react-router';
+import { createElement } from 'react';
 
 import { globalConfig } from '@/config';
 import { routeTree } from '@/features/router/routeTree.gen';
 
+import { extras } from './extras';
 import menuNodeCallback from './menu-config';
 /**
  * 菜单节点回调函数类型
@@ -221,6 +223,7 @@ class MenuGenerator {
     const { i18nKey, menu: menuInfo, route: routeInfo, tab, title } = staticData;
 
     const {
+      extra,
       hide = false,
       i18nKey: menuI18nKey,
       icon = globalConfig.defaultIcon,
@@ -278,12 +281,17 @@ class MenuGenerator {
         />
       ),
       type,
+
       key: `${route.id},${route.id}`,
       // 保存 i18nKey 和 title，在渲染时动态翻译
       label: <BeyondHiding title={label} />,
       order: order ?? undefined,
       title: label as unknown as string
     };
+
+    if (extra) {
+      menu.extra = createElement(extras[extra], staticData);
+    }
 
     // 递归处理子路由
     // Recursively process children routes

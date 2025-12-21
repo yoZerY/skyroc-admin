@@ -5,6 +5,8 @@ declare namespace Router {
 
   type RoutePath = keyof import('@/features/router/routeTree.gen').FileRoutesByTo;
 
+  type Extra = import('@/features/menus/extras').ExtraKey;
+
   interface Meta {
     /**
      * I18n key of the route
@@ -30,11 +32,18 @@ declare namespace Router {
       activeMenu?: string | null;
 
       /**
+       * Extra menu
+       *
+       * It can be used to add extra menu to the route
+       */
+      extra?: Extra | null;
+      /**
        * Whether to hide the route in the menu
        *
        * If true, the route will not be rendered in the menu tree
        */
       hide?: boolean | null;
+
       i18nKey?: I18n.I18nKey | null;
 
       /**

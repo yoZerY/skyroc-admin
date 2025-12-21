@@ -72,6 +72,8 @@ declare namespace App.Global {
     interface Menu {
       /** The menu children */
       children?: Menu[];
+      /** The menu extra */
+      extra?: React.ReactNode;
       /** The menu i18n key */
       i18nKey?: I18n.I18nKey | null;
       /** The menu icon */

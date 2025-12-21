@@ -34,7 +34,7 @@ function MixMenuItem(Props: MixMenuItemProps) {
   const {
     active,
     inverted,
-    menu: { children, icon, key, label },
+    menu: { children, extra, icon, key, label },
     onClick,
     onSelectMenu
   } = Props;
@@ -75,7 +75,11 @@ function MixMenuItem(Props: MixMenuItemProps) {
       )}
       onClick={handleSelectMixMenu}
     >
-      {icon && cloneElement(icon, { className: siderCollapse ? 'text-icon-small' : 'text-icon-large' } as any)}
+      <div className={clsx('flex-center gap-4px')}>
+        {icon && cloneElement(icon, { className: siderCollapse ? 'text-icon-small' : 'text-icon-large' } as any)}
+
+        {!siderCollapse ? Boolean(extra) && extra : null}
+      </div>
 
       <p
         className={clsx(
