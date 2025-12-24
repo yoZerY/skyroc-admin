@@ -7,8 +7,16 @@ export function createStorage<T extends object>(type: StorageType, storagePrefix
   const stg = type === 'session' ? window.sessionStorage : window.localStorage;
 
   const storage = {
-    clear() {
-      stg.clear();
+    /**
+     * Set session
+     *
+     * @param key Session key
+     * @param value Session value
+     */
+    set<K extends keyof T>(key: K, value: T[K]) {
+      const json = JSON.stringify(value);
+
+      stg.setItem(`${storagePrefix}${key as string}`, json);
     },
     /**
      * Get session
@@ -24,7 +32,8 @@ export function createStorage<T extends object>(type: StorageType, storagePrefix
           storageData = JSON.parse(json);
         } catch {}
 
-        if (storageData) {
+        // storageData may be `false` if it is boolean type
+        if (storageData !== null) {
           return storageData as T[K];
         }
       }
@@ -36,16 +45,8 @@ export function createStorage<T extends object>(type: StorageType, storagePrefix
     remove(key: keyof T) {
       stg.removeItem(`${storagePrefix}${key as string}`);
     },
-    /**
-     * Set session
-     *
-     * @param key Session key
-     * @param value Session value
-     */
-    set<K extends keyof T>(key: K, value: T[K]) {
-      const json = JSON.stringify(value);
-
-      stg.setItem(`${storagePrefix}${key as string}`, json);
+    clear() {
+      stg.clear();
     }
   };
   return storage;
@@ -63,8 +64,8 @@ type LocalforageDriver = 'indexedDB' | 'local' | 'webSQL';
 
 export function createLocalforage<T extends object>(driver: LocalforageDriver) {
   const driverMap: Record<LocalforageDriver, string> = {
-    indexedDB: localforage.INDEXEDDB,
     local: localforage.LOCALSTORAGE,
+    indexedDB: localforage.INDEXEDDB,
     webSQL: localforage.WEBSQL
   };
 

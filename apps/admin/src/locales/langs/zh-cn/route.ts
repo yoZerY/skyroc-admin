@@ -1,0 +1,31 @@
+const route: I18n.Schema['translation']['route'] = {
+  about: '关于',
+  home: '首页',
+  notFound: '页面不存在',
+  root: '首页',
+  login: '登录',
+  'login_code-login': '验证码登录',
+  login_register: ' 注册账号',
+  'login_reset-pwd': '重置密码',
+  'login-out': '退出登录',
+  '403': '无权限',
+  '404': '页面不存在',
+  '500': '服务器错误',
+  exception_403: '403',
+  exception_404: '404',
+  exception_500: '500',
+  exception: '异常示例',
+  'multi-menu': '多级菜单',
+  'multi-menu_first': '菜单一',
+  'multi-menu_first_child': '菜单一子菜单',
+  'multi-menu_second': '菜单二',
+  'multi-menu_second_child': '菜单二子菜单',
+  'multi-menu_second_child_home': '菜单二子菜单首页',
+  manage: '系统管理',
+  manage_user: '用户管理',
+  manage_user_$id: '用户详情',
+  manage_role: '角色管理',
+  manage_menu: '菜单管理'
+};
+
+export default route;

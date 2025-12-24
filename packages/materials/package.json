@@ -10,6 +10,7 @@
     }
   },
   "dependencies": {
+    "@sa/color": "workspace:*",
     "@sa/utils": "workspace:*",
     "simplebar-react": "3.3.0"
   },

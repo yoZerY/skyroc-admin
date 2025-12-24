@@ -3,11 +3,11 @@ import { blue, lightGreen } from 'kolorist';
 
 import { version } from '../package.json';
 
-import { cleanup, genChangelog, generateRoute, gitCommit, gitCommitVerify, release, updatePkg } from './commands';
+import { cleanup, genChangelog, gitCommit, gitCommitVerify, release, updatePkg } from './commands';
 import { loadCliOptions } from './config';
 import type { Lang } from './locales';
 
-type Command = 'changelog' | 'cleanup' | 'gen-route' | 'git-commit' | 'git-commit-verify' | 'release' | 'update-pkg';
+type Command = 'changelog' | 'cleanup' | 'git-commit' | 'git-commit-verify' | 'release' | 'update-pkg';
 
 type CommandAction<A extends object> = (args?: A) => Promise<void> | void;
 
@@ -68,12 +68,6 @@ export async function setupCli() {
         await cleanup(cliOptions.cleanupDirs);
       },
       desc: 'delete dirs: node_modules, dist, etc.'
-    },
-    'gen-route': {
-      action: async () => {
-        await generateRoute();
-      },
-      desc: 'generate route'
     },
     'git-commit': {
       action: async args => {

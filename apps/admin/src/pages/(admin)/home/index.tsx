@@ -1,0 +1,64 @@
+import { createFileRoute } from '@tanstack/react-router';
+
+import CardData from './modules/CardData';
+import CreativityBanner from './modules/CreativityBanner';
+import HeaderBanner from './modules/HeaderBanner';
+import LineChart from './modules/LineChart';
+import PieChart from './modules/PieChart';
+import ProjectNews from './modules/ProjectNews';
+
+export const Route = createFileRoute('/(admin)/home/')({
+  component: Home,
+  staticData: {
+    i18nKey: 'route.home',
+    title: 'home',
+    menu: {
+      icon: 'mdi:monitor-dashboard',
+      order: 1,
+      extra: 'Demo'
+    }
+  }
+});
+
+function Home() {
+  return (
+    <ASpace
+      className="w-full"
+      orientation="vertical"
+      size={[16, 16]}
+    >
+      <HeaderBanner />
+
+      <CardData />
+
+      <ARow gutter={[16, 16]}>
+        <ACol
+          lg={14}
+          span={24}
+        >
+          <LineChart />
+        </ACol>
+        <ACol
+          lg={10}
+          span={24}
+        >
+          <PieChart />
+        </ACol>
+      </ARow>
+      <ARow gutter={[16, 16]}>
+        <ACol
+          lg={14}
+          span={24}
+        >
+          <ProjectNews />
+        </ACol>
+        <ACol
+          lg={10}
+          span={24}
+        >
+          <CreativityBanner />
+        </ACol>
+      </ARow>
+    </ASpace>
+  );
+}

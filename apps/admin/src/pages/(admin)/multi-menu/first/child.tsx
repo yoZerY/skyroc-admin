@@ -1,0 +1,18 @@
+import { createFileRoute } from '@tanstack/react-router';
+
+import LookForward from '@/components/LookForward';
+
+export const Route = createFileRoute('/(admin)/multi-menu/first/child')({
+  component: FirstChild,
+  staticData: {
+    title: 'first-child',
+    i18nKey: 'route.multi-menu_first_child',
+    menu: {
+      order: 1
+    }
+  }
+});
+
+function FirstChild() {
+  return <LookForward />;
+}

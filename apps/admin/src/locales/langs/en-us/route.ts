@@ -1,0 +1,31 @@
+const route: I18n.Schema['translation']['route'] = {
+  about: 'About',
+  home: 'Home',
+  notFound: 'Not Found',
+  root: 'Root',
+  login: 'Login',
+  'login_code-login': 'Code Login',
+  login_register: 'Register Account',
+  'login_reset-pwd': 'Reset Password',
+  'login-out': 'Login Out',
+  '403': 'No Permission',
+  '404': 'Page Not Found',
+  '500': 'Server Error',
+  manage: 'System Manage',
+  manage_user: 'User Manage',
+  manage_user_$id: 'User Detail',
+  manage_role: 'Role Manage',
+  manage_menu: 'Menu Manage',
+  'multi-menu': 'Multi Menu',
+  'multi-menu_first': 'Menu One',
+  'multi-menu_first_child': 'Menu One Child',
+  'multi-menu_second': 'Menu Two',
+  'multi-menu_second_child': 'Menu Two Child',
+  'multi-menu_second_child_home': 'Menu Two Child Home',
+  exception: 'Exception',
+  exception_403: '403',
+  exception_404: '404',
+  exception_500: '500'
+};
+
+export default route;

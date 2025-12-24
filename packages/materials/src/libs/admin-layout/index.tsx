@@ -41,6 +41,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({
   tabHeight = 44,
   tabVisible = true,
   updateSiderCollapse
+  // eslint-disable-next-line complexity
 }) => {
   const cssVar = createLayoutCssVars({
     footerHeight,
@@ -127,7 +128,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({
                 commonClass,
                 headerClass,
                 headerLeftGapClass,
-                { 'absolute top-0 left-0 w-full': fixedHeaderAndTab }
+                { 'absolute left-0 top-0 w-full': fixedHeaderAndTab }
               )}
             >
               {Header}
@@ -206,7 +207,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({
         {/*  Main Content  */}
         <main
           id={isContentScroll ? scrollElId : ''}
-          className={classNames('flex flex-col  flex-grow bg-layout', commonClass, contentClass, leftGapClass(), {
+          className={classNames('flex flex-col flex-grow bg-layout', commonClass, contentClass, leftGapClass(), {
             'overflow-y-auto': isContentScroll
           })}
         >
@@ -224,7 +225,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({
                 commonClass,
                 footerClass,
                 footerLeftGapClass(),
-                { 'absolute left-0 bottom-0 w-full': fixedFooter }
+                { 'absolute bottom-0 left-0 w-full': fixedFooter }
               )}
             >
               {Footer}

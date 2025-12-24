@@ -4,7 +4,7 @@ export interface CliOption {
   /**
    * Options of generate changelog
    *
-   * @link https://github.com/skyroc/changelog
+   * @link https://github.com/soybeanjs/changelog
    */
   changelogOptions: Partial<ChangelogOption>;
   /**
@@ -20,10 +20,8 @@ export interface CliOption {
   cleanupDirs: string[];
   /** The project root directory */
   cwd: string;
-  /** Git commit scopes */
-  gitCommitScopes: [string, string][];
-  /** Git commit types */
-  gitCommitTypes: [string, string][];
+  /** The ignore pattern list of git commit verify */
+  gitCommitVerifyIgnores: RegExp[];
   /**
    * Npm-check-updates command args
    *
