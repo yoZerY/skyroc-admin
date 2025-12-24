@@ -17,6 +17,9 @@ importers:
       lint-staged:
         specifier: ^16.2.7
         version: 16.2.7
+      simple-git-hooks:
+        specifier: ^2.13.1
+        version: 2.13.1
       turbo:
         specifier: ^2.7.1
         version: 2.7.2
@@ -195,9 +198,6 @@ importers:
       sass:
         specifier: ^1.96.0
         version: 1.97.1
-      simple-git-hooks:
-        specifier: ^2.13.1
-        version: 2.13.1
       tsx:
         specifier: 4.21.0
         version: 4.21.0
