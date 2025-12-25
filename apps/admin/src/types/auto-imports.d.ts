@@ -37,6 +37,7 @@ declare global {
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark
   const Activity: typeof import('react').Activity
+  const BetterScroll: typeof import('../components/BetterScroll').default
   const BeyondHiding: typeof import('../components/BeyondHiding').default
   const ButtonIcon: typeof import('../components/ButtonIcon').default
   const ButtonLink: typeof import('../components/ButtonLink').default
@@ -48,6 +49,7 @@ declare global {
   const FullScreen: typeof import('../components/FullScreen').default
   const I18nLabel: typeof import('../components/I18nLabel').default
   const IconAntDesignEnterOutlined: typeof import('~icons/ant-design/enter-outlined.tsx').default
+  const IconAntDesignReloadOutlined: typeof import('~icons/ant-design/reload-outlined.tsx').default
   const IconGridiconsFullscreen: typeof import('~icons/gridicons/fullscreen.tsx').default
   const IconGridiconsFullscreenExit: typeof import('~icons/gridicons/fullscreen-exit.tsx').default
   const IconLocalBanner: typeof import('~icons/local/banner.tsx').default
@@ -62,6 +64,7 @@ declare global {
   const NumberTicker: typeof import('../components/NumberTicker').default
   const PinToggler: typeof import('../components/PinToggler').default
   const Portal: typeof import('../components/Portal').default
+  const ReloadButton: typeof import('../components/ReloadButton').default
   const SkyrocAvatar: typeof import('../components/SkyrocAvatar').default
   const Suspense: typeof import('react').Suspense
   const SvgIcon: typeof import('../components/SvgIcon').default
@@ -215,6 +218,9 @@ declare global {
   // @ts-ignore
   export type { ThemeName } from '../hooks/use-preferred-color-scheme'
   import('../hooks/use-preferred-color-scheme')
+  // @ts-ignore
+  export type { ButtonIconProps } from '../components/ButtonIcon'
+  import('../components/ButtonIcon')
   // @ts-ignore
   export type { ButtonLinkComponentProps } from '../components/ButtonLink'
   import('../components/ButtonLink')
