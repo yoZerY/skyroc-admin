@@ -34,13 +34,11 @@ function isFixedTab(tab: App.Global.Tab) {
  *
  * @param route
  */
-export function getTabIdByRoute(route: { handle?: any; pathname: string; search?: string }) {
-  const { handle, pathname, search = '' } = route;
-
+export function getTabIdByRoute(pathname: string, multiTab: boolean, fullPath: string) {
   let id = pathname;
 
-  if (handle?.multiTab && search) {
-    id = `${pathname}${search}`;
+  if (multiTab) {
+    id = fullPath;
   }
 
   return id;
@@ -51,37 +49,26 @@ export function getTabIdByRoute(route: { handle?: any; pathname: string; search?
  *
  * @param route
  */
-export function getTabByRoute(route: {
-  fullPath: string;
-  handle: {
-    fixedIndexInTab?: number | null;
-    i18nKey?: I18n.I18nKey | null;
-    icon?: string;
-    localIcon?: string;
-    multiTab?: boolean | null;
-    title?: string;
-  };
-  id: string;
-  pathname: string;
-}) {
-  const { fullPath, handle, id, pathname } = route;
-
-  const { fixedIndexInTab, i18nKey, icon, localIcon, title = '' } = handle;
-
-  const tab: App.Global.Tab = {
-    id: handle.multiTab ? fullPath : pathname,
-    label: title,
+export function getTabByMenuInfo(
+  menuInfo: Menu.QuickReferenceMenu,
+  pathname: Router.RoutePath,
+  fullPath: string
+): App.Global.Tab {
+  return {
+    id: getTabIdByRoute(pathname, menuInfo.tab?.multi ?? false, fullPath),
     routePath: pathname,
     fullPath,
-    fixedIndex: fixedIndexInTab ?? undefined,
-    icon,
-    localIcon,
-    i18nKey,
-    oldLabel: title,
-    newLabel: undefined
+    fixedIndex: menuInfo.tab?.fixedIndex,
+    i18nKey: menuInfo.i18nKey,
+    icon: menuInfo.menu?.icon,
+    localIcon: menuInfo.menu?.localIcon,
+    label: (
+      <I18nLabel
+        fallback={menuInfo.title}
+        i18nKey={menuInfo.i18nKey}
+      />
+    )
   };
-
-  return tab;
 }
 
 /**
@@ -158,32 +145,6 @@ function updateTabsLabel(tabs: App.Global.Tab[]) {
   }));
 
   return updated;
-}
-
-/**
- * Update tab by i18n key
- *
- * @param tab
- */
-export function updateTabByI18nKey(tab: App.Global.Tab) {
-  const { i18nKey, label } = tab;
-
-  // TODO: Add i18n translation here when i18n is ready
-  // const translatedLabel = i18nKey ? $t(i18nKey) : label;
-
-  return {
-    ...tab,
-    label: i18nKey ? label : label // For now, just use the existing label
-  };
-}
-
-/**
- * Update tabs by i18n key
- *
- * @param tabs
- */
-export function updateTabsByI18nKey(tabs: App.Global.Tab[]) {
-  return tabs.map(tab => updateTabByI18nKey(tab));
 }
 
 /**

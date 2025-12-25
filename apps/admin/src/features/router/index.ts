@@ -1,7 +1,5 @@
 import { createRouter } from '@tanstack/react-router';
-
 import { queryClient } from '@/service/queryClient';
-
 import { routeTree } from './routeTree.gen';
 
 /**
@@ -14,7 +12,7 @@ import { routeTree } from './routeTree.gen';
  */
 export const router = createRouter({
   context: {
-    initAuth: () => Promise.resolve(),
+    initAuth: () => Promise.resolve(null),
     isAuthInitialized: false,
     isLoggedIn: false,
     queryClient,

@@ -285,7 +285,7 @@ class MenuGenerator {
       parentKeys,
       depth
     };
-    quickReferenceMenuMap.set(config.path, data);
+    quickReferenceMenuMap.set(config.path as Router.RoutePath, data);
 
     const menuLabel = (
       <I18nLabel

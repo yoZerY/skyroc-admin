@@ -1,22 +1,21 @@
 /* eslint-disable complexity */
-import { useMatches, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { atom, useAtom } from 'jotai';
 import { globalStore } from '@/features/jotai/store';
 import { menuCategory } from '@/features/menus/menu-category';
 import { normalizePath } from '@/features/menus/menu-generator';
 import { useMenus } from '@/features/menus/use-menus';
+import { useRoute } from '@/features/router/use-route';
 
 interface MenusAtom {
   activeFirstLevelMenuKey: string;
   activeSecondLevelMenuKey: string;
   drawerVisible: boolean;
-  selectedKey: string[];
 }
 
 const initialState: MenusAtom = {
   activeFirstLevelMenuKey: '',
   activeSecondLevelMenuKey: '',
-  selectedKey: [],
   drawerVisible: false
 };
 
@@ -26,29 +25,24 @@ const menusAtom = atom(initialState, (get, set, update: Partial<MenusAtom>) => {
 
 export const useAdminMenus = () => {
   const [menuState, setMenuState] = useAtom(menusAtom, { store: globalStore });
-
   const { activeFirstLevelMenuKey, activeSecondLevelMenuKey, drawerVisible } = menuState;
 
-  const routes = useMatches();
+  const route = useRoute();
 
   const navigate = useNavigate();
 
-  const route = routes[routes.length - 1];
-
   const { menus: allMenus, quickReferenceMenus: allQuickReferenceMenus } = useMenus();
+  const adminKey = menuCategory.admin.key;
 
-  const menus = allMenus?.get(menuCategory.admin.key) || [];
+  const menus = allMenus?.get(adminKey) || [];
+  const quickReferenceMenus = allQuickReferenceMenus?.get(adminKey);
 
-  const quickReferenceMenus = allQuickReferenceMenus?.get(menuCategory.admin.key);
-
-  const fullPath = normalizePath(route.fullPath) as Router.RoutePath;
-
+  const fullPath = normalizePath(route.originPath) as Router.RoutePath;
   const currentMenu = quickReferenceMenus?.get(fullPath);
 
   const { activeMenu, hide } = currentMenu?.menu || {};
 
   const routeName = (hide ? activeMenu : currentMenu?.key) || currentMenu?.key || '';
-
   const openKeys = activeMenu ? getMenuInfoByPath(activeMenu)?.parentKeys || [] : currentMenu?.parentKeys || [];
 
   const selectedKey = [routeName];
@@ -101,6 +95,7 @@ export const useAdminMenus = () => {
 
   return {
     menus,
+    quickReferenceMenus,
     firstLevelMenus,
     secondLevelMenus,
     childLevelMenus,

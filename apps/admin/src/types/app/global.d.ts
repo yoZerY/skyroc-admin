@@ -2,8 +2,6 @@ declare namespace App.Global {
   /** The global dropdown key */
   type DropdownKey = 'closeAll' | 'closeCurrent' | 'closeLeft' | 'closeOther' | 'closeRight';
 
-  type RoutePath = import('@/features/router/routeTree.gen').FileRoutesByTo;
-
   type AntdMenu = NonNullable<import('antd').MenuProps['items']>[number];
 
   /** The global tab */
@@ -23,7 +21,7 @@ declare namespace App.Global {
     /** The tab id */
     id: string;
     /** The tab label */
-    label: string;
+    label: React.ReactNode;
     /**
      * Tab local icon
      *
@@ -35,15 +33,15 @@ declare namespace App.Global {
      *
      * If set, the tab label will be replaced by this value
      */
-    newLabel?: string;
+    newLabel?: React.ReactNode;
     /**
      * The old tab label
      *
      * when reset the tab label, the tab label will be replaced by this value
      */
-    oldLabel?: string;
+    oldLabel?: React.ReactNode;
     /** The tab route path */
-    routePath: RoutePath;
+    routePath: Router.RoutePath;
   };
 
   /** The global admin layout menu */

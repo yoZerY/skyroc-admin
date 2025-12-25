@@ -1,20 +1,17 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { atom, useAtom } from 'jotai';
-
-import { router } from '@/features/router';
 import { localStg } from '@/utils/storage';
-
+import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
+import { useAdminMenus } from './menus/use-admin-menus';
 import {
   extractTabsByAllRoutes,
   filterTabsByIds,
   getAllTabs,
   getFixedTabIds,
-  getTabByRoute,
+  getTabByMenuInfo,
   getTabIdByRoute,
   isTabInTabs,
-  reorderFixedTabs,
-  updateTabByI18nKey,
-  updateTabsByI18nKey
+  reorderFixedTabs
 } from './tabs/shared';
 
 interface TabState {
@@ -38,10 +35,14 @@ const tabStateAtom = atom(initialState, (get, set, update: Partial<TabState>) =>
 
 export const useAdminTab = () => {
   const [tabState, setTabState] = useAtom(tabStateAtom);
-  const navigate = useNavigate();
-  const routerState = useRouterState();
 
-  console.log(router, 'routerState');
+  const navigate = useNavigate();
+
+  const { getMenuInfoByPath, quickReferenceMenus, route } = useAdminMenus();
+
+  const {
+    tab: { cache }
+  } = useSettingsTheme();
 
   /**
    * Get all tabs (including home tab and reordered by fixed index)
@@ -63,22 +64,12 @@ export const useAdminTab = () => {
    * @param homeRoute The home route path
    */
   function initHomeTab(homeRoute: Router.RoutePath) {
-    const routes = routerState.matches;
-    const homeRouteMatch = routes.find(route => route.pathname === homeRoute);
+    const routeInfo = getMenuInfoByPath(homeRoute);
 
-    if (homeRouteMatch) {
-      const homeTab = getTabByRoute({
-        id: homeRouteMatch.id,
-        pathname: homeRouteMatch.pathname,
-        fullPath: homeRouteMatch.fullPath || homeRouteMatch.pathname,
-        handle: {
-          title: homeRouteMatch.staticData?.title || 'Home',
-          i18nKey: homeRouteMatch.staticData?.i18nKey,
-          icon: homeRouteMatch.staticData?.menu?.icon,
-          localIcon: homeRouteMatch.staticData?.menu?.localIcon,
-          fixedIndexInTab: 0
-        }
-      } as any);
+    if (!routeInfo) return;
+
+    if (routeInfo) {
+      const homeTab = getTabByMenuInfo(routeInfo, homeRoute, homeRoute);
 
       setTabState({ homeTab });
     }
@@ -90,13 +81,15 @@ export const useAdminTab = () => {
    * @param cache Whether to cache tabs
    * @param allRoutes All available route IDs for validation
    */
-  function initTabStore(cache: boolean, allRoutes: string[]) {
+  function initTabStore() {
     const storageTabs = localStg.get('globalTabs');
 
     if (cache && storageTabs) {
+      const allRoutes = Array.from(quickReferenceMenus?.keys() || []);
+
       const extractedTabs = extractTabsByAllRoutes(allRoutes, storageTabs);
-      const updatedTabs = updateTabsByI18nKey(extractedTabs);
-      setTabState({ tabs: updatedTabs });
+
+      setTabState({ tabs: extractedTabs });
     }
   }
 
@@ -106,8 +99,12 @@ export const useAdminTab = () => {
    * @param route Tab route
    * @param active Whether to activate the added tab
    */
-  function addTab(route: any, active = true) {
-    const tab = getTabByRoute(route);
+  function addTab(fullPath: string, routePath: Router.RoutePath, active = true) {
+    const routeInfo = getMenuInfoByPath(routePath);
+
+    if (!routeInfo) return;
+
+    const tab = getTabByMenuInfo(routeInfo, routePath, fullPath);
 
     const isHomeTab = tab.id === tabState.homeTab?.id;
 
@@ -188,8 +185,9 @@ export const useAdminTab = () => {
    * @param tab
    */
   async function switchRouteByTab(tab: App.Global.Tab) {
-    navigate({ to: tab.fullPath as any });
-    setActiveTabId(tab.id);
+    navigate({ to: tab.fullPath }).then(() => {
+      setActiveTabId(tab.id);
+    });
   }
 
   /**
@@ -322,16 +320,6 @@ export const useAdminTab = () => {
   }
 
   /**
-   * Update tabs by locale
-   */
-  function updateTabsByLocale() {
-    const updatedTabs = updateTabsByI18nKey(tabState.tabs);
-    const updatedHomeTab = tabState.homeTab ? updateTabByI18nKey(tabState.homeTab) : undefined;
-
-    setTabState({ tabs: updatedTabs, homeTab: updatedHomeTab });
-  }
-
-  /**
    * Cache tabs to local storage
    */
   function cacheTabs() {
@@ -343,6 +331,7 @@ export const useAdminTab = () => {
     tabs: allTabs,
     activeTabId: tabState.activeTabId,
     homeTab: tabState.homeTab,
+    route,
 
     // Actions
     initHomeTab,
@@ -359,7 +348,6 @@ export const useAdminTab = () => {
     setTabLabel,
     resetTabLabel,
     isTabRetain,
-    updateTabsByLocale,
     getTabIdByRoute,
     cacheTabs,
     setActiveTabId
