@@ -1,4 +1,7 @@
 import { useChildMatches } from '@tanstack/react-router';
+
+import { normalizePath } from '../menus/menu-generator';
+
 import { stringifyQuery } from './query';
 
 export function useRoute() {
@@ -8,9 +11,7 @@ export function useRoute() {
 
       const qs = stringifyQuery(m.search);
 
-      const fullPath = qs ? `${m.pathname}?${qs}` : m.pathname;
-
-      const searchStr = qs ? `?${qs}` : '';
+      const fullPath = qs ? `${m.pathname}${qs}` : m.pathname;
 
       return {
         routeId: m.routeId,
@@ -18,8 +19,8 @@ export function useRoute() {
         pathname: m.pathname,
         fullPath,
         staticData: m.staticData,
-        searchStr,
-        originPath: m.fullPath as Router.RoutePath,
+        searchStr: qs,
+        originPath: normalizePath(m.fullPath) as Router.RoutePath,
         search: m.search
       };
     },

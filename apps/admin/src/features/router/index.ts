@@ -1,5 +1,8 @@
 import { createRouter } from '@tanstack/react-router';
+
 import { queryClient } from '@/service/queryClient';
+
+import { parseQuery, stringifyQuery } from './query';
 import { routeTree } from './routeTree.gen';
 
 /**
@@ -19,6 +22,8 @@ export const router = createRouter({
     userInfo: undefined
   },
   defaultPreload: 'intent',
+  stringifySearch: stringifyQuery,
+  parseSearch: parseQuery,
   defaultPreloadStaleTime: 0,
   defaultPendingMs: 10,
   defaultPendingMinMs: 1000,

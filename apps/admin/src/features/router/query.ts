@@ -93,7 +93,7 @@ export function stringifyQuery(query: LocationQueryRaw): string {
     }
   }
 
-  return search;
+  return search ? `?${search}` : '';
 }
 
 export function decode(text: string | number): string {
