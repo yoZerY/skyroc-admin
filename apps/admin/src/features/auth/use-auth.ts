@@ -1,58 +1,86 @@
-import { atom, useAtomValue } from 'jotai';
+import { atom, useAtom } from 'jotai';
+import { flushSync } from 'react-dom';
 
-import { useUserInfoQuery } from '@/service/api';
+import { cacheTabs } from '@/layouts/admin-layout/state/tabs/use-admin-tab';
+import { AUTH_QUERY_KEYS, queryUserInfoOptions } from '@/service/api';
+import { queryClient } from '@/service/queryClient';
 import { localStg } from '@/utils/storage';
 
 import { globalStore } from '../jotai/store';
 import { useMenus } from '../menus/use-menus';
 
-import { getToken } from './shared';
+import { clearAuthStorage, getToken } from './shared';
 
 const initToken = getToken();
 
-const authAtom = atom(initToken);
+const initState = {
+  token: initToken,
+  initialized: false
+};
+
+const authAtom = atom(initState, (get, set, update: Partial<typeof initState>) => {
+  set(authAtom, { ...get(authAtom), ...update });
+});
 
 /**
  * - 为了在axios的拦截器中使用 单独使用`globalStore`的set方法进行操作
  */
 export const setAuth = (data: Api.Auth.LoginToken) => {
-  globalStore.set(authAtom, data.token);
+  globalStore.set(authAtom, { token: data.token });
 
   localStg.set('token', data.token);
 
   localStg.set('refreshToken', data.refreshToken);
 };
 
+export function clearAuth() {
+  const userInfo = queryClient.getQueryData<Api.Auth.UserInfo>(AUTH_QUERY_KEYS.USER_INFO);
+
+  if (userInfo) {
+    localStg.set('lastLoginUserId', userInfo.userId);
+  }
+
+  queryClient.clear();
+
+  globalStore.set(authAtom, { token: '' });
+
+  clearAuthStorage();
+
+  cacheTabs();
+}
+
 export const useAuth = () => {
-  const [auth] = useAtomValue(authAtom);
+  const [state, setState] = useAtom(authAtom);
 
-  const isLoggedIn = Boolean(auth);
+  const isLoggedIn = Boolean(state.token);
 
-  const { data: userInfo, refetch: refetchUserInfo } = useUserInfoQuery();
-
-  const isAuthInitialized = Boolean(userInfo);
+  const userInfo = queryClient.getQueryData<Api.Auth.UserInfo>(AUTH_QUERY_KEYS.USER_INFO);
 
   const { initMenus } = useMenus();
 
   async function initAuth() {
-    const { data: info, error } = await refetchUserInfo();
+    try {
+      const data = await queryClient.ensureQueryData(queryUserInfoOptions());
 
-    if (error) {
+      await initMenus();
+
+      flushSync(() => {
+        setState({ initialized: true });
+      });
+
+      return data;
+    } catch {
       return null;
     }
-
-    await initMenus();
-
-    return info as Api.Auth.UserInfo;
   }
 
   return {
-    token: auth,
+    token: state.token,
     userInfo,
     isLoggedIn,
     initMenus,
     initAuth,
-    isAuthInitialized,
+    isAuthInitialized: state.initialized,
     setAuth
   };
 };
