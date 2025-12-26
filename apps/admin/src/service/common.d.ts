@@ -30,7 +30,7 @@ declare namespace Api {
      * - "1": 启用
      * - "2": 禁用
      */
-    type EnableStatus = import('./enums').EnableStatusValue;
+    type EnableStatus = import('@/enums').EnableStatus;
 
     /** 通用记录类型 */
     type CommonRecord<T = any> = {
