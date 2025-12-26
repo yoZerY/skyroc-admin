@@ -5,6 +5,20 @@ import type { CSSProperties } from 'react';
 import type { ButtonLinkComponentProps } from './ButtonLink';
 import ButtonLink from './ButtonLink';
 import SvgIcon from './SvgIcon';
+import '@/styles/css/button-icon-animations.css';
+
+/** Icon hover animation types */
+export type IconHoverAnimation =
+  | 'bounce' // 弹跳 - 活泼有趣
+  | 'flip' // 3D翻转 - 酷炫效果
+  | 'pulse' // 脉冲缩放 - 呼吸效果
+  | 'rotate' // 旋转 - 适合刷新、设置等图标
+  | 'scale' // 缩放放大 - 经典的交互反馈
+  | 'shake' // 左右抖动 - 吸引注意力
+  | 'spin' // 持续旋转 - 适合加载、刷新
+  | 'swing' // 摇摆 - 类似钟摆
+  | 'tada' // 惊喜效果 - 多维度组合动画
+  | 'wiggle'; // 扭动 - 俏皮可爱
 
 type BaseProps = {
   children?: React.ReactNode;
@@ -16,6 +30,8 @@ type BaseProps = {
     icon?: string;
     tooltip?: TooltipProps['classNames'];
   };
+  /** Icon hover animation effect */
+  hoverAnimation?: IconHoverAnimation;
   /** Iconify icon name */
   icon?: string;
   styles?: {
@@ -61,6 +77,7 @@ const ButtonIcon = ({
   children,
   className = 'h-32px text-icon',
   classNames,
+  hoverAnimation,
   icon,
   styles,
   tooltipContent,
@@ -80,6 +97,9 @@ const ButtonIcon = ({
 
   const typeProps = 'to' in rest ? { btnType: 'text' as const } : { type: 'text' as const };
 
+  // 根据动画类型添加对应的动画类名
+  const animationClass = hoverAnimation ? `btn-icon-hover-${hoverAnimation}` : '';
+
   return (
     <ATooltip
       classNames={classNames?.tooltip}
@@ -91,12 +111,12 @@ const ButtonIcon = ({
       {...tooltipProps}
     >
       <Comp
-        className={clsx(cls, '!px-6px', classNames?.button)}
+        className={clsx(cls, 'px-6px!', classNames?.button)}
         {...typeProps}
         {...rest}
         styles={styles?.button}
       >
-        <div className="flex-center gap-8px">
+        <div className={clsx('flex-center gap-8px', animationClass)}>
           {children || (
             <SvgIcon
               className={classNames?.icon}
