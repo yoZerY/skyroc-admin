@@ -1,5 +1,4 @@
 import type { AxiosHeaderValue, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-
 import type { ResponseType } from './type';
 
 export function getContentType(config: InternalAxiosRequestConfig) {
