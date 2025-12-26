@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["DOM", "ESNext"],
     "useDefineForClassFields": true,
     "baseUrl": ".",
     "module": "ESNext",
@@ -11,24 +11,17 @@
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["node"],
-    "allowJs": false,
+    "allowImportingTsExtensions": true,
     "strict": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "declaration": true,
-    "declarationMap": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
     "noEmit": true,
-    "outDir": "./dist",
-    "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "skipLibCheck": true
+    "isolatedModules": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
 }
