@@ -1,12 +1,10 @@
 import { Root } from '@radix-ui/react-scroll-area';
 import { cn } from '@skyroc/utils';
-import type { ComponentRef } from 'react';
-import { forwardRef } from 'react';
 
 import { scrollAreaVariants } from './scroll-area-variants';
 import type { ScrollAreaRootProps } from './types';
 
-const ScrollAreaRoot = forwardRef<ComponentRef<typeof Root>, ScrollAreaRootProps>((props, ref) => {
+const ScrollAreaRoot = (props: ScrollAreaRootProps) => {
   const { className, ...rest } = props;
 
   const { root } = scrollAreaVariants();
@@ -18,11 +16,8 @@ const ScrollAreaRoot = forwardRef<ComponentRef<typeof Root>, ScrollAreaRootProps
       className={mergedCls}
       data-slot="scroll-area-root"
       {...rest}
-      ref={ref}
     />
   );
-});
-
-ScrollAreaRoot.displayName = 'ScrollAreaRoot';
+};
 
 export default ScrollAreaRoot;

@@ -14,7 +14,6 @@ const ScrollArea = (props: ScrollAreaProps) => {
     classNames,
     nonce,
     orientation,
-    ref,
     scrollbarProps,
     size,
     thumbProps,
@@ -26,7 +25,6 @@ const ScrollArea = (props: ScrollAreaProps) => {
     <ScrollAreaRoot
       className={className}
       {...rest}
-      ref={ref}
     >
       <ScrollAreaViewport
         className={classNames?.viewport}

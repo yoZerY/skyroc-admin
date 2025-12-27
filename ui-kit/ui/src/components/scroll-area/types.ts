@@ -5,7 +5,7 @@ import type {
   ScrollAreaViewportProps as _ScrollAreaViewportProps
 } from '@radix-ui/react-scroll-area';
 
-import type { ClassValue, StyledComponentProps, ThemeOrientation } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '../../types/shared';
 
 import type { ScrollAreaSlots } from './scroll-area-variants';
 
@@ -19,25 +19,25 @@ export type ScrollAreaUi = Partial<Record<ScrollAreaSlots, ClassValue>>;
  * Props for the scroll area root component.
  * Provides the container for scrollable content with custom scrollbar styling.
  */
-export type ScrollAreaRootProps = StyledComponentProps<_ScrollAreaProps>;
+export interface ScrollAreaRootProps extends StyledComponentProps<_ScrollAreaProps> {}
 
 /**
  * Props for the scroll area scrollbar component.
  * Represents the track element that contains the thumb for vertical or horizontal scrolling.
  */
-export type ScrollAreaScrollbarProps = StyledComponentProps<_ScrollAreaScrollbarProps>;
+export interface ScrollAreaScrollbarProps extends StyledComponentProps<_ScrollAreaScrollbarProps> {}
 
 /**
  * Props for the scroll area thumb component.
  * The draggable indicator that shows the scroll position and can be dragged to scroll.
  */
-export type ScrollAreaThumbProps = StyledComponentProps<_ScrollAreaThumbProps>;
+export interface ScrollAreaThumbProps extends StyledComponentProps<_ScrollAreaThumbProps> {}
 
 /**
  * Props for the scroll area viewport component.
  * The container that holds the actual scrollable content.
  */
-export type ScrollAreaViewportProps = StyledComponentProps<_ScrollAreaViewportProps>;
+export interface ScrollAreaViewportProps extends StyledComponentProps<_ScrollAreaViewportProps> {}
 
 /**
  * Props for the main ScrollArea component.
@@ -50,19 +50,12 @@ export type ScrollAreaViewportProps = StyledComponentProps<_ScrollAreaViewportPr
  * </ScrollArea>
  * ```
  */
-export type ScrollAreaProps = ScrollAreaRootProps & {
+export interface ScrollAreaProps
+  extends ScrollAreaRootProps, Omit<ScrollAreaScrollbarProps, 'dir'>, Omit<ScrollAreaViewportProps, 'dir'> {
   /**
    * Class names for customizing different parts of the scroll area component.
    */
   classNames?: ScrollAreaUi;
-  /**
-   * The orientation of the scroll area.
-   */
-  orientation?: ThemeOrientation;
-  /**
-   * The ref of the scroll area.
-   */
-  ref?: React.Ref<HTMLDivElement>;
   /**
    * Props for the scroll area scrollbar component.
    */
@@ -75,4 +68,4 @@ export type ScrollAreaProps = ScrollAreaRootProps & {
    * Props for the scroll area viewport component.
    */
   viewportProps?: ScrollAreaViewportProps;
-};
+}
