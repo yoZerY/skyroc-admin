@@ -4,13 +4,13 @@ export const themeSettings: Theme.ThemeSetting = {
   grayscale: false,
   colourWeakness: false,
   recommendColor: false,
-  themeColor: '#646cff',
+  themeColor: '#6366F1', // Indigo：比 #1677FF 更温和、耐看
   themeRadius: 6,
   otherColor: {
-    info: '#2080f0',
-    success: '#52c41a',
-    warning: '#faad14',
-    error: '#f5222d'
+    info: '#0EA5E9', // Sky：更“清新”
+    success: '#10B981', // Emerald：不荧光、很干净
+    warning: '#F59E0B', // Amber：比纯黄耐看很多
+    error: '#F43F5E' // Rose：比纯红更优雅
   },
   isInfoFollowPrimary: true,
   themeTextSize: 14,

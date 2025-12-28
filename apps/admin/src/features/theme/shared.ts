@@ -1,11 +1,10 @@
-import { getColorPalette, getRgb } from '@sa/color';
+import { getColorPalette, getHsl } from '@sa/color';
 import defu from 'defu';
 
 import { toggleHtmlClass } from '@/utils/common';
 import { localStg } from '@/utils/storage';
 
 import { overrideThemeSettings, themeSettings } from './settings';
-import { themeVars } from './vars';
 
 export const icons: Record<UnionKey.ThemeScheme, string> = {
   dark: 'material-symbols:nightlight-rounded',
@@ -112,26 +111,17 @@ function createThemePaletteColors(colors: Theme.ThemeColor, recommended = false)
 function getCssVarByTokens(tokens: Theme.BaseToken) {
   const styles: string[] = [];
 
-  function removeVarPrefix(value: string) {
-    return value.replace('var(', '').replace(')', '');
-  }
-
-  function removeRgbPrefix(value: string) {
-    return value.replace('rgb(', '').replace(')', '');
-  }
-
-  for (const [key, tokenValues] of Object.entries(themeVars)) {
+  for (const [key, tokenValues] of Object.entries(tokens)) {
     for (const [tokenKey, tokenValue] of Object.entries(tokenValues)) {
-      let cssVarsKey = removeVarPrefix(tokenValue);
-      let cssValue = tokens[key][tokenKey];
+      const cssVarsKey = tokenKey;
+      let cssValue = tokenValue;
 
       if (key === 'colors') {
-        cssVarsKey = removeRgbPrefix(cssVarsKey);
-        const { b, g, r } = getRgb(cssValue);
-        cssValue = `${r} ${g} ${b}`;
+        const { h, l, s } = getHsl(cssValue);
+        cssValue = `${h} ${s}% ${l}%`;
       }
 
-      styles.push(`${cssVarsKey}: ${cssValue}`);
+      styles.push(`--${cssVarsKey}: ${cssValue}`);
     }
   }
 
@@ -151,13 +141,19 @@ export function addThemeVarsToGlobal(tokens: Theme.BaseToken, darkTokens: Theme.
 
   const css = `
     :root {
-      ${cssVarStr}
+      ${cssVarStr};
+      --card: 0 0% 100%;
+      --card-foreground: 224 71.4% 4.1%;
+      --input: 220 13% 91%;
+      --bg-opacity: 100%;
+      --text-opacity: 100%;
+      --border-opacity: 100%;
     }
   `;
 
   const darkCss = `
     html.${DARK_CLASS} {
-      ${darkCssVarStr}
+      ${darkCssVarStr};
     }
   `;
 
