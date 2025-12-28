@@ -76,15 +76,19 @@ const VerticalMenu = memo(() => {
   }, [inlineCollapsed]);
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea
+      className="h-full"
+      type="always"
+    >
       <AMenu
-        className={clsx('size-full transition-300 border-0!', { 'bg-container!': !darkTheme })}
+        className={clsx('h-full transition-300 border-0!', { 'bg-container!': !darkTheme })}
         inlineCollapsed={inlineCollapsed}
         inlineIndent={18}
         items={menus as MenuProps['items']}
         mode="inline"
         openKeys={stateOpenKeys}
         selectedKeys={selectedKey}
+        style={{ width: sider.width }}
         theme={menuTheme}
         onOpenChange={onOpenChange}
         onSelect={handleClickMenu}

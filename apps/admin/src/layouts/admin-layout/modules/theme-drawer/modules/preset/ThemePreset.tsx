@@ -12,7 +12,6 @@ type ThemePresetProps = Pick<
   | 'grayscale'
   | 'header'
   | 'isInfoFollowPrimary'
-  | 'isOnlyExpandCurrentParentMenu'
   | 'layout'
   | 'otherColor'
   | 'page'
@@ -129,21 +128,21 @@ const ThemePreset = () => {
       <div className="flex flex-col gap-12px">
         {presets.map(preset => (
           <div
-            className="cursor-pointer border-primary/10 rd-8px border-solid bg-white/5 p-12px backdrop-blur-10 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+            className="p-12px border-primary/10 rd-8px border-solid bg-white/5 cursor-pointer transition-all duration-300 backdrop-blur-10 hover:shadow-md hover:-translate-y-0.5"
             key={preset.id}
           >
             <div className="mb-8px flex items-center justify-between">
-              <div className="min-w-0 w-full flex flex-1 items-center justify-between gap-8px">
-                <h5 className="m-0 truncate text-14px text-primary font-600">{getPresetName(preset)}</h5>
+              <div className="flex flex-1 gap-8px min-w-0 w-full items-center justify-between">
+                <h5 className="text-14px text-primary font-600 m-0 truncate">{getPresetName(preset)}</h5>
                 <ABadge
-                  className="flex-shrink-0 opacity-80"
+                  className="opacity-80 shrink-0"
                   count={`v${preset.version}`}
                   style={{ backgroundColor: '#2080f0' }}
                 />
               </div>
               <AButton
                 ghost
-                className="ml-8px flex-shrink-0"
+                className="ml-8px shrink-0"
                 shape="round"
                 size="small"
                 type="primary"
@@ -153,20 +152,20 @@ const ThemePreset = () => {
               </AButton>
             </div>
 
-            <p className="line-clamp-2 mb-12px text-12px text-gray-500 leading-16px">{getPresetDesc(preset)}</p>
+            <p className="text-12px text-gray-500 leading-16px mb-12px line-clamp-2">{getPresetDesc(preset)}</p>
 
             <div className="flex items-center justify-between">
               <div className="flex gap-4px">
                 {Object.entries({ primary: preset.themeColor, ...preset.otherColor }).map(([key, color]) => (
                   <div
-                    className="h-12px w-12px cursor-pointer border-white/30 rd-full transition-transform hover:scale-110"
+                    className="border-white/30 rd-full h-12px w-12px cursor-pointer transition-transform hover:scale-110"
                     key={key}
                     style={{ backgroundColor: color }}
                     title={key}
                   />
                 ))}
               </div>
-              <div className="flex items-center gap-4px">
+              <div className="flex gap-4px items-center">
                 <div className="text-18px">{preset.themeScheme === 'dark' ? '🌙' : '☀️'}</div>
                 {preset.grayscale && <div className="text-18px">🎨</div>}
               </div>

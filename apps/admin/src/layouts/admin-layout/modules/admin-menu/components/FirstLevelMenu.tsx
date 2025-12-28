@@ -116,19 +116,21 @@ const FirstLevelMenu: FC<Props> = memo(({ children, inverted, mode = FirstLevelM
     <div className="h-full flex-col-stretch flex-1-hidden">
       {children}
       <ScrollArea className="flex-1">
-        {menus
-          .filter(item => item.type !== 'divider')
-          .map(item => (
-            <MixMenuItem
-              active={item.key === activeKey}
-              inverted={inverted}
-              key={item.key}
-              menu={item}
-              mode={mode}
-              onClick={onSelect}
-              onSelectMenu={handleSelectMenu}
-            />
-          ))}
+        <div className="h-full w-[--soy-sider-width]">
+          {menus
+            .filter(item => item.type !== 'divider')
+            .map(item => (
+              <MixMenuItem
+                active={item.key === activeKey}
+                inverted={inverted}
+                key={item.key}
+                menu={item}
+                mode={mode}
+                onClick={onSelect}
+                onSelectMenu={handleSelectMenu}
+              />
+            ))}
+        </div>
       </ScrollArea>
       <MenuToggler
         arrowIcon
