@@ -4,6 +4,8 @@ import type { ColorPaletteNumber } from '../types';
 import { getAntDColorPalette } from './antd';
 import { getRecommendedColorPalette } from './recommend';
 
+export * from './oklch';
+
 /**
  * get color palette by provided color
  *
@@ -43,3 +45,5 @@ export function getPaletteColorByNumber(color: AnyColor, number: ColorPaletteNum
 
   return colorMap.get(number as ColorPaletteNumber)!;
 }
+
+export { getRecommendedColorPalette, getRecommendedPaletteColorByNumber } from './recommend';
