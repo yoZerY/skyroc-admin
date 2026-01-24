@@ -2,6 +2,48 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Skills Usage Rules (CRITICAL)
+
+### Project Skills Overview
+This project has 11 skills located in `.claude/skills/`:
+1. code-simplifier
+2. component-refactoring
+3. doc-coauthoring
+4. feature-dev
+5. frontend-code-review
+6. frontend-design
+7. frontend-testing
+8. senior-frontend
+9. skill-creator
+10. ui-ux-pro-max
+11. vercel-react-best-practices
+
+### Skill Invocation Policy
+
+**IMPORTANT: DO NOT automatically invoke any skills when receiving user requests.**
+
+- Wait for user guidance on which skill to use
+- User will explicitly direct which skill is appropriate
+- Do not proactively suggest or load skills unless asked
+
+### Skill Usage Scenarios
+
+When directed by the user, use skills according to these scenarios:
+
+| Scenario | Skill Path |
+|----------|-----------|
+| 写完代码后（代码简化） | `.claude/skills/code-simplifier` |
+| 写文档 | `.claude/skills/doc-coauthoring` |
+| 重构组件 | `.claude/skills/component-refactoring` |
+| 遵循最佳实践 | `.claude/skills/vercel-react-best-practices` |
+| 完成大需求 | `.claude/skills/vercel-react-best-practices` |
+| UI 设计（像设计师一样思考） | `.claude/skills/ui-ux-pro-max` |
+| 开发一个需求 | `.claude/skills/feature-dev` |
+| 主动代码审查 | `.claude/skills/frontend-code-review` |
+| 前端设计 | `.claude/skills/frontend-design` |
+| 前端测试 | `.claude/skills/frontend-testing` |
+| 设计组件/项目/需求架构 | `.claude/skills/senior-frontend` |
+
 ## Important Notes
 
 You are an experienced software architect and engineer.
