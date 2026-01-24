@@ -172,8 +172,8 @@ function RouteComponent() {
   return (
     <div className="p-24px">
       <div className="mb-24px">
-        <h1 className="m-0 mb-8px text-24px font-bold">🔔 通知系统演示</h1>
-        <p className="m-0 text-$ant-color-text-secondary">
+        <h1 className="text-24px font-bold m-0 mb-8px">🔔 通知系统演示</h1>
+        <p className="text-$ant-color-text-secondary m-0">
           完整展示通知系统的所有功能和交互细节。点击右上角通知图标查看通知面板。
         </p>
       </div>
@@ -231,7 +231,7 @@ function RouteComponent() {
         className="mb-24px"
         title="📮 基础通知类型"
       >
-        <p className="mb-16px text-$ant-color-text-secondary">通知系统支持 5 种基础类型，每种类型有不同的图标和颜色</p>
+        <p className="text-$ant-color-text-secondary mb-16px">通知系统支持 5 种基础类型，每种类型有不同的图标和颜色</p>
         <Space wrap>
           <AButton
             icon={<span className="i-carbon-information-filled" />}
@@ -275,7 +275,7 @@ function RouteComponent() {
         className="mb-24px"
         title="⚡ 优先级系统"
       >
-        <p className="mb-16px text-$ant-color-text-secondary">
+        <p className="text-$ant-color-text-secondary mb-16px">
           支持 4 种优先级：低、普通、高、紧急。高优先级通知会显示彩色标签
         </p>
         <Space wrap>
@@ -307,7 +307,7 @@ function RouteComponent() {
         className="mb-24px"
         title="🎯 特殊功能"
       >
-        <p className="mb-16px text-$ant-color-text-secondary">支持静音通知、禁用浏览器通知、带跳转链接等特殊功能</p>
+        <p className="text-$ant-color-text-secondary mb-16px">支持静音通知、禁用浏览器通知、带跳转链接等特殊功能</p>
         <Space wrap>
           <AButton
             icon={<span className="i-carbon-volume-mute" />}
@@ -336,7 +336,7 @@ function RouteComponent() {
         className="mb-24px"
         title="🎬 批量操作"
       >
-        <p className="mb-16px text-$ant-color-text-secondary">一次性添加多条通知，或批量管理现有通知</p>
+        <p className="text-$ant-color-text-secondary mb-16px">一次性添加多条通知，或批量管理现有通知</p>
         <Space wrap>
           <AButton
             icon={<span className="i-carbon-add-alt" />}
@@ -372,7 +372,7 @@ function RouteComponent() {
 
       {/* 设置控制 */}
       <Card title="⚙️ 设置控制">
-        <p className="mb-16px text-$ant-color-text-secondary">控制通知的声音、浏览器通知和勿扰模式</p>
+        <p className="text-$ant-color-text-secondary mb-16px">控制通知的声音、浏览器通知和勿扰模式</p>
         <Space wrap>
           {notificationPermission !== 'granted' && (
             <AButton

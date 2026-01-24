@@ -1,6 +1,10 @@
 import { transformColorWithOpacity } from '@sa/color';
 import type { ConfigProviderProps } from 'antd';
 import { theme as antdTheme } from 'antd';
+
+import { derivative } from '../theme/antd-adapter';
+import { defaultPresetColors } from '../theme/antd-adapter/seed';
+
 /**
  * Get antd theme
  *
@@ -15,14 +19,25 @@ export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, settin
   const { error, info, primary, success, warning } = colors;
 
   const bgColor = transformColorWithOpacity(primary, darkMode ? 0.3 : 0.1, darkMode ? '#000000' : '#fff');
-  const containerBgColor = darkMode ? tokens.dark?.colors?.container : tokens.light?.colors.container;
-  const layoutBgColor = darkMode ? tokens.dark?.colors?.layout : tokens.light?.colors.layout;
+  const containerBgColor = darkMode ? '#1C1C1E' : tokens.light?.colors.container;
+
+  const borderColor = darkMode ? '#2E3138' : '#C6C6C8';
 
   const theme: ConfigProviderProps['theme'] = {
-    algorithm: [darkMode ? darkAlgorithm : defaultAlgorithm],
+    algorithm: [
+      darkMode
+        ? darkAlgorithm
+        : (a, b) => {
+            const c = derivative(a);
+
+            return derivative(a);
+          }
+    ],
     cssVar: {
+      key: 'root',
       prefix: ''
     },
+    hashed: false,
     components: {
       Button: {
         controlHeightSM: 28
@@ -41,27 +56,16 @@ export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, settin
     },
     token: {
       colorBgContainer: containerBgColor,
-      colorBgLayout: layoutBgColor,
       colorError: error,
       colorInfo: info,
       fontSize: themeTextSize,
+      colorBorder: borderColor,
       colorPrimary: primary,
       borderRadius: themeRadius,
       colorSuccess: success,
       colorWarning: warning,
-      blue: '#3B82F6',
-      purple: '#8B5CF6',
-      cyan: '#06B6D4',
-      green: '#10B981',
-      magenta: '#D946EF',
-      pink: '#F472B6',
-      red: '#EF4444',
-      orange: '#F97316',
-      yellow: '#EAB308',
-      volcano: '#EA580C',
-      geekblue: '#4F46E5',
-      gold: '#D97706',
-      lime: '#84CC16'
+      // 使用预设的颜色
+      ...defaultPresetColors
     }
   };
 

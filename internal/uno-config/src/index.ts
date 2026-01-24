@@ -1,4 +1,4 @@
-import type { Preset, PresetWind4Theme, Rule } from 'unocss';
+import type { Preset, PresetWind3Theme, Rule } from 'unocss';
 import { generateCSSVars, generateGlobalStyles } from './generate';
 import { allShortcuts } from './shortcuts';
 import themes from './theme.json';
@@ -17,9 +17,12 @@ export const builtinColorMap = themes.reduce(
 export const builtinRadiuses = [0, 0.3, 0.5, 0.75, 1] as const;
 
 /** Theme color keys */
-const themeColorKeys = ['primary', 'info', 'success', 'warning', 'error'] as const;
-
-const ANTD_PALETTE_NAMES = [
+const themeColorKeys = [
+  'primary',
+  'info',
+  'success',
+  'warning',
+  'error',
   'blue',
   'purple',
   'cyan',
@@ -38,49 +41,40 @@ const ANTD_PALETTE_NAMES = [
 /** Color palette number scale */
 const colorPaletteNumbers = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
 
-function buildAntdPalettes(name: string) {
-  return {
-    DEFAULT: `var(--${name})`,
-    50: `var(--${name}-1)`,
-    100: `var(--${name}-2)`,
-    200: `var(--${name}-3)`,
-    300: `var(--${name}-4)`,
-    400: `var(--${name}-5)`,
-    500: `var(--${name}-6)`,
-    600: `var(--${name}-7)`,
-    700: `var(--${name}-8)`,
-    800: `var(--${name}-9)`,
-    900: `var(--${name}-10)`
-  };
-}
-
 function buildAntdMainPalette(name: string) {
   return {
-    50: `var(--color-${name}-bg)`,
-    100: `var(--color-${name}-bg-hover)`,
-    200: `var(--color-${name}-border)`,
-    300: `var(--color-${name}-border-hover)`,
-    400: `var(--color-${name}-hover)`,
-    500: `var(--color-${name}-active)`,
-    600: `var(--color-${name})`,
-    700: `var(--color-${name}-text-hover)`,
-    800: `var(--color-${name}-text)`,
-    900: `var(--color-${name}-text-active)`
+    50: `var(--${name}-50)`,
+    100: `var(--${name}-100)`,
+    200: `var(--${name}-200)`,
+    300: `var(--${name}-300)`,
+    400: `var(--${name}-400)`,
+    500: `var(--${name}-500)`,
+    600: `var(--${name}-600)`,
+    700: `var(--${name}-700)`,
+    800: `var(--${name}-800)`,
+    900: `var(--${name}-900)`
   };
 }
 /**
  * Create color palette with semantic color variables for a single color
  *
  * @description
- * - 50-950: Color palette scale (50 lightest, 950 darkest)
- * - bg-lightest (50): Very light background
- * - bg-lighter (100): Lighter background
- * - bg-light (200): Light background
- * - border-light (300): Light border
- * - border (400): Normal border
- * - text (500): Main color text
- * - hover/text-hover (600): Hover state
- * - active/text-active (700): Active state
+ * 调色板阶层设计：
+ * - 50-200: 浅色区（背景、填充、装饰性边框）
+ * - 300-400: 过渡区（交互反馈、次要状态）
+ * - 500: 主色区（默认按钮、链接、图标）
+ * - 600-700: 深色区（激活状态、强调）
+ * - 800-950: 极深区（深色模式适配）
+ *
+ * 语义化颜色映射：
+ * - bg (50): 背景色 - 极浅，不干扰内容
+ * - bg-hover (100): 背景悬停色
+ * - border (200): 边框色 - 可见但不抢眼
+ * - border-hover (300): 边框悬停色
+ * - hover (400): 悬停色 - 比主色浅，表示"即将激活"
+ * - text (500): 文字色 - 使用主色
+ * - active (600): 激活色 - 比主色深，表示"已被按下"
+ * - text-active (700): 文字激活色
  *
  * @param name - Color name (e.g., 'primary', 'success')
  */
@@ -88,22 +82,29 @@ function createColorsPalette(name: string) {
   const colors = buildAntdMainPalette(name);
   return {
     ...colors,
-    DEFAULT: `var(--color-${name})`,
-    bg: `var(--color-${name}-bg)`,
-    'bg-hover': `var(--color-${name}-bg-hover)`,
-    border: `var(--color-${name}-border)`,
-    'border-hover': `var(--color-${name}-border-hover)`,
-    hover: `var(--color-${name}-hover)`,
-    active: `var(--color-${name}-active)`,
+    DEFAULT: `var(--${name})`,
 
-    // Semantic color aliases
-    light: `var(--color-${name}-border)`,
-    lighter: `var(--color-${name}-border-hover)`,
-    lightest: `var(--color-${name}-bg)`,
+    // 背景相关
+    bg: `var(--${name}-50)`,
+    'bg-hover': `var(--${name}-100)`,
 
-    text: `var(--color-${name}-text)`,
-    'text-active': `var(--color-${name}-text-active)`,
-    'text-hover': `var(--color-${name}-text-hover)`
+    // 边框相关
+    border: `var(--${name}-200)`,
+    'border-hover': `var(--${name}-300)`,
+
+    // 交互状态
+    hover: `var(--${name}-400)`,
+    active: `var(--${name}-600)`,
+
+    // 语义别名（按深浅排序：lightest < lighter < light）
+    lightest: `var(--${name}-50)`, // 50 - 最浅
+    lighter: `var(--${name}-300)`, // 100 - 次浅
+    light: `var(--${name}-200)`, // 200 - 稍浅
+
+    // 文字相关
+    text: `var(--${name}-500)`,
+    'text-hover': `var(--${name}-400)`,
+    'text-active': `var(--${name}-700)`
   };
 }
 
@@ -131,28 +132,6 @@ function createColorPaletteVars() {
 /** Generated color palette variables */
 const colorPaletteVars = createColorPaletteVars();
 
-/**
- * Create Ant Design color palette variables
- *
- * @description
- * Generate nested color objects for each Ant Design preset color:
- * - blue: { 50, 100, 200, ..., 900 }
- * - purple: { 50, 100, 200, ..., 900 }
- * - etc.
- */
-function createAntdPaletteVars() {
-  const antdPaletteVar: Record<string, Record<string, string>> = {};
-
-  ANTD_PALETTE_NAMES.forEach(name => {
-    antdPaletteVar[name] = buildAntdPalettes(name);
-  });
-
-  return antdPaletteVar;
-}
-
-/** Generated Ant Design palette variables */
-const antdPaletteVars = createAntdPaletteVars();
-
 const textVariants = [
   'base',
   'secondary',
@@ -166,13 +145,17 @@ const textVariants = [
   'light-solid'
 ];
 
-const radiusVariants = ['lg', 'md', 'sm', 'xs'] as const;
+const radiusVariants = ['DEFAULT', 'none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', 'full'] as const;
 
 const radiusVariantsRules = radiusVariants.map(variant => {
-  if (variant === 'md') {
-    return [`radius-${variant}`, { 'border-radius': `var(--border-radius)` }];
+  if (variant === 'md' || variant === 'DEFAULT') {
+    return [`radius-${variant}`, { 'border-radius': `var(--radius)` }];
   }
-  return [`radius-${variant}`, { 'border-radius': `var(--border-radius-${variant})` }];
+
+  if (variant === 'none') {
+    return [`radius-${variant}`, { 'border-radius': 0 }];
+  }
+  return [`radius-${variant}`, { 'border-radius': `var(--radius-${variant})` }];
 }) as Rule[];
 
 const textVariantsRules = textVariants.map(variant => {
@@ -188,7 +171,7 @@ const textVariantsRules = textVariants.map(variant => {
  * @param options - The options for the preset.
  * @param globals - Whether to generate global variables, like *.border-color, body.color, body.background.
  */
-export function presetSoybeanAdmin(globals = true): Preset<PresetWind4Theme> {
+export function presetSoybeanAdmin(globals = true): Preset<PresetWind3Theme> {
   return {
     name: 'unocss-preset-soybean-admin',
     preflights: [
@@ -229,6 +212,7 @@ export function presetSoybeanAdmin(globals = true): Preset<PresetWind4Theme> {
         `
       }
     ],
+    shortcuts: allShortcuts,
     rules: [
       ...textVariantsRules,
       ...radiusVariantsRules,
@@ -292,15 +276,11 @@ export function presetSoybeanAdmin(globals = true): Preset<PresetWind4Theme> {
         })
       ]
     ],
-    shortcuts: allShortcuts,
     theme: {
       colors: {
-        // Flattened color palette variables (primary-50, success-100, etc.)
         ...colorPaletteVars,
-        // Ant Design color palette variables (blue, purple, cyan, etc.)
-        ...antdPaletteVars,
         // Layout colors (for admin layout)
-        'base-text': 'var(--color-base-text)',
+        'base-text': 'var(--color-text-base)',
         'base-bg': 'var(--color-bg-base)',
         mask: 'var(--color-bg-mask)',
         link: {
@@ -322,34 +302,170 @@ export function presetSoybeanAdmin(globals = true): Preset<PresetWind4Theme> {
         layout: 'var(--color-bg-layout)',
         nprogress: 'var(--color-nprogress)'
       },
+      fontSize: {
+        xs: ['0.75rem', '1.125rem'], // 12px / 18px
+        sm: ['0.875rem', '1.375rem'], // 14px / 22px
+        base: ['1rem', '1.5rem'], // 16px / 24px
+        lg: ['1.125rem', '1.625rem'], // 18px / 26px
+        xl: ['1.25rem', '1.75rem'], // 20px / 28px
+        '2xl': ['1.5rem', '2rem'], // 24px / 32px
+        '3xl': ['1.875rem', '2.375rem'], // 30px / 38px
+        '4xl': ['2.25rem', '2.75rem'], // 36px / 44px
+        '5xl': ['3rem', '3.5rem'], // 48px / 56px
+        '6xl': ['3.75rem', '4.25rem'], // 60px / 68px
+        '7xl': ['4.5rem', '5rem'], // 72px / 80px
+        '8xl': ['6rem', '6.5rem'], // 96px / 104px
+        '9xl': ['8rem', '8.5rem'] // 128px / 136px
+      },
+      lineHeight: {
+        xs: '1.125rem', // 18px
+        sm: '1.375rem', // 22px
+        base: '1.5rem', // 24px
+        lg: '1.625rem', // 26px
+        xl: '1.75rem', // 28px
+        '2xl': '2rem', // 32px
+        '3xl': '2.375rem', // 38px
+        '4xl': '2.75rem', // 44px
+        '5xl': '3.5rem', // 56px
+        '6xl': '4.25rem', // 68px
+        '7xl': '5rem', // 80px
+        '8xl': '6.5rem', // 104px
+        '9xl': '8.5rem' // 136px
+      },
+      width: {
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
+      },
+      height: {
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
+      },
+      maxWidth: {
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
+      },
+
+      maxHeight: {
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
+      },
+      minWidth: {
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
+      },
+      minHeight: {
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
+      },
       spacing: {
-        xxl: 'var(--size-xxl)',
-        xl: 'var(--size-xl)',
-        lg: 'var(--size-lg)',
-        md: 'var(--size-md)',
-        ms: 'var(--size-ms)',
-        sm: 'var(--size-sm)',
-        xs: 'var(--size-xs)',
-        xxs: 'var(--size-xxs)'
+        DEFAULT: '0.25rem',
+        '3xs': '0.25rem',
+        '2xs': '0.5rem',
+        xs: '0.75rem',
+        md: '1rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem',
+        '3xl': '2.5rem',
+        '4xl': '3rem',
+        '5xl': '4rem',
+        '6xl': '5rem',
+        '7xl': '6rem',
+        '8xl': '8rem',
+        '9xl': '9rem'
       },
-      text: {
-        sm: { fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-sm)' },
-        xs: { fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-sm)' },
-        '2xs': { fontSize: 'var(--font-size)', lineHeight: 'var(--line-height)' },
-        '3xs': { fontSize: 'var(--font-size-lg)', lineHeight: 'var(--line-height-lg)' },
-        '4xs': { fontSize: 'var(--font-size-xl)', lineHeight: 'var(--line-height-lg)' },
-        t1: { fontSize: 'var(--font-size-heading-1)', lineHeight: 'var(--line-height-heading-1)' },
-        t2: { fontSize: 'var(--font-size-heading-2)', lineHeight: 'var(--line-height-heading-2)' },
-        t3: { fontSize: 'var(--font-size-heading-3)', lineHeight: 'var(--line-height-heading-3)' },
-        t4: { fontSize: 'var(--font-size-heading-4)', lineHeight: 'var(--line-height-heading-4)' },
-        t5: { fontSize: 'var(--font-size-heading-5)', lineHeight: 'var(--line-height-heading-5)' },
-        icon: { fontSize: '1.125rem', lineHeight: '1.125rem' },
-        'icon-large': { fontSize: '1.5rem', lineHeight: '1.5rem' },
-        'icon-small': { fontSize: '1rem', lineHeight: '1rem' },
-        'icon-xl': { fontSize: '2rem', lineHeight: '2rem' },
-        'icon-xs': { fontSize: '0.875rem', lineHeight: '0.875rem' }
+      borderRadius: {
+        DEFAULT: '0.375rem',
+        none: '0',
+        xs: '0.125rem',
+        sm: '0.25rem',
+        md: '0.375rem',
+        lg: '0.5rem',
+        xl: '0.75rem',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        '4xl': '2rem',
+        full: '9999px'
       },
-      shadow: {
+      boxShadow: {
         float: `0 6px 16px 0 rgb(0 0 0 / 8%),
           0 3px 6px -4px rgb(0 0 0 / 12%),
           0 9px 28px 8px rgb(0 0 0 / 5%)`,
@@ -362,8 +478,6 @@ export function presetSoybeanAdmin(globals = true): Preset<PresetWind4Theme> {
 }
 
 export { colorPaletteNumbers, colorPaletteVars, createColorPaletteVars, createColorsPalette, themeColorKeys };
-
-export { antdPaletteVars, createAntdPaletteVars };
 
 export { generateCSSVars, generateGlobalStyles };
 

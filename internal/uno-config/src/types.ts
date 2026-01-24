@@ -118,6 +118,13 @@ export interface ThemeOptions {
    * @default 0.5
    */
   radius?: number | false;
+  /**
+   * custom root selector for CSS variables
+   *
+   * @default ':root'
+   * @example '.root' - generates CSS vars under .root class instead of :root
+   */
+  rootSelector?: string;
   /** sidebar color */
   sidebar?: SidebarColorOfThemeCssVarsVariant;
 }

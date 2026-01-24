@@ -46,7 +46,6 @@ const ThemeEffect = () => {
 
   // Watch theme colors change, update css vars and storage theme color
   useEffect(() => {
-    setupThemeVarsToGlobal();
     localStg.set('themeColor', themeColors.primary);
   }, [themeColors]);
 

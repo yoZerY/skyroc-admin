@@ -1,5 +1,4 @@
 import { colorNames } from '../constant';
-
 import { getHex, getHsl, getRgb } from './colord';
 
 /**

@@ -15,7 +15,7 @@ interface PortalProps {
   tagName?: keyof HTMLElementTagNameMap;
 }
 
-function Portal(props: PortalProps) {
+const Portal = (props: PortalProps) => {
   const { autoCreate = false, children, container, fallback = null, tagName = 'div' } = props;
 
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
@@ -69,6 +69,6 @@ function Portal(props: PortalProps) {
   }
 
   return createPortal(children, targetElement);
-}
+};
 
 export default Portal;

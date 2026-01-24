@@ -1,5 +1,5 @@
 import { presetSoybeanAdmin } from '@sa/uno-config';
-import { defineConfig, presetWind4, transformerDirectives, transformerVariantGroup } from 'unocss';
+import { defineConfig, presetWind3, transformerDirectives, transformerVariantGroup } from 'unocss';
 
 export default defineConfig({
   content: {
@@ -9,12 +9,9 @@ export default defineConfig({
     filesystem: ['../../ui-kit/ui']
   },
   presets: [
-    presetWind4({
-      dark: 'class',
-      variablePrefix: ''
-    }),
+    presetWind3({ dark: 'class', variablePrefix: '', important: '.root', preflight: 'on-demand' }),
     presetSoybeanAdmin()
   ],
-  rules: [[/^h-calc\((.*)\)$/, ([, d]) => ({ height: `calc(${d})px` })]],
+
   transformers: [transformerDirectives(), transformerVariantGroup()]
 });

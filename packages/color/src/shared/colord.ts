@@ -90,4 +90,42 @@ export function isWhiteColor(color: AnyColor) {
   return colord(color).isEqual('#ffffff');
 }
 
+/**
+ * Adjust color lightness
+ *
+ * @param color - Color
+ * @param amount - Amount to adjust (-100 to 100), positive = lighter, negative = darker
+ */
+export function adjustLightness(color: AnyColor, amount: number) {
+  const c = colord(color);
+  if (amount > 0) {
+    return c.lighten(amount / 100).toHex();
+  }
+  return c.darken(Math.abs(amount) / 100).toHex();
+}
+
+/**
+ * Lighten a color
+ *
+ * @param color - Color
+ * @param amount - Amount to lighten (0 - 100)
+ */
+export function lightenColor(color: AnyColor, amount: number) {
+  return colord(color)
+    .lighten(amount / 100)
+    .toHex();
+}
+
+/**
+ * Darken a color
+ *
+ * @param color - Color
+ * @param amount - Amount to darken (0 - 100)
+ */
+export function darkenColor(color: AnyColor, amount: number) {
+  return colord(color)
+    .darken(amount / 100)
+    .toHex();
+}
+
 export { colord };

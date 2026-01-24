@@ -226,12 +226,13 @@ export function generateCSSVars(theme: ThemeOptions, onlyOne = true): string {
     darkSelector = '.dark',
     feedbackColor = createBuiltinFeedbackColorTheme(),
     radius = 0.5,
+    rootSelector = ':root',
     sidebar = createBuiltinSidebarColorTheme()
   } = theme;
 
   if (!color) {
     if (radius) {
-      return `:root { ${getRadiusCSSVarsStyles(radius)} }`;
+      return `${rootSelector} { ${getRadiusCSSVarsStyles(radius)} }`;
     }
     return '';
   }
@@ -242,9 +243,9 @@ export function generateCSSVars(theme: ThemeOptions, onlyOne = true): string {
 
   const addThemeName = themeName && themeName !== 'default';
 
-  const themeSelector = addThemeName ? `.theme-${themeName}` : ':root';
+  const themeSelector = addThemeName ? `.theme-${themeName}` : rootSelector;
 
-  const darkThemeSelector = addThemeName ? `.theme-${themeName}${darkSelector}` : darkSelector;
+  const darkThemeSelector = addThemeName ? `.theme-${themeName}${darkSelector}` : `${rootSelector}${darkSelector}`;
 
   const darkThemeCSSVars = getColorCSSVars({ ...feedbackColor.dark, ...dark, ...sidebar.dark });
 

@@ -5,9 +5,7 @@ export const Route = createFileRoute('/(admin)/manage')({
   staticData: {
     title: 'manage',
     i18nKey: 'route.manage',
-    route: {
-      permissions: ['R_ADMIN']
-    },
+    permissions: ['R_ADMIN'],
     menu: {
       order: 9,
       icon: 'carbon:cloud-service-management'
