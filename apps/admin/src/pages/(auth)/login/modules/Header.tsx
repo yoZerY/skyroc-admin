@@ -8,16 +8,16 @@ const Header = memo(() => {
 
   return (
     <header className="flex-y-center justify-between">
-      <SystemLogo className="h-64px w-64px text-primary lt-sm:h-48px lt-sm:w-48px" />
+      <SystemLogo className="size-5xl text-primary lt-sm:size-4xl" />
 
       <FlipText
-        className="text-28px text-primary font-500 lt-sm:text-22px"
+        className="text-3xl text-primary font-500 lt-sm:text-2xl"
         word={t('system.title')}
       />
 
       <div className="i-flex-col">
         <ThemeSchemaSwitch
-          className="text-20px lt-sm:text-18px"
+          className="text-xl lt-sm:text-lg"
           showTooltip={false}
         />
         <LangSwitch showTooltip={false} />
