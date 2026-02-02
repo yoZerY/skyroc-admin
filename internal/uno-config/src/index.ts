@@ -1,5 +1,4 @@
 import type { Preset, PresetWind3Theme, Rule } from 'unocss';
-import { generateCSSVars, generateGlobalStyles } from './generate';
 import { allShortcuts } from './shortcuts';
 import themes from './theme.json';
 import type { PresetShadcnOptions, ThemeColorKey, ThemeConfig, ThemeConfigColor, ThemeOptions } from './types';
@@ -171,9 +170,9 @@ const textVariantsRules = textVariants.map(variant => {
  * @param options - The options for the preset.
  * @param globals - Whether to generate global variables, like *.border-color, body.color, body.background.
  */
-export function presetSoybeanAdmin(globals = true): Preset<PresetWind3Theme> {
+export function presetSoybeanAdmin(): Preset<PresetWind3Theme> {
   return {
-    name: 'unocss-preset-soybean-admin',
+    name: 'unocss-preset-skyroc-admin',
     preflights: [
       {
         getCSS: () => `
@@ -183,10 +182,6 @@ export function presetSoybeanAdmin(globals = true): Preset<PresetWind3Theme> {
           @keyframes shadcn-collapsible-up { from{ height: var(--radix-collapsible-content-height)} to { height: 0 } }
           @keyframes enter-x-animation { to { opacity: 1; transform: translateX(0); } }
           @keyframes enter-y-animation { to { opacity: 1; transform: translateY(0); } }
-
-
-
-          ${globals ? generateGlobalStyles() : ''}
         `
       },
       {
@@ -478,8 +473,6 @@ export function presetSoybeanAdmin(globals = true): Preset<PresetWind3Theme> {
 }
 
 export { colorPaletteNumbers, colorPaletteVars, createColorPaletteVars, createColorsPalette, themeColorKeys };
-
-export { generateCSSVars, generateGlobalStyles };
 
 export { textVariants };
 

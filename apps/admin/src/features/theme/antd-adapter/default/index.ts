@@ -3,9 +3,7 @@ import type { MapToken, PresetColorType, SeedToken } from 'antd/lib/theme/interf
 
 import { defaultPresetColors } from '../seed';
 import genColorMapToken, {
-  ANTD_INDEXES,
   FUNCTIONAL_SEMANTIC_CONFIG,
-  TAILWIND_INDEXES,
   genPaletteVars,
   genSemanticColors
 } from '../shared/genColorMapToken';

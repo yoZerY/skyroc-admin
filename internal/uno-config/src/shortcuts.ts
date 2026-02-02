@@ -55,9 +55,9 @@ export const textShortcuts: UserShortcuts = [
 export const commonShortcuts: UserShortcuts = [
   {
     'card-wrapper': 'rd-8px shadow-sm',
-    card: 'bg-container rounded-xl  border border-border gap-2xs  flex-col items-stretch px-md py-md',
-    'card-sm': 'bg-container rounded-lg border border-border gap-xs  flex-col items-stretch px-xs py-xs',
-    'card-lg': 'bg-container rounded-2xl border border-border gap  flex-col items-stretch px-xl py-xl'
+    card: 'bg-container rounded-xl  shadow-md gap-2xs  flex-col items-stretch px-md py-md',
+    'card-sm': 'bg-container rounded-lg shadow-md gap-xs  flex-col items-stretch px-xs py-xs',
+    'card-lg': 'bg-container rounded-2xl shadow-md gap-xl  flex-col items-stretch px-xl py-xl'
   }
 ];
 /** All shortcuts */

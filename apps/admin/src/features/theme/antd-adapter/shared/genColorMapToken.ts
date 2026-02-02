@@ -84,7 +84,6 @@ interface GenSemanticColorsOptions {
  * - 'primary' → 'Primary'
  */
 function normalizeColorName(name: string): string {
-  console.log('name', name);
   // 移除 'color' 前缀
   let normalized = name.startsWith('color') ? name.slice(5) : name;
   // 首字母大写
@@ -124,7 +123,7 @@ export function genSemanticColors({ colors, config, name }: GenSemanticColorsOpt
     [`color${colorName}Text`]: colors[config.text],
     [`color${colorName}TextActive`]: colors[config.textActive],
     [`color${colorName}TextHover`]: colors[config.textHover]
-  };
+  } as Record<string, string>;
 }
 
 /**
@@ -137,14 +136,13 @@ export function genPaletteVars(name: string, colors: ColorMap): Record<string, s
 
   // antd 格式: name-1 到 name-10 和 name1 到 name10
   for (const i of ANTD_INDEXES) {
-    result[`${colorName}-${i}`] = colors[i];
-    result[`${colorName}${i}`] = colors[i];
+    result[`${colorName}-${i}`] = colors[i] || '';
+    result[`${colorName}${i}`] = colors[i] || '';
   }
 
   // Tailwind 格式: colorName-50 到 colorName-950
   for (const i of TAILWIND_INDEXES) {
-    result[`${colorName}-${i}`] = colors[i];
-    result[`colors-${colorName}-${i}`] = colors[i];
+    result[`${colorName}-${i}`] = colors[i] || '';
   }
 
   return result;
