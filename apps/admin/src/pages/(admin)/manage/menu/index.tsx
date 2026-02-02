@@ -244,7 +244,7 @@ function RouteComponent() {
             清除所有消息
           </Button>
         </Space>
-        <div className="mt-4 p-3 text-sm bg-blue-50 dark:bg-blue-950 rounded-md text-blue-800 dark:text-blue-200">
+        <div className="mt-4 p-3 text-sm bg-blue-50  rounded-md text-blue-800 ">
           <strong>提示：</strong>Message 组件用于轻量级的反馈信息，会在顶部居中显示，3 秒后自动消失。
         </div>
       </Card>
@@ -273,7 +273,7 @@ function RouteComponent() {
             清除所有通知
           </Button>
         </Space>
-        <div className="mt-4 p-3 text-sm bg-green-50 dark:bg-green-950 rounded-md text-green-800 dark:text-green-200">
+        <div className="mt-4 p-3 text-sm bg-green-50  rounded-md text-green-800 ">
           <strong>提示：</strong>Notification 组件用于较为复杂的通知内容，默认在右上角显示，包含标题和描述，4.5 秒后自动消失。
         </div>
       </Card>
@@ -300,7 +300,7 @@ function RouteComponent() {
           </Button>
           <Button onClick={handleWarningModal}>警告对话框</Button>
         </Space>
-        <div className="mt-4 p-3 text-sm bg-orange-50 dark:bg-orange-950 rounded-md text-orange-800 dark:text-orange-200">
+        <div className="mt-4 p-3 text-sm bg-orange-50 rounded-md text-orange-800 ">
           <strong>提示：</strong>Modal 组件用于需要用户确认或交互的场景，会阻止页面交互直到用户关闭对话框。
         </div>
       </Card>
@@ -318,7 +318,7 @@ function RouteComponent() {
         <Button size="large" type="primary" onClick={handleComprehensiveTest}>
           🚀 执行综合测试流程
         </Button>
-        <div className="mt-4 p-3 text-sm bg-purple-50 dark:bg-purple-950 rounded-md text-purple-800 dark:text-purple-200">
+        <div className="mt-4 p-3 text-sm bg-purple-50  rounded-md text-purple-800 ">
           <strong>说明：</strong>
           综合测试会依次展示多个组件的组合使用场景，模拟真实的业务流程。点击按钮后请注意观察各个组件的展示顺序和交互效果。
         </div>
