@@ -14,29 +14,30 @@ export const LIGHT_TEXT_BASE = '#1F1F1F';
  */
 export const generateColorPalettes: GenerateColorMap = (baseColor: string): ColorMap => {
   const { palettes } = generateOklchPaletteEx(baseColor);
+  const [p50, p100, p200, p300, p400, p500, p600, p700, p800, p900, p950] = palettes;
 
   return {
-    1: palettes[0].hex, // 50 - 最浅背景
-    2: palettes[1].hex, // 100 - 背景悬停
-    3: palettes[2].hex, // 200 - 边框
-    4: palettes[3].hex, // 300 - 边框悬停
-    5: palettes[4].hex, // 400 - 悬停色
-    6: palettes[5].hex, // 500 - 主色 ★
-    7: palettes[6].hex, // 600 - 激活色
-    8: palettes[7].hex, // 700 - 文字悬停
-    9: palettes[8].hex, // 800 - 文字色
-    10: palettes[9].hex, // 900 - 文字激活
-    50: palettes[0].hex,
-    100: palettes[1].hex,
-    200: palettes[2].hex,
-    300: palettes[3].hex,
-    400: palettes[4].hex,
-    500: palettes[5].hex,
-    600: palettes[6].hex,
-    700: palettes[7].hex,
-    800: palettes[8].hex,
-    900: palettes[9].hex,
-    950: palettes[10].hex
+    1: p50.hex, // 50 - 最浅背景
+    2: p100.hex, // 100 - 背景悬停
+    3: p200.hex, // 200 - 边框
+    4: p300.hex, // 300 - 边框悬停
+    5: p400.hex, // 400 - 悬停色
+    6: p500.hex, // 500 - 主色 ★
+    7: p600.hex, // 600 - 激活色
+    8: p700.hex, // 700 - 文字悬停
+    9: p800.hex, // 800 - 文字色
+    10: p900.hex, // 900 - 文字激活
+    50: p50.hex,
+    100: p100.hex,
+    200: p200.hex,
+    300: p300.hex,
+    400: p400.hex,
+    500: p500.hex,
+    600: p600.hex,
+    700: p700.hex,
+    800: p800.hex,
+    900: p900.hex,
+    950: p950.hex
   };
 };
 
