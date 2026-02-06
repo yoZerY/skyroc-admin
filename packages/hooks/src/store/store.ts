@@ -40,11 +40,13 @@ export class Store<S> {
   getSnapshot = (): S => this.state;
 
   /**
-   * 统一状态更新入口
+   * 全量状态更新
    *
    * - 支持直接传值：`this.setState(nextState)`
    * - 支持 updater 函数：`this.setState(prev => newState)`
    * - Object.is 防止无意义更新
+   *
+   * 适用于任意状态类型（原始值、数组、对象）
    */
   protected setState(nextOrUpdater: StateUpdater<S>) {
     const next = typeof nextOrUpdater === 'function' ? (nextOrUpdater as (prev: S) => S)(this.state) : nextOrUpdater;
@@ -53,6 +55,18 @@ export class Store<S> {
 
     this.state = next;
     this.emit();
+  }
+
+  /**
+   * 局部状态更新（仅适用于对象类型的状态）
+   *
+   * - 支持直接传 partial：`this.patchState({ count: 1 })`
+   * - 支持 updater 函数：`this.patchState(prev => ({ count: prev.count + 1 }))`
+   * - 自动与当前状态合并，只需传入要修改的字段
+   */
+  protected patchState(patch: Partial<S> | ((prev: S) => Partial<S>)) {
+    const partial = typeof patch === 'function' ? patch(this.state) : patch;
+    this.setState({ ...this.state, ...partial } as S);
   }
 
   /** 通知所有订阅者 */
