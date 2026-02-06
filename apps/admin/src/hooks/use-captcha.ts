@@ -1,3 +1,5 @@
+import { useLoading } from '@skyroc/hooks';
+
 import { REG_PHONE } from '@/constants/reg';
 
 import useCountDownTimer from './use-count-down-timer';

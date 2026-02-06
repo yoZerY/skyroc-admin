@@ -3,6 +3,7 @@ packages:
   - "packages/*"
   - "packages/@core/*"
   - "packages/web/*"
+  - "packages/adapter/*"
   - "ui-kit/*"
   - "internal/*"
 

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { localStg } from '@/utils/storage';
 
-import { addThemeVarsToGlobal, createThemeToken, toggleAuxiliaryColorModes, toggleCssDarkMode } from '../shared';
+import { toggleAuxiliaryColorModes, toggleCssDarkMode } from '../shared';
 import { useSettingsTheme } from '../useSettingsTheme';
 
 const ThemeEffect = () => {
@@ -17,12 +17,6 @@ const ThemeEffect = () => {
 
     localStg.set('themeSettings', settings);
   };
-
-  /** Setup theme vars to global */
-  function setupThemeVarsToGlobal() {
-    const { darkThemeTokens, themeTokens } = createThemeToken(themeColors, settings.tokens, settings.recommendColor);
-    addThemeVarsToGlobal(themeTokens, darkThemeTokens);
-  }
 
   // Cache theme settings when page is closed or refreshed
   useEffect(() => {

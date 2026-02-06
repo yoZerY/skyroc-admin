@@ -1,3 +1,4 @@
+import { useArray } from '@skyroc/hooks';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import SkyrocAvatar from '@/components/SkyrocAvatar';
@@ -18,6 +19,8 @@ const ProjectNews = () => {
     { content: t('page.home.projectNews.desc4'), id: 4, time: '2022-11-03 20:33:31' },
     { content: t('page.home.projectNews.desc5'), id: 5, time: '2021-11-07 22:45:32' }
   ]);
+
+  console.log(newses, 'newses');
 
   const sortByTimeDesc = () => {
     sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());

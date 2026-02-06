@@ -1,4 +1,5 @@
 import { useLang } from '@/features/lang/use-lang';
+import { useEcharts } from '@/hooks/use-echarts';
 
 const LineChart = () => {
   const { t } = useTranslation();

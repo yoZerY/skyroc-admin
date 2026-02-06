@@ -7,7 +7,6 @@
 export {}
 declare global {
   const AApp: typeof import('antd').App
-  const AAvatar: typeof import('antd').Avatar
   const ABadge: typeof import('antd').Badge
   const ABreadcrumb: typeof import('antd').Breadcrumb
   const AButton: typeof import('antd').Button
@@ -28,14 +27,12 @@ declare global {
   const AList: typeof import('antd').List
   const AMenu: typeof import('antd').Menu
   const AModal: typeof import('antd').Modal
-  const APopconfirm: typeof import('antd').Popconfirm
   const ARow: typeof import('antd').Row
   const ASegmented: typeof import('antd').Segmented
   const ASelect: typeof import('antd').Select
   const ASpace: typeof import('antd').Space
   const AStatistic: typeof import('antd').Statistic
   const ASwitch: typeof import('antd').Switch
-  const ATabs: typeof import('antd').Tabs
   const ATag: typeof import('antd').Tag
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark
@@ -107,18 +104,14 @@ declare global {
   const use: typeof import('react').use
   const useActionState: typeof import('react').useActionState
   const useAntdTable: typeof import('ahooks').useAntdTable
-  const useArray: typeof import('../hooks/use-array').default
   const useAsyncEffect: typeof import('ahooks').useAsyncEffect
   const useBoolean: typeof import('ahooks').useBoolean
   const useCallback: typeof import('react').useCallback
-  const useCaptcha: typeof import('../hooks/use-captcha').useCaptcha
   const useClickAway: typeof import('ahooks').useClickAway
   const useContext: typeof import('react').useContext
   const useControllableValue: typeof import('ahooks').useControllableValue
   const useCookieState: typeof import('ahooks').useCookieState
-  const useCopy: typeof import('../hooks/use-copy').default
   const useCountDown: typeof import('ahooks').useCountDown
-  const useCountDownTimer: typeof import('../hooks/use-count-down-timer').default
   const useCounter: typeof import('ahooks').useCounter
   const useCreation: typeof import('ahooks').useCreation
   const useDebounce: typeof import('ahooks').useDebounce
@@ -132,7 +125,6 @@ declare global {
   const useDrag: typeof import('ahooks').useDrag
   const useDrop: typeof import('ahooks').useDrop
   const useDynamicList: typeof import('ahooks').useDynamicList
-  const useEcharts: typeof import('../hooks/use-echarts').useEcharts
   const useEffect: typeof import('react').useEffect
   const useEffectEvent: typeof import('react').useEffectEvent
   const useEventEmitter: typeof import('ahooks').useEventEmitter
@@ -156,7 +148,6 @@ declare global {
   const useKeyPress: typeof import('ahooks').useKeyPress
   const useLatest: typeof import('ahooks').useLatest
   const useLayoutEffect: typeof import('react').useLayoutEffect
-  const useLoading: typeof import('../hooks/use-loading').default
   const useLocalStorageState: typeof import('ahooks').useLocalStorageState
   const useLockFn: typeof import('ahooks').useLockFn
   const useLongPress: typeof import('ahooks').useLongPress
@@ -167,10 +158,8 @@ declare global {
   const useMouse: typeof import('ahooks').useMouse
   const useMutationObserver: typeof import('ahooks').useMutationObserver
   const useNetwork: typeof import('ahooks').useNetwork
-  const useNow: typeof import('../hooks/use-now').useNow
   const useOptimistic: typeof import('react').useOptimistic
   const usePagination: typeof import('ahooks').usePagination
-  const usePreferredColorScheme: typeof import('../hooks/use-preferred-color-scheme').usePreferredColorScheme
   const usePrevious: typeof import('ahooks').usePrevious
   const useRafInterval: typeof import('ahooks').useRafInterval
   const useRafState: typeof import('ahooks').useRafState
@@ -215,12 +204,6 @@ declare global {
   // @ts-ignore
   export type { FC } from 'react'
   import('react')
-  // @ts-ignore
-  export type { ECOption } from '../hooks/use-echarts'
-  import('../hooks/use-echarts')
-  // @ts-ignore
-  export type { ThemeName } from '../hooks/use-preferred-color-scheme'
-  import('../hooks/use-preferred-color-scheme')
   // @ts-ignore
   export type { IconHoverAnimation, ButtonIconProps } from '../components/ButtonIcon'
   import('../components/ButtonIcon')

@@ -1,4 +1,5 @@
 import { getPaletteColorByNumber } from '@skyroc/color';
+import { useNow, usePreferredColorScheme } from '@skyroc/hooks/web';
 import dayjs from 'dayjs';
 import { atom, useAtom } from 'jotai';
 import { useMemo } from 'react';

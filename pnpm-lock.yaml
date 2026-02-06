@@ -317,12 +317,18 @@ importers:
       '@better-scroll/core':
         specifier: catalog:web
         version: 2.5.1
+      '@skyroc/adapter-antd-theme':
+        specifier: workspace:*
+        version: link:../../packages/adapter/antd-theme
       '@skyroc/axios':
         specifier: workspace:*
         version: link:../../packages/@core/axios
       '@skyroc/color':
         specifier: workspace:*
         version: link:../../packages/@core/color
+      '@skyroc/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@skyroc/logger':
         specifier: workspace:*
         version: link:../../packages/@core/logger
@@ -335,6 +341,9 @@ importers:
       '@skyroc/utils':
         specifier: workspace:*
         version: link:../../packages/@core/utils
+      '@skyroc/web-antd-theme':
+        specifier: workspace:*
+        version: link:../../packages/web/antdtheme
       '@tanstack/react-query':
         specifier: catalog:core
         version: 5.90.12(react@19.2.3)
@@ -688,6 +697,28 @@ importers:
         specifier: catalog:dev
         version: 4.2.2
 
+  packages/adapter/antd-theme:
+    dependencies:
+      '@skyroc/color':
+        specifier: workspace:*
+        version: link:../../@core/color
+      antd:
+        specifier: '>=5.0.0'
+        version: 6.1.1(date-fns@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+
+  packages/hooks:
+    dependencies:
+      ahooks:
+        specifier: catalog:utils
+        version: 3.9.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+    devDependencies:
+      '@skyroc/tsconfig':
+        specifier: workspace:*
+        version: link:../../internal/tsconfig
+      react:
+        specifier: catalog:core
+        version: 19.2.3
+
   packages/i18n:
     dependencies:
       '@skyroc/storage':
@@ -719,6 +750,24 @@ importers:
       '@skyroc/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig
+
+  packages/web/antdtheme:
+    dependencies:
+      '@skyroc/color':
+        specifier: workspace:*
+        version: link:../../@core/color
+      antd:
+        specifier: catalog:web
+        version: 6.1.1(date-fns@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      defu:
+        specifier: catalog:utils
+        version: 6.1.4
+      jotai:
+        specifier: catalog:core
+        version: 2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
+      react:
+        specifier: '>=19.0.0'
+        version: 19.2.3
 
   packages/web/materials:
     dependencies:
