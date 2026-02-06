@@ -12,6 +12,7 @@ export default function useCountDownTimer(seconds: number) {
   const [countdown] = useCountDown({ targetDate: fps });
 
   const count = Math.round(countdown / 1000);
+
   const isCounting = countdown > 0;
 
   function start(updateSeconds: number = seconds) {

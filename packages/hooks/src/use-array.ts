@@ -1,145 +1,146 @@
-import { useState } from 'react';
+import { useCreation } from 'ahooks';
+import { Store, useStore } from './store';
 
-type ArrayState<T> = T[];
+/**
+ * 数组状态引擎
+ *
+ * 所有数组操作逻辑集中在 class 中，
+ * 外部通过 useArray hook 桥接 React 渲染。
+ */
+class ArrayStore<T, K extends keyof T> extends Store<T[]> {
+  /** 初始状态（用于 reset） */
+  private readonly initialState: T[];
 
-type ArrayActions<T, K extends keyof T> = {
-  clear: () => void;
-  down: (itemKey: T[K]) => void;
-  findItem: (elementKey: T[K]) => T | undefined;
-  pop: () => void;
-  push: (...newItems: T[]) => void;
-  remove: (itemKey: T[K]) => void;
-  reset: () => void;
-  reverse: () => void;
-  shift: () => void;
-  sort: (compareFn?: (a: T, b: T) => number) => void;
-  splice: (start: number, deleteCount?: number, ...items: T[]) => void;
-  unshift: (...newItems: T[]) => void;
-  up: (itemKey: T[K]) => void;
-  updateState: (newState: T[] | ((prevState: T[]) => T[])) => void;
-};
+  /** 用于唯一标识元素的 key 字段 */
+  private readonly resolvedKey: K;
 
-export default function useArray<T, K extends keyof T>(initState: T[], key?: K): [ArrayState<T>, ArrayActions<T, K>] {
-  const [state, setState] = useState(initState);
-
-  const resolvedKey = (key ?? 'id') as K;
-
-  function updateState(newState: T[] | ((prevState: T[]) => T[])) {
-    setState(newState);
+  constructor(initState: T[], key?: K) {
+    super(initState);
+    this.initialState = initState;
+    this.resolvedKey = (key ?? 'id') as K;
   }
 
-  function push(...newItems: T[]) {
-    setState(prevState => {
-      // 确保新添加的元素的 key 是唯一的
-      const newState = [...prevState, ...newItems];
-      return newState.filter(
-        (item, index, self) => index === self.findIndex(t => t[resolvedKey] === item[resolvedKey])
-      );
-    });
-  }
-
-  function unshift(...newItems: T[]) {
-    setState(prevState => {
-      // 确保新添加的元素的 key 是唯一的
-      const newState = [...newItems, ...prevState];
-      return newState.filter(
-        (item, index, self) => index === self.findIndex(t => t[resolvedKey] === item[resolvedKey])
-      );
-    });
-  }
-
-  function remove(itemKey: T[K]) {
-    setState(prevState => prevState.filter(i => i[resolvedKey] !== itemKey));
-  }
-
-  /** 上移 */
-  function up(itemKey: T[K]) {
-    setState(prevState => {
-      const index = prevState.findIndex(i => i[resolvedKey] === itemKey);
-
-      // 如果该元素在第一个位置，就不能上移
-      if (index <= 0) return prevState;
-
-      // 交换当前元素与上一个元素的位置
-      const newState = [...prevState];
-
-      [newState[index], newState[index - 1]] = [newState[index - 1], newState[index]];
-
-      return newState;
-    });
-  }
-
-  /** 下移 */
-  function down(itemKey: T[K]) {
-    setState(prevState => {
-      const index = prevState.findIndex(i => i[resolvedKey] === itemKey);
-
-      // 如果该元素已经在最后一个位置或找不到该元素，就不能下移
-      if (index === prevState.length - 1 || index === -1) return prevState;
-
-      // 交换当前元素与下一个元素的位置
-      const newState = [...prevState];
-
-      [newState[index], newState[index + 1]] = [newState[index + 1], newState[index]];
-
-      return newState;
-    });
-  }
-
-  function pop() {
-    setState(prevState => prevState.slice(0, -1));
-  }
-
-  function shift() {
-    setState(prevState => prevState.slice(1));
-  }
-
-  function reverse() {
-    setState(prevState => [...prevState].reverse());
-  }
-
-  function sort(compareFn?: (a: T, b: T) => number) {
-    setState(prevState => [...prevState].sort(compareFn));
-  }
-
-  function splice(start: number, deleteCount?: number, ...items: T[]) {
-    const end = deleteCount ?? 0;
-    setState(prevState => {
-      const newState = [...prevState];
-      newState.splice(start, end, ...items);
-      return newState;
-    });
-  }
-
-  function clear() {
-    setState([]);
-  }
-
-  function reset() {
-    setState(initState);
-  }
-
-  function findItem(elementKey: T[K]) {
-    return state.find(item => item[resolvedKey] === elementKey);
-  }
-
-  return [
-    state,
-    {
-      clear,
-      down,
-      findItem,
-      pop,
-      push,
-      remove,
-      reset,
-      reverse,
-      shift,
-      sort,
-      splice,
-      unshift,
-      up,
-      updateState
+  /** 直接更新状态 */
+  updateState(newState: T[] | ((prevState: T[]) => T[])) {
+    if (typeof newState === 'function') {
+      this.setState(prev => (newState as (prevState: T[]) => T[])(prev));
+    } else {
+      this.setState(newState);
     }
-  ];
+  }
+
+  /** 尾部追加（按 key 去重） */
+  push(...newItems: T[]) {
+    this.setState(prev => {
+      const merged = [...prev, ...newItems];
+      return merged.filter(
+        (item, index, self) => index === self.findIndex(t => t[this.resolvedKey] === item[this.resolvedKey])
+      );
+    });
+  }
+
+  /** 头部追加（按 key 去重） */
+  unshift(...newItems: T[]) {
+    this.setState(prev => {
+      const merged = [...newItems, ...prev];
+      return merged.filter(
+        (item, index, self) => index === self.findIndex(t => t[this.resolvedKey] === item[this.resolvedKey])
+      );
+    });
+  }
+
+  /** 按 key 移除元素 */
+  remove(itemKey: T[K]) {
+    this.setState(prev => prev.filter(i => i[this.resolvedKey] !== itemKey));
+  }
+
+  /** 上移元素 */
+  up(itemKey: T[K]) {
+    this.setState(prev => {
+      const index = prev.findIndex(i => i[this.resolvedKey] === itemKey);
+
+      if (index <= 0) return prev;
+
+      const next = [...prev];
+      [next[index], next[index - 1]] = [next[index - 1], next[index]];
+
+      return next;
+    });
+  }
+
+  /** 下移元素 */
+  down(itemKey: T[K]) {
+    this.setState(prev => {
+      const index = prev.findIndex(i => i[this.resolvedKey] === itemKey);
+
+      if (index === prev.length - 1 || index === -1) return prev;
+
+      const next = [...prev];
+      [next[index], next[index + 1]] = [next[index + 1], next[index]];
+
+      return next;
+    });
+  }
+
+  /** 移除末尾元素 */
+  pop() {
+    this.setState(prev => prev.slice(0, -1));
+  }
+
+  /** 移除首部元素 */
+  shift() {
+    this.setState(prev => prev.slice(1));
+  }
+
+  /** 反转数组 */
+  reverse() {
+    this.setState(prev => [...prev].reverse());
+  }
+
+  /** 排序数组 */
+  sort(compareFn?: (a: T, b: T) => number) {
+    this.setState(prev => [...prev].sort(compareFn));
+  }
+
+  /** 拼接数组 */
+  splice(start: number, deleteCount?: number, ...items: T[]) {
+    const end = deleteCount ?? 0;
+    this.setState(prev => {
+      const next = [...prev];
+      next.splice(start, end, ...items);
+      return next;
+    });
+  }
+
+  /** 清空数组 */
+  clear() {
+    this.setState([]);
+  }
+
+  /** 重置为初始状态 */
+  reset() {
+    this.setState(this.initialState);
+  }
+
+  /** 按 key 查找元素（直接读取 class 内部状态，不依赖 React 渲染周期） */
+  findItem(elementKey: T[K]) {
+    return this.state.find(item => item[this.resolvedKey] === elementKey);
+  }
+}
+
+/**
+ * 数组状态管理 hook
+ *
+ * Class 管逻辑（ArrayStore），Hook 管渲染（useStore）。
+ *
+ * @param initState - 初始数组
+ * @param key - 用于唯一标识元素的字段名，默认 'id'
+ * @returns [当前状态, store 实例]
+ */
+export default function useArray<T, K extends keyof T>(initState: T[], key?: K): [T[], ArrayStore<T, K>] {
+  const store = useCreation(() => new ArrayStore(initState, key), []);
+
+  const state = useStore(store);
+
+  return [state, store];
 }

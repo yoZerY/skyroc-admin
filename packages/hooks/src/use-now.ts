@@ -7,7 +7,9 @@ import { useRef, useState } from 'react';
  */
 export function useNow(interval = 1000) {
   const [now, setNow] = useState(() => new Date());
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const pausedRef = useRef(false);
 
   function pause() {
