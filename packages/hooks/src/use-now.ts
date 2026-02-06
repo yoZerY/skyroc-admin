@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useCreation } from 'ahooks';
 import { Store, useStore } from './store';
 
@@ -37,15 +38,33 @@ class NowStore extends Store<Date> {
   };
 }
 
+interface UseNowOptions {
+  /** 是否在初始化时立即开始计时，默认 true */
+  immediate?: boolean;
+
+  /** 更新间隔（毫秒），默认 1000 */
+  interval?: number;
+}
+
 /**
  * 当前时间 hook
  *
  * Class 管逻辑（NowStore），Hook 管渲染（useStore）。
  *
- * @param interval - 更新间隔（毫秒），默认 1000
+ * @param options - 配置项
  */
-export function useNow(interval = 1000) {
+export function useNow(options: UseNowOptions = {}) {
+  const { immediate = true, interval = 1000 } = options;
+
   const store = useCreation(() => new NowStore(interval), []);
+
+  useEffect(() => {
+    if (immediate) {
+      store.resume();
+    }
+
+    return () => store.pause();
+  }, [store, immediate]);
 
   const now = useStore(store);
 
