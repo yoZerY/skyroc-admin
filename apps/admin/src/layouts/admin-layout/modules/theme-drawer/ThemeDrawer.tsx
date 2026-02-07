@@ -1,4 +1,4 @@
-import { ScrollArea } from '@skyroc/ui';
+import { ScrollArea } from '../../../../../../../packages/ui/primitives/src';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { themeTabsOptions } from '@/constants/app';

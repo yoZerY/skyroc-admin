@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ScrollArea } from '@skyroc/ui';
+import { ScrollArea } from '../../../../../../../../packages/ui/primitives/src';
 import type { MenuProps } from 'antd';
 import clsx from 'clsx';
 

@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@radix-ui/react-scroll-area": "catalog:ui-shared",
+    "@radix-ui/react-tooltip": "catalog:ui-shared",
     "@skyroc/color": "workspace:*",
     "@skyroc/utils": "workspace:*",
     "react": "catalog:core",

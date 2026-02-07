@@ -47,7 +47,7 @@
     "@skyroc/materials": "workspace:*",
     "@skyroc/ui": "workspace:*",
     "@skyroc/utils": "workspace:*",
-    "@skyroc/web-antd-theme": "workspace:*",
+    "@skyroc/web-admin-theme": "workspace:*",
     "@tanstack/react-query": "catalog:core",
     "@tanstack/react-router": "catalog:web",
     "ahooks": "catalog:utils",
