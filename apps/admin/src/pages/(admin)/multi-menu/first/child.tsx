@@ -14,5 +14,7 @@ export const Route = createFileRoute('/(admin)/multi-menu/first/child')({
 });
 
 function FirstChild() {
-  return <LookForward />;
+  const { t } = useTranslation();
+
+  return <LookForward title={t('common.lookForward')} />;
 }

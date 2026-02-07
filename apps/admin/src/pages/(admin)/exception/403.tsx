@@ -14,5 +14,7 @@ export const Route = createFileRoute('/(admin)/exception/403')({
 });
 
 function NotAuth() {
-  return <ExceptionBase type="403" />;
+  const { t } = useTranslation();
+
+  return <ExceptionBase buttonText={t('common.backToHome')} type="403" />;
 }

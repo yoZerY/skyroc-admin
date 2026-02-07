@@ -15,5 +15,7 @@ export const Route = createFileRoute('/(admin)/manage/user/$id')({
 });
 
 function RouteComponent() {
-  return <LookForward />;
+  const { t } = useTranslation();
+
+  return <LookForward title={t('common.lookForward')} />;
 }

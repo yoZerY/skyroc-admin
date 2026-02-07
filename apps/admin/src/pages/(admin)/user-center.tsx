@@ -13,5 +13,7 @@ export const Route = createFileRoute('/(admin)/user-center')({
 });
 
 function UserCenter() {
-  return <LookForward />;
+  const { t } = useTranslation();
+
+  return <LookForward title={t('common.lookForward')} />;
 }

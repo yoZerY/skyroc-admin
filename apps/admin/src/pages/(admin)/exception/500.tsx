@@ -14,5 +14,7 @@ export const Route = createFileRoute('/(admin)/exception/500')({
 });
 
 function GeneralError() {
-  return <ExceptionBase type="500" />;
+  const { t } = useTranslation();
+
+  return <ExceptionBase buttonText={t('common.backToHome')} type="500" />;
 }

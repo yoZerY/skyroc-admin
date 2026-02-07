@@ -44,8 +44,7 @@
     "clsx": "catalog:utils",
     "react": "catalog:core",
     "react-dom": "catalog:core",
-    "react-error-boundary": "catalog:core",
-    "react-i18next": "catalog:i18n"
+    "react-error-boundary": "catalog:core"
   },
   "devDependencies": {
     "@soybeanjs/eslint-config": "catalog:dev",

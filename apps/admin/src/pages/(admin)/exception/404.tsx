@@ -14,5 +14,7 @@ export const Route = createFileRoute('/(admin)/exception/404')({
 });
 
 function NotFound() {
-  return <ExceptionBase type="404" />;
+  const { t } = useTranslation();
+
+  return <ExceptionBase buttonText={t('common.backToHome')} type="404" />;
 }

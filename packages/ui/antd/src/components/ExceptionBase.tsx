@@ -2,11 +2,12 @@ import { SvgIcon } from '@skyroc/ui-compose';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from 'antd';
 import { memo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type ExceptionType = '403' | '404' | '500';
 
 interface Props {
+  /** Button text (default: 'Back to Home') */
+  buttonText?: string;
   /**
    * Exception type
    *
@@ -21,14 +22,14 @@ const iconMap: Record<ExceptionType, string> = {
   '404': 'not-found',
   '500': 'service-error'
 };
-const ExceptionBase = memo(({ type }: Props) => {
-  const { t } = useTranslation();
+const ExceptionBase = memo((props: Props) => {
+  const { buttonText = 'Back to Home', type } = props;
 
   const nav = useNavigate();
 
-  const onClick = () => {
+  function handleClick() {
     nav({ to: '/' });
-  };
+  }
 
   return (
     <div className="size-full min-h-520px flex-col-center gap-24px overflow-hidden">
@@ -37,9 +38,9 @@ const ExceptionBase = memo(({ type }: Props) => {
       </div>
       <Button
         type="primary"
-        onClick={onClick}
+        onClick={handleClick}
       >
-        {t('common.backToHome')}
+        {buttonText}
       </Button>
     </div>
   );

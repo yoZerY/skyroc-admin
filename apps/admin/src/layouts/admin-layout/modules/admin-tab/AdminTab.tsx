@@ -128,6 +128,8 @@ const AdminTab = () => {
       />
 
       <FullScreen
+        enterTooltip={t('icon.fullscreen')}
+        exitTooltip={t('icon.fullscreenExit')}
         full={fullContent}
         toggleFullscreen={toggleFullContent}
       />

@@ -2,7 +2,9 @@ import { ExceptionBase } from '@skyroc/ui-antd';
 import { createFileRoute } from '@tanstack/react-router';
 
 const NotAuth = () => {
-  return <ExceptionBase type="403" />;
+  const { t } = useTranslation();
+
+  return <ExceptionBase buttonText={t('common.backToHome')} type="403" />;
 };
 
 export const Route = createFileRoute('/(errors)/403')({

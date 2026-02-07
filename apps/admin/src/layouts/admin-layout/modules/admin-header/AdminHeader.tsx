@@ -89,6 +89,8 @@ const GlobalHeader = memo(() => {
         {!isMobile && (
           <FullScreen
             className="px-12px"
+            enterTooltip={t('icon.fullscreen')}
+            exitTooltip={t('icon.fullscreenExit')}
             full={isFullscreen}
             toggleFullscreen={toggleFullscreen}
           />

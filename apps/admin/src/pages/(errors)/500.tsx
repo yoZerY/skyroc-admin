@@ -1,9 +1,10 @@
+import { ExceptionBase } from '@skyroc/ui-antd';
 import { createFileRoute } from '@tanstack/react-router';
 
-import { ExceptionBase } from '@skyroc/ui-antd';
-
 const GeneralError = () => {
-  return <ExceptionBase type="500" />;
+  const { t } = useTranslation();
+
+  return <ExceptionBase buttonText={t('common.backToHome')} type="500" />;
 };
 
 export const Route = createFileRoute('/(errors)/500')({

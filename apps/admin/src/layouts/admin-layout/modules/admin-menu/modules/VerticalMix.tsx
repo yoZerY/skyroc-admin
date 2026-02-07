@@ -76,6 +76,8 @@ const VerticalMix = memo(({ mode = FirstLevelMenuMode.All }: { mode?: FirstLevel
             <PinToggler
               className={classNames({ 'text-white:88 !hover:text-white': siderInverted })}
               pin={mixSiderFixed}
+              pinnedTooltip={t('icon.unpin')}
+              unpinnedTooltip={t('icon.pin')}
               onClick={toggleMixSiderFixed}
             />
           </header>
