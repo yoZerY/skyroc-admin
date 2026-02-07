@@ -14,11 +14,11 @@
     }
   },
   "dependencies": {
-    "loglayer": "^8.4.0",
     "@loglayer/transport": "^2.3.13",
-    "serialize-error": "^11.0.0",
     "idb": "^8.0.0",
-    "nanoid": "catalog:utils"
+    "loglayer": "^8.4.0",
+    "nanoid": "catalog:utils",
+    "serialize-error": "^11.0.0"
   },
   "devDependencies": {
     "@skyroc/tsconfig": "workspace:*"

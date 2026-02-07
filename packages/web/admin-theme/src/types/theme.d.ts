@@ -1,7 +1,7 @@
 /** The theme namespace */
 declare global {
   namespace Theme {
-    type ColorPaletteNumber = import('@skyroc/color').ColorPaletteNumber;
+    type ColorPaletteNumber = import('@sa/color').ColorPaletteNumber;
 
     type WatermarkSettings = import('antd').WatermarkProps;
 

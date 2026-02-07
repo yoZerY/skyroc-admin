@@ -11,7 +11,7 @@ const OPTIONS = Object.values(ThemeMode).map(item => {
     label: (
       <div className="w-[70px] flex justify-center">
         <SvgIcon
-          className="h-28px text-icon-small"
+          className="text-icon-small h-28px"
           icon={icons[key]}
         />
       </div>

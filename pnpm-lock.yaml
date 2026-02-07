@@ -756,6 +756,12 @@ importers:
       '@skyroc/color':
         specifier: workspace:*
         version: link:../../@core/color
+      '@skyroc/hooks':
+        specifier: workspace:*
+        version: link:../../hooks
+      '@skyroc/utils':
+        specifier: workspace:*
+        version: link:../../@core/utils
       antd:
         specifier: catalog:web
         version: 6.1.1(date-fns@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
