@@ -7,6 +7,7 @@ import type { ConfigProviderProps } from 'antd';
  *
  * @param colors Theme colors
  * @param darkMode Is dark mode
+ * @param settings Theme settings
  */
 export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, settings: Theme.ThemeSetting) {
   const { themeRadius, themeTextSize, tokens } = settings;

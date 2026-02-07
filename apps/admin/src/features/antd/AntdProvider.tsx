@@ -1,48 +1,34 @@
+import { AntdProvider } from '@skyroc/web-admin-theme';
 import type { PropsWithChildren } from 'react';
 
-import { initAntdProvider } from '@/config';
 import { antdLocales } from '@/locales/antd';
+import { useUserInfoQuery } from '@/service/api';
+
+// 确保主题 atom 从 localStorage 初始化（模块级别副作用）
+import '../theme/useSettingsTheme';
 
 import { useLang } from '../lang/use-lang';
-import { useSettingsTheme } from '../theme/useSettingsTheme';
 
-import { getAntdTheme } from './shared';
+/**
+ * App 级别的 Antd Provider 薄包装层
+ *
+ * 职责仅为注入 app 特有的 locale 和 userName，
+ * 其余 ConfigProvider / App / Watermark / ContextHolder 由包内部处理。
+ */
+const AppAntdProvider = (props: PropsWithChildren) => {
+  const { children } = props;
 
-function ContextHolder() {
-  const { message, modal, notification } = AApp.useApp();
-
-  initAntdProvider(message, modal, notification);
-  return null;
-}
-
-const AntdProvider = ({ children }: PropsWithChildren) => {
   const { locale } = useLang();
-
-  const { darkMode, settings, themeColors, watermark, watermarkContent } = useSettingsTheme();
-
-  const antdTheme = getAntdTheme(themeColors, darkMode, settings);
+  const { data: userInfo } = useUserInfoQuery();
 
   return (
-    <AConfigProvider
-      button={{ classNames: { icon: 'align-1px  text-icon' } }}
-      card={{ styles: { body: { flex: 1, overflow: 'hidden', padding: '12px 16px ' } } }}
+    <AntdProvider
       locale={antdLocales[locale]}
-      menu={{ classNames: { item: '!items-center !flex' } }}
-      modal={{ centered: true }}
-      theme={antdTheme}
+      userName={userInfo?.userName}
     >
-      <AApp style={{ height: '100%' }}>
-        <ContextHolder />
-        <AWatermark
-          className="shadow-initial h-full bg-opacity-100 text-opacity-100"
-          content={watermarkContent}
-          {...watermark.settings}
-        >
-          {children}
-        </AWatermark>
-      </AApp>
-    </AConfigProvider>
+      {children}
+    </AntdProvider>
   );
 };
 
-export default AntdProvider;
+export default AppAntdProvider;

@@ -882,6 +882,9 @@ importers:
 
   packages/web/admin-theme:
     dependencies:
+      '@skyroc/adapter-antd-theme':
+        specifier: workspace:*
+        version: link:../antd-theme
       '@skyroc/color':
         specifier: workspace:*
         version: link:../../@core/color

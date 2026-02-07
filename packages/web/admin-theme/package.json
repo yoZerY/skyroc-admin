@@ -48,6 +48,7 @@
     "react": ">=19.0.0"
   },
   "dependencies": {
+    "@skyroc/adapter-antd-theme": "workspace:*",
     "@skyroc/color": "workspace:*",
     "@skyroc/hooks": "workspace:*",
     "@skyroc/ui-antd": "workspace:*",
