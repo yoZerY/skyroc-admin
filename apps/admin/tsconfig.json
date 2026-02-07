@@ -6,8 +6,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "~/*": ["./*"]
-    },
-    "types": ["unplugin-icons/types/react", "@skyroc/types/types", "@skyroc/web-admin-theme/types"]
+    }
   },
   "include": ["./**/*.ts", "./**/*.tsx"]
 }

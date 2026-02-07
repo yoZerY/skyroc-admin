@@ -3,6 +3,12 @@
   "display": "Web Application",
   "extends": "./web.json",
   "compilerOptions": {
-    "types": ["vite/client", "node"]
+    "types": [
+      "vite/client",
+      "node",
+      "unplugin-icons/types/react",
+      "@skyroc/types/types",
+      "@skyroc/web-admin-theme/types"
+    ]
   }
 }
