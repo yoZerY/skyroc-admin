@@ -1,4 +1,5 @@
 import { ThemeSchemaSegmented } from '@skyroc/web-admin-theme';
+
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 
 import SettingItem from '../../components/SettingItem';

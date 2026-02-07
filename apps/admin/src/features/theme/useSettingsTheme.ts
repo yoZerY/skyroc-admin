@@ -1,5 +1,4 @@
 import { defaultThemeSettings, initThemeSettings, themeSettingsAtom, useTheme } from '@skyroc/web-admin-theme';
-import defu from 'defu';
 
 import { useUserInfoQuery } from '@/service/api';
 import { localStg } from '@/utils/storage';
@@ -18,6 +17,7 @@ function initializeThemeAtom(): Theme.ThemeSetting {
   const cachedSettings = localStg.get('themeSettings');
 
   const overrideFlag = localStg.get('overrideThemeFlag');
+
   const currentBuildTime = BUILD_TIME;
 
   const { newOverrideFlag, settings } = initThemeSettings(cachedSettings, overrideFlag, currentBuildTime);

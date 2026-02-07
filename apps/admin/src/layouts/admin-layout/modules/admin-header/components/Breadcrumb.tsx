@@ -43,7 +43,7 @@ const AdminBreadcrumb = () => {
         title: (
           <>
             <SvgIcon
-              className="mr-4px text-icon"
+              className="text-icon mr-4px"
               icon={menuInfo.menu?.icon || globalConfig.defaultIcon}
               localIcon={menuInfo.menu?.localIcon}
             />

@@ -1,7 +1,6 @@
+import { defaultPresetColors, derivative, derivativeDark } from '@skyroc/adapter-antd-theme';
 import { transformColorWithOpacity } from '@skyroc/color';
 import type { ConfigProviderProps } from 'antd';
-
-import { defaultPresetColors, derivative, derivativeDark } from '@skyroc/adapter-antd-theme';
 
 /**
  * Get antd theme
@@ -20,15 +19,7 @@ export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, settin
   const borderColor = darkMode ? '#2E3138' : '#C6C6C8';
 
   const theme: ConfigProviderProps['theme'] = {
-    algorithm: [
-      darkMode
-        ? derivativeDark
-        : a => {
-            const result = derivative(a);
-            console.log(result, 'result');
-            return result;
-          }
-    ],
+    algorithm: [darkMode ? derivativeDark : derivative],
     cssVar: {
       key: 'root',
       prefix: ''
