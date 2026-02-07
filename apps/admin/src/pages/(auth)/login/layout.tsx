@@ -1,4 +1,5 @@
 import { getPaletteColorByNumber, mixColor } from '@skyroc/color';
+import { WaveBg } from '@skyroc/ui-compose';
 import { Outlet, createFileRoute, redirect, useLocation } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import z from 'zod';

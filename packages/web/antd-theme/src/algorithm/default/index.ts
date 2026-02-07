@@ -1,6 +1,5 @@
 import { mixColor } from '@skyroc/color';
 import type { MapToken, PresetColorType, SeedToken } from 'antd/lib/theme/interface';
-
 import { defaultPresetColors } from '../../seed';
 import genColorMapToken, {
   FUNCTIONAL_SEMANTIC_CONFIG,
@@ -11,7 +10,6 @@ import genCommonMapToken from '../../shared/genCommonMapToken';
 import genControlHeight from '../../shared/genControlHeight';
 import { genFontMapToken } from '../../shared/genFontMapToken';
 import genSizeMapToken from '../../shared/genSizeMapToken';
-
 import { generateColorPalettes, generateNeutralColorPalettes } from './colors';
 
 // Export generator functions for external use

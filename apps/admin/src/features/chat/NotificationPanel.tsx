@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import ButtonIcon from '@/components/ButtonIcon';
-import DarkModeContainer from '@/components/DarkModeContainer';
+import { ButtonIcon } from '@skyroc/ui-antd';
+import { DarkModeContainer } from '@skyroc/ui-compose';
 
 import type { NotificationItem, NotificationType } from './types';
 

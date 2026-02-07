@@ -1,3 +1,5 @@
+import { useCopy } from '@skyroc/hooks/web';
+
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 
 const ConfigOperation = () => {

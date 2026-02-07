@@ -341,6 +341,12 @@ importers:
       '@skyroc/ui':
         specifier: workspace:*
         version: link:../../packages/ui/primitives
+      '@skyroc/ui-antd':
+        specifier: workspace:*
+        version: link:../../packages/ui/antd
+      '@skyroc/ui-compose':
+        specifier: workspace:*
+        version: link:../../packages/ui/compose
       '@skyroc/utils':
         specifier: workspace:*
         version: link:../../packages/@core/utils
@@ -744,6 +750,104 @@ importers:
       '@skyroc/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig
+
+  packages/ui/antd:
+    dependencies:
+      '@iconify/react':
+        specifier: catalog:ui-shared
+        version: 6.0.2(react@19.2.3)
+      '@skyroc/ui':
+        specifier: workspace:*
+        version: link:../primitives
+      '@skyroc/ui-compose':
+        specifier: workspace:*
+        version: link:../compose
+      '@skyroc/utils':
+        specifier: workspace:*
+        version: link:../../@core/utils
+      '@tanstack/react-router':
+        specifier: catalog:web
+        version: 1.143.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      antd:
+        specifier: catalog:web
+        version: 6.1.1(date-fns@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      clsx:
+        specifier: catalog:utils
+        version: 2.1.1
+      react:
+        specifier: catalog:core
+        version: 19.2.3
+      react-dom:
+        specifier: catalog:core
+        version: 19.2.3(react@19.2.3)
+      react-error-boundary:
+        specifier: catalog:core
+        version: 6.0.0(react@19.2.3)
+      react-i18next:
+        specifier: catalog:i18n
+        version: 16.5.0(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+    devDependencies:
+      '@soybeanjs/eslint-config':
+        specifier: catalog:dev
+        version: 1.7.4(@typescript-eslint/utils@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(@unocss/eslint-config@66.5.10(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-react-hooks@7.0.1(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-react-refresh@0.4.26(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-react@7.37.5(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))(svelte-eslint-parser@1.4.1)(typescript@5.9.3)
+      '@types/react':
+        specifier: catalog:dev
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: catalog:dev
+        version: 19.2.3(@types/react@19.2.7)
+
+  packages/ui/compose:
+    dependencies:
+      '@better-scroll/core':
+        specifier: catalog:web
+        version: 2.5.1
+      '@iconify/react':
+        specifier: catalog:ui-shared
+        version: 6.0.2(react@19.2.3)
+      '@skyroc/color':
+        specifier: workspace:*
+        version: link:../../@core/color
+      '@skyroc/ui':
+        specifier: workspace:*
+        version: link:../primitives
+      '@skyroc/utils':
+        specifier: workspace:*
+        version: link:../../@core/utils
+      ahooks:
+        specifier: catalog:utils
+        version: 3.9.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      clsx:
+        specifier: catalog:utils
+        version: 2.1.1
+      i18next:
+        specifier: catalog:i18n
+        version: 25.7.3(typescript@5.9.3)
+      motion:
+        specifier: catalog:ui-shared
+        version: 12.23.26(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react:
+        specifier: catalog:core
+        version: 19.2.3
+      react-dom:
+        specifier: catalog:core
+        version: 19.2.3(react@19.2.3)
+      react-i18next:
+        specifier: catalog:i18n
+        version: 16.5.0(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+      tailwind-variants:
+        specifier: catalog:utils
+        version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18)
+    devDependencies:
+      '@soybeanjs/eslint-config':
+        specifier: catalog:dev
+        version: 1.7.4(@typescript-eslint/utils@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(@unocss/eslint-config@66.5.10(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-react-hooks@7.0.1(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-react-refresh@0.4.26(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-react@7.37.5(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))(svelte-eslint-parser@1.4.1)(typescript@5.9.3)
+      '@types/react':
+        specifier: catalog:dev
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: catalog:dev
+        version: 19.2.3(@types/react@19.2.7)
 
   packages/ui/primitives:
     dependencies:

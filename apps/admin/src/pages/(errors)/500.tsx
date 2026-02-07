@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import ExceptionBase from '@/components/ExceptionBase';
+import { ExceptionBase } from '@skyroc/ui-antd';
 
 const GeneralError = () => {
   return <ExceptionBase type="500" />;

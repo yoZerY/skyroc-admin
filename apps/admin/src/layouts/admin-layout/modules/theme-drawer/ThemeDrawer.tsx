@@ -1,9 +1,10 @@
-import { ScrollArea } from '../../../../../../../packages/ui/primitives/src';
+import { ButtonIcon } from '@skyroc/ui-antd';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { themeTabsOptions } from '@/constants/app';
 import { translateOptions } from '@/utils/common';
 
+import { ScrollArea } from '../../../../../../../packages/ui/primitives/src';
 import { useAdminState } from '../../state/use-admin-state';
 
 import ConfigOperation from './modules/ConfigOperation';
@@ -37,7 +38,7 @@ const ThemeDrawer = () => {
       onClose={closeThemeDrawer}
     >
       <ScrollArea className="h-full">
-        <div className="px-24px pb-24px pt-8px min-h-400px overflow-x-hidden">
+        <div className="min-h-400px overflow-x-hidden px-24px pb-24px pt-8px">
           <ASegmented<string>
             classNames={{ root: 'w-full mb-16px', item: 'flex-1 py-2px font-500' }}
             options={options}

@@ -1,4 +1,4 @@
-import ButtonIcon from '@/components/ButtonIcon';
+import { ButtonIcon } from '@skyroc/ui-antd';
 
 import { useSettingsTheme } from '../theme/useSettingsTheme';
 

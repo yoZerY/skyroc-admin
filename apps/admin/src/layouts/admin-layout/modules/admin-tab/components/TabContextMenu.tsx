@@ -1,3 +1,4 @@
+import { SvgIcon } from '@skyroc/ui-compose';
 import type { MenuProps } from 'antd';
 import { useState } from 'react';
 

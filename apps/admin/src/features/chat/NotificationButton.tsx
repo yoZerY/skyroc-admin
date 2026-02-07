@@ -2,7 +2,7 @@ import { Dropdown } from 'antd';
 import clsx from 'clsx';
 import type { CSSProperties } from 'react';
 
-import ButtonIcon from '@/components/ButtonIcon';
+import { ButtonIcon } from '@skyroc/ui-antd';
 
 import './notification.css';
 import NotificationPanel from './NotificationPanel';

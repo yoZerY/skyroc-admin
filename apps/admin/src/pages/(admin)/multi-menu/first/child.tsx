@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import LookForward from '@/components/LookForward';
+import { LookForward } from '@skyroc/ui-compose';
 
 export const Route = createFileRoute('/(admin)/multi-menu/first/child')({
   component: FirstChild,

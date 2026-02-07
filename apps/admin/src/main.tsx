@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import App from './App';
-import FallbackRender from './components/ErrorBoundary.tsx';
+import { ErrorBoundary as FallbackRender } from '@skyroc/ui-antd';
 import { setupI18n } from './locales';
 import { setupAppVersionNotification } from './plugins/app';
 import { setupDayjs } from './plugins/dayjs';

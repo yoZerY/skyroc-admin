@@ -1,3 +1,5 @@
+import { I18nLabel } from '@skyroc/ui-compose';
+
 /**
  * Transform record to option
  *

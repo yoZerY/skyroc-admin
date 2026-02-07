@@ -1,7 +1,8 @@
+import { SvgIcon } from '@skyroc/ui-compose';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import ButtonIcon from './ButtonIcon';
-import SvgIcon from './SvgIcon';
 
 interface Props {
   className: string;

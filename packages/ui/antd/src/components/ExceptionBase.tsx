@@ -1,6 +1,9 @@
+import { SvgIcon } from '@skyroc/ui-compose';
 import { useNavigate } from '@tanstack/react-router';
-
-import SvgIcon from './SvgIcon';
+import { Button } from 'antd';
+import type { FC } from 'react';
+import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type ExceptionType = '403' | '404' | '500';
 
@@ -33,12 +36,12 @@ const ExceptionBase: FC<Props> = memo(({ type }) => {
       <div className="flex text-400px text-primary">
         <SvgIcon localIcon={iconMap[type]} />
       </div>
-      <AButton
+      <Button
         type="primary"
         onClick={onClick}
       >
         {t('common.backToHome')}
-      </AButton>
+      </Button>
     </div>
   );
 });

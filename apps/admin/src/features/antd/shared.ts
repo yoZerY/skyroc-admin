@@ -21,7 +21,15 @@ export function getAntdTheme(colors: Theme.ThemeColor, darkMode: boolean, settin
   const borderColor = darkMode ? '#2E3138' : '#C6C6C8';
 
   const theme: ConfigProviderProps['theme'] = {
-    algorithm: [darkMode ? derivativeDark : derivative],
+    algorithm: [
+      darkMode
+        ? derivativeDark
+        : a => {
+            const result = derivative(a);
+            console.log(result, 'result');
+            return result;
+          }
+    ],
     cssVar: {
       key: 'root',
       prefix: ''

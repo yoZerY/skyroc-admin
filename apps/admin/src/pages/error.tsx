@@ -1,6 +1,6 @@
 import type { ErrorComponentProps } from '@tanstack/react-router';
 
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { ErrorBoundary } from '@skyroc/ui-antd';
 
 const ErrorPage = (props: ErrorComponentProps) => {
   const { error, reset } = props;

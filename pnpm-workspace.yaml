@@ -4,6 +4,7 @@ packages:
   - "packages/@core/*"
   - "packages/web/*"
   - "packages/ui/*"
+  - "packages/native/*"
   - "internal/*"
 
 strictPeerDependencies: false

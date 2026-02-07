@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { TypingAnimation } from '@/components/TypingAnimation';
+import { TypingAnimation } from '@skyroc/ui-compose';
 import pkg from '~/package.json';
 
 import HeaderDescription from './modules/header-description';

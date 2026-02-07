@@ -1,5 +1,4 @@
 import { adjustLightness, generateOklchPaletteEx, mixColor } from '@skyroc/color';
-
 import type { ColorMap, GenerateColorMap, GenerateNeutralColorMap } from '../../types';
 
 /** Light mode default base colors */

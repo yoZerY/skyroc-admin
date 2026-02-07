@@ -1,3 +1,4 @@
+import { TooltipProvider } from '@skyroc/ui';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useAtomsDevtools } from 'jotai-devtools';
 import { Suspense, lazy } from 'react';
@@ -38,10 +39,12 @@ const App = () => (
   <Provider>
     <AntdProvider>
       <NotificationProvider>
-        <LazyAnimate>
-          <RouterProvider />
-          <GlobalEffect />
-        </LazyAnimate>
+        <TooltipProvider>
+          <LazyAnimate>
+            <RouterProvider />
+            <GlobalEffect />
+          </LazyAnimate>
+        </TooltipProvider>
       </NotificationProvider>
     </AntdProvider>
   </Provider>

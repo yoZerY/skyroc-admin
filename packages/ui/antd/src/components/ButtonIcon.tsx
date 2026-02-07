@@ -1,11 +1,12 @@
+import { SvgIcon } from '@skyroc/ui-compose';
+import { Button, Tooltip } from 'antd';
 import type { ButtonProps, TooltipProps } from 'antd';
 import clsx from 'clsx';
 import type { CSSProperties } from 'react';
 
 import type { ButtonLinkComponentProps } from './ButtonLink';
 import ButtonLink from './ButtonLink';
-import SvgIcon from './SvgIcon';
-import '@/styles/css/button-icon-animations.css';
+import './styles/button-icon-animations.css';
 
 /** Icon hover animation types */
 export type IconHoverAnimation =
@@ -93,7 +94,7 @@ const ButtonIcon = ({
     return triggerParent ? triggerNode.parentElement! : document.body;
   }
 
-  const Comp = 'to' in rest ? ButtonLink : AButton;
+  const Comp = 'to' in rest ? ButtonLink : Button;
 
   const typeProps = 'to' in rest ? { btnType: 'text' as const } : { type: 'text' as const };
 
@@ -101,7 +102,7 @@ const ButtonIcon = ({
   const animationClass = hoverAnimation ? `btn-icon-hover-${hoverAnimation}` : '';
 
   return (
-    <ATooltip
+    <Tooltip
       classNames={classNames?.tooltip}
       getPopupContainer={getPopupContainer}
       placement={tooltipPlacement}
@@ -126,7 +127,7 @@ const ButtonIcon = ({
           )}
         </div>
       </Comp>
-    </ATooltip>
+    </Tooltip>
   );
 };
 export default ButtonIcon;

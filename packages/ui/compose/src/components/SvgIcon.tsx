@@ -1,22 +1,22 @@
 import { Icon } from '@iconify/react';
 import type { CSSProperties } from 'react';
 
-import { globalConfig } from '@/config';
-
 interface Props {
   readonly className?: string;
   /** Iconify icon name */
   readonly icon?: string;
   /** Local svg icon name */
   readonly localIcon?: string;
+  /** Local icon prefix (default: 'icon-local') */
+  readonly localIconPrefix?: string;
   readonly style?: CSSProperties;
 }
 
 const defaultLocalIcon = 'no-icon';
-const symbolId = (localIcon: string = defaultLocalIcon) => {
+const symbolId = (localIconPrefix: string, localIcon: string = defaultLocalIcon) => {
   const iconName = localIcon || defaultLocalIcon;
 
-  return `#${globalConfig.localIconPrefix}-${iconName}`;
+  return `#${localIconPrefix}-${iconName}`;
 };
 
 /**
@@ -25,7 +25,7 @@ const symbolId = (localIcon: string = defaultLocalIcon) => {
  * - Support iconify and local svg icon
  * - If icon and localIcon are passed at the same time, localIcon will be rendered first
  */
-const SvgIcon = ({ icon, localIcon, ...props }: Props) => {
+const SvgIcon = ({ icon, localIcon, localIconPrefix = 'icon-local', ...props }: Props) => {
   /** If localIcon is passed, render localIcon first */
   return localIcon || !icon ? (
     <svg
@@ -36,7 +36,7 @@ const SvgIcon = ({ icon, localIcon, ...props }: Props) => {
     >
       <use
         fill="currentColor"
-        href={symbolId(localIcon)}
+        href={symbolId(localIconPrefix, localIcon)}
       />
     </svg>
   ) : (

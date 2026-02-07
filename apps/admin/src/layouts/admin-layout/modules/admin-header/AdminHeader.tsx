@@ -1,5 +1,6 @@
-import DarkModeContainer from '@/components/DarkModeContainer';
-import FullScreen from '@/components/FullScreen';
+import { FullScreen } from '@skyroc/ui-antd';
+import { DarkModeContainer } from '@skyroc/ui-compose';
+
 import { GLOBAL_HEADER_MENU_ID } from '@/constants/app';
 import NotificationButton from '@/features/chat/NotificationButton';
 import LangSwitch from '@/features/lang/LangSwitch';

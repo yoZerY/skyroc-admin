@@ -1,4 +1,4 @@
-import DarkModeContainer from '@/components/DarkModeContainer.tsx';
+import { DarkModeContainer } from '@skyroc/ui-compose';
 import { GLOBAL_SIDER_MENU_ID } from '@/constants/app';
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 

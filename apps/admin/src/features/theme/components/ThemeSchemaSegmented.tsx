@@ -1,3 +1,4 @@
+import { SvgIcon } from '@skyroc/ui-compose';
 import type { SegmentedOptions } from 'antd/es/segmented';
 
 import { icons } from '../shared';

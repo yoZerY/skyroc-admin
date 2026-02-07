@@ -1,7 +1,7 @@
 import type { ButtonProps, TooltipProps } from 'antd';
 import type { CSSProperties } from 'react';
 
-import ButtonIcon from '@/components/ButtonIcon';
+import { ButtonIcon } from '@skyroc/ui-antd';
 
 import { icons } from '../shared';
 import { useSettingsTheme } from '../useSettingsTheme';

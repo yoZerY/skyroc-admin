@@ -46,6 +46,8 @@
     "@skyroc/logger": "workspace:*",
     "@skyroc/materials": "workspace:*",
     "@skyroc/ui": "workspace:*",
+    "@skyroc/ui-antd": "workspace:*",
+    "@skyroc/ui-compose": "workspace:*",
     "@skyroc/utils": "workspace:*",
     "@skyroc/web-admin-theme": "workspace:*",
     "@tanstack/react-query": "catalog:core",

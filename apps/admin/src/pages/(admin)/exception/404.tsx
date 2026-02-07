@@ -1,3 +1,4 @@
+import { ExceptionBase } from '@skyroc/ui-antd';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(admin)/exception/404')({

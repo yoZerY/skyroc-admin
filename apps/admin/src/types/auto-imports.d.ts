@@ -15,13 +15,11 @@ declare global {
   const ACol: typeof import('antd').Col
   const AColorPicker: typeof import('antd').ColorPicker
   const AConfigProvider: typeof import('antd').ConfigProvider
-  const ADescriptions: typeof import('antd').Descriptions
   const ADivider: typeof import('antd').Divider
   const ADrawer: typeof import('antd').Drawer
   const ADropdown: typeof import('antd').Dropdown
   const AEmpty: typeof import('antd').Empty
   const AFlex: typeof import('antd').Flex
-  const AForm: typeof import('antd').Form
   const AInput: typeof import('antd').Input
   const AInputNumber: typeof import('antd').InputNumber
   const AList: typeof import('antd').List
@@ -33,25 +31,11 @@ declare global {
   const ASpace: typeof import('antd').Space
   const AStatistic: typeof import('antd').Statistic
   const ASwitch: typeof import('antd').Switch
-  const ATag: typeof import('antd').Tag
   const ATooltip: typeof import('antd').Tooltip
   const AWatermark: typeof import('antd').Watermark
   const Activity: typeof import('react').Activity
-  const BetterScroll: typeof import('../components/BetterScroll').default
-  const BeyondHiding: typeof import('../components/BeyondHiding').default
-  const ButtonIcon: typeof import('../components/ButtonIcon').default
-  const ButtonLink: typeof import('../components/ButtonLink').default
-  const DarkModeContainer: typeof import('../components/DarkModeContainer').default
-  const ErrorBoundary: typeof import('../components/ErrorBoundary').default
-  const ExceptionBase: typeof import('../components/ExceptionBase').default
-  const FilpText: typeof import('../components/FilpText').default
   const Fragment: typeof import('react').Fragment
-  const FullScreen: typeof import('../components/FullScreen').default
-  const I18nLabel: typeof import('../components/I18nLabel').default
   const IconAntDesignEnterOutlined: typeof import('~icons/ant-design/enter-outlined.tsx').default
-  const IconAntDesignReloadOutlined: typeof import('~icons/ant-design/reload-outlined.tsx').default
-  const IconGridiconsFullscreen: typeof import('~icons/gridicons/fullscreen.tsx').default
-  const IconGridiconsFullscreenExit: typeof import('~icons/gridicons/fullscreen-exit.tsx').default
   const IconLocalBanner: typeof import('~icons/local/banner.tsx').default
   const IconLocalLogo: typeof import('~icons/local/logo.tsx').default
   const IconMdiArrowDownThin: typeof import('~icons/mdi/arrow-down-thin.tsx').default
@@ -60,17 +44,9 @@ declare global {
   const IconMdiKeyboardEsc: typeof import('~icons/mdi/keyboard-esc.tsx').default
   const IconMdiKeyboardReturn: typeof import('~icons/mdi/keyboard-return.tsx').default
   const IconUilSearch: typeof import('~icons/uil/search.tsx').default
-  const LookForward: typeof import('../components/LookForward').default
-  const NumberTicker: typeof import('../components/NumberTicker').default
-  const PinToggler: typeof import('../components/PinToggler').default
-  const Portal: typeof import('../components/Portal').default
-  const ReloadButton: typeof import('../components/ReloadButton').default
   const SkyrocAvatar: typeof import('../components/SkyrocAvatar').default
   const Suspense: typeof import('react').Suspense
-  const SvgIcon: typeof import('../components/SvgIcon').default
   const SystemLogo: typeof import('../components/SystemLogo').default
-  const TypingAnimation: typeof import('../components/TypingAnimation').TypingAnimation
-  const WaveBg: typeof import('../components/WaveBg').default
   const cache: typeof import('react').cache
   const cacheSignal: typeof import('react').cacheSignal
   const createContext: typeof import('react').createContext
@@ -204,10 +180,4 @@ declare global {
   // @ts-ignore
   export type { FC } from 'react'
   import('react')
-  // @ts-ignore
-  export type { IconHoverAnimation, ButtonIconProps } from '../components/ButtonIcon'
-  import('../components/ButtonIcon')
-  // @ts-ignore
-  export type { ButtonLinkComponentProps } from '../components/ButtonLink'
-  import('../components/ButtonLink')
 }

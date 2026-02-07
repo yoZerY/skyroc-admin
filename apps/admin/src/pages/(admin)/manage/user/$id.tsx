@@ -1,3 +1,4 @@
+import { LookForward } from '@skyroc/ui-compose';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(admin)/manage/user/$id')({

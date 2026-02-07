@@ -1,4 +1,4 @@
-import ExceptionBase from '@/components/ExceptionBase';
+import { ExceptionBase } from '@skyroc/ui-antd';
 
 const NotFound = () => {
   return <ExceptionBase type="404" />;

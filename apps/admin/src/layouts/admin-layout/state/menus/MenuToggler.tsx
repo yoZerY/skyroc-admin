@@ -1,5 +1,5 @@
-import ButtonIcon from '@/components/ButtonIcon';
-import SvgIcon from '@/components/SvgIcon';
+import { ButtonIcon } from '@skyroc/ui-antd';
+import { SvgIcon } from '@skyroc/ui-compose';
 
 import { useAdminState } from '../use-admin-state';
 

@@ -6,7 +6,7 @@ import pkg from './package.json' with { type: 'json' };
 export default defineConfig({
   clean: true,
   dts: true,
-  entry: ['src/index.ts', ...fg.sync('src/components/**/index.{ts,tsx}'), 'src/hooks/index.ts', 'src/utils/index.ts'],
+  entry: ['src/index.ts', ...fg.sync('src/components/**/index.{ts,tsx}'), 'src/hooks/index.ts'],
   external: [...Object.keys(pkg.dependencies || {}), 'react/jsx-runtime'],
   hooks: {
     'build:before': () => {

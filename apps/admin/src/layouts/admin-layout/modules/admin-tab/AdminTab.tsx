@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { PageTab } from '@skyroc/materials';
+import { FullScreen, ReloadButton } from '@skyroc/ui-antd';
+import { BetterScroll, DarkModeContainer, SvgIcon } from '@skyroc/ui-compose';
 import clsx from 'clsx';
 import { useEffect } from 'react';
 
-import BetterScroll from '@/components/BetterScroll';
 import { useSettingsTheme } from '@/features/theme/useSettingsTheme';
 import { isPC } from '@/utils/agent';
 

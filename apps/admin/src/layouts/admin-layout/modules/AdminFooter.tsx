@@ -1,4 +1,4 @@
-import DarkModeContainer from '@/components/DarkModeContainer';
+import { DarkModeContainer } from '@skyroc/ui-compose';
 
 const GlobalFooter = () => {
   return (
