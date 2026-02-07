@@ -2,24 +2,19 @@ import { useEffect } from 'react';
 import { useTheme } from '../hooks/use-theme';
 import { toggleAuxiliaryColorModes, toggleCssDarkMode } from '../utils';
 
+type Props = {
+  setStorage: (key: string, value: any) => void;
+};
+
 const STORAGE_KEYS = {
   darkMode: 'darkMode',
   themeColor: 'themeColor',
   themeSettings: 'themeSettings'
 } as const;
 
-/**
- * Set a value to localStorage
- */
-function setStorage(key: string, value: unknown): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // Silently fail if storage is full or unavailable
-  }
-}
+const ThemeEffect = (props: Props) => {
+  const { setStorage } = props;
 
-const ThemeEffect = () => {
   /** Theme settings */
   const { colourWeaknessMode, darkMode, grayscaleMode, settings, themeColors, updateWatermarkTimer, watermark } =
     useTheme();
