@@ -38,7 +38,7 @@ export function mergeThemeSettings(
  */
 export function initThemeSettings(
   cachedSettings?: Partial<Theme.ThemeSetting> | null,
-  overrideFlag?: string,
+  overrideFlag?: string | null,
   currentBuildTime?: string
 ): { newOverrideFlag?: string; settings: Theme.ThemeSetting } {
   let settings = mergeThemeSettings(cachedSettings ?? undefined);

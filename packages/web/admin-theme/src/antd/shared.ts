@@ -1,6 +1,6 @@
+import type { ConfigProviderProps } from 'antd';
 import { defaultPresetColors, derivative, derivativeDark } from '@skyroc/adapter-antd-theme';
 import { transformColorWithOpacity } from '@skyroc/color';
-import type { ConfigProviderProps } from 'antd';
 
 /**
  * Get antd theme

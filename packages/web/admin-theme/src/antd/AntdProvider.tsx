@@ -1,10 +1,7 @@
 import type { ReactNode } from 'react';
-
 import { App, ConfigProvider, Watermark } from 'antd';
 import type { Locale } from 'antd/lib/locale';
-
 import { useTheme } from '../hooks';
-
 import { getAntdTheme } from './shared';
 import { initAntdUI } from './ui';
 
@@ -55,7 +52,7 @@ const AntdProvider = (props: AntdProviderProps) => {
       <App style={{ height: '100%' }}>
         <ContextHolder />
         <Watermark
-          className="shadow-initial h-full bg-opacity-100 text-opacity-100"
+          className="shadow-initial h-full "
           content={watermarkContent}
           {...watermark.settings}
         >
