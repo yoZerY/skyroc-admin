@@ -3,7 +3,7 @@ import { useTheme } from '../hooks/use-theme';
 import { toggleAuxiliaryColorModes, toggleCssDarkMode } from '../utils';
 
 type Props = {
-  setStorage: (key: string, value: any) => void;
+  setStorage: (key: any, value: any) => void;
 };
 
 const STORAGE_KEYS = {

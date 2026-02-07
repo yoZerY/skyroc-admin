@@ -1,10 +1,13 @@
-import LangEffect from '../lang/LangEffect';
 import { ThemeEffect } from '@skyroc/web-admin-theme';
+
+import { localStg } from '@/utils/storage';
+
+import LangEffect from '../lang/LangEffect';
 
 const GlobalEffect = () => {
   return (
     <>
-      <ThemeEffect />
+      <ThemeEffect setStorage={localStg.set} />
       <LangEffect />
     </>
   );

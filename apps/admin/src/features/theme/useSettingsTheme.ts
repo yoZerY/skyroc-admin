@@ -16,6 +16,7 @@ function initializeThemeAtom(): Theme.ThemeSetting {
   if (!isProd) return defaultThemeSettings;
 
   const cachedSettings = localStg.get('themeSettings');
+
   const overrideFlag = localStg.get('overrideThemeFlag');
   const currentBuildTime = BUILD_TIME;
 
