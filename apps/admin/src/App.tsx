@@ -1,9 +1,9 @@
 import { TooltipProvider } from '@skyroc/ui';
+import { LazyAnimate } from '@skyroc/ui-compose';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useAtomsDevtools } from 'jotai-devtools';
 import { Suspense, lazy } from 'react';
 
-import LazyAnimate from './features/animate/LazyMotion';
 import AntdProvider from './features/antd/AntdProvider';
 import { NotificationProvider } from './features/chat';
 import GlobalEffect from './features/effects/GlobalEffect';
