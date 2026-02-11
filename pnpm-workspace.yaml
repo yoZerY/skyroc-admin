@@ -52,6 +52,12 @@ catalogs:
     eslint: ^9.39.2
     "@soybeanjs/eslint-config": ^1.7.4
 
+    # 测试工具
+    vitest: ^4.0.18
+    jsdom: ^28.0.0
+    "@testing-library/react": ^16.3.2
+    "@testing-library/jest-dom": ^6.9.1
+
     # ESLint 插件
     "eslint-plugin-react": ^7.37.5
     "eslint-plugin-react-hooks": ^7.0.1
@@ -170,10 +176,10 @@ catalogs:
 
   # ==================== 国际化 ====================
   i18n:
-    i18next: ^25.7.2
-    react-i18next: ^16.4.0
+    i18next: 25.7.2
+    react-i18next: 16.4.0
 
   # ==================== peer 依赖管理 ====================
   peer:
-    react: ^19.2.1
-    react-dom: ^19.2.1
+    react: 19.2.1
+    react-dom: 19.2.1
