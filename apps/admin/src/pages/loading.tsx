@@ -1,11 +1,11 @@
 // @unocss-include
 import { getHsl } from '@skyroc/color';
+import { toggleHtmlClass } from '@skyroc/utils/web';
 import clsx from 'clsx';
 
 import SystemLogo from '@/components/SystemLogo';
 import { globalConfig } from '@/config';
 import { DARK_CLASS } from '@/constants/app';
-import { toggleHtmlClass } from '@/utils/common';
 
 const GlobalLoading = memo(() => {
   const { t } = useTranslation();
