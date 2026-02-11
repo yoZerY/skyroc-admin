@@ -23,6 +23,7 @@
     "ahooks": "catalog:utils"
   },
   "devDependencies": {
+    "@skyroc/config": "workspace:*",
     "@skyroc/tsconfig": "workspace:*",
     "react": "catalog:core",
     "react-dom": "catalog:core"

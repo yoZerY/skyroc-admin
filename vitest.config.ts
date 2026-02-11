@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import { COVERAGE_EXCLUDE, COVERAGE_PROVIDER, SOURCE_PATTERNS, TEST_ENVIRONMENT } from './internal/test-config/src';
+import { COVERAGE_EXCLUDE, COVERAGE_PROVIDER, SOURCE_PATTERNS, TEST_ENVIRONMENT } from '@skyroc/config/vitest';
 
 /**
  * 根目录 Vitest 配置

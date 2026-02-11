@@ -1,0 +1,7 @@
+{
+  "extends": "@skyroc/tsconfig/node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+  },
+  "include": ["src"]
+}

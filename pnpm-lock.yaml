@@ -305,9 +305,9 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.3)
     devDependencies:
-      '@skyroc/test-config':
+      '@skyroc/config':
         specifier: workspace:*
-        version: link:internal/test-config
+        version: link:internal/config
       '@skyroc/tsconfig':
         specifier: workspace:*
         version: link:internal/tsconfig
@@ -589,7 +589,14 @@ importers:
         specifier: catalog:dev
         version: 2.0.1(vite@7.2.7(@types/node@24.10.4)(jiti@2.6.1)(sass@1.97.1)(tsx@4.21.0)(yaml@2.8.2))
 
-  internal/test-config: {}
+  internal/config:
+    devDependencies:
+      '@skyroc/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      vitest:
+        specifier: catalog:dev
+        version: 4.0.18(@types/node@24.10.4)(jiti@2.6.1)(jsdom@28.0.0)(sass@1.97.1)(tsx@4.21.0)(yaml@2.8.2)
 
   internal/tsconfig: {}
 
@@ -753,9 +760,9 @@ importers:
         specifier: catalog:utils
         version: 3.9.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
-      '@skyroc/test-config':
+      '@skyroc/config':
         specifier: workspace:*
-        version: link:../../internal/test-config
+        version: link:../../internal/config
       '@skyroc/tsconfig':
         specifier: workspace:*
         version: link:../../internal/tsconfig

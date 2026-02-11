@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import { baseCoverageConfig, baseTestConfig } from '../../internal/test-config/src';
+import { baseCoverageConfig, baseTestConfig } from '@skyroc/config/vitest';
 
 /**
  * @skyroc/hooks 测试配置

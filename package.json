@@ -20,6 +20,7 @@
     "@dnd-kit/utilities": "^3.2.2"
   },
   "devDependencies": {
+    "@skyroc/config": "workspace:*",
     "@skyroc/tsconfig": "workspace:*",
     "@soybeanjs/eslint-config": "catalog:dev",
     "@testing-library/jest-dom": "catalog:dev",
