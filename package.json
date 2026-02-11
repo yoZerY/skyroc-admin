@@ -26,7 +26,7 @@
     "@testing-library/react": "catalog:dev",
     "@types/react": "catalog:dev",
     "@types/react-dom": "catalog:dev",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "catalog:dev",
     "eslint": "catalog:dev",
     "jsdom": "catalog:dev",
     "rimraf": "catalog:dev",
