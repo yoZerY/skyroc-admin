@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import useCountDownTimer from './use-count-down-timer';
+import useCountDownTimer from '../src/use-count-down-timer';
 
 describe('useCountDownTimer', () => {
   beforeEach(() => {

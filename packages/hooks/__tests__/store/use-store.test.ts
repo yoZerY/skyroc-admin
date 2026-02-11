@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
-import { Store } from './store';
-import { useStore } from './use-store';
-import type { Subscribable } from './use-store';
+import { Store } from '../../src/store/store';
+import { useStore } from '../../src/store/use-store';
+import type { Subscribable } from '../../src/store/use-store';
 
 /**
  * 测试用 Store 子类，暴露 setState

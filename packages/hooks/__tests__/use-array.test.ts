@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import useArray from './use-array';
+import useArray from '../src/use-array';
 
 interface Item {
   id: number;

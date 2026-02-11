@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import useLoading from './use-loading';
+import useLoading from '../src/use-loading';
 
 describe('useLoading', () => {
   it('默认 loading 应为 false', () => {

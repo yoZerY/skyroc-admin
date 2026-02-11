@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { useNow } from './use-now';
+import { useNow } from '../src/use-now';
 
 describe('useNow', () => {
   beforeEach(() => {

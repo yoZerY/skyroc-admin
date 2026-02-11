@@ -1,4 +1,4 @@
-import { Store } from './store';
+import { Store } from '../../src/store/store';
 
 /**
  * 用于测试的 Store 子类

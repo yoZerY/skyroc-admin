@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { useCopy } from './use-copy';
+import { useCopy } from '../../src/web/use-copy';
 
 describe('useCopy', () => {
   beforeEach(() => {

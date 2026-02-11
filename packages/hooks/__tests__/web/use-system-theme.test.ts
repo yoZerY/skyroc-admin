@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useSystemTheme } from './use-system-theme';
+import { useSystemTheme } from '../../src/web/use-system-theme';
 
 /**
  * 创建 matchMedia mock
