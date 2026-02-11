@@ -15,12 +15,11 @@ export class Crypto<T extends object> {
   }
 
   decrypt(encrypted: string) {
-    const decrypted = CryptoJS.AES.decrypt(encrypted, this.secret);
-    const dataString = decrypted.toString(CryptoJS.enc.Utf8);
     try {
+      const decrypted = CryptoJS.AES.decrypt(encrypted, this.secret);
+      const dataString = decrypted.toString(CryptoJS.enc.Utf8);
       return JSON.parse(dataString) as T;
     } catch {
-      // avoid parse error
       return null;
     }
   }

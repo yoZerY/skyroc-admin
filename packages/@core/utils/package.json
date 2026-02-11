@@ -21,7 +21,13 @@
     "radash": "^12.1.1",
     "tailwind-merge": "catalog:utils"
   },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
   "devDependencies": {
+    "@skyroc/config": "workspace:*",
+    "@skyroc/tsconfig": "workspace:*",
     "@types/crypto-js": "catalog:dev"
   }
 }

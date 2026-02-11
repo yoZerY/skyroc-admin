@@ -14,7 +14,7 @@ import { COVERAGE_EXCLUDE, COVERAGE_PROVIDER, SOURCE_PATTERNS, TEST_ENVIRONMENT 
 const TEST_PATTERNS = ['packages/**/__tests__/**/*.test.ts', 'packages/**/__tests__/**/*.test.tsx'];
 
 /** 测试前置文件 */
-const SETUP_FILES = ['./packages/hooks/vitest.setup.ts'];
+const SETUP_FILES = ['./packages/hooks/vitest.setup.ts', './packages/@core/utils/vitest.setup.ts'];
 
 /**
  * 源文件匹配模式（根目录视角）
@@ -22,7 +22,7 @@ const SETUP_FILES = ['./packages/hooks/vitest.setup.ts'];
  * 只覆盖有测试的包，避免无测试包产生大量 0% 噪音。
  * 新包加测试后，在这里加一行即可。
  */
-const TESTED_PACKAGES = ['packages/hooks'];
+const TESTED_PACKAGES = ['packages/hooks', 'packages/@core/utils'];
 const ROOT_SOURCE_PATTERNS = TESTED_PACKAGES.flatMap(pkg => SOURCE_PATTERNS.map(p => `${pkg}/${p}`));
 
 // ==================== Vitest 配置 ====================
