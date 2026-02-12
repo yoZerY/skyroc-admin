@@ -643,6 +643,9 @@ importers:
       '@skyroc/config':
         specifier: workspace:*
         version: link:../../../internal/config
+      '@skyroc/tsconfig':
+        specifier: workspace:*
+        version: link:../../../internal/tsconfig
       '@types/qs':
         specifier: catalog:dev
         version: 6.14.0

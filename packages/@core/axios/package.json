@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@skyroc/config": "workspace:*",
+    "@skyroc/tsconfig": "workspace:*",
     "@types/qs": "catalog:dev"
   }
 }
