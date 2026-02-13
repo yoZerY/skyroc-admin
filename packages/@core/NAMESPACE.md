@@ -1,124 +1,55 @@
 # @core 命名空间
 
-## 📦 命名空间说明
+## 定位
 
-`@core` 是项目的核心功能命名空间,包含所有核心基础包。
+`@core` 是项目的**基础设施层**，存放框架无关或轻度依赖 React 的核心能力包。
 
-## 🗂️ 包组织结构
+放在这里的标准：
 
-```
+- 跨平台（Web / React Native / Node 均可使用，或仅需 React 而不依赖浏览器 API）
+- 与业务逻辑无关，属于通用基础能力
+- 有独立的职责边界，不与其他 @core 包循环依赖
+
+不放在这里的：业务组件、页面级逻辑、特定平台才能用的 hooks（放 `packages/hooks`、`packages/ui` 等）。
+
+## 当前包列表
+
+```text
 packages/@core/
-├── types/              → @core/types         # 全局类型定义
-├── hooks/              → @core/hooks         # React Hooks 集合(未来)
-├── store/              → @core/store         # 状态管理(未来)
-├── providers/          → @core/providers     # Context Providers(未来)
-└── utils/              → @core/utils         # 核心工具函数(未来)
+├── types/       @skyroc/core-types    全局类型定义（零运行时依赖）
+├── utils/       @skyroc/utils         通用工具函数（纯函数集合）
+├── color/       @skyroc/color         颜色处理工具
+├── axios/       @skyroc/axios         HTTP 客户端封装
+├── state/       @skyroc/core-state    Jotai 状态管理封装（依赖 React）
+├── logger/      @skyroc/logger        跨平台日志系统
+├── scheduler/   @skyroc/scheduler     协作式任务调度（初始化、定时器、监听器统一管理）
+└── scripts/     内部构建脚本
 ```
 
-## 🎯 设计理念
+### 各包简述
 
-### 为什么使用命名空间?
+| 包 | 说明 | React 依赖 |
+| --- | --- | --- |
+| `types` | `.d.ts` 全局类型声明，零依赖，所有包均可引用 | 无 |
+| `utils` | 日期、加密、数组/对象操作、正则等纯函数，主入口 + `./web` 子路径 | 无 |
+| `color` | 颜色转换、混合、主题色生成 | 无 |
+| `axios` | 基于 axios 的请求/响应拦截器、实例创建工具 | 无 |
+| `state` | Jotai 原子状态封装、全局 store、持久化 atom、storage registry | 是 |
+| `logger` | 基于 LogLayer 的日志系统，适配 Web / RN / 小程序，含上传、清理、白名单管理 | 无 |
+| `scheduler` | 协作式任务调度中枢，统一管理 init / periodic / listener 三类任务，支持依赖 DAG、重试、暂停恢复 | 无 |
 
-1. **清晰的包组织**
-   - 相关功能包聚合在一起
-   - 一眼就能识别核心包 vs 工具包
+## 依赖方向
 
-2. **更好的可扩展性**
-   ```
-   @core/types          ← 类型定义
-   @core/hooks          ← React Hooks
-   @core/store          ← 状态管理
-
-   vs
-
-   core-types           ← 难以区分
-   core-hooks           ← 命名冗余
-   core-store           ← 不够清晰
-   ```
-
-3. **符合社区最佳实践**
-   - `@tanstack/react-query`, `@tanstack/react-router`
-   - `@radix-ui/react-dialog`, `@radix-ui/react-select`
-   - `@mui/material`, `@mui/icons-material`
-
-## 📋 当前包列表
-
-### @core/types
-- **包名**: `@core/types`
-- **原名**: `@skyroc/core-types`
-- **职责**: 全局类型定义
-- **依赖**: 零依赖
-- **状态**: ✅ 已迁移
-
-## 🚀 未来规划
-
-### @core/hooks (规划中)
-- **职责**: React Hooks 集合
-- **依赖**: `react`, `@core/types`
-- **导出**:
-  ```typescript
-  export { useAuth } from './use-auth';
-  export { useTheme } from './use-theme';
-  export { usePermission } from './use-permission';
-  ```
-
-### @core/store (规划中)
-- **职责**: 全局状态管理
-- **依赖**: `jotai`, `@core/types`
-- **导出**:
-  ```typescript
-  export { authAtom, tokenAtom } from './auth';
-  export { themeAtom, colorAtom } from './theme';
-  ```
-
-### @core/providers (规划中)
-- **职责**: React Context Providers
-- **依赖**: `react`, `@core/types`, `@core/store`
-- **导出**:
-  ```typescript
-  export { AuthProvider } from './AuthProvider';
-  export { ThemeProvider } from './ThemeProvider';
-  ```
-
-## 🎨 使用示例
-
-```typescript
-// 类型定义
-import type { Common, StorageType } from '@core/types';
-
-// Hooks (未来)
-import { useAuth, useTheme } from '@core/hooks';
-
-// 状态管理 (未来)
-import { authAtom, themeAtom } from '@core/store';
-
-// Providers (未来)
-import { AuthProvider, ThemeProvider } from '@core/providers';
+```text
+types（零依赖）
+  ↑
+utils / color / axios（基础工具，互不依赖）
+  ↑
+state / logger / scheduler（运行时系统，可依赖上层基础工具）
 ```
 
-## 📐 命名空间 vs 独立包
-
-### @core 命名空间下的包
-- **适用场景**: 核心功能,紧密关联,频繁一起使用
-- **优势**: 清晰的组织,统一的命名规范
-- **示例**: `@core/types`, `@core/hooks`, `@core/store`
-
-### 独立包(非命名空间)
-- **适用场景**: 独立功能,可单独使用,跨项目复用
-- **优势**: 更好的独立性,更灵活的版本管理
-- **示例**: `@skyroc/axios`, `@skyroc/utils`, `@skyroc/color`
-
-## 🔄 迁移检查清单
-
-从 `@skyroc/core-types` → `@core/types`:
-
-- [x] 移动包目录到 `packages/@core/types/`
-- [ ] 更新 `package.json` 中的包名
-- [ ] 更新 workspace 配置
-- [ ] 更新所有依赖此包的引用
-- [ ] 更新 tsconfig 中的 types 引用
-- [ ] 更新文档
+箭头表示"被依赖"方向。禁止同层或反向依赖。
 
 ---
 
-**最后更新**: 2026-01-25
+**最后更新**: 2026-02-13
