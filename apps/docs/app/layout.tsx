@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react';
 import { RootProvider } from 'fumadocs-ui/provider';
 import Script from 'next/script';
-import type { ReactNode } from 'react';
 import 'fumadocs-ui/style.css';
 import './global.css';
 import { SnackPlayerInit } from '@/components/mdx';
@@ -14,11 +14,17 @@ const RootLayout = (props: RootLayoutProps) => {
   const { children } = props;
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+    >
       <body>
         <RootProvider>{children}</RootProvider>
         <SnackPlayerInit />
-        <Script src="https://snack.expo.dev/embed.js" strategy="lazyOnload" />
+        <Script
+          src="https://snack.expo.dev/embed.js"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

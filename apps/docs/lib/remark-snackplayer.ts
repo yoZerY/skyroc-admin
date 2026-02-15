@@ -1,6 +1,11 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import type { Code, Root } from 'mdast';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
+
+/** monorepo 根目录，file 参数相对此路径解析 */
+const MONOREPO_ROOT = resolve(process.cwd(), '../..');
 
 function parseParams(paramString = '') {
   const params = Object.fromEntries(new URLSearchParams(paramString).entries());
@@ -10,6 +15,11 @@ function parseParams(paramString = '') {
   }
 
   return params;
+}
+
+function readFileContents(filePath: string): string {
+  const absolute = resolve(MONOREPO_ROOT, filePath);
+  return readFileSync(absolute, 'utf-8');
 }
 
 function attr(name: string, value: string) {
@@ -23,23 +33,23 @@ function attr(name: string, value: string) {
 function toJsxNode(node: Code) {
   const params = parseParams(node.meta ?? undefined);
 
+  // file 参数：从文件读取代码（相对 monorepo 根目录）
+  // 优先使用 file，如果没有则使用代码块内联内容
+  const code = params.file ? readFileContents(params.file) : node.value;
+
   const name = params.name ? decodeURIComponent(params.name) : 'Example';
-  const description = params.description
-    ? decodeURIComponent(params.description)
-    : 'Example usage';
-  const ext = params.ext ? decodeURIComponent(params.ext) : 'tsx';
+  const description = params.description ? decodeURIComponent(params.description) : 'Example usage';
+  const ext = params.ext ? decodeURIComponent(params.ext) : params.file?.split('.').pop() ?? 'tsx';
   const filename = `App.${ext}`;
   const files = encodeURIComponent(
     JSON.stringify({
       [filename]: {
         type: 'CODE',
-        contents: node.value
+        contents: code
       }
     })
   );
-  const dependencies =
-    'react-native-safe-area-context' +
-    (params.dependencies ? `,${params.dependencies}` : '');
+  const dependencies = `react-native-safe-area-context${params.dependencies ? `,${params.dependencies}` : ''}`;
   const platform = params.platform ?? 'web';
   const supportedPlatforms = params.supportedPlatforms ?? 'ios,android,web';
   const theme = params.theme ?? 'light';

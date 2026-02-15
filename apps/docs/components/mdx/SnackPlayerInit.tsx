@@ -1,7 +1,7 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 declare global {
   interface Window {
@@ -19,7 +19,7 @@ function getResolvedTheme(): string {
 
 function updateSnacksTheme() {
   const theme = getResolvedTheme();
-  document.querySelectorAll('.snack-player').forEach((snack) => {
+  document.querySelectorAll('.snack-player').forEach(snack => {
     (snack as HTMLElement).dataset.snackTheme = theme;
   });
 }
@@ -52,7 +52,7 @@ const SnackPlayerInit = () => {
     const observer = new MutationObserver(() => {
       if (!window.ExpoSnack) return;
 
-      document.querySelectorAll('.snack-player').forEach((container) => {
+      document.querySelectorAll('.snack-player').forEach(container => {
         updateSnacksTheme();
         window.ExpoSnack?.remove(container);
         window.ExpoSnack?.append(container);

@@ -13,73 +13,7 @@ A pressable button component with multiple visual variants, semantic colors, and
 
 ## Interactive Demo
 
-```SnackPlayer name=Button%20Example&platform=web
-import React from 'react';
-import { Alert, StyleSheet, View, Text, Pressable } from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-
-const Button = ({ title, onPress, variant = 'solid', color = '#6366f1', disabled = false }) => {
-  const isSolid = variant === 'solid';
-  const isOutline = variant === 'outline';
-
-  return (
-    <Pressable
-      onPress={disabled ? undefined : onPress}
-      style={({ pressed }) => [
-        styles.button,
-        isSolid && { backgroundColor: color },
-        isOutline && { borderWidth: 2, borderColor: color, backgroundColor: 'transparent' },
-        !isSolid && !isOutline && { backgroundColor: 'transparent' },
-        disabled && { opacity: 0.5 },
-        pressed && { opacity: 0.7 },
-      ]}
-    >
-      <Text
-        style={[
-          styles.buttonText,
-          isSolid && { color: '#fff' },
-          !isSolid && { color },
-        ]}
-      >
-        {title}
-      </Text>
-    </Pressable>
-  );
-};
-
-export default () => (
-  <SafeAreaProvider>
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.sectionTitle}>Variants</Text>
-      <View style={styles.row}>
-        <Button title="Solid" onPress={() => Alert.alert('Solid pressed')} />
-        <Button title="Outline" variant="outline" onPress={() => Alert.alert('Outline pressed')} />
-        <Button title="Ghost" variant="ghost" onPress={() => Alert.alert('Ghost pressed')} />
-      </View>
-
-      <Text style={styles.sectionTitle}>Colors</Text>
-      <View style={styles.row}>
-        <Button title="Primary" color="#6366f1" onPress={() => {}} />
-        <Button title="Success" color="#22c55e" onPress={() => {}} />
-        <Button title="Danger" color="#ef4444" onPress={() => {}} />
-      </View>
-
-      <Text style={styles.sectionTitle}>States</Text>
-      <View style={styles.row}>
-        <Button title="Normal" onPress={() => {}} />
-        <Button title="Disabled" disabled onPress={() => {}} />
-      </View>
-    </SafeAreaView>
-  </SafeAreaProvider>
-);
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  sectionTitle: { fontSize: 16, fontWeight: '600', marginTop: 16, marginBottom: 8 },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  button: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8, alignItems: 'center' },
-  buttonText: { fontSize: 14, fontWeight: '600' },
-});
+```SnackPlayer name=Button%20Demo&file=apps/expo-ui-playground/src/snack-demos/ButtonSnackDemo.tsx&dependencies=@skyroc/native-ui
 ```
 
 ## Import

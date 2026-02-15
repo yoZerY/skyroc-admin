@@ -20,6 +20,16 @@
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
+  "peerDependencies": {
+    "nativewind": "^4.1.0",
+    "react": ">=18",
+    "react-native": ">=0.74"
+  },
+  "peerDependenciesMeta": {
+    "nativewind": {
+      "optional": false
+    }
+  },
   "dependencies": {
     "@skyroc/native-theme": "workspace:*",
     "@skyroc/ui-types": "workspace:*",
@@ -34,15 +44,5 @@
     "react": "catalog:core",
     "react-native": "catalog:native",
     "react-test-renderer": "^18.3.1"
-  },
-  "peerDependencies": {
-    "nativewind": "^4.1.0",
-    "react": ">=18",
-    "react-native": ">=0.74"
-  },
-  "peerDependenciesMeta": {
-    "nativewind": {
-      "optional": false
-    }
   }
 }
