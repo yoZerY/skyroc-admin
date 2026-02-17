@@ -22,8 +22,12 @@ export default function HomeScreen() {
       <Link asChild href='/components/button'>
         <Pressable>
           <Text className={styles1.title}>Hello World</Text>
-          </Pressable>
+        </Pressable>
       </Link>
+
+      <Text className="text-xl font-bold text-blue-500">
+        Welcome to Nativewind!
+      </Text>
 
     </ParallaxScrollView>
   );

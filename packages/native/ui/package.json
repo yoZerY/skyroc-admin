@@ -31,6 +31,7 @@
     }
   },
   "dependencies": {
+    "@rn-primitives/slot": "^1.2.0",
     "@skyroc/native-theme": "workspace:*",
     "@skyroc/ui-types": "workspace:*",
     "@skyroc/utils": "workspace:*",
@@ -41,8 +42,8 @@
     "@testing-library/react-native": "catalog:native",
     "@types/react": "catalog:dev",
     "jest": "^29.7.0",
-    "react": "catalog:core",
-    "react-native": "catalog:native",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
     "react-test-renderer": "^18.3.1"
   }
 }

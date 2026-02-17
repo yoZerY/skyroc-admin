@@ -1,0 +1,26 @@
+{
+  "name": "@skyroc/tailwind-plugin",
+  "type": "module",
+  "version": "0.0.1",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./src/index.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["./src/*"]
+    }
+  },
+  "files": ["./dist"],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "@skyroc/color": "workspace:*",
+    "@unocss/core": "catalog:dev",
+    "tailwindcss": "4."
+  }
+}
