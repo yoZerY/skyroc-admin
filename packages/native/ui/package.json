@@ -21,11 +21,15 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "peerDependencies": {
+    "expo-image": ">=3.0.0",
     "nativewind": "^4.1.0",
     "react": ">=18",
     "react-native": ">=0.74"
   },
   "peerDependenciesMeta": {
+    "expo-image": {
+      "optional": true
+    },
     "nativewind": {
       "optional": false
     }

@@ -28,6 +28,9 @@ export default function HomeScreen() {
           <Text className={styles1.title}>Hello World2</Text>
       </Link>
 
+      <Link href='/components/image'>
+          <Text className={styles1.title}>Image</Text>
+      </Link>
 
     </ParallaxScrollView>
   );
