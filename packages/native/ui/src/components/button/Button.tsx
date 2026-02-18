@@ -1,117 +1,47 @@
-import * as Slot from '@rn-primitives/slot';
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { PressableProps, ViewStyle } from 'react-native';
-import { Platform, Pressable, View } from 'react-native';
-import { cn } from '@skyroc/utils';
-import { TextClassContext } from '../text/Typography';
+import { ActivityIndicator, Pressable } from 'react-native';
+import { cn, isString } from '@skyroc/utils';
+import { Text, TextClassContext } from '../text/Typography';
+import { buttonTextVariants, buttonVariants } from './button-variants';
+import type { ButtonProps } from './types';
 
-const buttonVariants = cva('flex-row items-center justify-center gap-2', {
-  variants: {
-    variant: {
-      primary: 'ios:active:opacity-80 bg-primary',
-      secondary: 'ios:border-primary ios:active:bg-primary/5 border border-foreground/40',
-      tonal: 'ios:bg-primary/10 dark:ios:bg-primary/10 ios:active:bg-primary/15 bg-primary/15 dark:bg-primary/30',
-      plain: 'ios:active:opacity-70'
-    },
-    size: {
-      none: '',
-      sm: 'py-1 px-2.5 rounded-full',
-      md: 'ios:rounded-lg py-2 ios:py-1.5 ios:px-3.5 px-5 rounded-full',
-      lg: 'py-2.5 px-5 ios:py-2 rounded-xl gap-2',
-      icon: 'ios:rounded-lg h-10 w-10 rounded-full'
-    }
-  },
-  defaultVariants: {
-    variant: 'primary',
-    size: 'md'
-  }
-});
+const Button = (props: ButtonProps) => {
+  const {
+    children,
+    className,
+    color = 'primary',
+    disabled = false,
+    loading = false,
+    shape = 'rounded',
+    size = 'md',
+    variant = 'solid',
+    ...rest
+  } = props;
 
-const androidRootVariants = cva('overflow-hidden', {
-  variants: {
-    size: {
-      none: '',
-      icon: 'rounded-full',
-      sm: 'rounded-full',
-      md: 'rounded-full',
-      lg: 'rounded-xl'
-    }
-  },
-  defaultVariants: {
-    size: 'md'
-  }
-});
+  const isDisabled = disabled || loading;
 
-const buttonTextVariants = cva('font-medium', {
-  variants: {
-    variant: {
-      primary: 'text-white',
-      secondary: 'ios:text-primary text-foreground',
-      tonal: 'ios:text-primary text-foreground',
-      plain: 'text-foreground'
-    },
-    size: {
-      none: '',
-      icon: '',
-      sm: 'text-[15px] leading-5',
-      md: 'text-[17px] leading-7',
-      lg: 'text-[17px] leading-7'
-    }
-  },
-  defaultVariants: {
-    variant: 'primary',
-    size: 'md'
-  }
-});
+  const textClass = buttonTextVariants({ variant, color, size });
 
-// Add as class when possible: https://github.com/marklawlor/nativewind/issues/522
-const BORDER_CURVE: ViewStyle = {
-  borderCurve: 'continuous'
-};
+  const buttonClass = buttonVariants({ variant, color, size, shape });
 
-type ButtonVariantProps = Omit<VariantProps<typeof buttonVariants>, 'variant'> & {
-  variant?: Exclude<VariantProps<typeof buttonVariants>['variant'], null>;
-};
-
-type AndroidOnlyButtonProps = {
-  /**
-   * ANDROID ONLY: The class name of root responsible for hidding the ripple overflow.
-   */
-  androidRootClassName?: string;
-};
-
-type ButtonProps = PressableProps & ButtonVariantProps & AndroidOnlyButtonProps;
-
-const Root = Platform.OS === 'android' ? View : Slot.Pressable;
-
-function Button({
-  className,
-  variant = 'primary',
-  size,
-  style = BORDER_CURVE,
-  androidRootClassName,
-  ...props
-}: ButtonProps) {
   return (
-    <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
-      <Root
-        className={Platform.select({
-          ios: undefined,
-          default: androidRootVariants({
-            size,
-            className: androidRootClassName
-          })
-        })}
+    <TextClassContext.Provider value={textClass}>
+      <Pressable
+        className={cn(buttonClass, isDisabled && 'opacity-50', className)}
+        disabled={isDisabled}
+        role="button"
+        {...rest}
       >
-        <Pressable
-          className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size, className }))}
-          style={style}
-          {...props}
-        />
-      </Root>
+        {loading && (
+          <ActivityIndicator
+            className={textClass}
+            size="small"
+          />
+        )}
+
+        {isString(children) ? <Text>{children}</Text> : children}
+      </Pressable>
     </TextClassContext.Provider>
   );
-}
+};
 
-export { Button, buttonTextVariants, buttonVariants };
-export type { ButtonProps };
+export { Button };

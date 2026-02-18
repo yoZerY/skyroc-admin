@@ -1,19 +1,27 @@
 import type { ReactNode } from 'react';
 import type { PressableProps } from 'react-native';
-import type { SlotClassNames } from '../../types';
 import type { ButtonVariantProps } from './button-variants';
 
-/** Button slot names for classNames override */
-export type ButtonSlots = 'label' | 'root';
+/** 按钮颜色 */
+export type ButtonColor = NonNullable<ButtonVariantProps['color']>;
 
-/** Button component props */
-export interface ButtonProps extends PressableProps, Omit<ButtonVariantProps, 'disabled'> {
-  /** Button content */
+/** 按钮变体 */
+export type ButtonVariant = NonNullable<ButtonVariantProps['variant']>;
+
+/** 按钮尺寸 */
+export type ButtonSize = NonNullable<ButtonVariantProps['size']>;
+
+/** 按钮形状 */
+export type ButtonShape = NonNullable<ButtonVariantProps['shape']>;
+
+/** 按钮组件属性 */
+export interface ButtonProps extends Omit<PressableProps, 'children'>, ButtonVariantProps {
+  /** 按钮内容，string 类型自动包裹 Text */
   children?: ReactNode;
 
-  /** Override individual slot class names */
-  classNames?: SlotClassNames<ButtonSlots>;
+  /** NativeWind 类名 */
+  className?: string;
 
-  /** Show loading state */
+  /** 加载状态，为 true 时显示 loading 指示器且不可点击 */
   loading?: boolean;
 }

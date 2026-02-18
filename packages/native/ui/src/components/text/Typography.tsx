@@ -17,8 +17,6 @@ const Text = (props: TextProps) => {
 
   const textCls = cn(textVariants({ color, size, weight }), textClass, className);
 
-  console.log('textCls', textCls, props.children);
-
   return (
     <Component
       className={textCls}

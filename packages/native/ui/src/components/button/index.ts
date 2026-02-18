@@ -1,3 +1,3 @@
 export { Button } from './Button';
-export { buttonVariants } from './button-variants';
-export type { ButtonProps, ButtonSlots } from './types';
+export { buttonTextVariants, buttonVariants } from './button-variants';
+export type { ButtonColor, ButtonProps, ButtonShape, ButtonSize, ButtonVariant } from './types';

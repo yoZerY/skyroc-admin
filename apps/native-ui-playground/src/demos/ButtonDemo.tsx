@@ -12,38 +12,58 @@ const ButtonDemo = () => {
 
   return (
     <ScrollView className="flex-1 bg-background p-6">
-      <Text className="mb-4 text-lg font-semibold text-foreground">Variants</Text>
+      {/* Variants */}
+      <Text className="mb-4 text-lg font-semibold">Variants</Text>
       <View className="mb-8 gap-3">
-        <Button variant="solid" onPress={() => Alert.alert('Solid')}><Text>Solid</Text></Button>
-        <Button variant="outline"><Text>Outline</Text></Button>
-        <Button variant="ghost"><Text>Ghost</Text></Button>
+        <Button variant="solid" onPress={() => Alert.alert('Solid')}>Solid</Button>
+        <Button variant="tonal">Tonal</Button>
+        <Button variant="outline">Outline</Button>
+        <Button  variant="ghost">Ghost</Button>
       </View>
 
-      <Text className="mb-4 text-lg font-semibold text-foreground">Colors</Text>
+      {/* Colors */}
+      <Text className="mb-4 text-lg font-semibold">Colors</Text>
       <View className="mb-8 gap-3">
-        <Button color="primary"><Text>Primary</Text></Button>
-        <Button color="secondary"><Text>Secondary</Text></Button>
-        <Button color="destructive"><Text>Destructive</Text></Button>
-        <Button color="success"><Text>Success</Text></Button>
-        <Button color="warning"><Text>Warning</Text></Button>
-        <Button color="info"><Text>Info</Text></Button>
-        <Button color="accent"><Text>Accent</Text></Button>
+        <Button color="primary">Primary</Button>
+        <Button color="secondary">Secondary</Button>
+        <Button color="destructive">Destructive</Button>
+        <Button color="success">Success</Button>
+        <Button color="warning">Warning</Button>
+        <Button color="info">Info</Button>
       </View>
 
-      <Text className="mb-4 text-lg font-semibold text-foreground">Sizes</Text>
+      {/* Tonal Colors */}
+      <Text className="mb-4 text-lg font-semibold">Tonal Colors</Text>
       <View className="mb-8 gap-3">
-        <Button size="xs"><Text>Extra Small</Text></Button>
-        <Button size="sm"><Text>Small</Text></Button>
-        <Button size="md"><Text>Medium</Text></Button>
-        <Button size="lg"><Text>Large</Text></Button>
-        <Button size="xl"><Text>Extra Large</Text></Button>
+        <Button variant="tonal" color="primary">Primary</Button>
+        <Button variant="tonal" color="destructive">Destructive</Button>
+        <Button variant="tonal" color="success">Success</Button>
+        <Button variant="tonal" color="warning">Warning</Button>
+        <Button variant="tonal" color="info">Info</Button>
       </View>
 
-      <Text className="mb-4 text-lg font-semibold text-foreground">States</Text>
+      {/* Sizes */}
+      <Text className="mb-4 text-lg font-semibold">Sizes</Text>
       <View className="mb-8 gap-3">
-        <Button disabled><Text>Disabled</Text></Button>
+        <Button size="sm">Small</Button>
+        <Button size="md">Medium</Button>
+        <Button size="lg">Large</Button>
+      </View>
+
+      {/* Shapes */}
+      <Text className="mb-4 text-lg font-semibold">Shapes</Text>
+      <View className="mb-8 flex-row gap-3">
+        <Button shape="rounded">Rounded</Button>
+        <Button shape="pill">Pill</Button>
+        <Button shape="circle" size="icon"><Text>A</Text></Button>
+      </View>
+
+      {/* States */}
+      <Text className="mb-4 text-lg font-semibold">States</Text>
+      <View className="mb-8 gap-3">
+        <Button disabled>Disabled</Button>
         <Button loading={loading} onPress={handleLoadingPress}>
-          <Text>{loading ? 'Loading...' : 'Click to Load'}</Text>
+          {loading ? 'Loading...' : 'Click to Load'}
         </Button>
       </View>
     </ScrollView>
