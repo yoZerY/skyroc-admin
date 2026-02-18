@@ -1,4 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "include": ["src/**/*"]
+  "extends": "@skyroc/tsconfig/web-app.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "~/*": ["./*"]
+    }
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"]
 }

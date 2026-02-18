@@ -1,9 +1,10 @@
 import { Image } from 'expo-image';
-import { Text, View, StyleSheet, Button, Pressable } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { EditScreenInfo } from '@/components/EditScreenInfo';
 import { Link } from 'expo-router';
+
 
 
 export default function HomeScreen() {
@@ -19,15 +20,14 @@ export default function HomeScreen() {
 
       <View className={styles1.separator} />
       <EditScreenInfo path="App.tsx" />
-      <Link asChild href='/components/button'>
-        <Pressable>
+      <Link href='/components/button'>
           <Text className={styles1.title}>Hello World</Text>
-        </Pressable>
       </Link>
 
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nativewind!
-      </Text>
+      <Link href='/components/text'>
+          <Text className={styles1.title}>Hello World2</Text>
+      </Link>
+
 
     </ParallaxScrollView>
   );

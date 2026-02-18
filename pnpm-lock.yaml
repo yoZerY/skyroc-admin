@@ -58,6 +58,9 @@ catalogs:
     '@types/react-dom':
       specifier: ^19.2.3
       version: 19.2.3
+    '@unocss/core':
+      specifier: ^66.5.10
+      version: 66.5.11
     '@unocss/eslint-config':
       specifier: ^66.5.10
       version: 66.5.10
@@ -747,6 +750,9 @@ importers:
         specifier: 0.5.1
         version: 0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
     devDependencies:
+      '@skyroc/tailwind-plugin':
+        specifier: workspace:*
+        version: link:../../packages/web/tailwind-plugin
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.18
@@ -1139,6 +1145,18 @@ importers:
       typed-css-modules:
         specifier: 0.9.1
         version: 0.9.1
+
+  packages/web/tailwind-plugin:
+    dependencies:
+      '@skyroc/color':
+        specifier: workspace:*
+        version: link:../../@core/color
+      '@unocss/core':
+        specifier: catalog:dev
+        version: 66.5.11
+      tailwindcss:
+        specifier: ^4.1.18
+        version: 4.1.18
 
   packages/web/ui/antd:
     dependencies:
