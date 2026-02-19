@@ -44,6 +44,10 @@ export default function HomeScreen() {
           <Text className={styles1.title}>Toast</Text>
       </Link>
 
+      <Link href='/components/space'>
+          <Text className={styles1.title}>Space</Text>
+      </Link>
+
     </ParallaxScrollView>
   );
 }

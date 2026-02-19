@@ -4,5 +4,6 @@ export * from './button';
 export * from './cell';
 export * from './image';
 export * from './input';
+export * from './space';
 export * from './text';
 export * from './toast';
