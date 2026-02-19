@@ -56,6 +56,10 @@ export default function HomeScreen() {
           <Text className={styles1.title}>Divider</Text>
       </Link>
 
+      <Link href='/components/navbar'>
+          <Text className={styles1.title}>NavBar</Text>
+      </Link>
+
       <Link href='/components/dialog'>
           <Text className={styles1.title}>Dialog</Text>
       </Link>
