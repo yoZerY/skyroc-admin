@@ -221,6 +221,9 @@ catalogs:
     # 图标
     "@expo/vector-icons": ^15.0.3
 
+    # 弹出层
+    react-native-modal: 14.0.0-rc.1
+
     # 开发工具
     "@dev-plugins/react-navigation": ^0.4.0
     eslint-config-expo: ~10.0.0

@@ -25,10 +25,14 @@
     "nativewind": ">=4.1.0",
     "react": ">=18",
     "react-native": ">=0.74",
+    "react-native-modal": ">=13.0.0",
     "react-native-reanimated": ">=3.0.0"
   },
   "peerDependenciesMeta": {
     "expo-image": {
+      "optional": true
+    },
+    "react-native-modal": {
       "optional": true
     },
     "react-native-reanimated": {
@@ -42,6 +46,7 @@
     "@skyroc/ui-types": "workspace:*",
     "@skyroc/utils": "workspace:*",
     "react": "catalog:core",
+    "react-native-modal": "catalog:native",
     "tailwind-variants": "catalog:utils"
   },
   "devDependencies": {
