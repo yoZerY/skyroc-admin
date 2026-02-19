@@ -13,7 +13,7 @@ export const textVariants = tv({
       destructive: 'text-destructive',
       foreground: 'text-foreground',
       info: 'text-info',
-      muted: 'text-foreground-muted',
+      muted: 'text-muted-foreground',
       primary: 'text-primary',
       secondary: 'text-secondary',
       success: 'text-success',
