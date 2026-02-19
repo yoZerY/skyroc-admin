@@ -36,6 +36,14 @@ export default function HomeScreen() {
           <Text className={styles1.title}>Avatar</Text>
       </Link>
 
+      <Link href='/components/cell'>
+          <Text className={styles1.title}>Cell</Text>
+      </Link>
+
+      <Link href='/components/toast'>
+          <Text className={styles1.title}>Toast</Text>
+      </Link>
+
     </ParallaxScrollView>
   );
 }
