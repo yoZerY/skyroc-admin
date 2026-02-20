@@ -1,16 +1,9 @@
-import { useMemo, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
-import { scrollTo, useAnimatedReaction, useScrollOffset } from 'react-native-reanimated';
+import { useMemo } from 'react';
+import { useWindowDimensions } from 'react-native';
+import Octicons from '@expo/vector-icons/Octicons';
+import { scrollTo, useDerivedValue, useScrollOffset, useSharedValue } from 'react-native-reanimated';
 import { FloatingButton } from '../floating-button/FloatingButton';
-import { backTopVariants } from './back-top-variants';
 import type { BackTopProps } from './types';
-
-/** Default up-arrow icon drawn with border + rotation */
-const ArrowUpIcon = () => {
-  const { icon: iconCls } = backTopVariants();
-
-  return <View className={iconCls()} />;
-};
 
 const BackTop = (props: BackTopProps) => {
   const {
@@ -27,19 +20,18 @@ const BackTop = (props: BackTopProps) => {
 
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
 
-  const [visible, setVisible] = useState(false);
-
   const scrollOffset = useScrollOffset(target);
 
-  useAnimatedReaction(
-    () => scrollOffset.value >= offset,
-    (shouldShow, prev) => {
-      if (shouldShow !== prev) {
-        setVisible(shouldShow);
-      }
-    },
-    [offset]
-  );
+  const visibleValue = useDerivedValue<number>(() => (scrollOffset.value >= offset ? 1 : 0));
+
+  // Trigger counter: incremented on press, useDerivedValue reacts and calls scrollTo on UI thread
+  const scrollTrigger = useSharedValue(0);
+
+  useDerivedValue(() => {
+    if (scrollTrigger.value > 0) {
+      scrollTo(target, 0, 0, !immediate);
+    }
+  });
 
   const buttonOffset = useMemo(
     () => ({
@@ -51,7 +43,7 @@ const BackTop = (props: BackTopProps) => {
 
   function handlePress() {
     onPress?.();
-    scrollTo(target, 0, 0, !immediate);
+    scrollTrigger.value += 1;
   }
 
   return (
@@ -61,9 +53,15 @@ const BackTop = (props: BackTopProps) => {
       offset={buttonOffset}
       onPress={handlePress}
       size={size}
-      visible={visible}
+      visibleValue={visibleValue}
     >
-      {children || <ArrowUpIcon />}
+      {children || (
+        <Octicons
+          color="white"
+          name="chevron-up"
+          size={20}
+        />
+      )}
     </FloatingButton>
   );
 };

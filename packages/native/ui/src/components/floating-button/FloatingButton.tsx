@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { cn, isNumber } from '@skyroc/utils';
 import { floatingButtonVariants } from './floating-button-variants';
 import type { FloatingButtonProps } from './types';
-
-/** Movement threshold in pixels to distinguish tap from drag */
-const TAP_THRESHOLD = 5;
 
 const FloatingButton = (props: FloatingButtonProps) => {
   const {
@@ -20,7 +24,8 @@ const FloatingButton = (props: FloatingButtonProps) => {
     onOffsetChange,
     onPress,
     size = 48,
-    visible = true
+    visible = true,
+    visibleValue
   } = props;
 
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
@@ -46,9 +51,22 @@ const FloatingButton = (props: FloatingButtonProps) => {
 
   const { root: rootCls } = floatingButtonVariants();
 
+  // UI-thread visibility: driven by SharedValue (for BackTop etc.)
+  useAnimatedReaction(
+    () => visibleValue?.value,
+    (current, prev) => {
+      if (current !== undefined && current !== prev) {
+        scale.value = withSpring(current, { damping: 15, stiffness: 200 });
+      }
+    }
+  );
+
+  // JS-thread visibility: driven by boolean prop (when visibleValue is not provided)
   useEffect(() => {
-    scale.value = withSpring(visible ? 1 : 0, { damping: 15, stiffness: 200 });
-  }, [visible, scale]);
+    if (!visibleValue) {
+      scale.value = withSpring(visible ? 1 : 0, { damping: 15, stiffness: 200 });
+    }
+  }, [visible, scale, visibleValue]);
 
   useEffect(() => {
     if (offset) {
@@ -69,6 +87,19 @@ const FloatingButton = (props: FloatingButtonProps) => {
   function handleOffsetChange(x: number, y: number) {
     onOffsetChange?.({ x, y });
   }
+
+  const tapGesture = Gesture.Tap()
+    .onBegin(() => {
+      opacity.value = withTiming(0.8, { duration: 100 });
+    })
+    .onEnd(() => {
+      if (onPress) {
+        scheduleOnRN(handlePress);
+      }
+    })
+    .onFinalize(() => {
+      opacity.value = withTiming(1, { duration: 100 });
+    });
 
   const panGesture = Gesture.Pan()
     .enabled(axis !== 'lock')
@@ -91,18 +122,7 @@ const FloatingButton = (props: FloatingButtonProps) => {
       translateX.value = clampValue(nextX, minX, maxX);
       translateY.value = clampValue(nextY, minY, maxY);
     })
-    .onEnd(event => {
-      opacity.value = withTiming(1, { duration: 100 });
-
-      const totalMovement = Math.abs(event.translationX) + Math.abs(event.translationY);
-
-      if (totalMovement < TAP_THRESHOLD) {
-        if (onPress) {
-          handlePress();
-        }
-        return;
-      }
-
+    .onEnd(() => {
       let finalX = translateX.value;
       let finalY = translateY.value;
 
@@ -119,17 +139,20 @@ const FloatingButton = (props: FloatingButtonProps) => {
       }
 
       if (onOffsetChange) {
-        handleOffsetChange(finalX, finalY);
+        scheduleOnRN(handleOffsetChange, finalX, finalY);
       }
     })
     .onFinalize(() => {
       opacity.value = withTiming(1, { duration: 100 });
     });
 
+  const composedGesture = Gesture.Exclusive(panGesture, tapGesture);
+
   const animatedStyle = useAnimatedStyle(() => ({
     height: size,
     left: 0,
     opacity: opacity.value,
+    pointerEvents: scale.value === 0 ? 'none' : 'auto',
     position: 'absolute' as const,
     top: 0,
     transform: [{ translateX: translateX.value }, { translateY: translateY.value }, { scale: scale.value }],
@@ -137,11 +160,8 @@ const FloatingButton = (props: FloatingButtonProps) => {
   }));
 
   return (
-    <GestureDetector gesture={panGesture}>
-      <Animated.View
-        pointerEvents={visible ? 'auto' : 'none'}
-        style={animatedStyle}
-      >
+    <GestureDetector gesture={composedGesture}>
+      <Animated.View style={animatedStyle}>
         <View className={cn(rootCls(), 'h-full w-full', className)}>{children}</View>
       </Animated.View>
     </GestureDetector>

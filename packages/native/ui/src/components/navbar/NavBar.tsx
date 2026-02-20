@@ -1,6 +1,6 @@
 import { Pressable, View } from 'react-native';
 import { cn, isString } from '@skyroc/utils';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Octicons from '@expo/vector-icons/Octicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '../text/Typography';
 import { navBarVariants } from './navbar-variants';
@@ -40,10 +40,10 @@ const NavBar = (props: NavBarProps) => {
     return (
       <>
         {leftArrow && (
-          <AntDesign
+          <Octicons
             color="#09090b"
-            name="left"
-            size={16}
+            name="chevron-left"
+            size={24}
           />
         )}
         {leftText ? <Text className="text-sm">{leftText}</Text> : null}

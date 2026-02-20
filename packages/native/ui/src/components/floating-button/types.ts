@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { SharedValue } from 'react-native-reanimated';
 
 /** Axis constraint for drag movement */
 export type FloatingButtonAxis = 'lock' | 'x' | 'xy' | 'y';
@@ -36,4 +37,7 @@ export interface FloatingButtonProps {
 
   /** Whether the button is visible, with scale animation on toggle */
   visible?: boolean;
+
+  /** SharedValue (0 or 1) to drive visibility on UI thread, overrides visible prop when provided */
+  visibleValue?: SharedValue<number>;
 }
