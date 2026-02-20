@@ -1,114 +1,134 @@
-import { Image } from 'expo-image';
-import { Text, View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ScrollView, View } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Cell, CellGroup, Text } from '@skyroc/native-ui';
 
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { EditScreenInfo } from '@/components/EditScreenInfo';
-import { Link } from 'expo-router';
-
-
-
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-
-      <View className={styles1.separator} />
-      <EditScreenInfo path="App.tsx" />
-      <Link href='/components/button'>
-          <Text className={styles1.title}>Hello World</Text>
-      </Link>
-
-      <Link href='/components/text'>
-          <Text className={styles1.title}>Hello World2</Text>
-      </Link>
-
-      <Link href='/components/image'>
-          <Text className={styles1.title}>Image</Text>
-      </Link>
-
-      <Link href='/components/avatar'>
-          <Text className={styles1.title}>Avatar</Text>
-      </Link>
-
-      <Link href='/components/badge'>
-          <Text className={styles1.title}>Badge</Text>
-      </Link>
-
-      <Link href='/components/cell'>
-          <Text className={styles1.title}>Cell</Text>
-      </Link>
-
-      <Link href='/components/toast'>
-          <Text className={styles1.title}>Toast</Text>
-      </Link>
-
-      <Link href='/components/space'>
-          <Text className={styles1.title}>Space</Text>
-      </Link>
-
-      <Link href='/components/popup'>
-          <Text className={styles1.title}>Popup</Text>
-      </Link>
-
-      <Link href='/components/divider'>
-          <Text className={styles1.title}>Divider</Text>
-      </Link>
-
-      <Link href='/components/navbar'>
-          <Text className={styles1.title}>NavBar</Text>
-      </Link>
-
-      <Link href='/components/sheet'>
-          <Text className={styles1.title}>Sheet</Text>
-      </Link>
-
-      <Link href='/components/action-sheet'>
-          <Text className={styles1.title}>ActionSheet</Text>
-      </Link>
-
-      <Link href='/components/dialog'>
-          <Text className={styles1.title}>Dialog</Text>
-      </Link>
-
-      <Link href='/components/floating-button'>
-          <Text className={styles1.title}>FloatingButton</Text>
-      </Link>
-
-      <Link href='/components/back-top'>
-          <Text className={styles1.title}>BackTop</Text>
-      </Link>
-
-    </ParallaxScrollView>
-  );
+interface ComponentItem {
+  href: string;
+  icon: React.ComponentProps<typeof AntDesign>['name'];
+  iconColor: string;
+  iconBg: string;
+  label: string;
 }
 
-const styles1 = {
-  container: `flex flex-1 px-4 bg-white items-center justify-center`,
-  separator: `h-px w-[300px] bg-gray-200 my-7`,
-  title: `text-xl font-bold`,
+interface ComponentGroup {
+  title: string;
+  items: ComponentItem[];
+}
+
+const GROUPS: ComponentGroup[] = [
+  {
+    title: '基础组件',
+    items: [
+      { href: '/components/button', icon: 'appstore', iconColor: '#3b82f6', iconBg: '#eff6ff', label: 'Button' },
+      { href: '/components/text', icon: 'font-size', iconColor: '#8b5cf6', iconBg: '#f5f3ff', label: 'Text' },
+      { href: '/components/input', icon: 'form', iconColor: '#06b6d4', iconBg: '#ecfeff', label: 'Input' },
+      { href: '/components/divider', icon: 'minus', iconColor: '#6b7280', iconBg: '#f9fafb', label: 'Divider' },
+      { href: '/components/space', icon: 'column-width', iconColor: '#f59e0b', iconBg: '#fffbeb', label: 'Space' },
+      { href: '/components/checkbox', icon: 'check-square', iconColor: '#22c55e', iconBg: '#f0fdf4', label: 'Checkbox' },
+    ],
+  },
+  {
+    title: '展示组件',
+    items: [
+      { href: '/components/image', icon: 'picture', iconColor: '#10b981', iconBg: '#ecfdf5', label: 'Image' },
+      { href: '/components/avatar', icon: 'user', iconColor: '#f43f5e', iconBg: '#fff1f2', label: 'Avatar' },
+      { href: '/components/badge', icon: 'tag', iconColor: '#ef4444', iconBg: '#fef2f2', label: 'Badge' },
+      { href: '/components/cell', icon: 'bars', iconColor: '#64748b', iconBg: '#f8fafc', label: 'Cell' },
+    ],
+  },
+  {
+    title: '反馈组件',
+    items: [
+      { href: '/components/toast', icon: 'notification', iconColor: '#f97316', iconBg: '#fff7ed', label: 'Toast' },
+      { href: '/components/dialog', icon: 'message', iconColor: '#3b82f6', iconBg: '#eff6ff', label: 'Dialog' },
+      { href: '/components/action-sheet', icon: 'menu-unfold', iconColor: '#8b5cf6', iconBg: '#f5f3ff', label: 'ActionSheet' },
+    ],
+  },
+  {
+    title: '浮层组件',
+    items: [
+      { href: '/components/popup', icon: 'layout', iconColor: '#06b6d4', iconBg: '#ecfeff', label: 'Popup' },
+      { href: '/components/sheet', icon: 'profile', iconColor: '#10b981', iconBg: '#ecfdf5', label: 'Sheet' },
+    ],
+  },
+  {
+    title: '导航组件',
+    items: [
+      { href: '/components/navbar', icon: 'arrow-left', iconColor: '#09090b', iconBg: '#f4f4f5', label: 'NavBar' },
+      { href: '/components/back-top', icon: 'up-circle', iconColor: '#3b82f6', iconBg: '#eff6ff', label: 'BackTop' },
+      { href: '/components/floating-button', icon: 'plus', iconColor: '#f43f5e', iconBg: '#fff1f2', label: 'FloatingButton' },
+    ],
+  },
+];
+
+const HomeScreen = () => {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+
+  return (
+    <ScrollView
+      className="flex-1 bg-background"
+      contentContainerStyle={{ paddingBottom: insets.bottom + 24, paddingTop: insets.top  }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Header */}
+      <View
+        className="bg-primary px-6 pb-8 pt-4"
+      >
+        <View className="flex-row items-center gap-3">
+          <View className="size-10 items-center justify-center rounded-2xl bg-white/20">
+            <AntDesign color="white" name="appstore" size={20} />
+          </View>
+          <View>
+            <Text className="text-lg font-bold text-white">Native UI</Text>
+            <Text className="text-xs text-white/70">组件展示平台</Text>
+          </View>
+        </View>
+
+        <View className="mt-5 flex-row gap-3">
+          <View className="flex-1 rounded-2xl bg-white/15 p-4">
+            <Text className="text-2xl font-bold text-white">18</Text>
+            <Text className="mt-0.5 text-xs text-white/70">组件总数</Text>
+          </View>
+          <View className="flex-1 rounded-2xl bg-white/15 p-4">
+            <Text className="text-2xl font-bold text-white">5</Text>
+            <Text className="mt-0.5 text-xs text-white/70">分类</Text>
+          </View>
+          <View className="flex-1 rounded-2xl bg-white/15 p-4">
+            <Text className="text-2xl font-bold text-white">TS</Text>
+            <Text className="mt-0.5 text-xs text-white/70">类型安全</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Component Groups */}
+      <View className="px-4 pt-5">
+        {GROUPS.map(group => (
+          <View key={group.title} className="mb-4">
+            <CellGroup inset title={group.title}>
+              {group.items.map(item => (
+                <Cell
+                  key={item.href}
+                  leading={
+                    <View
+                      className="size-9 items-center justify-center rounded-xl"
+                      style={{ backgroundColor: item.iconBg }}
+                    >
+                      <AntDesign color={item.iconColor} name={item.icon} size={18} />
+                    </View>
+                  }
+                  title={item.label}
+                  onPress={() => router.push(item.href as any)}
+                />
+              ))}
+            </CellGroup>
+          </View>
+        ))}
+      </View>
+    </ScrollView>
+  );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+export default HomeScreen;

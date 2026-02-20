@@ -48,6 +48,7 @@
     }
   },
   "dependencies": {
+    "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@rn-primitives/slot": "^1.2.0",
     "@skyroc/hooks": "workspace:*",
     "@skyroc/native-theme": "workspace:*",
