@@ -17,7 +17,8 @@ export const buttonVariants = tv({
       secondary: '',
       success: '',
       warning: '',
-      info: ''
+      info: '',
+      muted: ''
     },
     size: {
       sm: 'h-8 px-3 gap-1.5',
@@ -89,7 +90,8 @@ export const buttonTextVariants = tv({
       secondary: '',
       success: '',
       warning: '',
-      info: ''
+      info: '',
+      muted: ''
     },
     size: {
       sm: 'text-sm',
@@ -113,7 +115,8 @@ export const buttonTextVariants = tv({
     { variant: ['tonal', 'outline', 'ghost'], color: 'secondary', class: 'text-foreground' },
     { variant: ['tonal', 'outline', 'ghost'], color: 'success', class: 'text-success' },
     { variant: ['tonal', 'outline', 'ghost'], color: 'warning', class: 'text-warning' },
-    { variant: ['tonal', 'outline', 'ghost'], color: 'info', class: 'text-info' }
+    { variant: ['tonal', 'outline', 'ghost'], color: 'info', class: 'text-info' },
+    { variant: ['tonal', 'outline', 'ghost'], color: 'muted', class: 'text-muted-foreground' }
   ],
   defaultVariants: {
     variant: 'solid',
