@@ -29,6 +29,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/checkbox', icon: 'check-square', iconColor: '#22c55e', iconBg: '#f0fdf4', label: 'Checkbox' },
       { href: '/components/radio', icon: 'check-circle', iconColor: '#6366f1', iconBg: '#eef2ff', label: 'Radio' },
       { href: '/components/switch', icon: 'swap', iconColor: '#14b8a6', iconBg: '#f0fdfa', label: 'Switch' },
+      { href: '/components/picker', icon: 'select', iconColor: '#ec4899', iconBg: '#fdf2f8', label: 'Picker' },
     ],
   },
   {
@@ -38,6 +39,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/avatar', icon: 'user', iconColor: '#f43f5e', iconBg: '#fff1f2', label: 'Avatar' },
       { href: '/components/badge', icon: 'tag', iconColor: '#ef4444', iconBg: '#fef2f2', label: 'Badge' },
       { href: '/components/cell', icon: 'bars', iconColor: '#64748b', iconBg: '#f8fafc', label: 'Cell' },
+      { href: '/components/tag', icon: 'tago', iconColor: '#f97316', iconBg: '#fff7ed', label: 'Tag' },
     ],
   },
   {
@@ -91,7 +93,7 @@ const HomeScreen = () => {
 
         <View className="mt-5 flex-row gap-3">
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
-            <Text className="text-2xl font-bold text-white">20</Text>
+            <Text className="text-2xl font-bold text-white">22</Text>
             <Text className="mt-0.5 text-xs text-white/70">组件总数</Text>
           </View>
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
