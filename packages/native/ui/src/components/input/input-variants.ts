@@ -1,3 +1,4 @@
+import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
 export const inputVariants = tv({
@@ -6,8 +7,10 @@ export const inputVariants = tv({
     variant: 'outline'
   },
   slots: {
-    input: 'flex-1 text-foreground placeholder:text-foreground-muted',
-    root: 'flex-row items-center rounded-lg border border-border bg-background'
+    clearable: 'items-center justify-center',
+    control:
+      'flex-1 flex-row items-center bg-transparent text-foreground placeholder:text-muted-foreground m-0 p-0 h-full',
+    root: 'flex-row items-center rounded-lg bg-background'
   },
   variants: {
     disabled: {
@@ -16,17 +19,26 @@ export const inputVariants = tv({
     error: {
       true: { root: 'border-destructive' }
     },
+    focused: {
+      true: {}
+    },
     size: {
-      lg: { input: 'text-base', root: 'h-12 px-4' },
-      md: { input: 'text-sm', root: 'h-10 px-3' },
-      sm: { input: 'text-xs', root: 'h-8 px-2' }
+      lg: { clearable: 'size-5', control: 'text-base', root: 'h-12 gap-2.5 px-4' },
+      md: { clearable: 'size-5', control: 'text-sm', root: 'h-10 gap-2 px-3' },
+      sm: { clearable: 'size-4', control: 'text-xs', root: 'h-8 gap-1.5 px-2' }
     },
     variant: {
-      filled: { root: 'border-transparent bg-background-muted' },
-      outline: {},
-      underline: { root: 'rounded-none border-x-0 border-t-0' }
+      filled: { root: 'border-transparent bg-muted border' },
+      outline: { root: 'border-input border' },
+      underline: { root: 'rounded-none border-b border-input' }
     }
-  }
+  },
+  compoundVariants: [
+    { class: { root: 'border-primary' }, focused: true, variant: 'outline' },
+    { class: { root: 'border border-primary' }, focused: true, variant: 'filled' },
+    { class: { root: 'border-primary' }, focused: true, variant: 'underline' },
+    { class: { root: 'border-destructive' }, error: true, focused: true }
+  ]
 });
 
-export type InputVariantProps = Parameters<typeof inputVariants>[0];
+export type InputVariantProps = VariantProps<typeof inputVariants>;

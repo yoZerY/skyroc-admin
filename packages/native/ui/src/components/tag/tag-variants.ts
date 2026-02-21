@@ -35,27 +35,91 @@ export const tagVariants = tv({
   },
   compoundVariants: [
     // === solid × color ===
-    { variant: 'solid', color: 'primary', class: { root: 'bg-primary', text: 'text-primary-foreground', closeIcon: 'text-primary-foreground' } },
-    { variant: 'solid', color: 'destructive', class: { root: 'bg-destructive', text: 'text-destructive-foreground', closeIcon: 'text-destructive-foreground' } },
-    { variant: 'solid', color: 'secondary', class: { root: 'bg-secondary', text: 'text-secondary-foreground', closeIcon: 'text-secondary-foreground' } },
-    { variant: 'solid', color: 'success', class: { root: 'bg-success', text: 'text-success-foreground', closeIcon: 'text-success-foreground' } },
-    { variant: 'solid', color: 'warning', class: { root: 'bg-warning', text: 'text-warning-foreground', closeIcon: 'text-warning-foreground' } },
-    { variant: 'solid', color: 'info', class: { root: 'bg-info', text: 'text-info-foreground', closeIcon: 'text-info-foreground' } },
+    {
+      variant: 'solid',
+      color: 'primary',
+      class: { root: 'bg-primary', text: 'text-primary-foreground', closeIcon: 'text-primary-foreground' }
+    },
+    {
+      variant: 'solid',
+      color: 'destructive',
+      class: { root: 'bg-destructive', text: 'text-destructive-foreground', closeIcon: 'text-destructive-foreground' }
+    },
+    {
+      variant: 'solid',
+      color: 'secondary',
+      class: { root: 'bg-secondary', text: 'text-secondary-foreground', closeIcon: 'text-secondary-foreground' }
+    },
+    {
+      variant: 'solid',
+      color: 'success',
+      class: { root: 'bg-success', text: 'text-success-foreground', closeIcon: 'text-success-foreground' }
+    },
+    {
+      variant: 'solid',
+      color: 'warning',
+      class: { root: 'bg-warning', text: 'text-warning-foreground', closeIcon: 'text-warning-foreground' }
+    },
+    {
+      variant: 'solid',
+      color: 'info',
+      class: { root: 'bg-info', text: 'text-info-foreground', closeIcon: 'text-info-foreground' }
+    },
 
     // === tonal × color ===
-    { variant: 'tonal', color: 'primary', class: { root: 'bg-primary/15', text: 'text-primary', closeIcon: 'text-primary' } },
-    { variant: 'tonal', color: 'destructive', class: { root: 'bg-destructive/15', text: 'text-destructive', closeIcon: 'text-destructive' } },
-    { variant: 'tonal', color: 'secondary', class: { root: 'bg-secondary/15', text: 'text-foreground', closeIcon: 'text-foreground' } },
-    { variant: 'tonal', color: 'success', class: { root: 'bg-success/15', text: 'text-success', closeIcon: 'text-success' } },
-    { variant: 'tonal', color: 'warning', class: { root: 'bg-warning/15', text: 'text-warning', closeIcon: 'text-warning' } },
+    {
+      variant: 'tonal',
+      color: 'primary',
+      class: { root: 'bg-primary/15', text: 'text-primary', closeIcon: 'text-primary' }
+    },
+    {
+      variant: 'tonal',
+      color: 'destructive',
+      class: { root: 'bg-destructive/15', text: 'text-destructive', closeIcon: 'text-destructive' }
+    },
+    {
+      variant: 'tonal',
+      color: 'secondary',
+      class: { root: 'bg-secondary/15', text: 'text-foreground', closeIcon: 'text-foreground' }
+    },
+    {
+      variant: 'tonal',
+      color: 'success',
+      class: { root: 'bg-success/15', text: 'text-success', closeIcon: 'text-success' }
+    },
+    {
+      variant: 'tonal',
+      color: 'warning',
+      class: { root: 'bg-warning/15', text: 'text-warning', closeIcon: 'text-warning' }
+    },
     { variant: 'tonal', color: 'info', class: { root: 'bg-info/15', text: 'text-info', closeIcon: 'text-info' } },
 
     // === outline × color ===
-    { variant: 'outline', color: 'primary', class: { root: 'border-primary', text: 'text-primary', closeIcon: 'text-primary' } },
-    { variant: 'outline', color: 'destructive', class: { root: 'border-destructive', text: 'text-destructive', closeIcon: 'text-destructive' } },
-    { variant: 'outline', color: 'secondary', class: { root: 'border-border', text: 'text-foreground', closeIcon: 'text-foreground' } },
-    { variant: 'outline', color: 'success', class: { root: 'border-success', text: 'text-success', closeIcon: 'text-success' } },
-    { variant: 'outline', color: 'warning', class: { root: 'border-warning', text: 'text-warning', closeIcon: 'text-warning' } },
+    {
+      variant: 'outline',
+      color: 'primary',
+      class: { root: 'border-primary', text: 'text-primary', closeIcon: 'text-primary' }
+    },
+    {
+      variant: 'outline',
+      color: 'destructive',
+      class: { root: 'border-destructive', text: 'text-destructive', closeIcon: 'text-destructive' }
+    },
+    {
+      variant: 'outline',
+      color: 'secondary',
+      class: { root: 'border-border', text: 'text-foreground', closeIcon: 'text-foreground' }
+    },
+    {
+      variant: 'outline',
+      color: 'success',
+      class: { root: 'border-success', text: 'text-success', closeIcon: 'text-success' }
+    },
+    {
+      variant: 'outline',
+      color: 'warning',
+      class: { root: 'border-warning', text: 'text-warning', closeIcon: 'text-warning' }
+    },
     { variant: 'outline', color: 'info', class: { root: 'border-info', text: 'text-info', closeIcon: 'text-info' } },
 
     // === ghost × color ===
