@@ -23,6 +23,7 @@ export * from './picker-group';
 export * from './popup';
 export * from './portal';
 export * from './sheet';
+export * from './sidebar';
 export * from './space';
 export * from './text';
 export * from './toast';
