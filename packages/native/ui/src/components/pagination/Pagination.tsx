@@ -48,11 +48,12 @@ function renderPageItem(item: PaginationPageItem, idx: number, ctx: PageItemRend
       className={cn(itemSlots.item(), classNames?.item)}
       color={isActive ? 'primary' : 'muted'}
       disabled={disabled}
+      textClassName={cn(itemSlots.itemText(), classNames?.itemText)}
       size="sm"
       variant={isActive ? 'solid' : 'ghost'}
       onPress={() => onPress(item.value)}
     >
-      <Text className={cn(itemSlots.itemText(), classNames?.itemText)}>{item.value}</Text>
+      {String(item.value)}
     </Button>
   );
 }

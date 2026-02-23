@@ -15,7 +15,7 @@ export const pickerVariants = tv({
     item: 'items-center justify-center',
     itemText: 'text-base text-foreground',
     loading: 'absolute inset-0 items-center justify-center bg-background/60',
-    root: 'bg-background',
+    root: 'bg-background rounded-2xl overflow-hidden',
     selectedIndicator: 'border-y border-border/40 h-full w-full',
     title: 'flex-1 text-center text-base font-semibold text-foreground',
     toolbar: 'flex-row items-center justify-between border-b border-border/40 py-3'

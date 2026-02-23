@@ -52,6 +52,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/toast', icon: 'notification', iconColor: '#f97316', iconBg: '#fff7ed', label: 'Toast' },
       { href: '/components/dialog', icon: 'message', iconColor: '#3b82f6', iconBg: '#eff6ff', label: 'Dialog' },
       { href: '/components/action-sheet', icon: 'menu-unfold', iconColor: '#8b5cf6', iconBg: '#f5f3ff', label: 'ActionSheet' },
+      { href: '/components/notify', icon: 'sound', iconColor: '#ef4444', iconBg: '#fef2f2', label: 'Notify' },
     ],
   },
   {
@@ -75,6 +76,8 @@ const GROUPS: ComponentGroup[] = [
     ],
   },
 ];
+
+const TOTAL_COUNT = GROUPS.reduce((sum, group) => sum + group.items.length, 0);
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -102,11 +105,11 @@ const HomeScreen = () => {
 
         <View className="mt-5 flex-row gap-3">
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
-            <Text className="text-2xl font-bold text-white">31</Text>
+            <Text className="text-2xl font-bold text-white">{TOTAL_COUNT}</Text>
             <Text className="mt-0.5 text-xs text-white/70">组件总数</Text>
           </View>
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
-            <Text className="text-2xl font-bold text-white">5</Text>
+            <Text className="text-2xl font-bold text-white">{GROUPS.length}</Text>
             <Text className="mt-0.5 text-xs text-white/70">分类</Text>
           </View>
           <View className="flex-1 rounded-2xl bg-white/15 p-4">

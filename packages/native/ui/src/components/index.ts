@@ -20,6 +20,7 @@ export * from './image';
 export * from './index-bar';
 export * from './input';
 export * from './navbar';
+export * from './notify';
 export * from './pagination';
 export * from './picker';
 export * from './picker-group';

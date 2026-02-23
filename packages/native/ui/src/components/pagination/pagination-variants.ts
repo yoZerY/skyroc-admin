@@ -5,7 +5,7 @@ export const paginationVariants = tv({
     content: 'flex-row items-center gap-1.5',
     desc: 'text-sm text-muted-foreground',
     ellipsis: 'size-8 items-center justify-center',
-    item: '',
+    item: 'size-10',
     itemText: 'text-sm',
     root: 'flex-row items-center justify-center'
   },
