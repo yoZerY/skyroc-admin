@@ -32,6 +32,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/picker', icon: 'select', iconColor: '#ec4899', iconBg: '#fdf2f8', label: 'Picker' },
       { href: '/components/picker-group', icon: 'select', iconColor: '#d946ef', iconBg: '#fdf4ff', label: 'PickerGroup' },
       { href: '/components/tree-select', icon: 'cluster', iconColor: '#0d9488', iconBg: '#f0fdfa', label: 'TreeSelect' },
+      { href: '/components/dropdown-menu', icon: 'down-square', iconColor: '#e11d48', iconBg: '#fff1f2', label: 'DropdownMenu' },
     ],
   },
   {
@@ -101,7 +102,7 @@ const HomeScreen = () => {
 
         <View className="mt-5 flex-row gap-3">
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
-            <Text className="text-2xl font-bold text-white">30</Text>
+            <Text className="text-2xl font-bold text-white">31</Text>
             <Text className="mt-0.5 text-xs text-white/70">组件总数</Text>
           </View>
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
