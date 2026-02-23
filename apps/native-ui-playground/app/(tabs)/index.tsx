@@ -68,6 +68,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/pagination', icon: 'ellipsis', iconColor: '#f59e0b', iconBg: '#fffbeb', label: 'Pagination' },
       { href: '/components/sidebar', icon: 'menu-fold', iconColor: '#8b5cf6', iconBg: '#f5f3ff', label: 'Sidebar' },
       { href: '/components/index-bar', icon: 'ordered-list', iconColor: '#0d9488', iconBg: '#f0fdfa', label: 'IndexBar' },
+      { href: '/components/anchor-nav', icon: 'link', iconColor: '#f97316', iconBg: '#fff7ed', label: 'AnchorNav' },
       { href: '/components/back-top', icon: 'up-circle', iconColor: '#3b82f6', iconBg: '#eff6ff', label: 'BackTop' },
       { href: '/components/floating-button', icon: 'plus', iconColor: '#f43f5e', iconBg: '#fff1f2', label: 'FloatingButton' },
     ],
@@ -100,7 +101,7 @@ const HomeScreen = () => {
 
         <View className="mt-5 flex-row gap-3">
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
-            <Text className="text-2xl font-bold text-white">29</Text>
+            <Text className="text-2xl font-bold text-white">30</Text>
             <Text className="mt-0.5 text-xs text-white/70">组件总数</Text>
           </View>
           <View className="flex-1 rounded-2xl bg-white/15 p-4">
