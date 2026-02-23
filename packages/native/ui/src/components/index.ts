@@ -26,6 +26,7 @@ export * from './picker';
 export * from './picker-group';
 export * from './popup';
 export * from './portal';
+export * from './share-sheet';
 export * from './sheet';
 export * from './sidebar';
 export * from './space';

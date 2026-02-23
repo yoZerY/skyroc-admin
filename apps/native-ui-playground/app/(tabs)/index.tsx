@@ -53,6 +53,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/dialog', icon: 'message', iconColor: '#3b82f6', iconBg: '#eff6ff', label: 'Dialog' },
       { href: '/components/action-sheet', icon: 'menu-unfold', iconColor: '#8b5cf6', iconBg: '#f5f3ff', label: 'ActionSheet' },
       { href: '/components/notify', icon: 'sound', iconColor: '#ef4444', iconBg: '#fef2f2', label: 'Notify' },
+      { href: '/components/share-sheet', icon: 'share-alt', iconColor: '#06b6d4', iconBg: '#ecfeff', label: 'ShareSheet' },
     ],
   },
   {
