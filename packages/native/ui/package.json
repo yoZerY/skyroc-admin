@@ -12,7 +12,9 @@
   "main": "./src/index.ts",
   "module": "./src/index.ts",
   "types": "./src/index.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdown",
     "clean": "rimraf dist",
@@ -69,6 +71,7 @@
     "@skyroc/utils": "workspace:*",
     "react": "catalog:core",
     "react-native-modal": "catalog:native",
+    "react-native-ui-datepicker": "^3.1.2",
     "tailwind-variants": "catalog:utils"
   },
   "devDependencies": {
