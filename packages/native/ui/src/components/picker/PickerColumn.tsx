@@ -7,6 +7,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -74,6 +75,8 @@ const PickerColumn = (props: PickerColumnProps) => {
 
   const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const scrollY = useSharedValue(0);
+  const scrollTarget = useSharedValue(0);
+  const scrollAnimated = useSharedValue(true);
   const prevScrollIndex = useSharedValue(-1);
   const isUserScrolling = useRef(false);
   const centerOffset = Math.floor(visibleCount / 2);
@@ -82,11 +85,6 @@ const PickerColumn = (props: PickerColumnProps) => {
   function findValueIndex(val: string): number {
     const idx = options.findIndex(option => option[fieldNames.value] === val);
     return idx >= 0 ? idx : 0;
-  }
-
-  function scrollToIndex(index: number, _animated: boolean) {
-    const y = index * itemHeight;
-    scrollTo(scrollViewRef, 0, y, _animated);
   }
 
   function findNearestEnabled(index: number): number {
@@ -123,6 +121,12 @@ const PickerColumn = (props: PickerColumnProps) => {
     }
   });
 
+  // Reactive scroll — runs on UI thread when scrollTarget changes.
+  // Same pattern as Wheel.tsx reference: useDerivedValue drives scrollTo.
+  useDerivedValue(() => {
+    scrollTo(scrollViewRef, 0, scrollTarget.value, scrollAnimated.value);
+  });
+
   // Native event: user starts dragging (runs on JS thread, no bridge cost)
   function handleScrollBeginDrag() {
     isUserScrolling.current = true;
@@ -138,7 +142,8 @@ const PickerColumn = (props: PickerColumnProps) => {
     const correctedIndex = findNearestEnabled(selectedIndex);
 
     if (correctedIndex !== selectedIndex) {
-      scrollToIndex(correctedIndex, true);
+      const y = correctedIndex * itemHeight;
+      scrollTarget.value = y;
     }
 
     const selectedOption = options[correctedIndex];
@@ -156,20 +161,24 @@ const PickerColumn = (props: PickerColumnProps) => {
     if (isUserScrolling.current) return;
 
     const targetIndex = findValueIndex(value);
-    scrollToIndex(targetIndex, true);
+    scrollTarget.value = targetIndex * itemHeight;
   }, [value, options]);
 
-  // Initial scroll position (no animation)
+  // Initial scroll position — no animation, same pattern as reference Wheel.tsx
   useEffect(() => {
     const targetIndex = findValueIndex(value);
+    const y = targetIndex * itemHeight;
+    scrollY.value = y;
+    scrollAnimated.value = false;
 
-    const timer = setTimeout(() => {
-      scrollToIndex(targetIndex, false);
-      scrollY.value = targetIndex * itemHeight;
-    }, 50);
-
-    return () => clearTimeout(timer);
-  }, []);
+    setTimeout(() => {
+      scrollTarget.value = y;
+      // Restore animation for subsequent scrolls
+      setTimeout(() => {
+        scrollAnimated.value = true;
+      }, 50);
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <AnimatedGHScrollView
