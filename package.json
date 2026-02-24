@@ -41,6 +41,15 @@
     "vitest": "catalog:dev"
   },
   "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@shopify/react-native-skia",
+      "esbuild",
+      "msw",
+      "sharp",
+      "simple-git-hooks",
+      "unrs-resolver"
+    ],
     "overrides": {
       "lightningcss": "1.30.1"
     }

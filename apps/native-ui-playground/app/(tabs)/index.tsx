@@ -34,6 +34,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/picker-group', icon: 'select', iconColor: '#d946ef', iconBg: '#fdf4ff', label: 'PickerGroup' },
       { href: '/components/tree-select', icon: 'cluster', iconColor: '#0d9488', iconBg: '#f0fdfa', label: 'TreeSelect' },
       { href: '/components/dropdown-menu', icon: 'down-square', iconColor: '#e11d48', iconBg: '#fff1f2', label: 'DropdownMenu' },
+      { href: '/components/signature', icon: 'edit', iconColor: '#7c3aed', iconBg: '#f5f3ff', label: 'Signature' },
     ],
   },
   {

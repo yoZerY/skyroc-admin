@@ -17,6 +17,7 @@
     "@react-navigation/bottom-tabs": "catalog:native",
     "@react-navigation/elements": "catalog:native",
     "@react-navigation/native": "catalog:native",
+    "@shopify/react-native-skia": "2.2.12",
     "@skyroc/hooks": "workspace:*",
     "@skyroc/native-theme": "workspace:*",
     "@skyroc/native-ui": "workspace:*",
@@ -47,8 +48,8 @@
     "react-native-worklets": "catalog:native"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "catalog:css",
     "@skyroc/tailwind-plugin": "workspace:*",
+    "@tailwindcss/postcss": "catalog:css",
     "@types/react": "catalog:dev",
     "eslint": "catalog:dev",
     "eslint-config-expo": "catalog:native",
