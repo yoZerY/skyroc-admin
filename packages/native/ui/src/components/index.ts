@@ -12,6 +12,7 @@ export * from './checkbox';
 export * from './dialog';
 export * from './dropdown-menu';
 export * from './radio';
+export * from './rate';
 export * from './switch';
 export * from './tabs';
 export * from './tag';

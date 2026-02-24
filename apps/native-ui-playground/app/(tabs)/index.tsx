@@ -39,6 +39,7 @@ const GROUPS: ComponentGroup[] = [
       { href: '/components/number-keyboard', icon: 'calculator', iconColor: '#0891b2', iconBg: '#ecfeff', label: 'NumberKeyboard' },
       { href: '/components/calendar', icon: 'calendar', iconColor: '#f59e0b', iconBg: '#fffbeb', label: 'Calendar' },
       { href: '/components/date-picker', icon: 'calendar', iconColor: '#2563eb', iconBg: '#eff6ff', label: 'DatePicker' },
+      { href: '/components/rate', icon: 'star', iconColor: '#ffd21e', iconBg: '#fffbeb', label: 'Rate' },
     ],
   },
   {
