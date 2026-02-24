@@ -91,9 +91,9 @@ const Sheet = (props: SheetProps) => {
                   onPress={handleClose}
                 >
                   <AntDesign
-                    color="#999"
+                    color="#333"
                     name="close"
-                    size={18}
+                    size={12}
                   />
                 </Pressable>
               )}

@@ -9,7 +9,7 @@ export const sheetVariants = tv({
     header: 'relative items-center justify-center px-12',
     title: 'text-center text-base font-semibold text-foreground',
     description: 'px-6 pt-2 text-center text-sm text-muted-foreground',
-    close: 'absolute right-4 top-[-10px] items-center justify-center p-0.5 will-change-pressable active:opacity-80',
+    close: 'absolute right-4 top-[-8px] size-6 items-center justify-center rounded-full bg-muted will-change-pressable active:opacity-70',
     body: 'flex-1'
   }
 });
