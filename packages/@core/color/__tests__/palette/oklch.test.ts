@@ -75,6 +75,15 @@ describe('generateOklchPalette', () => {
     const family = generateOklchPalette('#8b0000');
     expect(family.palettes).toHaveLength(11);
   });
+
+  it('低饱和度灰色应跳过最小色度强制（safeChroma ≤ 0.05）', () => {
+    // #808080 在 OKLCH 中 chroma ≈ 0，不触发 safeChroma > 0.05 的分支
+    const family = generateOklchPalette('#808080');
+    expect(family.palettes).toHaveLength(11);
+    family.palettes.forEach(p => {
+      expect(p.hex).toMatch(HEX_REGEX);
+    });
+  });
 });
 
 // ==================== getOklchColorPalette ====================
@@ -150,6 +159,20 @@ describe('generateOklchPaletteAdvanced', () => {
     const result = generateOklchPaletteAdvanced('#3b82f6', { forceStep: 400 });
     expect(result.palettes).toHaveLength(11);
   });
+
+  it('lightnessCurve 长度不为 11 时应回退到默认曲线', () => {
+    // lightnessCurve.length !== 11 → 回退到 PALETTE_CONFIG，走 false 分支
+    const result = generateOklchPaletteAdvanced('#3b82f6', { lightnessCurve: [0.9, 0.8, 0.7] });
+    expect(result.palettes).toHaveLength(11);
+  });
+
+  it('灰色应跳过最小色度强制（safeChroma ≤ 0.05）', () => {
+    const result = generateOklchPaletteAdvanced('#808080');
+    expect(result.palettes).toHaveLength(11);
+    result.palettes.forEach(p => {
+      expect(p.hex).toMatch(HEX_REGEX);
+    });
+  });
 });
 
 // ==================== generateOklchPaletteEx ====================
@@ -193,6 +216,21 @@ describe('generateOklchPaletteEx', () => {
 
   it('无效颜色应抛错', () => {
     expect(() => generateOklchPaletteEx('invalid')).toThrow('Invalid color');
+  });
+
+  it('极浅颜色应匹配到远离 500 的步骤（触发 diffTo500 >= 0.12）', () => {
+    // 极浅蓝色 OKLCH lightness ≈ 0.96，与 500 的目标 0.661 相差 > 0.12
+    // 走 diffTo500 < 0.12 = false 分支，matchedStep 不会被强制为 500
+    const result = generateOklchPaletteEx('#dbeafe');
+    expect(result.matchedStep).not.toBe(500);
+  });
+
+  it('灰色应跳过最小色度强制（safeChroma ≤ 0.05）', () => {
+    const result = generateOklchPaletteEx('#808080');
+    expect(result.palettes).toHaveLength(11);
+    result.palettes.forEach(p => {
+      expect(p.hex).toMatch(HEX_REGEX);
+    });
   });
 });
 
