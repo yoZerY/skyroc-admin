@@ -56,6 +56,14 @@ describe('getAntDPaletteColorByIndex', () => {
       expect(result).toMatch(/^#[0-9a-f]{6}$/);
     }
   });
+
+  it('hue ≥ 350° 的颜色应正确处理亮色端 hue >= 360 的溢出', () => {
+    // #ff0011 的 HSV hue ≈ 356°，亮色端 i=5 时 hue = 356 + 2×5 = 366 → 减 360 → 6（触发 line 112）
+    for (let i = 1; i <= 11; i += 1) {
+      const result = getAntDPaletteColorByIndex('#ff0011', i as any);
+      expect(result).toMatch(/^#[0-9a-f]{6}$/);
+    }
+  });
 });
 
 // ==================== getAntDColorPalette ====================
