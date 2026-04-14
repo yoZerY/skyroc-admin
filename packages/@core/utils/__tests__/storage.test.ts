@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { createStorage } from '../src/storage';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createLocalforage, createStorage } from '../src/storage';
 
 interface TestStorage {
   token: string;
@@ -70,5 +70,46 @@ describe('createStorage - sessionStorage', () => {
   it('set/get 应正确工作', () => {
     storage.set('count', 99);
     expect(storage.get('count')).toBe(99);
+  });
+});
+
+// ==================== createLocalforage ====================
+
+describe('createLocalforage', () => {
+  it('local driver 应调用 config 并返回 localforage 实例', async () => {
+    const localforage = await import('localforage');
+    const configSpy = vi.spyOn(localforage.default, 'config');
+
+    const lf = createLocalforage<{ key: string }>('local');
+
+    expect(configSpy).toHaveBeenCalledWith({ driver: localforage.default.LOCALSTORAGE });
+    expect(lf).toBeDefined();
+    expect(typeof lf.getItem).toBe('function');
+    expect(typeof lf.setItem).toBe('function');
+    expect(typeof lf.removeItem).toBe('function');
+
+    configSpy.mockRestore();
+  });
+
+  it('indexedDB driver 应传入正确的 driver', async () => {
+    const localforage = await import('localforage');
+    const configSpy = vi.spyOn(localforage.default, 'config');
+
+    createLocalforage<{ key: string }>('indexedDB');
+
+    expect(configSpy).toHaveBeenCalledWith({ driver: localforage.default.INDEXEDDB });
+
+    configSpy.mockRestore();
+  });
+
+  it('webSQL driver 应传入正确的 driver', async () => {
+    const localforage = await import('localforage');
+    const configSpy = vi.spyOn(localforage.default, 'config');
+
+    createLocalforage<{ key: string }>('webSQL');
+
+    expect(configSpy).toHaveBeenCalledWith({ driver: localforage.default.WEBSQL });
+
+    configSpy.mockRestore();
   });
 });
