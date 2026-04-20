@@ -1272,7 +1272,7 @@ importers:
         version: 0.18.4(synckit@0.11.12)(typescript@5.9.3)
 
   packages/@core/scripts:
-    devDependencies:
+    dependencies:
       '@soybeanjs/changelog':
         specifier: catalog:dev
         version: 0.3.25(@unocss/eslint-config@66.6.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(eslint-plugin-react-hooks@7.0.1(eslint@10.2.0(jiti@2.6.1)))(eslint-plugin-react-refresh@0.4.26(eslint@10.2.0(jiti@2.6.1)))(eslint-plugin-react@7.37.5(eslint@10.2.0(jiti@2.6.1)))(eslint@10.2.0(jiti@2.6.1))(svelte-eslint-parser@1.5.0)(typescript@6.0.2)
@@ -1300,6 +1300,22 @@ importers:
       picomatch:
         specifier: catalog:dev
         version: 4.0.3
+    devDependencies:
+      '@skyroc/tsconfig':
+        specifier: workspace:*
+        version: link:../../../internal/tsconfig
+      oxlint:
+        specifier: catalog:dev
+        version: 1.60.0
+      rimraf:
+        specifier: catalog:dev
+        version: 6.1.3
+      tsdown:
+        specifier: catalog:dev
+        version: 0.18.4(synckit@0.11.12)(typescript@6.0.2)
+      tsx:
+        specifier: catalog:dev
+        version: 4.21.0
 
   packages/@core/service:
     dependencies:
@@ -25424,6 +25440,22 @@ snapshots:
     transitivePeerDependencies:
       - oxc-resolver
 
+  rolldown-plugin-dts@0.20.0(rolldown@1.0.0-beta.57)(typescript@6.0.2):
+    dependencies:
+      '@babel/generator': 7.29.1
+      '@babel/parser': 7.29.0
+      '@babel/types': 7.29.0
+      ast-kit: 2.2.0
+      birpc: 4.0.0
+      dts-resolver: 2.1.3
+      get-tsconfig: 4.13.6
+      obug: 2.1.1
+      rolldown: 1.0.0-beta.57
+    optionalDependencies:
+      typescript: 6.0.2
+    transitivePeerDependencies:
+      - oxc-resolver
+
   rolldown@1.0.0-beta.57:
     dependencies:
       '@oxc-project/types': 0.103.0
@@ -26358,6 +26390,33 @@ snapshots:
       unrun: 0.2.27(synckit@0.11.12)
     optionalDependencies:
       typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - synckit
+      - vue-tsc
+
+  tsdown@0.18.4(synckit@0.11.12)(typescript@6.0.2):
+    dependencies:
+      ansis: 4.2.0
+      cac: 6.7.14
+      defu: 6.1.4
+      empathic: 2.0.0
+      hookable: 6.0.1
+      import-without-cache: 0.2.5
+      obug: 2.1.1
+      picomatch: 4.0.4
+      rolldown: 1.0.0-beta.57
+      rolldown-plugin-dts: 0.20.0(rolldown@1.0.0-beta.57)(typescript@6.0.2)
+      semver: 7.7.4
+      tinyexec: 1.1.1
+      tinyglobby: 0.2.16
+      tree-kill: 1.2.2
+      unconfig-core: 7.5.0
+      unrun: 0.2.27(synckit@0.11.12)
+    optionalDependencies:
+      typescript: 6.0.2
     transitivePeerDependencies:
       - '@ts-macro/tsc'
       - '@typescript/native-preview'

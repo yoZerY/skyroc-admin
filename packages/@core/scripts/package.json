@@ -1,20 +1,52 @@
 {
   "name": "@skyroc/scripts",
   "version": "2.5.0",
+  "type": "module",
+  "description": "Skyroc admin CLI - changelog, release, git-commit, cleanup and other project automation scripts",
+  "keywords": [
+    "changelog",
+    "cli",
+    "git-commit",
+    "release",
+    "skyroc-admin",
+    "tooling"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Ohh-889/skyroc-admin/tree/master/packages/@core/scripts",
+  "bugs": {
+    "url": "https://github.com/Ohh-889/skyroc-admin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ohh-889/skyroc-admin.git",
+    "directory": "packages/@core/scripts"
+  },
+  "author": {
+    "name": "Ohh",
+    "email": "1509326266@qq.com",
+    "url": "https://github.com/Ohh-889"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "bin": {
     "sa": "./bin.ts"
   },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./src/*"
-      ]
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
+    "bin": {
+      "sa": "./dist/index.mjs"
     }
   },
-  "exports": {
-    ".": "./src/index.ts"
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
+    "dev": "tsdown --watch",
+    "lint": "oxlint --fix"
   },
-  "devDependencies": {
+  "dependencies": {
     "@soybeanjs/changelog": "catalog:dev",
     "bumpp": "catalog:dev",
     "c12": "catalog:dev",
@@ -24,5 +56,12 @@
     "kolorist": "catalog:dev",
     "npm-check-updates": "catalog:dev",
     "picomatch": "catalog:dev"
+  },
+  "devDependencies": {
+    "@skyroc/tsconfig": "workspace:*",
+    "oxlint": "catalog:dev",
+    "rimraf": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "tsx": "catalog:dev"
   }
 }

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { prompt } from 'enquirer';
+import enquirer from 'enquirer';
+
 import { locales } from '../locales';
 import type { Lang } from '../locales';
 import { execCommand } from '../shared';
@@ -11,6 +12,7 @@ interface PromptObject {
   types: string;
 }
 
+const { prompt } = enquirer;
 /**
  * Git commit with Conventional Commits standard
  *

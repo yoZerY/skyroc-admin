@@ -1,4 +1,5 @@
-import cac from 'cac';
+#!/usr/bin/env node
+import { cac } from 'cac';
 import { blue, lightGreen } from 'kolorist';
 
 import { version } from '../package.json';
