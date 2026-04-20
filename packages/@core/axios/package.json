@@ -1,6 +1,27 @@
 {
   "name": "@skyroc/axios",
   "version": "2.0.1",
+  "description": "Type-safe Axios HTTP client with retry, transform pipeline, abort control, and pluggable backend response handling",
+  "keywords": [
+    "axios",
+    "axios-retry",
+    "http-client",
+    "interceptor",
+    "react",
+    "request",
+    "retry",
+    "typescript"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Ohh-889/skyroc-admin/tree/master/packages/@core/axios",
+  "bugs": {
+    "url": "https://github.com/Ohh-889/skyroc-admin/issues"
+  },
+  "author": {
+    "name": "Ohh",
+    "email": "1509326266@qq.com",
+    "url": "https://github.com/Ohh-889"
+  },
   "typesVersions": {
     "*": {
       "*": [
@@ -12,6 +33,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "lint": "oxlint --fix",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
@@ -26,6 +48,7 @@
   "devDependencies": {
     "@skyroc/config": "workspace:*",
     "@skyroc/tsconfig": "workspace:*",
-    "@types/qs": "catalog:dev"
+    "@types/qs": "catalog:dev",
+    "oxlint": "catalog:dev"
   }
 }
