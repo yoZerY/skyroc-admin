@@ -1208,9 +1208,6 @@ importers:
       '@skyroc/utils':
         specifier: workspace:*
         version: link:../utils
-      '@types/culori':
-        specifier: ^4.0.1
-        version: 4.0.1
       colord:
         specifier: 2.9.3
         version: 2.9.3
@@ -1224,6 +1221,18 @@ importers:
       '@skyroc/tsconfig':
         specifier: workspace:*
         version: link:../../../internal/tsconfig
+      '@types/culori':
+        specifier: ^4.0.1
+        version: 4.0.1
+      oxlint:
+        specifier: catalog:dev
+        version: 1.60.0
+      rimraf:
+        specifier: catalog:dev
+        version: 6.1.3
+      tsdown:
+        specifier: catalog:dev
+        version: 0.18.4(synckit@0.11.12)(typescript@5.9.3)
 
   packages/@core/logger:
     dependencies:
