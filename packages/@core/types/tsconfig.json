@@ -7,6 +7,6 @@
     "declarationMap": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*", "../../web/theme/src/types/theme.d.ts"],
+  "include": ["src/**/*", "../../web/admin-theme/src/types/theme.d.ts"],
   "exclude": ["node_modules", "dist", "**/__tests__"]
 }
