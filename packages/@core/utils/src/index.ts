@@ -7,6 +7,10 @@ export * from './date';
 export * from 'radash';
 
 export * from './array';
-
+export { diff as diffObject, isEventObject, isObjectType, shallowEqual } from './object';
 export * from './reg';
 export * from './utils';
+export * from './createSubject';
+export * from './emitter';
+export * from './priority-queue';
+export * from './singleflight';
