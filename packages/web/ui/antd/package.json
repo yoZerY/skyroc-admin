@@ -1,5 +1,5 @@
 {
-  "name": "@skyroc/ui-antd",
+  "name": "@skyroc/web-ui-antd",
   "version": "0.1.0",
   "private": false,
   "description": "Ant Design composite components for admin applications",
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@iconify/react": "catalog:ui-shared",
-    "@skyroc/ui": "workspace:*",
-    "@skyroc/ui-compose": "workspace:*",
+    "@skyroc/web-ui": "workspace:*",
+    "@skyroc/web-ui-compose": "workspace:*",
     "@skyroc/utils": "workspace:*",
     "@tanstack/react-router": "catalog:web",
     "antd": "catalog:web",
