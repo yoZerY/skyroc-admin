@@ -1,4 +1,4 @@
-import { ButtonIcon } from '@skyroc/ui-antd';
+import { ButtonIcon } from '@skyroc/web-ui-antd';
 
 import { useAdminState } from '@/layouts/admin-layout/state/use-admin-state';
 

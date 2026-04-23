@@ -1,5 +1,5 @@
-import { FullScreen } from '@skyroc/ui-antd';
-import { DarkModeContainer } from '@skyroc/ui-compose';
+import { FullScreen } from '@skyroc/web-ui-antd';
+import { DarkModeContainer } from '@skyroc/web-ui-compose';
 import { ThemeSchemaSwitch, useSettingsTheme } from '@skyroc/web-admin-theme';
 
 import { GLOBAL_HEADER_MENU_ID } from '@/constants/app';

@@ -1,4 +1,4 @@
-import { FlipText } from '@skyroc/ui-compose';
+import { FlipText } from '@skyroc/web-ui-compose';
 import { ThemeSchemaSwitch } from '@skyroc/web-admin-theme';
 
 import SystemLogo from '@/components/SystemLogo';

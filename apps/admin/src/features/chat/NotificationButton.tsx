@@ -1,4 +1,4 @@
-import { ButtonIcon } from '@skyroc/ui-antd';
+import { ButtonIcon } from '@skyroc/web-ui-antd';
 import { Dropdown } from 'antd';
 import clsx from 'clsx';
 import type { CSSProperties } from 'react';

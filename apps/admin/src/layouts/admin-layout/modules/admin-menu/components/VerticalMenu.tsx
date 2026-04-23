@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { useAdminMenus } from '@/layouts/admin-layout/state/menus/use-admin-menus';
 import { useAdminState } from '@/layouts/admin-layout/state/use-admin-state';
 
-import { ScrollArea } from '../../../../../../../../packages/web/ui/primitives/src/components';
+import { ScrollArea } from '@skyroc/web-ui';
 
 const VerticalMenu = memo(() => {
   const {

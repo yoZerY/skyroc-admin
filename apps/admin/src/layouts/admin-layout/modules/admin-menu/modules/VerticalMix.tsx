@@ -1,5 +1,5 @@
-import { PinToggler } from '@skyroc/ui-antd';
-import { DarkModeContainer, Portal } from '@skyroc/ui-compose';
+import { PinToggler } from '@skyroc/web-ui-antd';
+import { DarkModeContainer, Portal } from '@skyroc/web-ui-compose';
 import { useSettingsTheme } from '@skyroc/web-admin-theme';
 import classNames from 'clsx';
 

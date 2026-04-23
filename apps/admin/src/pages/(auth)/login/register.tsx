@@ -1,4 +1,4 @@
-import { ButtonLink } from '@skyroc/ui-antd';
+import { ButtonLink } from '@skyroc/web-ui-antd';
 import { REG_PHONE } from '@skyroc/utils';
 import { createFileRoute } from '@tanstack/react-router';
 

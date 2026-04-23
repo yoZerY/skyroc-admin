@@ -1,4 +1,4 @@
-import { LookForward } from '@skyroc/ui-compose';
+import { LookForward } from '@skyroc/web-ui-compose';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(admin)/user-center')({

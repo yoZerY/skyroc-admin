@@ -7,7 +7,7 @@ import MenuToggler from '@/layouts/admin-layout/state/menus/MenuToggler';
 import { useAdminMenus } from '@/layouts/admin-layout/state/menus/use-admin-menus';
 import { useAdminState } from '@/layouts/admin-layout/state/use-admin-state';
 
-import { ScrollArea } from '../../../../../../../../packages/web/ui/primitives/src/components';
+import { ScrollArea } from '@skyroc/web-ui';
 import { FirstLevelMenuMode } from '../enum';
 
 interface Props {

@@ -1,4 +1,4 @@
-import { DarkModeContainer } from '@skyroc/ui-compose';
+import { DarkModeContainer } from '@skyroc/web-ui-compose';
 import { useSettingsTheme } from '@skyroc/web-admin-theme';
 
 import { GLOBAL_SIDER_MENU_ID } from '@/constants/app';

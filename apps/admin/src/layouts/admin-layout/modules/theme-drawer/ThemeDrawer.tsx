@@ -1,10 +1,10 @@
-import { ButtonIcon } from '@skyroc/ui-antd';
+import { ButtonIcon } from '@skyroc/web-ui-antd';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { themeTabsOptions } from '@/constants/app';
 import { translateOptions } from '@/utils/common';
 
-import { ScrollArea } from '../../../../../../../packages/web/ui/primitives/src/components';
+import { ScrollArea } from '@skyroc/web-ui';
 import { useAdminState } from '../../state/use-admin-state';
 
 import Appearance from './modules/appearance';

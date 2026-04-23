@@ -1,4 +1,4 @@
-import { NumberTicker, SvgIcon } from '@skyroc/ui-compose';
+import { NumberTicker, SvgIcon } from '@skyroc/web-ui-compose';
 
 interface CardDataProps {
   color: {

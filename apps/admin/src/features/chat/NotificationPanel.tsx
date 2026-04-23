@@ -1,5 +1,5 @@
-import { ButtonIcon } from '@skyroc/ui-antd';
-import { DarkModeContainer } from '@skyroc/ui-compose';
+import { ButtonIcon } from '@skyroc/web-ui-antd';
+import { DarkModeContainer } from '@skyroc/web-ui-compose';
 import { Empty, List, Tag } from 'antd';
 import clsx from 'clsx';
 import dayjs from 'dayjs';

@@ -1,4 +1,4 @@
-import { ButtonIcon } from '@skyroc/ui-antd';
+import { ButtonIcon } from '@skyroc/web-ui-antd';
 import { useSettingsTheme } from '@skyroc/web-admin-theme';
 import { useBoolean } from 'ahooks';
 import { Suspense } from 'react';

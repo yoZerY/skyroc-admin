@@ -1,5 +1,5 @@
-import { ButtonIcon } from '@skyroc/ui-antd';
-import { SvgIcon } from '@skyroc/ui-compose';
+import { ButtonIcon } from '@skyroc/web-ui-antd';
+import { SvgIcon } from '@skyroc/web-ui-compose';
 
 import { useAdminState } from '../use-admin-state';
 

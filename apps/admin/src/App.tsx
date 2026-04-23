@@ -1,5 +1,5 @@
-import { TooltipProvider } from '@skyroc/ui';
-import { LazyAnimate } from '@skyroc/ui-compose';
+import { TooltipProvider } from '@skyroc/web-ui';
+import { LazyAnimate } from '@skyroc/web-ui-compose';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useAtomsDevtools } from 'jotai-devtools';
 import { Suspense, lazy } from 'react';

@@ -1,4 +1,4 @@
-import { ErrorBoundary as FallbackRender } from '@skyroc/ui-antd';
+import { ErrorBoundary as FallbackRender } from '@skyroc/web-ui-antd';
 import { setupTheme } from '@skyroc/web-admin-theme';
 import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';

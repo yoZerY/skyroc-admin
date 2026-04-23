@@ -1,4 +1,4 @@
-import { Portal } from '@skyroc/ui-compose';
+import { Portal } from '@skyroc/web-ui-compose';
 
 import { GLOBAL_HEADER_MENU_ID } from '@/constants/app';
 

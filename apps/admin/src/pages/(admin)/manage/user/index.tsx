@@ -1,4 +1,4 @@
-import { Tooltip } from '@skyroc/ui';
+import { Tooltip } from '@skyroc/web-ui';
 import { createFileRoute } from '@tanstack/react-router';
 import { Card, Space } from 'antd';
 
