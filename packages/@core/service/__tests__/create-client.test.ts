@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { createQueryClient } from '../src/query/create-client';
 import { DEFAULT_MUTATION_CONFIG, DEFAULT_QUERY_CONFIG } from '../src/query/defaults';
 
+const noopOnError = () => {};
+
 describe('createQueryClient', () => {
   it('returns a QueryClient instance with defaults', () => {
     const client = createQueryClient();
@@ -55,14 +57,12 @@ describe('createQueryClient', () => {
   });
 
   it('accepts queryCache config', () => {
-    const onError = () => {};
-    const client = createQueryClient({ queryCache: { onError } });
+    const client = createQueryClient({ queryCache: { onError: noopOnError } });
     expect(client).toBeInstanceOf(QueryClient);
   });
 
   it('accepts mutationCache config', () => {
-    const onError = () => {};
-    const client = createQueryClient({ mutationCache: { onError } });
+    const client = createQueryClient({ mutationCache: { onError: noopOnError } });
     expect(client).toBeInstanceOf(QueryClient);
   });
 
