@@ -25,9 +25,7 @@ const Register = () => {
 
   const { createConfirmPwdRule, formRules } = useFormRules();
 
-  function handleSubmit(params: FormModel) {
-    console.log(params);
-
+  function handleSubmit(_params: FormModel) {
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
   }

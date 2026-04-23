@@ -27,7 +27,7 @@ export const LoggerProvider = (props: LoggerProviderProps) => {
       }
     }
 
-    void init();
+    init();
 
     return () => {
       disposeLogger();
@@ -36,5 +36,5 @@ export const LoggerProvider = (props: LoggerProviderProps) => {
     };
   }, [setLoggerInstance, setLoggerInitialized]);
 
-  return <>{children}</>;
+  return children;
 };

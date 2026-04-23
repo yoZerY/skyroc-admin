@@ -42,7 +42,7 @@ export function useTableScroll(scrollX: number = 702) {
  * @param minWidth - 列的最小宽度，默认120
  * @returns 总宽度
  */
-export function getTableScrollX<T>(columns: any[], minWidth: number = 120): number {
+export function getTableScrollX(columns: any[], minWidth: number = 120): number {
   return columns.reduce((acc, column) => {
     return acc + Number(column.width ?? column.minWidth ?? minWidth);
   }, 0);

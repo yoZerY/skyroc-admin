@@ -1,4 +1,4 @@
-import type { LogLevel, LoggerInstance } from '@skyroc/logger';
+import type { LoggerInstance } from '@skyroc/logger';
 import { createLogger } from '@skyroc/logger';
 import { atom } from 'jotai';
 

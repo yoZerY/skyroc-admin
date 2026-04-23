@@ -23,9 +23,7 @@ const CodeLogin = () => {
 
   const isValidPhone = REG_PHONE.test(phone);
 
-  function handleSubmit(params: FormValues) {
-    console.log(params);
-
+  function handleSubmit(_params: FormValues) {
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
   }

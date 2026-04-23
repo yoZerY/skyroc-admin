@@ -136,7 +136,7 @@ export function useTable<A extends TableApiFn>(config: TableConfig<A>) {
 
     if (res) {
       if (isResetCurrent) {
-        const { current = 1, ...other } = res;
+        const { current: _current, ...other } = res;
         updateSearchParams({ current: 1, ...other });
       } else {
         updateSearchParams(res);

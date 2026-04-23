@@ -65,8 +65,6 @@ const SearchModal = ({ onClose, show }: Props) => {
 
     const activeName = result[0]?.path || '';
 
-    console.log('activeName', activeName);
-
     setResultOptions(result);
 
     setActiveRoute(activeName as unknown as string);
@@ -148,7 +146,7 @@ const SearchModal = ({ onClose, show }: Props) => {
         ) : (
           resultOptions.map(item => (
             <SearchResult
-              active={item.key === activeRoute}
+              active={item.keys === activeRoute}
               enter={handleEnter}
               key={item.key}
               menu={item}

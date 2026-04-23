@@ -90,7 +90,7 @@ export interface TableSearchProps<T = any> {
 }
 
 /** 通用弹窗操作Props */
-export interface GeneralPopupOperationProps<T = any> {
+export interface GeneralPopupOperationProps {
   /** Form实例 */
   form: any;
   /** 提交处理 */
