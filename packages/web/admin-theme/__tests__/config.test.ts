@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { defaultThemeSettings, themeSchemeIcons } from '../src/config';
 import { icons } from '../src/components/shared';
+import { defaultThemeSettings, themeSchemeIcons } from '../src/config';
 
 describe('themeSchemeIcons', () => {
   it('包含 light/dark/auto 三种 icon', () => {
@@ -40,6 +40,7 @@ describe('defaultThemeSettings 关键字段', () => {
   });
 
   it('otherColor 包含 info/success/warning/error 4 个字段', () => {
+    // oxlint-disable-next-line unicorn/no-array-sort
     expect(Object.keys(defaultThemeSettings.otherColor).sort()).toEqual(['error', 'info', 'success', 'warning']);
   });
 });
