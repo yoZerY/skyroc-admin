@@ -121,6 +121,30 @@ describe('createAtomWithStorage', () => {
     unsubscribe();
   });
 
+  it('无 storageName 时默认使用 local', () => {
+    const mock = createMockStorage({ 'local-default-key': 'local-val' });
+    registerStorage('local', mock);
+
+    const store = createStore();
+    const testAtom = createAtomWithStorage('local-default-key', 'fallback');
+    expect(store.get(testAtom)).toBe('local-val');
+  });
+
+  it('storage.getItem 抛出异常时回退到初始值', () => {
+    const throwMock: AtomStorage = {
+      getItem: () => {
+        throw new Error('corrupt data');
+      },
+      removeItem: () => {},
+      setItem: () => {}
+    };
+    registerStorage('aws-throw', throwMock);
+
+    const store = createStore();
+    const testAtom = createAtomWithStorage('throw-key', 'fallback', { storageName: 'aws-throw' });
+    expect(store.get(testAtom)).toBe('fallback');
+  });
+
   it('storage.subscribe 收到 null 时回退到 initialValue', () => {
     let listener: ((value: unknown) => void) | undefined;
     const subMock: AtomStorage = {
