@@ -1,4 +1,4 @@
-import { SvgIcon } from '@skyroc/ui-compose';
+import { SvgIcon } from '@skyroc/web-ui-compose';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from 'antd';
 import { memo } from 'react';

@@ -1,4 +1,4 @@
-import { SvgIcon } from '@skyroc/ui-compose';
+import { SvgIcon } from '@skyroc/web-ui-compose';
 import React from 'react';
 
 import ButtonIcon from './ButtonIcon';

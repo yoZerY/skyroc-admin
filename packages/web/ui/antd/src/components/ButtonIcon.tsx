@@ -1,4 +1,4 @@
-import { SvgIcon } from '@skyroc/ui-compose';
+import { SvgIcon } from '@skyroc/web-ui-compose';
 import { Button, Tooltip } from 'antd';
 import type { ButtonProps, TooltipProps } from 'antd';
 import clsx from 'clsx';

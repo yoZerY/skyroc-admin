@@ -1,4 +1,4 @@
-import { SvgIcon } from '@skyroc/ui-compose';
+import { SvgIcon } from '@skyroc/web-ui-compose';
 import { Button, Typography } from 'antd';
 import type { FallbackProps } from 'react-error-boundary';
 
