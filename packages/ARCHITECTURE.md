@@ -1,5 +1,64 @@
 # Packages 架构设计
 
+## 🧭 顶层布局原则:平台优先 + shared 层
+
+`packages/` 采用 **"平台优先"** 的目录布局,跨端共享的纯数据/类型集中在 `packages/shared/`:
+
+```
+packages/
+├── @core/                       # 跨端的运行时基础(axios / utils / state / scheduler ...)
+├── shared/                      # 跨端的纯类型 / tokens / utils(零或极轻依赖)
+│   ├── ui-types/                # 跨端 UI 类型(ThemeColor / WithClassName ...)
+│   └── ui-tokens/               # 设计变量(spacing / radius / typography / colors)
+├── hooks/                       # 跨端 React hooks
+├── i18n/
+├── web/                         # ← Web 端一整棵
+│   ├── ui/
+│   │   ├── primitives/          # @skyroc/web-ui
+│   │   ├── compose/             # @skyroc/web-ui-compose
+│   │   └── antd/                # @skyroc/web-ui-antd
+│   ├── admin-theme/             # @skyroc/web-admin-theme
+│   ├── antd-theme/
+│   ├── tailwind-plugin/
+│   └── materials/
+├── native/                      # ← Native 端一整棵
+│   ├── ui/                      # @skyroc/native-ui
+│   └── theme/                   # @skyroc/native-theme
+└── miniapp/   (预留,将来)        # ← 小程序端一整棵
+    ├── ui/                      # @skyroc/miniapp-ui
+    └── theme/
+```
+
+### 命名规范
+
+| 包类别 | 规则 | 示例 |
+|---|---|---|
+| 跨端共享(纯数据/类型) | 不带平台前缀 | `@skyroc/ui-types`, `@skyroc/ui-tokens` |
+| Web 端 UI | `@skyroc/web-*` | `@skyroc/web-ui`, `@skyroc/web-ui-compose`, `@skyroc/web-ui-antd` |
+| Web 端 theme / 工具 | `@skyroc/web-*` 或保留专名 | `@skyroc/web-admin-theme`, `@skyroc/tailwind-plugin` |
+| Native 端 | `@skyroc/native-*` | `@skyroc/native-ui`, `@skyroc/native-theme` |
+| 小程序端(将来) | `@skyroc/miniapp-*` | `@skyroc/miniapp-ui`, `@skyroc/miniapp-theme` |
+
+> **不要再起 `@skyroc/ui` 这种"裸名包"**——多端并存时无法判断它属于哪一端。
+
+### 为什么不把 UI 提到 `packages/ui/<platform>/`
+
+1. 每个平台 `peerDependencies` 完全不同(antd / nativewind / Taro),即使提到顶层也得按平台拆,只是多套了一层壳
+2. 平台目录里除了 `ui` 还有 `theme` / `tailwind-plugin` / `materials` 等强平台耦合的包,把 UI 单独抽走会让平台目录"残缺"
+3. 真正跨端共享的内容(tokens / types)用 `packages/shared/` 下的薄包就够了
+
+### `packages/shared/` 准入规则
+
+`shared/*` 必须严格保持"零或极轻依赖":
+
+- ✅ 纯 TS 常量(spacing、colors、radius、fontSize ...)
+- ✅ 类型定义(ThemeColor、WithClassName ...)
+- ✅ 极轻量工具(`clsx` 这种)
+- ❌ React 运行时 / DOM API / React Native API / 任何平台原生模块
+- ❌ 大型依赖(antd、tailwindcss 等)
+
+---
+
 ## 📦 包分层架构
 
 ```
