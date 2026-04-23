@@ -144,7 +144,10 @@ describe('TaskHub - 依赖解析', () => {
     hub.register({
       name: 'a',
       type: 'init',
-      run: () => new Promise(resolve => setTimeout(resolve, 2000))
+      run: () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 2000);
+        })
     });
     hub.register({
       name: 'b',
@@ -172,7 +175,9 @@ describe('TaskHub - 依赖解析', () => {
       type: 'init',
       priority: 1,
       run: async () => {
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => {
+          setTimeout(resolve, 200);
+        });
         order.push('auth');
       }
     });
@@ -233,7 +238,7 @@ describe('TaskHub - 依赖解析', () => {
 
 describe('TaskHub - periodic 任务', () => {
   it('执行中时跳过本次 tick', async () => {
-    let running = false;
+    let _running = false;
     const hub = new TaskHub({ tickInterval: 50 });
 
     hub.register({
@@ -242,9 +247,9 @@ describe('TaskHub - periodic 任务', () => {
       interval: 50,
       run: () =>
         new Promise<void>(resolve => {
-          running = true;
+          _running = true;
           setTimeout(() => {
-            running = false;
+            _running = false;
             resolve();
           }, 150) // 150ms > tickInterval=50ms，下一 tick 触发时仍在执行中
         })
@@ -286,7 +291,10 @@ describe('TaskHub - periodic 任务', () => {
     hub.register({
       name: 'auth',
       type: 'init',
-      run: () => new Promise(resolve => setTimeout(resolve, 500))
+      run: () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 500);
+        })
     });
     hub.register({
       name: 'heartbeat',
@@ -313,7 +321,10 @@ describe('TaskHub - listener 任务', () => {
     hub.register({
       name: 'auth',
       type: 'init',
-      run: () => new Promise(resolve => setTimeout(resolve, 500))
+      run: () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 500);
+        })
     });
     hub.register({
       name: 'ws',
