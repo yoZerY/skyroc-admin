@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { skeletonVariants } from './skeleton-variants';
 import type { SkeletonProps } from './types';
 

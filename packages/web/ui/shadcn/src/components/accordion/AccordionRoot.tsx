@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Root } from '@radix-ui/react-accordion';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { accordionVariants } from './accordion-variants';
 import type { AccordionRootProps } from './types';
 

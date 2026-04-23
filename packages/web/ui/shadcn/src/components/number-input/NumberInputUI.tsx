@@ -4,7 +4,7 @@ import { forwardRef, useRef } from 'react';
 import { Minus, Plus, X } from 'lucide-react';
 import { useComposedRefs } from '@radix-ui/react-compose-refs';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { numberInputVariants } from './number-input-variants';
 import NumberInputControl from './NumberInputControl';
 import type { NumberInputProps } from './types';

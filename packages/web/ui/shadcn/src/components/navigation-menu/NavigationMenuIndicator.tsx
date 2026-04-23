@@ -1,5 +1,5 @@
 import { Indicator } from '@radix-ui/react-navigation-menu';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { navigationMenuVariants } from './navigation-menu';
 import type { NavigationMenuIndicatorProps } from './types';
 

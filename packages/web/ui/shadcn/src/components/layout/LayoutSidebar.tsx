@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import LayoutMobile from './LayoutMobile';
 import { useLayoutContext } from './context';
 import { layoutVariants } from './layout-variants';

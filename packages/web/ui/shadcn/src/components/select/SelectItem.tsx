@@ -2,7 +2,7 @@ import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Item, ItemIndicator, ItemText } from '@radix-ui/react-select';
 import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { selectVariants } from './select-variants';
 import type { SelectItemProps } from './types';
 

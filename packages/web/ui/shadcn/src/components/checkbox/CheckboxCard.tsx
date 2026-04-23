@@ -3,7 +3,7 @@
 import { forwardRef, useId } from 'react';
 import { Check, Minus } from 'lucide-react';
 import { Slot } from '@radix-ui/react-slot';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import CheckboxLabel from '../label/Label';
 import { checkboxVariants } from './checkbox-variants';
 import CheckboxControl from './CheckboxControl';

@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Content as _Content, Portal as _Portal } from '@radix-ui/react-menu';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import MenuArrow from './MenuArrow';
 import { menuVariants } from './menu-variants';
 import type { MenuContentProps } from './types';

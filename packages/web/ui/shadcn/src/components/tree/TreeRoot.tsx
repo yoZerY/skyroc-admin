@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { useComposedRefs } from '@radix-ui/react-compose-refs';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { TreeRootProvider } from './context';
 import { flattenChildren, flattenItems, findParentPath } from './shared';
 import type { FlattenedItem, TreeItemData, TreeRootProps } from './types';

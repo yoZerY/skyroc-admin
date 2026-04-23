@@ -1,7 +1,7 @@
 import { isValidElement } from 'react';
 import { CommandItem as _CommandItem } from 'cmdk';
 import { withClassName } from '@/lib/compose-props';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import CommandShortcut from './CommandShortcut';
 import { commandVariants } from './command-variants';
 import type { CommandItemProps } from './types';

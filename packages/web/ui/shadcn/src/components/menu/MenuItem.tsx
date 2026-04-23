@@ -2,7 +2,7 @@ import type { ComponentRef } from 'react';
 import { forwardRef, isValidElement } from 'react';
 import { Item as _Item } from '@radix-ui/react-menu';
 import { withClassName } from '@/lib/compose-props';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import MenuShortcut from './MenuShortcut';
 import { menuVariants } from './menu-variants';
 import type { MenuItemProps } from './types';

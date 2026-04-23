@@ -2,7 +2,7 @@ import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Content, Portal, ScrollDownButton, ScrollUpButton, Viewport } from '@radix-ui/react-select';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { selectVariants } from './select-variants';
 import type { SelectContentProps } from './types';
 

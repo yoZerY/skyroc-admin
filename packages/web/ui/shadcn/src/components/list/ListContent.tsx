@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { listVariants } from './list-variants';
 import type { ListContentProps } from './types';
 

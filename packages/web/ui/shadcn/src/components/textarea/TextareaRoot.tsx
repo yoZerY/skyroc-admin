@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { textareaVariants } from './textarea-variants';
 import type { TextareaRootProps } from './types';
 

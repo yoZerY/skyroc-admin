@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { paginationVariants } from './pagination-variants';
 import type { PaginationItemProps } from './types';
 

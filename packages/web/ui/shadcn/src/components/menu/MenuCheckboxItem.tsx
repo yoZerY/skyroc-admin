@@ -3,7 +3,7 @@ import { forwardRef, isValidElement } from 'react';
 import { CheckboxItem as _CheckboxItem } from '@radix-ui/react-menu';
 import { Check } from 'lucide-react';
 import { withClassName } from '@/lib/compose-props';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import MenuShortcut from '../menu/MenuShortcut';
 import MenuItemIndicator from './MenuItemIndicator';
 import { menuVariants } from './menu-variants';

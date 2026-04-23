@@ -3,7 +3,7 @@
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { carouselVariants } from './carousel-variants';
 import { CarouselContext } from './context';
 import type { CarouselApi, CarouselRootProps } from './types';

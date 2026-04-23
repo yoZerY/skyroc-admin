@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Arrow as _Arrow } from '@radix-ui/react-menu';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { menuVariants } from './menu-variants';
 import type { MenuArrowProps } from './types';
 

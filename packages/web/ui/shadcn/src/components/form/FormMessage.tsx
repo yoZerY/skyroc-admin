@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { formVariants } from './form-variants';
 import type { FormMessageProps } from './types';
 

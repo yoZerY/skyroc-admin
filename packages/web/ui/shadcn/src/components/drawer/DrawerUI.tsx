@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { Dialog } from '../dialog';
 import DrawerContent from './DrawerContent';
 import type { DrawerProps } from './types';

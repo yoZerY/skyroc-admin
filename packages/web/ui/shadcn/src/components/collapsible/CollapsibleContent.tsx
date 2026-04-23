@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Content } from '@radix-ui/react-collapsible';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { collapsibleVariants } from './collapsible-variants';
 import type { CollapsibleContentProps } from './types';
 

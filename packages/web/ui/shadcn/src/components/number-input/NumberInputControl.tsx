@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { numberInputVariants } from './number-input-variants';
 import type { NumberInputControlProps } from './types';
 

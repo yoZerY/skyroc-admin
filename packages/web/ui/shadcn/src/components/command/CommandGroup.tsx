@@ -1,5 +1,5 @@
 import { CommandGroup as _CommandGroup } from 'cmdk';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { commandVariants } from './command-variants';
 import type { CommandGroupProps } from './types';
 

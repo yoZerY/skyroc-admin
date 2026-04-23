@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { buttonVariants } from './button-variants';
 import type { ButtonProps } from './types';
 

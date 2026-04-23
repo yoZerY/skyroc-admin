@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { breadcrumbVariants } from './breadcrumb-variants';
 import type { BreadcrumbPageProps } from './types';
 

@@ -5,7 +5,7 @@ import type { CSSProperties, ReactNode, Ref } from 'react';
 import { useCallback, useImperativeHandle, useMemo, useRef } from 'react';
 import { useVirtualizer, type Virtualizer } from '@tanstack/react-virtual';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { Icon } from '../icon';
 import { TreeRootProvider } from './context';
 import { flattenChildren, flattenItems, findParentPath } from './shared';

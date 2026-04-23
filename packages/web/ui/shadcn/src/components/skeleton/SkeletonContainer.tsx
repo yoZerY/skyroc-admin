@@ -8,7 +8,7 @@ import React, {
   type ReactElement,
   type ReactNode
 } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { skeletonContainerVariants, skeletonItemVariants } from './skeleton-variants';
 import type { SkeletonAnimation, SkeletonContainerProps } from './types';
 

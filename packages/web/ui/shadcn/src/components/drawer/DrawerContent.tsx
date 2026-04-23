@@ -1,5 +1,5 @@
 import { Content } from '@radix-ui/react-dialog';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { drawerVariants } from './drawer-variants';
 import type { DrawerContentProps } from './types';
 

@@ -1,5 +1,5 @@
 import { Arrow } from '@radix-ui/react-popover';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { popoverVariants } from './popover-varianst';
 import type { PopoverArrowProps } from './types';
 

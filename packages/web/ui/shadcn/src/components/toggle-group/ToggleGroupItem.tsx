@@ -1,5 +1,5 @@
 import { Item } from '@radix-ui/react-toggle-group';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { toggleVariants } from '../toggle/toggle-variants';
 import type { ToggleGroupItemProps } from './types';
 

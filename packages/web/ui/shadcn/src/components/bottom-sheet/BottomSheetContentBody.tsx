@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { bottomSheetVariants } from './bottom-sheet-variants';
 import type { BottomSheetContentBodyProps } from './types';
 

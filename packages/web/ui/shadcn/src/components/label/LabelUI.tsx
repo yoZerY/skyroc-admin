@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Root } from '@radix-ui/react-label';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { labelVariants } from './label-variants';
 import type { LabelProps } from './types';
 

@@ -1,6 +1,6 @@
 import { isValidElement } from 'react';
 import { ChevronLeftIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { paginationVariants } from './pagination-variants';
 import type { PaginationPreviousProps } from './types';
 

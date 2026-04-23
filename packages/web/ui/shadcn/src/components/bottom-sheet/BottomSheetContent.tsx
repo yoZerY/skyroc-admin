@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Content, Portal } from 'vaul';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import BottomSheetContentBody from './BottomSheetContentBody';
 import BottomSheetKnob from './BottomSheetKnob';
 import BottomSheetOverlay from './BottomSheetOverlay';

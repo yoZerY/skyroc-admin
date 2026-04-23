@@ -3,7 +3,7 @@ import type { ComponentRef, CSSProperties } from 'react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useComposedRefs } from '@radix-ui/react-compose-refs';
 import { List } from '@radix-ui/react-tabs';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { If } from '../if';
 import { tabsVariants } from './tabs-variants';
 import type { IndicatorStyle, TabsListProps } from './types';

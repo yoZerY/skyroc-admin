@@ -4,7 +4,7 @@ import type { CSSProperties, Ref } from 'react';
 import { Fragment, useImperativeHandle, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Slot } from '@radix-ui/react-slot';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { virtualizerVariants } from './virtualizer-variants';
 import type { VirtualizerList, VirtualListProps } from './types';
 

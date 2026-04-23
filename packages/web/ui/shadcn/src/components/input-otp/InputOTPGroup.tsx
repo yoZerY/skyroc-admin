@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { inputOTPVariants } from './input-otp-variants';
 import type { InputOTPGroupProps } from './types';
 

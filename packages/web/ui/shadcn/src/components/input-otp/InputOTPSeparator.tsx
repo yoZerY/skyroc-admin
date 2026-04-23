@@ -1,6 +1,6 @@
 import { isValidElement } from 'react';
 import { Minus } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { inputOTPVariants } from './input-otp-variants';
 import type { InputOTPSeparatorProps } from './types';
 

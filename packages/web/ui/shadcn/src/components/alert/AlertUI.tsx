@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import AlertDescription from './AlertDescription';
 import AlertRoot from './AlertRoot';
 import AlertTitle from './AlertTitle';

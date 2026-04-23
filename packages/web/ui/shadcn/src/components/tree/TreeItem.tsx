@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { useTreeRootContext } from './context';
 import { flattenChildren, handleAndDispatchCustomEvent, recurseCheckChildren } from './shared';
 import { getIndentStyle } from './tree-variants';

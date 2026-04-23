@@ -1,5 +1,5 @@
 import { PanelLeft } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { ButtonIcon } from '../button';
 import { useLayoutContext } from './context';
 import { layoutVariants } from './layout-variants';

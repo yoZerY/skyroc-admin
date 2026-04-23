@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Content, Portal } from '@radix-ui/react-menubar';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { menuVariants } from '../menu/menu-variants';
 import type { MenubarContentProps } from './types';
 

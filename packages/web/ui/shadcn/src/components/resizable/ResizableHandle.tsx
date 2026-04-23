@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { GripVertical } from 'lucide-react';
 import { PanelResizeHandle } from 'react-resizable-panels';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { resizableVariants } from './resizable-variants';
 import type { ResizableHandleProps } from './types';
 

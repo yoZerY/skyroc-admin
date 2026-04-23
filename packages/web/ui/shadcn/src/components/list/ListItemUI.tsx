@@ -1,5 +1,5 @@
 import { isValidElement } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { Divider } from '../divider';
 import { ListContent } from './ListContent';
 import { ListDescription } from './ListDescription';

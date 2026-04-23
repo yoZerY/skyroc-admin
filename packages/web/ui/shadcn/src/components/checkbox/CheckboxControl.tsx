@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import React from 'react';
 import { Root } from '@radix-ui/react-checkbox';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { checkboxVariants } from './checkbox-variants';
 import type { CheckboxControlProps } from './types';
 

@@ -1,6 +1,6 @@
 import { type ComponentRef, forwardRef } from 'react';
 import { Title as _Title } from '@radix-ui/react-dialog';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { dialogVariants } from './dialog-variants';
 import type { DialogTitleProps } from './types';
 

@@ -1,5 +1,5 @@
 import { Content, Menu, Portal } from '@radix-ui/react-menubar';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { menuVariants } from '../menu/menu-variants';
 import MenubarTrigger from './MenubarTrigger';
 import type { MenubarMenuComposedProps } from './types';

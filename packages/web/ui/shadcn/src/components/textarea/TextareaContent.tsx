@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { textareaVariants } from './textarea-variants';
 import type { TextareaContentProps } from './types';
 

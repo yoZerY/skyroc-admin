@@ -1,5 +1,5 @@
 import { Item } from '@radix-ui/react-menubar';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import MenuItem from '../menu/MenuItem';
 import type { MenubarItemProps } from './types';
 

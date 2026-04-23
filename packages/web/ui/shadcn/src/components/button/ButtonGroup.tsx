@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { buttonGroupVariants } from './button-group-variants';
 import type { ButtonGroupProps } from './types';
 

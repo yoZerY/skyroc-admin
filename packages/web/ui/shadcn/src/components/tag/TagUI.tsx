@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { tagVariants } from './tag-variants';
 import type { TagProps } from './types';
 

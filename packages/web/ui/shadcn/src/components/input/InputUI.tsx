@@ -3,7 +3,7 @@
 import { forwardRef, useRef } from 'react';
 import { X } from 'lucide-react';
 import { useComposedRefs } from '@radix-ui/react-compose-refs';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { inputVariants } from './input-variants';
 import type { InputProps } from './types';
 

@@ -1,7 +1,7 @@
 import type { ComponentRef } from 'react';
 import { forwardRef } from 'react';
 import { Content, Portal } from '@radix-ui/react-hover-card';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { hoverCardVariants } from './hover-card-variants';
 import type { HoverCardContentProps } from './types';
 

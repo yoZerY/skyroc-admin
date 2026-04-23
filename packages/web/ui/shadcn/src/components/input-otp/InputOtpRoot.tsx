@@ -2,7 +2,7 @@
 
 import { type ComponentRef, forwardRef } from 'react';
 import { OTPInput } from 'input-otp';
-import { cn } from '@/lib/utils';
+import { cn } from '@skyroc/utils';
 import { inputOTPVariants } from './input-otp-variants';
 import type { InputOTPRootProps } from './types';
 
