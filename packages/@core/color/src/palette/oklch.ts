@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/no-array-sort
 /**
  * OKLCH Color Palette Generator - Professional Edition
  *
@@ -433,7 +434,7 @@ export function generateOklchPaletteAdvanced(color: string, options: OklchPalett
  *   // Force to 600
  *   const palette600 = generateOklchPaletteEx('#6366F1', 600);
  *   // palette600.palettes[6].hex === '#6366f1'
- *   ```
+ *   ```;
  *
  * @param color - Input color (will be preserved exactly in output)
  * @param forceStep - Force input to this step (default: auto-detect, prefer 500 for mid-tones)

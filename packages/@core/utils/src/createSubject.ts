@@ -76,6 +76,7 @@ export function createSubject<T>(): Subject<T> {
       try {
         ob.next?.(value);
       } catch (e) {
+        // oxlint-disable-next-line no-console
         console.error(e);
       }
     }

@@ -3,6 +3,16 @@ import { getColorPalette, getPaletteColorByNumber } from '../../src/palette';
 
 const HEX_REGEX = /^#[0-9a-f]{6}$/;
 
+function hasDifference(a: Map<any, string>, b: Map<any, string>) {
+  let diff = false;
+  a.forEach((hex, number) => {
+    if (hex !== b.get(number)) {
+      diff = true;
+    }
+  });
+  return diff;
+}
+
 // ==================== getColorPalette ====================
 
 describe('getColorPalette', () => {
@@ -40,16 +50,6 @@ describe('getColorPalette', () => {
     const antd = getColorPalette('#1890ff', 'antd');
     const recommended = getColorPalette('#1890ff', 'recommended');
     const oklch = getColorPalette('#1890ff', 'oklch');
-
-    function hasDifference(a: Map<any, string>, b: Map<any, string>) {
-      let diff = false;
-      a.forEach((hex, number) => {
-        if (hex !== b.get(number)) {
-          diff = true;
-        }
-      });
-      return diff;
-    }
 
     expect(hasDifference(antd, recommended)).toBe(true);
     expect(hasDifference(antd, oklch)).toBe(true);

@@ -14,6 +14,13 @@ import {
 
 const HEX_REGEX = /^#[0-9a-f]{6}$/;
 
+const avg = (hex: string) => {
+  const r = Number.parseInt(hex.slice(1, 3), 16);
+  const g = Number.parseInt(hex.slice(3, 5), 16);
+  const b = Number.parseInt(hex.slice(5, 7), 16);
+  return (r + g + b) / 3;
+};
+
 // ==================== generateOklchPalette ====================
 
 describe('generateOklchPalette', () => {
@@ -42,12 +49,6 @@ describe('generateOklchPalette', () => {
     const first = family.palettes[0].hex;
     const last = family.palettes[10].hex;
     // 简单验证：50 的 hex 数值平均应大于 950
-    const avg = (hex: string) => {
-      const r = Number.parseInt(hex.slice(1, 3), 16);
-      const g = Number.parseInt(hex.slice(3, 5), 16);
-      const b = Number.parseInt(hex.slice(5, 7), 16);
-      return (r + g + b) / 3;
-    };
     expect(avg(first)).toBeGreaterThan(avg(last));
   });
 

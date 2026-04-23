@@ -1,34 +1,38 @@
+// oxlint-disable unicorn/no-array-sort
 /**
  * PriorityQueue<T> — 泛型优先级队列
  *
  * 核心能力：
- *   1. ID 去重 — 同一 id 不会重复入队
- *   2. 优先级排序 — 由外部注入 compare 函数，队列始终有序
- *   3. 变更订阅 — subscribe 返回 unsubscribe（Zustand 惯例）
+ *
+ * 1. ID 去重 — 同一 id 不会重复入队
+ * 2. 优先级排序 — 由外部注入 compare 函数，队列始终有序
+ * 3. 变更订阅 — subscribe 返回 unsubscribe（Zustand 惯例）
  *
  * 命名借鉴：
- *   - enqueue / dequeue — @datastructures-js/priority-queue
- *   - peek — Java PriorityQueue / Mnemonist Heap
- *   - remove / removeBy — @datastructures-js v6 remove(cb)
- *   - subscribe → () => void — Zustand / Jotai store.sub
+ *
+ * - Enqueue / dequeue — @datastructures-js/priority-queue
+ * - Peek — Java PriorityQueue / Mnemonist Heap
+ * - Remove / removeBy — @datastructures-js v6 remove(cb)
+ * - Subscribe → () => void — Zustand / Jotai store.sub
  *
  * 内部结构：
- *   - Map<string, T> 存储（O(1) 去重 / 查找 / 删除）
- *   - sorted T[] 惰性缓存（读多写少场景，仅写操作时重建）
+ *
+ * - Map<string, T> 存储（O(1) 去重 / 查找 / 删除）
+ * - Sorted T[] 惰性缓存（读多写少场景，仅写操作时重建）
  *
  * @example
- * ```ts
- * type Task = { taskId: string; priority: number; createdAt: number };
+ *   ```ts
+ *   type Task = { taskId: string; priority: number; createdAt: number };
  *
- * const q = new PriorityQueue<Task>({
- *   getId: t => t.taskId,
- *   compare: (a, b) => a.priority - b.priority || b.createdAt - a.createdAt,
- * });
+ *   const q = new PriorityQueue<Task>({
+ *     getId: t => t.taskId,
+ *     compare: (a, b) => a.priority - b.priority || b.createdAt - a.createdAt
+ *   });
  *
- * q.enqueue({ taskId: '1', priority: 0, createdAt: Date.now() });
- * q.peek();       // highest-priority item
- * q.toArray();    // full sorted snapshot
- * ```
+ *   q.enqueue({ taskId: '1', priority: 0, createdAt: Date.now() });
+ *   q.peek(); // highest-priority item
+ *   q.toArray(); // full sorted snapshot
+ *   ```
  */
 
 // ==================== Types ====================
@@ -49,10 +53,7 @@ export type QueueConfig<T> = {
   /**
    * 排序比较器
    *
-   * 遵循 Array.prototype.sort 惯例：
-   *   返回负数 → a 排在 b 前面（优先级更高）
-   *   返回正数 → b 排在 a 前面
-   *   返回 0   → 保持原序
+   * 遵循 Array.prototype.sort 惯例： 返回负数 → a 排在 b 前面（优先级更高） 返回正数 → b 排在 a 前面 返回 0 → 保持原序
    */
   compare: (a: T, b: T) => number;
 };
@@ -100,8 +101,7 @@ export class PriorityQueue<T> {
   /**
    * 批量入队
    *
-   * 跳过已存在的 id，仅触发一次排序和通知。
-   * 返回实际入队数量。
+   * 跳过已存在的 id，仅触发一次排序和通知。 返回实际入队数量。
    */
   enqueueMany(items: T[]): number {
     let added = 0;
@@ -123,8 +123,7 @@ export class PriorityQueue<T> {
   /**
    * 出队队首（最高优先级）
    *
-   * 移除并返回当前优先级最高的 item。
-   * 队列为空时返回 undefined。
+   * 移除并返回当前优先级最高的 item。 队列为空时返回 undefined。
    */
   dequeue(): T | undefined {
     const first = this.sorted[0];
@@ -156,8 +155,8 @@ export class PriorityQueue<T> {
    * 返回实际移除数量。仅在有移除时触发一次排序和通知。
    *
    * @example
-   * // 移除所有 reference_type === 'health_alert' 的项
-   * queue.removeBy(item => item.reference_type === 'health_alert');
+   *   // 移除所有 reference_type === 'health_alert' 的项
+   *   queue.removeBy(item => item.reference_type === 'health_alert');
    */
   removeBy(predicate: (item: T) => boolean): number {
     let removed = 0;
@@ -207,8 +206,7 @@ export class PriorityQueue<T> {
   /**
    * 返回完整有序队列的不可变快照
    *
-   * 返回的数组是内部缓存的引用（readonly），不会每次调用都创建新数组。
-   * 如需修改请先 spread：[...queue.toArray()]
+   * 返回的数组是内部缓存的引用（readonly），不会每次调用都创建新数组。 如需修改请先 spread：[...queue.toArray()]
    */
   toArray(): readonly T[] {
     return this.sorted;
@@ -229,17 +227,16 @@ export class PriorityQueue<T> {
   /**
    * 注册变更监听器
    *
-   * 每次写操作（enqueue / dequeue / remove / clear）后调用，
-   * 参数为当前完整有序队列（readonly 快照）。
+   * 每次写操作（enqueue / dequeue / remove / clear）后调用， 参数为当前完整有序队列（readonly 快照）。
    *
    * 返回取消订阅函数。
    *
    * @example
-   * const unsub = queue.subscribe(sorted => {
-   *   globalStore.set(bannerQueueAtom, [...sorted]);
-   * });
-   * // 不再需要时
-   * unsub();
+   *   const unsub = queue.subscribe(sorted => {
+   *     globalStore.set(bannerQueueAtom, [...sorted]);
+   *   });
+   *   // 不再需要时
+   *   unsub();
    */
   subscribe(listener: Listener<T>): () => void {
     this.listeners.add(listener);

@@ -107,13 +107,14 @@ export function urlToBase64(url: string, mineType?: string): Promise<string> {
     // 更明确：匿名跨域（前提是图片响应带 Access-Control-Allow-Origin）
     img.crossOrigin = 'anonymous';
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const cleanup = () => {
-      img.onload = null;
-      img.onerror = null;
-      // canvas 不需要挂到 DOM，引用释放即可
+      controller.abort();
     };
 
-    img.onload = () => {
+    img.addEventListener('load', () => {
       try {
         if (!ctx) throw new Error('Failed to get canvas context.');
 
@@ -129,12 +130,12 @@ export function urlToBase64(url: string, mineType?: string): Promise<string> {
         cleanup();
         reject(e instanceof Error ? e : new Error('Failed to convert image to base64.'));
       }
-    };
+    }, { signal });
 
-    img.onerror = () => {
+    img.addEventListener('error', () => {
       cleanup();
       reject(new Error('Failed to load image (CORS or network error).'));
-    };
+    }, { signal });
 
     img.src = normalizeUrl(url);
   });

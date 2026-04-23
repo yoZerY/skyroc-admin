@@ -46,6 +46,9 @@ function createMockImage(overrides: Record<string, any> = {}) {
   }
 
   Object.defineProperty(MockImage.prototype, 'src', {
+    get() {
+      return '';
+    },
     set(_: string) {
       const self = this;
       setTimeout(() => {
@@ -567,7 +570,7 @@ describe('urlToBase64', () => {
       getContext: () => ({ drawImage: vi.fn() }),
       height: 0,
       toDataURL: () => {
-        throw 'canvas tainted';
+        throw new Error('canvas tainted');
       },
       width: 0,
     } as any);

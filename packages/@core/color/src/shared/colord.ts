@@ -62,15 +62,15 @@ export function mixColor(firstColor: AnyColor, secondColor: AnyColor, ratio: num
  * @param alpha - Alpha (0 - 1)
  * @param bgColor Background color (usually white or black)
  */
+function calRgb(or: number, bg: number, al: number) {
+  return bg + (or - bg) * al;
+}
+
 export function transformColorWithOpacity(color: string, alpha: number, bgColor = '#ffffff') {
   const originColor = addColorAlpha(color, alpha);
   const { b: oB, g: oG, r: oR } = colord(originColor).toRgb();
 
   const { b: bgB, g: bgG, r: bgR } = colord(bgColor).toRgb();
-
-  function calRgb(or: number, bg: number, al: number) {
-    return bg + (or - bg) * al;
-  }
 
   const resultRgb: RgbColor = {
     b: calRgb(oB, bgB, alpha),
