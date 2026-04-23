@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import skyrocUIPlugin, { builtinColorMap, builtinColors, builtinRadiuses } from '../src/index';
+import { builtinColorMap, builtinColors, builtinRadiuses, skyrocUIPlugin } from '../src/index';
 
 type PluginInstance = ReturnType<typeof skyrocUIPlugin>;
 

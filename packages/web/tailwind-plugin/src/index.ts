@@ -5,6 +5,10 @@ import themes from './theme.json';
 import { skyrocUITheme } from './themePresets';
 import type { SkyrocUIPluginOptions, ThemeColorKey, ThemeConfig, ThemeConfigColor, ThemeOptions } from './types';
 
+function toRem(value: number) {
+  return `${Number.parseFloat(Math.max(0, value).toFixed(3))}rem`;
+}
+
 export const builtinColors = themes.map(theme => theme.name) as ThemeConfigColor[];
 
 export const builtinColorMap = themes.reduce(
@@ -33,10 +37,6 @@ export const skyrocUIPlugin = plugin.withOptions(
   (options: SkyrocUIPluginOptions = {}) => {
     const r = typeof options.radius === 'number' ? options.radius : 0.5;
     const isNative = options.platform === 'native';
-
-    function toRem(value: number) {
-      return `${Number.parseFloat(Math.max(0, value).toFixed(3))}rem`;
-    }
 
     /** Web: hsl(var(--xxx))，native: var(--xxx) */
     function c(name: string) {
