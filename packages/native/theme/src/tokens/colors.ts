@@ -1,6 +1,12 @@
 import type { ThemeColor } from '@skyroc/ui-types';
 
 /**
+ * Default brand-color hex values are shared cross-platform via `@skyroc/ui-tokens`.
+ * Platform-specific bindings (CSS-var driven `semanticColors` / `surfaceColors`) stay here.
+ */
+export { defaultDarkColors, defaultLightColors } from '@skyroc/ui-tokens';
+
+/**
  * Semantic color definitions aligned with ThemeColor.
  *
  * Each color maps to a CSS variable that gets resolved at runtime. The palette numbers follow the same 50–950 scale as
@@ -39,34 +45,6 @@ export const semanticColors: Record<ThemeColor, { DEFAULT: string; foreground: s
     DEFAULT: 'hsl(var(--color-warning) / <alpha-value>)',
     foreground: 'hsl(var(--color-warning-foreground) / <alpha-value>)'
   }
-};
-
-/**
- * Default color values (hex) for light theme.
- *
- * These can be overridden by the app's ThemeProvider.
- */
-export const defaultLightColors: Record<ThemeColor, string> = {
-  accent: '#8b5cf6',
-  carbon: '#71717a',
-  destructive: '#ef4444',
-  info: '#3b82f6',
-  primary: '#6366f1',
-  secondary: '#64748b',
-  success: '#22c55e',
-  warning: '#f59e0b'
-};
-
-/** Default color values (hex) for dark theme. */
-export const defaultDarkColors: Record<ThemeColor, string> = {
-  accent: '#a78bfa',
-  carbon: '#a1a1aa',
-  destructive: '#f87171',
-  info: '#60a5fa',
-  primary: '#818cf8',
-  secondary: '#94a3b8',
-  success: '#4ade80',
-  warning: '#fbbf24'
 };
 
 /** Neutral / surface colors for layout. */
