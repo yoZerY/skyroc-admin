@@ -20,11 +20,21 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "oxlint --fix"
+    "lint": "oxlint --fix",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "@skyroc/color": "workspace:*",
     "@unocss/core": "catalog:dev",
     "tailwindcss": "catalog:css"
+  },
+  "devDependencies": {
+    "@skyroc/config": "workspace:*",
+    "@skyroc/tsconfig": "workspace:*",
+    "oxlint": "catalog:dev",
+    "rimraf": "catalog:dev"
   }
 }
