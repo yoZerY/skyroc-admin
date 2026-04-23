@@ -2,7 +2,7 @@
 type TaskType = 'init' | 'periodic' | 'listener';
 
 /** 任务运行状态 */
-type TaskStatus = 'pending' | 'running' | 'done' | 'failed';
+type TaskStatus = 'pending' | 'running' | 'done' | 'failed' | 'blocked';
 
 /** 任务定义 — 注册时传入 */
 interface TaskDef {
@@ -64,6 +64,8 @@ interface TaskHubOptions {
   baseRetryDelay?: number;
   /** 错误回调，任务失败时触发 */
   onTaskError?: (taskName: string, error: unknown) => void;
+  /** 依赖任务永久失败导致当前任务无法执行时触发，blockedBy 为直接上游任务名 */
+  onTaskBlocked?: (taskName: string, blockedBy: string) => void;
   /** 全部 init 任务完成时触发 */
   onReady?: () => void;
 }
