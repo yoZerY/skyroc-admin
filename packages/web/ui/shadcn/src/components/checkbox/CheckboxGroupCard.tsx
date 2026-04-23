@@ -11,14 +11,14 @@ import CheckboxCard from './CheckboxCard';
 const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
   const {
     checkboxPosition = 'right',
+    checkedIcon,
     className,
     classNames,
     color,
     defaultValue,
     disabled,
-    items,
-    checkedIcon,
     indeterminateIcon,
+    items,
     onValueChange,
     orientation = 'horizontal',
     shape = 'rounded',
