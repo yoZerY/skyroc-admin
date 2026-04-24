@@ -253,6 +253,7 @@ catalogs:
   # ==================== CSS / PostCSS ====================
   css:
     tailwindcss: ^4.1.18
+    '@tailwindcss/cli': ^4.1.18
     '@tailwindcss/postcss': ^4.1.13
     postcss: ^8.5.6
 
