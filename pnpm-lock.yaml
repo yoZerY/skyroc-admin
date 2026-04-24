@@ -2050,6 +2050,9 @@ importers:
       '@skyroc/form':
         specifier: workspace:*
         version: link:../../../primitives/filed-form
+      '@skyroc/tailwind-plugin':
+        specifier: workspace:*
+        version: link:../../tailwind-plugin
       '@skyroc/ui-types':
         specifier: workspace:*
         version: link:../../../shared/ui-types
