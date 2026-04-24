@@ -8,9 +8,9 @@ import { inputVariants } from './input-variants';
 import type { InputProps } from './types';
 
 const InputUI = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { className, disabled, readOnly, classNames, clearable, size, leading, trailing, ...rest } = props;
+  const { className, classNames, clearable, disabled, leading, readOnly, size, trailing, ...rest } = props;
 
-  const { root, clearable: clearableCls, control } = inputVariants({ size });
+  const { clearable: clearableCls, control, root } = inputVariants({ size });
 
   const mergedCls = cn(root(), className || classNames?.root);
 

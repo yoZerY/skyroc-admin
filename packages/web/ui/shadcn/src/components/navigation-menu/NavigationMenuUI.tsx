@@ -26,7 +26,7 @@ function getItem(itemOption: NavigationMenuItemOption): [NavigationMenuItemOptio
 }
 
 const NavigationMenuUI = (props: NavigationMenuProps) => {
-  const { classNames, items, showArrow, itemProps, linkProps, listProps, triggerProps, contentProps, childListProps, childListItemProps, childLinkProps, size, ...rest } = props;
+  const { childLinkProps, childListItemProps, childListProps, classNames, contentProps, itemProps, items, linkProps, listProps, showArrow: _showArrow, size, triggerProps, ...rest } = props;
 
   return (
     <NavigationMenuRoot
@@ -93,6 +93,7 @@ const NavigationMenuUI = (props: NavigationMenuProps) => {
                                 <NavigationMenuChildLink
                                   classNames={classNames}
                                   size={size}
+                                  {...childLinkProps}
                                   {...childItem}
                                 >
                                   {childItem.label}

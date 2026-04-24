@@ -2,7 +2,7 @@ import type {
   CollapsibleContentProps as _CollapsibleContentProps,
   CollapsibleProps as _CollapsibleRootProps
 } from '@radix-ui/react-collapsible';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { CollapsibleSlots } from './collapsible-variants';
 
 /**

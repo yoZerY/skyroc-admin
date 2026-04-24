@@ -12,19 +12,19 @@ const BottomSheetUI = forwardRef<ComponentRef<typeof Content>, BottomSheetProps>
   const {
     children,
     classNames,
+    closeProps,
     contentProps,
     description,
+    descriptionProps,
     footer,
+    footerProps,
+    headerProps,
     shouldScaleBackground = true,
     showClose,
     size,
     title,
-    trigger,
-    headerProps,
     titleProps,
-    descriptionProps,
-    closeProps,
-    footerProps
+    trigger
   } = props;
 
   return (

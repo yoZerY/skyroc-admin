@@ -1,5 +1,5 @@
 import type { SwitchProps as _SwitchRootProps, SwitchThumbProps as _SwitchThumbProps } from '@radix-ui/react-switch';
-import type { StyledComponentProps, ClassValue, ThemeColor } from '@/types/shared';
+import type { ClassValue, StyledComponentProps, ThemeColor } from '@/types/shared';
 import type { SwitchSlots } from './switch-varianst';
 
 /**

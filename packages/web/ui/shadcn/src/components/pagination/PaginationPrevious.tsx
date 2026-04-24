@@ -6,14 +6,14 @@ import type { PaginationPreviousProps } from './types';
 
 const PaginationPrevious = (props: PaginationPreviousProps) => {
   const {
-    className,
+    actionAsSelected,
     children,
+    className,
     icon,
     label,
+    shape,
     size,
     variant,
-    shape,
-    actionAsSelected,
     ...rest
   } = props;
 

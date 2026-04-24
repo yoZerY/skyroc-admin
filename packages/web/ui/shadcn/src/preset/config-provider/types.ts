@@ -41,7 +41,7 @@ import type { SegmentOptionData, SegmentProps } from '../../components/segment/t
 import type { SelectProps } from '../../components/select/types';
 import type { SliderProps } from '../../components/slider/types';
 import type { SwitchProps } from '../../components/switch/types';
-import type { TabsProps, TabsOptionData } from '../../components/tabs/types';
+import type { TabsOptionData, TabsProps } from '../../components/tabs/types';
 import type { TextareaProps } from '../../components/textarea/types';
 import type { ToggleProps } from '../../components/toggle/types';
 import type { TooltipProps } from '../../components/tooltip/types';
@@ -129,11 +129,6 @@ export interface ComponentConfig {
    * Default configuration for badge components.
    */
   badge?: BadgeConfig;
-
-  /**
-   * Default configuration for tag components.
-   */
-  tag?: TagConfig;
 
   /**
    * Default configuration for bottom sheet components.
@@ -314,6 +309,11 @@ export interface ComponentConfig {
    * Default configuration for tabs components.
    */
   tabs?: TabsConfig;
+
+  /**
+   * Default configuration for tag components.
+   */
+  tag?: TagConfig;
 
   /**
    * Default configuration for textarea components.
@@ -720,7 +720,7 @@ export type MenuConfig = Pick<MenuProps, 'classNames' | 'size'>;
  * Configuration options for number input components.
  * Selects specific props that can be set globally for all number inputs.
  */
-export type NumberInputConfig = Pick<NumberInputProps, 'className' | 'classNames' | 'size' | 'center'>;
+export type NumberInputConfig = Pick<NumberInputProps, 'center' | 'className' | 'classNames' | 'size'>;
 
 /**
  * Configuration options for pagination components.
@@ -728,14 +728,14 @@ export type NumberInputConfig = Pick<NumberInputProps, 'className' | 'classNames
  */
 export type PaginationConfig = Pick<
   PaginationProps,
-  'className' | 'classNames' | 'size' | 'variant' | 'shape' | 'showEdges' | 'showFirstLast' | 'siblingCount'
+  'className' | 'classNames' | 'shape' | 'showEdges' | 'showFirstLast' | 'siblingCount' | 'size' | 'variant'
 >;
 
 /**
  * Configuration options for password components.
  * Selects specific props that can be set globally for all password inputs.
  */
-export type PasswordConfig = Pick<PasswordProps, 'className' | 'classNames' | 'size' | 'clearable' | 'visibleIcon' | 'hiddenIcon'>;
+export type PasswordConfig = Pick<PasswordProps, 'className' | 'classNames' | 'clearable' | 'hiddenIcon' | 'size' | 'visibleIcon'>;
 
 /**
  * Configuration options for sonner/toast components.
@@ -749,16 +749,16 @@ export type SonnerConfig = Pick<ToasterProps, 'expand' | 'position' | 'richColor
  */
 export type TreeConfig = Pick<
   TreeProps,
+  | 'allowParentSelect'
+  | 'bubbleSelect'
   | 'className'
   | 'classNames'
   | 'dir'
   | 'disabled'
   | 'loop'
   | 'multiple'
-  | 'selectionBehavior'
-  | 'toggleBehavior'
   | 'propagateSelect'
-  | 'bubbleSelect'
-  | 'allowParentSelect'
+  | 'selectionBehavior'
   | 'size'
+  | 'toggleBehavior'
 >;

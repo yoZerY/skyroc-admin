@@ -11,16 +11,16 @@ const Segment = forwardRef<ComponentRef<typeof Root>, SegmentProps<SegmentOption
     className,
     classNames,
     dir,
+    disabled,
     enableIndicator = true,
     items,
-    loop,
-    shape = 'square',
-    disabled,
-    orientation = 'horizontal',
-    size,
-    value,
-    triggerProps,
     listProps,
+    loop,
+    orientation = 'horizontal',
+    shape = 'square',
+    size,
+    triggerProps,
+    value,
     ...rest
   } = props;
 

@@ -34,7 +34,7 @@ export interface SkeletonProps extends StyledComponentProps<ComponentPropsWithou
 /**
  * Animation type for skeleton
  */
-export type SkeletonAnimation = 'pulse' | 'wave' | 'none';
+export type SkeletonAnimation = 'none' | 'pulse' | 'wave';
 
 /**
  * Props for the SkeletonContainer component.
@@ -73,21 +73,22 @@ export type SkeletonAnimation = 'pulse' | 'wave' | 'none';
  */
 export interface SkeletonContainerProps extends SkeletonProps {
   /**
+   * Animation type for the skeleton
+   * @default 'pulse'
+   */
+  animation?: SkeletonAnimation;
+
+  /**
    * The content to display or skeletonize
    */
   children: ReactNode;
 
   /**
-   * Whether to show skeleton loading state
-   * @default false
+   * Depth level for recursive skeletonization
+   * Set to 0 to only skeletonize direct text content
+   * @default Infinity
    */
-  loading?: boolean;
-
-  /**
-   * Animation type for the skeleton
-   * @default 'pulse'
-   */
-  animation?: SkeletonAnimation;
+  depth?: number;
 
   /**
    * Keys of elements to exclude from skeletonization.
@@ -107,11 +108,10 @@ export interface SkeletonContainerProps extends SkeletonProps {
   excludeKeys?: string[];
 
   /**
-   * Depth level for recursive skeletonization
-   * Set to 0 to only skeletonize direct text content
-   * @default Infinity
+   * Whether to show skeleton loading state
+   * @default false
    */
-  depth?: number;
+  loading?: boolean;
 
   /**
    * Custom skeleton color

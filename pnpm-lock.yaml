@@ -2068,12 +2068,6 @@ importers:
       lucide-react:
         specifier: ^0.545.0
         version: 0.545.0(react@19.1.0)
-      react:
-        specifier: catalog:core
-        version: 19.1.0
-      react-dom:
-        specifier: catalog:core
-        version: 19.1.0(react@19.1.0)
       react-resizable-panels:
         specifier: ^4.10.0
         version: 4.10.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2102,6 +2096,12 @@ importers:
       oxlint:
         specifier: catalog:dev
         version: 1.60.0
+      react:
+        specifier: catalog:core
+        version: 19.1.0
+      react-dom:
+        specifier: catalog:core
+        version: 19.1.0(react@19.1.0)
       rimraf:
         specifier: catalog:dev
         version: 6.1.3

@@ -5,14 +5,14 @@ import { toast } from 'sonner';
  * Promise data configuration for message.promise()
  */
 export interface MessagePromiseData<T = unknown> {
-  /** Loading state message */
-  loading?: React.ReactNode;
-  /** Success state message or function that receives resolved data */
-  success?: React.ReactNode | ((data: T) => React.ReactNode);
   /** Error state message or function that receives error */
   error?: React.ReactNode | ((error: unknown) => React.ReactNode);
   /** Callback when promise settles (success or error) */
   finally?: () => void | Promise<void>;
+  /** Loading state message */
+  loading?: React.ReactNode;
+  /** Success state message or function that receives resolved data */
+  success?: React.ReactNode | ((data: T) => React.ReactNode);
 }
 
 /**
@@ -20,25 +20,25 @@ export interface MessagePromiseData<T = unknown> {
  * Lightweight global toast with icon and text only
  */
 export interface MessageConfig {
+  /** Custom class name */
+  className?: string;
   /** Message content */
   content?: React.ReactNode;
   /** Auto close delay in milliseconds. Set to 0 to disable auto close. Default: 3000ms */
   duration?: number;
-  /** Callback when message closes */
-  onClose?: () => void;
-  /** Unique key for the message */
-  key?: string | number;
   /** Custom icon */
   icon?: React.ReactNode;
-  /** Custom inline style */
-  style?: React.CSSProperties;
-  /** Custom class name */
-  className?: string;
+  /** Unique key for the message */
+  key?: string | number;
+  /** Callback when message closes */
+  onClose?: () => void;
   /** Display position. Default: top-center */
   position?: ToastT['position'];
+  /** Custom inline style */
+  style?: React.CSSProperties;
 }
 
-export type MessageType = 'success' | 'error' | 'warning' | 'info' | 'loading';
+export type MessageType = 'error' | 'info' | 'loading' | 'success' | 'warning';
 
 /**
  * Global configuration options
@@ -74,6 +74,7 @@ function isMessageConfig(value: unknown): value is MessageConfig {
 /**
  * Show message toast
  */
+// eslint-disable-next-line max-params
 function showMessage(
   type: MessageType,
   content: React.ReactNode | MessageConfig,
@@ -97,14 +98,14 @@ function showMessage(
   }
 
   const {
+    className,
     content: messageContent,
     duration: msgDuration = globalConfig.duration,
-    onClose: msgOnClose,
-    key,
     icon,
-    style,
-    className,
-    position = globalConfig.position
+    key,
+    onClose: msgOnClose,
+    position = globalConfig.position,
+    style
   } = config;
 
   // Check if max count exceeded
@@ -253,7 +254,7 @@ export const message = {
     data: MessagePromiseData<T>,
     options?: Omit<MessageConfig, 'content'>
   ) {
-    const { position = globalConfig.position, className, style, key, icon } = options || {};
+    const { className, icon, key, position = globalConfig.position, style } = options || {};
 
     const toastOptions: ExternalToast = {
       id: key,

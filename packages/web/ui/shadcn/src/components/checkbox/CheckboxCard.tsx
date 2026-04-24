@@ -10,20 +10,21 @@ import CheckboxControl from './CheckboxControl';
 import CheckboxIndicator from './CheckboxIndicator';
 import type { CheckboxCardProps } from './types';
 
+// eslint-disable-next-line complexity
 const CheckboxCard = forwardRef<HTMLLabelElement, CheckboxCardProps>((props, ref) => {
   const {
-    checked,
     checkboxPosition = 'left',
+    checked,
+    checkedIcon = <Check className="size-full" />,
     className,
     classNames,
-    checkedIcon = <Check className="size-full" />,
-    indeterminateIcon = <Minus className="size-full" />,
     color,
     description,
     disabled,
     forceMountIndicator,
     icon,
     id: controlId,
+    indeterminateIcon = <Minus className="size-full" />,
     label,
     shape,
     size,
@@ -35,7 +36,7 @@ const CheckboxCard = forwardRef<HTMLLabelElement, CheckboxCardProps>((props, ref
 
   const id = useId();
 
-  const { card, cardContent, cardLabel, cardDescription } = checkboxVariants({ color, shape, size });
+  const { card, cardContent, cardDescription, cardLabel } = checkboxVariants({ color, shape, size });
 
   const mergedCls = cn(
     card(),
@@ -107,7 +108,10 @@ const CheckboxCard = forwardRef<HTMLLabelElement, CheckboxCardProps>((props, ref
     <CheckboxLabel
       className={mergedCls}
       data-slot="checkbox-card"
-      data-state={isChecked ? 'checked' : isIndeterminate ? 'indeterminate' : 'unchecked'}
+      data-state={
+        // eslint-disable-next-line no-nested-ternary
+        isChecked ? 'checked' : isIndeterminate ? 'indeterminate' : 'unchecked'
+      }
       htmlFor={controlId || id}
       ref={ref}
     >

@@ -7,7 +7,7 @@ import SliderTrack from './SliderTrack';
 import type { SliderProps } from './types';
 
 const SliderUI = forwardRef<ComponentRef<typeof SliderRoot>, SliderProps>((props, ref) => {
-  const { className, classNames, color, defaultValue, size, value, trackProps, rangeProps, thumbProps, ...rest } = props;
+  const { className, classNames, color, defaultValue, rangeProps, size, thumbProps, trackProps, value, ...rest } = props;
 
   return (
     <SliderRoot

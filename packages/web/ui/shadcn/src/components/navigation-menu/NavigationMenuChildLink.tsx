@@ -7,9 +7,9 @@ import { navigationMenuVariants } from './navigation-menu';
 import type { NavigationMenuChildLinkProps } from './types';
 
 const NavigationMenuChildLink = (props: NavigationMenuChildLinkProps) => {
-  const { children, disabled, className, classNames, component: Component = 'a', description, leading, size, trailing, ...rest } = props;
+  const { children, className, classNames, component: Component = 'a', description, disabled, leading, size, trailing, ...rest } = props;
 
-  const { subLink, subLinkContent, subLinkDescription, itemIcon, linkIcon, subLinkLabel } = navigationMenuVariants({
+  const { itemIcon, linkIcon, subLink, subLinkContent, subLinkDescription, subLinkLabel } = navigationMenuVariants({
     size
   });
 

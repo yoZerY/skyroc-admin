@@ -1,12 +1,12 @@
 'use client';
 
 import React, {
-  Children,
-  cloneElement,
-  isValidElement,
   type CSSProperties,
+  Children,
   type ReactElement,
-  type ReactNode
+  type ReactNode,
+  cloneElement,
+  isValidElement
 } from 'react';
 import { cn } from '@skyroc/utils';
 import { skeletonContainerVariants, skeletonItemVariants } from './skeleton-variants';
@@ -241,6 +241,7 @@ function estimateTextWidth(text: string): string {
 }
 
 // Create skeleton element for text
+// eslint-disable-next-line max-params
 function createTextSkeleton(
   animation: SkeletonAnimation,
   skeletonColor?: string,
@@ -269,6 +270,7 @@ function createTextSkeleton(
 }
 
 // Create skeleton element for media
+// eslint-disable-next-line max-params
 function createMediaSkeleton(
   props: Record<string, any>,
   animation: SkeletonAnimation,
@@ -286,7 +288,7 @@ function createMediaSkeleton(
     style.borderRadius = skeletonRadius;
 
   // For images, try to preserve aspect ratio
-  const { width, height, className = '' } = props;
+  const { className = '', height, width } = props;
   if (width && height) {
     style.width = typeof width === 'number' ? `${width}px` : width;
     style.height = typeof height === 'number' ? `${height}px` : height;
@@ -303,11 +305,11 @@ function createMediaSkeleton(
 
 interface SkeletonizeOptions {
   animation: SkeletonAnimation;
-  excludeKeys: string[];
+  currentDepth?: number;
   depth: number;
+  excludeKeys: string[];
   skeletonColor?: string;
   skeletonRadius?: string;
-  currentDepth?: number;
 }
 
 // Main function to convert children to skeleton
@@ -317,11 +319,11 @@ function skeletonizeChildren(
 ): ReactNode {
   const {
     animation,
-    excludeKeys,
+    currentDepth = 0,
     depth,
+    excludeKeys,
     skeletonColor,
-    skeletonRadius,
-    currentDepth = 0
+    skeletonRadius
   } = options;
 
   // Depth limit reached
@@ -483,14 +485,14 @@ function skeletonizeChildren(
 
 const SkeletonContainerUI = (props: SkeletonContainerProps) => {
   const {
-    children,
-    loading = false,
     animation = 'pulse',
-    excludeKeys = [],
+    children,
+    className,
     depth = Infinity,
+    excludeKeys = [],
+    loading = false,
     skeletonColor,
     skeletonRadius,
-    className,
     ...rest
   } = props;
 

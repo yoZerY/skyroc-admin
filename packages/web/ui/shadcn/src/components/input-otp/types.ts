@@ -1,5 +1,5 @@
 import type { RenderProps } from 'input-otp';
-import type { HTMLComponentProps, ClassValue, ThemeSize } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps, ThemeSize } from '@/types/shared';
 import type { InputOTPSlots } from './input-otp-variants';
 
 /**
@@ -213,6 +213,10 @@ export type InputOTPProps = Omit<OTPInputRootStyledComponentProps, 'maxLength' |
    */
   classNames?: InputOTPClassNames;
   /**
+   * Props for the input OTP group component.
+   */
+  groupProps?: InputOTPGroupProps;
+  /**
    * Number of OTP input slots to render.
    * Replaces the maxLength requirement from root props.
    */
@@ -228,19 +232,15 @@ export type InputOTPProps = Omit<OTPInputRootStyledComponentProps, 'maxLength' |
    */
   separator?: React.ReactNode | true;
   /**
+   * Props for the input OTP separator component.
+   */
+  separatorProps?: InputOTPSeparatorProps;
+  /**
    * Size variant for the OTP input slots (sm, md, lg, etc).
    */
   size?: ThemeSize;
   /**
-   * Props for the input OTP group component.
-   */
-  groupProps?: InputOTPGroupProps;
-  /**
    * Props for the input OTP slot component.
    */
   slotProps?: InputOTPSlotProps;
-  /**
-   * Props for the input OTP separator component.
-   */
-  separatorProps?: InputOTPSeparatorProps;
 };

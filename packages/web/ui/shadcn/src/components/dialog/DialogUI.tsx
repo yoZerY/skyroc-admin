@@ -19,26 +19,26 @@ const DialogUI = forwardRef<ComponentRef<typeof Content>, DialogProps>((props, r
     children,
     className,
     classNames,
+    closeProps,
     contentComponent: ContentComponent = DialogContent,
     contentProps,
     defaultOpen,
     description,
+    descriptionProps,
     footer,
+    footerProps,
+    headerProps,
     modal,
-    okText = 'OK',
     okButtonProps,
+    okText = 'OK',
     onOk,
     onOpenChange,
     open,
+    overlayProps,
     size,
     title,
-    trigger,
-    overlayProps,
-    headerProps,
     titleProps,
-    descriptionProps,
-    closeProps,
-    footerProps
+    trigger
   } = props;
 
   return (

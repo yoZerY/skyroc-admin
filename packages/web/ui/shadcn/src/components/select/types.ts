@@ -8,7 +8,7 @@ import type {
   SelectTriggerProps as _SelectTriggerProps,
   SelectValueProps as _SelectValueProps
 } from '@radix-ui/react-select';
-import type { StyledComponentProps, ClassValue, SlotProps, ThemeSize } from '@/types/shared';
+import type { ClassValue, SlotProps, StyledComponentProps, ThemeSize } from '@/types/shared';
 import type { SelectSlots } from './select-variants';
 
 /**

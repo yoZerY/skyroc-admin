@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { StyledComponentProps, ClassValue, ThemeSize } from '@/types/shared';
+import type { ClassValue, StyledComponentProps, ThemeSize } from '@/types/shared';
 import type { DrawerSide } from '../drawer';
 import type { LayoutCollapsible, LayoutSide, LayoutSlots, LayoutVariant } from './layout-variants';
 

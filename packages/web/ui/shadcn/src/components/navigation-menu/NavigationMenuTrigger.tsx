@@ -5,7 +5,7 @@ import { navigationMenuVariants } from './navigation-menu';
 import type { NavigationMenuTriggerProps } from './types';
 
 const NavigationMenuTrigger = (props: NavigationMenuTriggerProps) => {
-  const { children, className, size, classNames, leading, trailing, ...rest } = props;
+  const { children, className, classNames, leading, size, trailing, ...rest } = props;
 
   const { trigger, triggerIcon } = navigationMenuVariants({ size });
 

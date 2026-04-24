@@ -1,4 +1,4 @@
-import { isValidElement } from 'react';
+import { ReactNode, isValidElement } from 'react';
 import { cn } from '@skyroc/utils';
 import { Divider } from '../divider';
 import { ListContent } from './ListContent';
@@ -7,6 +7,18 @@ import { ListItem } from './ListItem';
 import { ListTitle } from './ListTitle';
 import { listVariants } from './list-variants';
 import type { ListItemUIProps } from './types';
+
+
+
+function getDividerNode(divider?: ReactNode) {
+  if (!divider) return null;
+
+  if (isValidElement(divider)) {
+    return divider;
+  }
+
+  return <Divider />;
+}
 
 export const ListItemUI = (props: ListItemUIProps) => {
   const {
@@ -73,7 +85,9 @@ export const ListItemUI = (props: ListItemUIProps) => {
 
       </ListItem>
 
-      {isValidElement(divider) ? divider : divider ? <Divider /> : null}
+      {
+        getDividerNode(divider)
+      }
     </>
   );
 };

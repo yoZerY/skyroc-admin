@@ -4,7 +4,7 @@ import { paginationVariants } from './pagination-variants';
 import type { PaginationEllipsisProps } from './types';
 
 const PaginationEllipsis = (props: PaginationEllipsisProps) => {
-  const { className, children, icon, size, ...rest } = props;
+  const { children, className, icon, size, ...rest } = props;
 
   const { ellipsis } = paginationVariants({ size });
 

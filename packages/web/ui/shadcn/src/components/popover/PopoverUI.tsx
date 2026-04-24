@@ -9,13 +9,16 @@ import type { PopoverProps } from './types';
 
 const PopoverUI = forwardRef<ComponentRef<typeof Content>, PopoverProps>((props, ref) => {
   const {
+    anchorProps,
     arrowHeight,
+    arrowProps,
     arrowWidth,
     children,
     className,
     classNames,
     closeIcon,
     container,
+    contentProps,
     defaultOpen,
     forceMountPortal,
     modal,
@@ -24,9 +27,6 @@ const PopoverUI = forwardRef<ComponentRef<typeof Content>, PopoverProps>((props,
     showArrow,
     size,
     trigger,
-    anchorProps,
-    contentProps,
-    arrowProps,
     ...rest
   } = props;
 

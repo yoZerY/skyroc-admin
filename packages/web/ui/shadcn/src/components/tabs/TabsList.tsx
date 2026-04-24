@@ -1,5 +1,5 @@
 'use client';
-import type { ComponentRef, CSSProperties } from 'react';
+import type { CSSProperties, ComponentRef } from 'react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useComposedRefs } from '@radix-ui/react-compose-refs';
 import { List } from '@radix-ui/react-tabs';
@@ -9,7 +9,7 @@ import { tabsVariants } from './tabs-variants';
 import type { IndicatorStyle, TabsListProps } from './types';
 
 const TabsList = forwardRef<ComponentRef<typeof List>, TabsListProps>((props, ref) => {
-  const { children, className, classNames, dir, enableIndicator, orientation, size, value, shape, type, ...rest } = props;
+  const { children, className, classNames, dir, enableIndicator, orientation, shape, size, type, value, ...rest } = props;
 
   const tabsListRef = useRef<HTMLDivElement>(null);
 

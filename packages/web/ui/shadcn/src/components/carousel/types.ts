@@ -1,6 +1,6 @@
 import type useEmblaCarousel from 'embla-carousel-react';
 import type { UseEmblaCarouselType } from 'embla-carousel-react';
-import type { HTMLComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps } from '@/types/shared';
 import type { ButtonProps } from '../button';
 import type { CarouselSlots } from './carousel-variants';
 
@@ -146,14 +146,14 @@ export type CarouselPropsWithoutChildren = Omit<CarouselRootProps, 'children'> &
   classNames?: CarouselUi;
 
   /**
-   * Number of slides to render when using index-based rendering.
-   */
-  counts?: number;
-
-  /**
    * Props for the carousel content component.
    */
   contentProps?: CarouselContentProps;
+
+  /**
+   * Number of slides to render when using index-based rendering.
+   */
+  counts?: number;
 
   /**
    * Props for the carousel item component.

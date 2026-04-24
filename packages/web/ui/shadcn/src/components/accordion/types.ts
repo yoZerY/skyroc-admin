@@ -89,6 +89,18 @@ export type AccordionProps<T extends AccordionItemData = AccordionItemData> = Ac
    */
   classNames?: AccordionClassNames;
   /**
+   * Props for the accordion content component.
+   */
+  contentProps?: AccordionContentProps;
+  /**
+   * Props for the accordion header component.
+   */
+  headerProps?: AccordionHeaderProps;
+  /**
+   * Props for the accordion item component.
+   */
+  itemProps?: AccordionItemProps;
+  /**
    * Array of accordion items to render.
    * Each item should have a unique `value` property.
    */
@@ -101,23 +113,11 @@ export type AccordionProps<T extends AccordionItemData = AccordionItemData> = Ac
    * Default icon to display in all triggers (can be overridden per item).
    */
   triggerIcon?: React.ReactNode;
+
   /**
    * Default leading content for all triggers (can be overridden per item).
    */
   triggerLeading?: React.ReactNode;
-  /**
-   * Default trailing content for all triggers (can be overridden per item).
-   */
-  triggerTrailing?: React.ReactNode;
-  /**
-   * Props for the accordion header component.
-   */
-  headerProps?: AccordionHeaderProps;
-
-  /**
-   * Props for the accordion content component.
-   */
-  contentProps?: AccordionContentProps;
 
   /**
    * Props for the accordion trigger component.
@@ -129,7 +129,7 @@ export type AccordionProps<T extends AccordionItemData = AccordionItemData> = Ac
   triggerProps?: AccordionTriggerProps;
 
   /**
-   * Props for the accordion item component.
+   * Default trailing content for all triggers (can be overridden per item).
    */
-  itemProps?: AccordionItemProps;
+  triggerTrailing?: React.ReactNode;
 };

@@ -21,8 +21,9 @@ const DefaultIndicator = ({ isExpanded }: { isExpanded: boolean }) => {
 };
 
 const TreeUI = <T extends TreeItemData = TreeItemData>(props: TreeProps<T>) => {
-  const { items, className, renderItem, classNames, size, onSelect, onToggle, indentSize, disabledToggle, disabledSelect, ref, ...rest } = props;
+  const { className, classNames, disabledSelect, disabledToggle, indentSize, items, onSelect, onToggle, ref, renderItem, size, ...rest } = props;
 
+  // eslint-disable-next-line max-params
   const defaultRenderItemContent = (item: FlattenedItem<T>, isExpanded: boolean, hasChildren: boolean, isSelected: boolean) => {
     const indicator = hasChildren
       ? (
@@ -51,7 +52,7 @@ const TreeUI = <T extends TreeItemData = TreeItemData>(props: TreeProps<T>) => {
       size={size}
       {...rest}
     >
-      {({ flattenItems, modelValue, expanded, select, toggle }) => flattenItems.map(item => (
+      {({ expanded, flattenItems, modelValue, select, toggle }) => flattenItems.map(item => (
         <TreeItem
           className={classNames?.item}
           disabled={item.data.disabled}
@@ -64,7 +65,7 @@ const TreeUI = <T extends TreeItemData = TreeItemData>(props: TreeProps<T>) => {
           onSelect={onSelect}
           onToggle={onToggle}
         >
-          {({ isExpanded, isSelected, isIndeterminate, hasChildren }) =>
+          {({ hasChildren, isExpanded, isIndeterminate, isSelected }) =>
             renderItem ? renderItem({ item, isExpanded, isSelected, isIndeterminate, hasChildren, flattenItems, modelValue, expanded, select, toggle }) : defaultRenderItemContent(item, isExpanded, hasChildren, isSelected)}
         </TreeItem>
       ))}

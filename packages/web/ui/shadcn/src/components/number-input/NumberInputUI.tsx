@@ -9,31 +9,32 @@ import { numberInputVariants } from './number-input-variants';
 import NumberInputControl from './NumberInputControl';
 import type { NumberInputProps } from './types';
 
+// eslint-disable-next-line complexity
 const NumberInputUI = forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
   const {
+    center,
     className,
     classNames,
-    size,
-    center,
     clearable,
-    disabled,
-    readOnly,
-    min,
-    max,
-    step = 1,
-    value: valueProp,
+    controlProps,
+    decrementIcon,
     defaultValue,
+    disabled,
+    incrementIcon,
+    leading,
+    max,
+    min,
     onChange,
     onValueChange,
-    leading,
+    readOnly,
+    size,
+    step = 1,
     trailing,
-    decrementIcon,
-    incrementIcon,
-    controlProps,
+    value: valueProp,
     ...rest
   } = props;
 
-  const { clearable: clearableCls, root, decrement, increment }
+  const { clearable: clearableCls, decrement, increment, root }
     = numberInputVariants({ size, center });
 
   const inputRef = useRef<HTMLInputElement>(null);

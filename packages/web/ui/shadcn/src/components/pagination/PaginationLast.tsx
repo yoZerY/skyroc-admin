@@ -6,14 +6,14 @@ import type { PaginationLastProps } from './types';
 
 const PaginationLast = (props: PaginationLastProps) => {
   const {
-    className,
+    actionAsSelected,
     children,
+    className,
     icon,
     label,
+    shape,
     size,
     variant,
-    shape,
-    actionAsSelected,
     ...rest
   } = props;
 

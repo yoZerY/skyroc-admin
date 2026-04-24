@@ -3,7 +3,7 @@ import { skeletonVariants } from './skeleton-variants';
 import type { SkeletonProps } from './types';
 
 const SkeletonUI = (props: SkeletonProps) => {
-  const { className, loading, children, ...rest } = props;
+  const { children, className, loading, ...rest } = props;
 
   const mergedCls = cn(skeletonVariants(), className);
 

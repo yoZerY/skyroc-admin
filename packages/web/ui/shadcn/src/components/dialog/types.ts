@@ -8,7 +8,7 @@ import type {
   DialogProps as _DialogProps,
   DialogTitleProps as _DialogTitleProps
 } from '@radix-ui/react-dialog';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { ButtonProps } from '../button';
 import type { DialogSlots } from './dialog-variants';
 
@@ -137,6 +137,11 @@ export interface DialogProps<T extends DialogContentProps = DialogContentProps> 
   classNames?: DialogClassNames;
 
   /**
+   * Props for the dialog close button component.
+   */
+  closeProps?: DialogCloseProps;
+
+  /**
    * Custom component to render the dialog content.
    * Allows replacing the default content wrapper with a custom implementation.
    */
@@ -154,6 +159,11 @@ export interface DialogProps<T extends DialogContentProps = DialogContentProps> 
   description?: React.ReactNode;
 
   /**
+   * Props for the dialog description component.
+   */
+  descriptionProps?: DialogDescriptionProps;
+
+  /**
    * Footer content, typically containing action buttons.
    * Appears at the bottom of the dialog.
    * Set to `null` to hide the default footer.
@@ -161,21 +171,14 @@ export interface DialogProps<T extends DialogContentProps = DialogContentProps> 
   footer?: React.ReactNode | null | false;
 
   /**
-   * Title text displayed at the top of the dialog.
-   * Should clearly indicate the purpose of the dialog.
+   * Props for the dialog footer component.
    */
-  title?: React.ReactNode;
+  footerProps?: DialogFooterProps;
 
   /**
-   * Element that triggers the dialog to open.
-   * Typically a button, but can be any interactive element.
+   * Props for the dialog header component.
    */
-  trigger?: React.ReactNode;
-
-  /**
-   * Text of the OK button. Default is "OK".
-   */
-  okText?: React.ReactNode;
+  headerProps?: DialogHeaderProps;
 
   /**
    * Props for the OK button.
@@ -183,34 +186,31 @@ export interface DialogProps<T extends DialogContentProps = DialogContentProps> 
   okButtonProps?: ButtonProps;
 
   /**
+   * Text of the OK button. Default is "OK".
+   */
+  okText?: React.ReactNode;
+  /**
    * Callback when OK button is clicked.
    */
   onOk?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-
   /**
    * Props for the dialog overlay component.
    */
   overlayProps?: DialogOverlayProps;
   /**
-   * Props for the dialog header component.
+   * Title text displayed at the top of the dialog.
+   * Should clearly indicate the purpose of the dialog.
    */
-  headerProps?: DialogHeaderProps;
+  title?: React.ReactNode;
   /**
    * Props for the dialog title component.
    */
   titleProps?: DialogTitleProps;
   /**
-   * Props for the dialog description component.
+   * Element that triggers the dialog to open.
+   * Typically a button, but can be any interactive element.
    */
-  descriptionProps?: DialogDescriptionProps;
-  /**
-   * Props for the dialog close button component.
-   */
-  closeProps?: DialogCloseProps;
-  /**
-   * Props for the dialog footer component.
-   */
-  footerProps?: DialogFooterProps;
+  trigger?: React.ReactNode;
 }
 
 export { DialogPortalProps };

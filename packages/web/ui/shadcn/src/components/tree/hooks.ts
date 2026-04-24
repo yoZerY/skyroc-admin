@@ -31,13 +31,7 @@ export function useAutoAnimate(
 
   useEffect(() => {
     return () => {
-      let _a;
-      // eslint-disable-next-line no-cond-assign
-      (_a =
-        controller.current === null || controller.current === undefined ? undefined : controller.current.destroy) ===
-        null || _a === undefined
-        ? undefined
-        : _a.call(controller.current);
+      controller.current?.destroy?.();
     };
   }, []);
 

@@ -8,7 +8,7 @@ import RadioRoot from './RadioRoot';
 import type { RadioProps } from './types';
 
 const Radio = (props: RadioProps) => {
-  const { className, classNames, color, id, label, size, value, variant, rootProps, itemProps, indicatorProps, ...rest } = props;
+  const { className, classNames, color, id, indicatorProps, itemProps, label, rootProps, size, value, variant, ...rest } = props;
 
   const internalId = useId();
 

@@ -3,7 +3,7 @@ import type {
   HoverCardContentProps as _HoverCardContentProps,
   HoverCardProps as _HoverCardProps
 } from '@radix-ui/react-hover-card';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { HoverCardSlots } from './hover-card-variants';
 
 /**

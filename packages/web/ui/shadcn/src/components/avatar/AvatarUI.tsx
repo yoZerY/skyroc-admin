@@ -7,7 +7,7 @@ import AvatarRoot from './AvatarRoot';
 import type { AvatarProps } from './types';
 
 const Avatar = forwardRef<ComponentRef<typeof Image>, AvatarProps>((props, ref) => {
-  const { className, classNames, delayMs, fallback, size, rootProps, fallbackProps, ...rest } = props;
+  const { className, classNames, delayMs, fallback, fallbackProps, rootProps, size, ...rest } = props;
 
   return (
     <AvatarRoot

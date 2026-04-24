@@ -1,5 +1,5 @@
 import type { ContentProps, DialogProps } from 'vaul';
-import type { HTMLComponentProps, StyledComponentProps, ClassValue, ThemeSize } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps, StyledComponentProps, ThemeSize } from '@/types/shared';
 import type {
   DialogCloseProps,
   DialogDescriptionProps,
@@ -113,6 +113,10 @@ export type BottomSheetProps = DialogProps & {
    */
   classNames?: BottomSheetClassNames;
   /**
+   * Props for the bottom-sheet close button component.
+   */
+  closeProps?: BottomSheetCloseProps;
+  /**
    * Props to customize the content area of the bottom-sheet.
    */
   contentProps?: BottomSheetContentProps;
@@ -122,10 +126,22 @@ export type BottomSheetProps = DialogProps & {
    */
   description?: React.ReactNode;
   /**
+   * Props for the bottom-sheet description component.
+   */
+  descriptionProps?: BottomSheetDescriptionProps;
+  /**
    * Content to display in the bottom-sheet footer section.
    * Typically used for action buttons like Save/Cancel.
    */
   footer?: React.ReactNode;
+  /**
+   * Props for the bottom-sheet footer component.
+   */
+  footerProps?: BottomSheetFooterProps;
+  /**
+   * Props for the bottom-sheet header component.
+   */
+  headerProps?: BottomSheetHeaderProps;
   /**
    * Whether to show the close button in the bottom-sheet header.
    * Defaults to false.
@@ -141,28 +157,12 @@ export type BottomSheetProps = DialogProps & {
    */
   title?: React.ReactNode;
   /**
-   * Element that triggers the opening of the bottom-sheet.
-   * Usually a button or interactive element.
-   */
-  trigger?: React.ReactNode;
-  /**
-   * Props for the bottom-sheet header component.
-   */
-  headerProps?: BottomSheetHeaderProps;
-  /**
    * Props for the bottom-sheet title component.
    */
   titleProps?: BottomSheetTitleProps;
   /**
-   * Props for the bottom-sheet description component.
+   * Element that triggers the opening of the bottom-sheet.
+   * Usually a button or interactive element.
    */
-  descriptionProps?: BottomSheetDescriptionProps;
-  /**
-   * Props for the bottom-sheet close button component.
-   */
-  closeProps?: BottomSheetCloseProps;
-  /**
-   * Props for the bottom-sheet footer component.
-   */
-  footerProps?: BottomSheetFooterProps;
+  trigger?: React.ReactNode;
 };

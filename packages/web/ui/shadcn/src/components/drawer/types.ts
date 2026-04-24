@@ -1,5 +1,5 @@
 import type { DialogContentProps } from '@radix-ui/react-dialog';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { DialogSlots as DrawerSlots } from '../dialog/dialog-variants';
 import type { DialogProps } from '../dialog/types';
 import type { DrawerSide } from './drawer-variants';

@@ -6,15 +6,15 @@ import type { PaginationFirstProps } from './types';
 
 const PaginationFirst = (props: PaginationFirstProps) => {
   const {
-    className,
+    actionAsSelected,
     children,
+    className,
+    disabled,
     icon,
     label,
-    disabled,
+    shape,
     size,
     variant,
-    shape,
-    actionAsSelected,
     ...rest
   } = props;
 

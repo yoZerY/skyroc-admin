@@ -5,14 +5,14 @@ import { paginationVariants } from './pagination-variants';
 import type { PaginationNextProps } from './types';
 const PaginationNext = (props: PaginationNextProps) => {
   const {
-    className,
+    actionAsSelected,
     children,
+    className,
     icon,
     label,
+    shape,
     size,
     variant,
-    shape,
-    actionAsSelected,
     ...rest
   } = props;
 

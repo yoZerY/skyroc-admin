@@ -4,7 +4,7 @@ import type {
   RadioGroupItemProps as _RadioGroupItemProps,
   RadioGroupProps as _RadioGroupProps
 } from '@radix-ui/react-radio-group';
-import type { HTMLComponentProps, StyledComponentProps, ClassValue, ThemeColor, ThemeSize } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps, StyledComponentProps, ThemeColor, ThemeSize } from '@/types/shared';
 import type { RadioSlots, radioVariants } from './radio-variants';
 
 type RadioVariant = NonNullable<Parameters<typeof radioVariants>[0]>['variant'];
@@ -37,6 +37,14 @@ export interface RadioProps extends RadioGroupItemProps {
    */
   classNames?: Pick<RadioClassNames, 'control' | 'indicator' | 'label' | 'root'>;
   /**
+   * Props for the radio indicator component.
+   */
+  indicatorProps?: RadioIndicatorProps;
+  /**
+   * Props for the radio group item component.
+   */
+  itemProps?: RadioGroupItemProps;
+  /**
    * Label text or element displayed next to the radio button.
    */
   label?: ReactNode;
@@ -44,14 +52,6 @@ export interface RadioProps extends RadioGroupItemProps {
    * Props for the radio root component.
    */
   rootProps?: RadioRootProps;
-  /**
-   * Props for the radio group item component.
-   */
-  itemProps?: RadioGroupItemProps;
-  /**
-   * Props for the radio indicator component.
-   */
-  indicatorProps?: RadioIndicatorProps;
   /**
    * Variant style for the radio.
    * @default 'dot'
@@ -142,13 +142,13 @@ export interface RadioRootProps extends HTMLComponentProps<'div'> {}
  */
 export interface RadioCardGroupItem extends Omit<RadioProps, 'classNames' | 'color' | 'size' | 'variant'> {
   /**
-   * Icon to display on the card.
-   */
-  icon?: ReactNode;
-  /**
    * Description text displayed below the label.
    */
   description?: ReactNode;
+  /**
+   * Icon to display on the card.
+   */
+  icon?: ReactNode;
 }
 
 /**
@@ -168,9 +168,17 @@ export interface RadioCardGroupItem extends Omit<RadioProps, 'classNames' | 'col
  */
 export interface RadioCardProps extends RadioGroupItemProps {
   /**
+   * Whether the radio is checked (controlled).
+   */
+  checked?: boolean;
+  /**
    * Custom class names for different radio card UI slots.
    */
   classNames?: RadioClassNames;
+  /**
+   * Description text displayed below the label.
+   */
+  description?: ReactNode;
   /**
    * Icon name or ReactNode to display on the card.
    */
@@ -179,14 +187,6 @@ export interface RadioCardProps extends RadioGroupItemProps {
    * Label text or element displayed on the card.
    */
   label?: ReactNode;
-  /**
-   * Description text displayed below the label.
-   */
-  description?: ReactNode;
-  /**
-   * Whether the radio is checked (controlled).
-   */
-  checked?: boolean;
   /**
    * Position of the radio relative to the content.
    * @default 'right'
@@ -219,26 +219,26 @@ export interface RadioCardGroupProps extends Omit<StyledComponentProps<_RadioGro
    */
   color?: ThemeColor;
   /**
-   * Component size variant.
-   */
-  size?: ThemeSize;
-  /**
    * Array of card items to render, with icon and description support.
    */
   items: RadioCardGroupItem[];
+  /**
+   * Layout orientation of the radio card group.
+   * @default 'horizontal'
+   */
+  orientation?: RadioOrientation;
   /**
    * Position of the radio relative to the content.
    * @default 'right'
    */
   radioPosition?: RadioPosition;
   /**
+   * Component size variant.
+   */
+  size?: ThemeSize;
+  /**
    * Variant style for the radio.
    * @default 'dot'
    */
   variant?: RadioVariant;
-  /**
-   * Layout orientation of the radio card group.
-   * @default 'horizontal'
-   */
-  orientation?: RadioOrientation;
 }

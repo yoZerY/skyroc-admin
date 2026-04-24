@@ -4,7 +4,7 @@ import type {
   SliderThumbProps as _SliderThumbProps,
   SliderTrackProps as _SliderTrackProps
 } from '@radix-ui/react-slider';
-import type { StyledComponentProps, ClassValue, ThemeColor } from '@/types/shared';
+import type { ClassValue, StyledComponentProps, ThemeColor } from '@/types/shared';
 import type { SliderSlots } from './slider-variants';
 
 /**
@@ -91,10 +91,6 @@ export interface SliderProps extends Omit<SliderRootProps, 'children'> {
    */
   color?: ThemeColor;
   /**
-   * Props for the slider track component.
-   */
-  trackProps?: SliderTrackProps;
-  /**
    * Props for the slider range component.
    */
   rangeProps?: SliderRangeProps;
@@ -102,4 +98,8 @@ export interface SliderProps extends Omit<SliderRootProps, 'children'> {
    * Props for the slider thumb component.
    */
   thumbProps?: SliderThumbProps;
+  /**
+   * Props for the slider track component.
+   */
+  trackProps?: SliderTrackProps;
 }

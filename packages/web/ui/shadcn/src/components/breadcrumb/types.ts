@@ -1,4 +1,4 @@
-import type { HTMLComponentProps, ClassValue, SlotProps } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps, SlotProps } from '@/types/shared';
 import type { DropdownMenuProps } from '../dropdown-menu';
 import type { BreadcrumbSlots } from './breadcrumb-variants';
 
@@ -107,17 +107,42 @@ export type BreadcrumbProps<T extends BreadcrumbItem> = BreadcrumbRootProps & {
    */
   ellipsis?: true | [number, number] | null;
   /**
+   * Props for the dropdown menu that wraps the ellipsis.
+   * Use this to customize the dropdown menu behavior and appearance.
+   */
+  ellipsisDropdownProps?: Omit<DropdownMenuProps, 'children' | 'items'>;
+  /**
    * Custom icon or element to display for the ellipsis.
    */
   ellipsisIcon?: React.ReactNode;
+  /**
+   * Props for the breadcrumb ellipsis component.
+   */
+  ellipsisProps?: BreadcrumbEllipsisProps;
   /**
    * Callback function invoked when a breadcrumb item is clicked.
    */
   handleItemClick?: (item: T) => void;
   /**
+   * Props for the breadcrumb item component.
+   */
+  itemProps?: BreadcrumbItemProps;
+  /**
    * Array of breadcrumb items to render.
    */
   items: T[];
+  /**
+   * Props for the breadcrumb link component.
+   */
+  linkProps?: BreadcrumbLinkProps;
+  /**
+   * Props for the breadcrumb list component.
+   */
+  listProps?: BreadcrumbListProps;
+  /**
+   * Props for the breadcrumb page component.
+   */
+  pageProps?: BreadcrumbPageProps;
   /**
    * Custom render function for displaying the ellipsis element.
    */
@@ -131,32 +156,7 @@ export type BreadcrumbProps<T extends BreadcrumbItem> = BreadcrumbRootProps & {
    */
   separator?: React.ReactNode;
   /**
-   * Props for the breadcrumb list component.
-   */
-  listProps?: BreadcrumbListProps;
-  /**
-   * Props for the breadcrumb item component.
-   */
-  itemProps?: BreadcrumbItemProps;
-  /**
-   * Props for the breadcrumb ellipsis component.
-   */
-  ellipsisProps?: BreadcrumbEllipsisProps;
-  /**
-   * Props for the dropdown menu that wraps the ellipsis.
-   * Use this to customize the dropdown menu behavior and appearance.
-   */
-  ellipsisDropdownProps?: Omit<DropdownMenuProps, 'children' | 'items'>;
-  /**
    * Props for the breadcrumb separator component.
    */
   separatorProps?: BreadcrumbSeparatorProps;
-  /**
-   * Props for the breadcrumb link component.
-   */
-  linkProps?: BreadcrumbLinkProps;
-  /**
-   * Props for the breadcrumb page component.
-   */
-  pageProps?: BreadcrumbPageProps;
 };

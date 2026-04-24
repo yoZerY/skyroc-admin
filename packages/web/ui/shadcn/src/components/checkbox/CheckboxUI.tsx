@@ -10,15 +10,15 @@ import type { CheckboxProps } from './types';
 
 const CheckboxUI = forwardRef<HTMLDivElement, CheckboxProps>((props, ref) => {
   const {
+    checkedIcon = <Check className="size-full" />,
     children,
     className,
     classNames,
     forceMountIndicator,
-    size,
-    rootProps,
-    indicatorProps,
-    checkedIcon = <Check className="size-full" />,
     indeterminateIcon = <Minus className="size-full" />,
+    indicatorProps,
+    rootProps,
+    size,
     ...rest
   } = props;
 

@@ -4,7 +4,7 @@ import { numberInputVariants } from './number-input-variants';
 import type { NumberInputControlProps } from './types';
 
 const NumberInputControl = forwardRef<HTMLInputElement, NumberInputControlProps>((props, ref) => {
-  const { className, size, min, max, disabled, readOnly, center, ...rest } = props;
+  const { center, className, disabled, max, min, readOnly, size, ...rest } = props;
 
   const { control } = numberInputVariants({ size, center });
 

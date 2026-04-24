@@ -34,26 +34,26 @@ import type { InputProps } from '../input';
 export interface PasswordProps extends InputProps {
 
   /**
-   * Controlled visibility state of the password.
-   */
-  visible?: boolean;
-  /**
    * Default visibility state when uncontrolled.
    * @default false
    */
   defaultVisible?: boolean;
   /**
+   * Custom icon to show when password is hidden.
+   * @default <EyeOff />
+   */
+  hiddenIcon?: ReactNode;
+  /**
    * Callback when visibility state changes.
    */
   onVisibleChange?: (visible: boolean) => void;
+  /**
+   * Controlled visibility state of the password.
+   */
+  visible?: boolean;
   /**
    * Custom icon to show when password is visible.
    * @default <Eye />
    */
   visibleIcon?: ReactNode;
-  /**
-   * Custom icon to show when password is hidden.
-   * @default <EyeOff />
-   */
-  hiddenIcon?: ReactNode;
 }

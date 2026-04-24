@@ -2,39 +2,39 @@ import type { ReactNode } from 'react';
 import type { Action, ExternalToast, ToastT } from 'sonner';
 import { toast } from 'sonner';
 
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+export type NotificationType = 'error' | 'info' | 'success' | 'warning';
 
 /**
  * Notification configuration options
  * Toast notification with title, description, icon, and optional buttons
  */
 export interface NotificationConfig {
-  /** Notification title */
-  title?: ReactNode;
-  /** Notification description/content */
-  description?: ReactNode;
-  /** Auto close delay in milliseconds. Set to 0 to disable auto close. Default: 4500ms */
-  duration?: number;
-  /** Callback when notification closes */
-  onClose?: () => void;
-  /** Unique key for the notification */
-  key?: string | number;
-  /** Custom icon */
-  icon?: ReactNode;
-  /** Custom inline style */
-  style?: React.CSSProperties;
-  /** Custom class name */
-  className?: string;
   /** Primary action button config */
   action?: ActionConfig | ReactNode;
   /** Cancel button config */
   cancel?: ActionConfig | ReactNode;
-  /** Callback when notification is clicked */
-  onClick?: () => void;
+  /** Custom class name */
+  className?: string;
   /** Whether to show close button */
   closeButton?: boolean;
+  /** Notification description/content */
+  description?: ReactNode;
+  /** Auto close delay in milliseconds. Set to 0 to disable auto close. Default: 4500ms */
+  duration?: number;
+  /** Custom icon */
+  icon?: ReactNode;
+  /** Unique key for the notification */
+  key?: string | number;
+  /** Callback when notification is clicked */
+  onClick?: () => void;
+  /** Callback when notification closes */
+  onClose?: () => void;
   /** Display position. Default: top-right */
   position?: ToastT['position'];
+  /** Custom inline style */
+  style?: React.CSSProperties;
+  /** Notification title */
+  title?: ReactNode;
   /** Notification type */
   type?: NotificationType;
 }
@@ -55,12 +55,12 @@ export interface ActionConfig {
  * Global configuration options
  */
 export interface NotificationGlobalConfig {
+  /** Whether to show close button by default. Default: false */
+  closeButton?: boolean;
   /** Default auto close delay in milliseconds. Default: 4500ms */
   duration?: number;
   /** Max notification count. Oldest notification will be closed when exceeded */
   maxCount?: number;
-  /** Whether to show close button by default. Default: false */
-  closeButton?: boolean;
   /** Default position */
   position?: ToastT['position'];
 }
@@ -116,19 +116,19 @@ function showNotification(
   config: NotificationConfig
 ): string | number {
   const {
-    title,
-    description,
-    duration = globalConfig.duration,
-    onClose,
-    key,
-    icon,
-    style,
-    className,
     action,
     cancel,
-    onClick,
+    className,
     closeButton = globalConfig.closeButton,
+    description,
+    duration = globalConfig.duration,
+    icon,
+    key,
+    onClick,
+    onClose,
     position = globalConfig.position,
+    style,
+    title,
     ...rest
   } = config;
 
@@ -158,6 +158,7 @@ function showNotification(
       description: '!mt-1.5',
       icon: '!mt-1'
     },
+    onClick,
     onDismiss: () => {
       if (key) {
         activeNotifications.delete(key);

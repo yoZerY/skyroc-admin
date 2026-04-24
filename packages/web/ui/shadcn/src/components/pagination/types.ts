@@ -61,6 +61,10 @@ export interface PaginationItemProps extends StyledComponentProps<React.Componen
    */
   isActive?: boolean;
   /**
+   * Button shape
+   */
+  shape?: PaginationShape;
+  /**
    * Page number value
    */
   value: number;
@@ -68,10 +72,6 @@ export interface PaginationItemProps extends StyledComponentProps<React.Componen
    * Pagination variant style
    */
   variant?: PaginationVariant;
-  /**
-   * Button shape
-   */
-  shape?: PaginationShape;
 }
 
 /**
@@ -79,21 +79,21 @@ export interface PaginationItemProps extends StyledComponentProps<React.Componen
  */
 export interface PaginationNavigationButtonProps extends StyledComponentProps<React.ComponentPropsWithRef<'button'>> {
   /**
+   * Whether to apply selected state to navigation buttons
+   */
+  actionAsSelected?: boolean;
+  /**
    * Custom icon to display
    */
   icon?: ReactNode;
-  /**
-   * Pagination variant style (for actionAsSelected)
-   */
-  variant?: PaginationVariant;
   /**
    * Button shape
    */
   shape?: PaginationShape;
   /**
-   * Whether to apply selected state to navigation buttons
+   * Pagination variant style (for actionAsSelected)
    */
-  actionAsSelected?: boolean;
+  variant?: PaginationVariant;
 }
 
 /**
@@ -166,32 +166,110 @@ export interface PaginationEllipsisProps extends StyledComponentProps<React.Comp
  */
 export interface PaginationProps extends StyledComponentProps<Omit<React.ComponentPropsWithRef<'nav'>, 'onChange'>> {
   /**
+   * Whether to apply the selected state to navigation buttons
+   * @default false
+   */
+  actionAsSelected?: boolean;
+  /**
    * Class names for customizing different parts of the pagination
    */
   classNames?: PaginationClassNames;
   /**
-   * The controlled value of the current page
+   * Props for the content container
    */
-  page?: number;
+  contentProps?: Omit<PaginationContentProps, 'children'>;
   /**
    * The default page when uncontrolled
    * @default 1
    */
   defaultPage?: number;
   /**
-   * Total number of items
+   * When `true`, prevents the user from interacting with pagination
+   * @default false
    */
-  total: number;
+  disabled?: boolean;
+  /**
+   * Custom icon for the ellipsis
+   */
+  ellipsisIcon?: ReactNode;
+  /**
+   * Props for the ellipsis component
+   */
+  ellipsisProps?: Omit<PaginationEllipsisProps, 'children'>;
+  /**
+   * Custom icon for the first button
+   */
+  firstIcon?: ReactNode;
+  /**
+   * Custom label for the first button
+   * @default 'First'
+   */
+  firstLabel?: ReactNode | true;
+  /**
+   * Props for the first button
+   */
+  firstProps?: Omit<PaginationFirstProps, 'children'>;
+  /**
+   * Props for page item buttons
+   */
+  itemProps?: Omit<PaginationItemProps, 'isActive' | 'value'>;
   /**
    * Number of items per page
    * @default 10
    */
   itemsPerPage?: number;
   /**
-   * Number of siblings to show around the current page
-   * @default 1
+   * Custom icon for the last button
    */
-  siblingCount?: number;
+  lastIcon?: ReactNode;
+  /**
+   * Custom label for the last button
+   * @default 'Last'
+   */
+  lastLabel?: ReactNode | true;
+  /**
+   * Props for the last button
+   */
+  lastProps?: Omit<PaginationLastProps, 'children'>;
+  /**
+   * Custom icon for the next button
+   */
+  nextIcon?: ReactNode;
+  /**
+   * Custom label for the next button
+   * @default 'Next'
+   */
+  nextLabel?: ReactNode | true;
+  /**
+   * Props for the next button
+   */
+  nextProps?: Omit<PaginationNextProps, 'children'>;
+  /**
+   * Callback when the page changes
+   */
+  onPageChange?: (page: number) => void;
+  /**
+   * The controlled value of the current page
+   */
+  page?: number;
+  /**
+   * Custom icon for the previous button
+   */
+  previousIcon?: ReactNode;
+  /**
+   * Custom label for the previous button
+   * @default 'Previous'
+   */
+  previousLabel?: ReactNode | true;
+  /**
+   * Props for the previous button
+   */
+  previousProps?: Omit<PaginationPreviousProps, 'children'>;
+  /**
+   * Shape variant for pagination buttons
+   * @default 'square'
+   */
+  shape?: PaginationShape;
   /**
    * Whether to always show first page, last page, and ellipsis
    * @default false
@@ -203,100 +281,22 @@ export interface PaginationProps extends StyledComponentProps<Omit<React.Compone
    */
   showFirstLast?: boolean;
   /**
+   * Number of siblings to show around the current page
+   * @default 1
+   */
+  siblingCount?: number;
+  /**
    * Size variant for the pagination component
    * @default 'md'
    */
   size?: ThemeSize;
   /**
+   * Total number of items
+   */
+  total: number;
+  /**
    * Style variant for the pagination
    * @default 'pure'
    */
   variant?: PaginationVariant;
-  /**
-   * Shape variant for pagination buttons
-   * @default 'square'
-   */
-  shape?: PaginationShape;
-  /**
-   * Whether to apply the selected state to navigation buttons
-   * @default false
-   */
-  actionAsSelected?: boolean;
-  /**
-   * When `true`, prevents the user from interacting with pagination
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * Callback when the page changes
-   */
-  onPageChange?: (page: number) => void;
-  /**
-   * Custom icon for the first button
-   */
-  firstIcon?: ReactNode;
-  /**
-   * Custom label for the first button
-   * @default 'First'
-   */
-  firstLabel?: ReactNode | true;
-  /**
-   * Custom icon for the previous button
-   */
-  previousIcon?: ReactNode;
-  /**
-   * Custom label for the previous button
-   * @default 'Previous'
-   */
-  previousLabel?: ReactNode | true;
-  /**
-   * Custom icon for the next button
-   */
-  nextIcon?: ReactNode;
-  /**
-   * Custom label for the next button
-   * @default 'Next'
-   */
-  nextLabel?: ReactNode | true;
-  /**
-   * Custom label for the last button
-   * @default 'Last'
-   */
-  lastLabel?: ReactNode | true;
-  /**
-   * Custom icon for the last button
-   */
-  lastIcon?: ReactNode;
-  /**
-   * Custom icon for the ellipsis
-   */
-  ellipsisIcon?: ReactNode;
-  /**
-   * Props for the content container
-   */
-  contentProps?: Omit<PaginationContentProps, 'children'>;
-  /**
-   * Props for page item buttons
-   */
-  itemProps?: Omit<PaginationItemProps, 'value' | 'isActive'>;
-  /**
-   * Props for the ellipsis component
-   */
-  ellipsisProps?: Omit<PaginationEllipsisProps, 'children'>;
-  /**
-   * Props for the first button
-   */
-  firstProps?: Omit<PaginationFirstProps, 'children'>;
-  /**
-   * Props for the previous button
-   */
-  previousProps?: Omit<PaginationPreviousProps, 'children'>;
-  /**
-   * Props for the next button
-   */
-  nextProps?: Omit<PaginationNextProps, 'children'>;
-  /**
-   * Props for the last button
-   */
-  lastProps?: Omit<PaginationLastProps, 'children'>;
 }

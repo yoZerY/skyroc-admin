@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type {
+  ToggleGroupItemProps as _ToggleGroupItemProps,
   ToggleGroupMultipleProps,
-  ToggleGroupSingleProps,
-  ToggleGroupItemProps as _ToggleGroupItemProps
+  ToggleGroupSingleProps
 } from '@radix-ui/react-toggle-group';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { ToggleProps } from '../toggle';
 import type { ToggleSlots } from '../toggle/toggle-variants';
 

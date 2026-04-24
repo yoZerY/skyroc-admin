@@ -81,7 +81,7 @@ export type ListUi = Partial<Record<ListSlots, ClassValue>>;
  * </List>
  * ```
  */
-export interface ListProps extends ListRootProps, Pick<ListItemUIProps, 'contentProps' | 'titleProps' | 'descriptionProps'>, SlotProps {
+export interface ListProps extends ListRootProps, Pick<ListItemUIProps, 'contentProps' | 'descriptionProps' | 'titleProps'>, SlotProps {
   /**
    * Class names for customizing different parts of the list.
    */
@@ -97,47 +97,47 @@ export interface ListProps extends ListRootProps, Pick<ListItemUIProps, 'content
  * Props for the ListItemUI component.
  * A composite list item with leading, content, and trailing areas.
  */
-export interface ListItemUIProps extends Omit<ListItemProps, 'title' | 'content' | 'children'> {
+export interface ListItemUIProps extends Omit<ListItemProps, 'children' | 'content' | 'title'> {
   /**
    * Class names for customizing different parts of the list item.
    */
   classNames?: ListUi;
-  /**
-   * Content displayed at the start of the list item (e.g., avatar, thumbnail).
-   */
-  leading?: ReactNode;
-  /**
-   * Content displayed at the end of the list item (e.g., action buttons, badge).
-   */
-  trailing?: ReactNode;
-  /**
-   * Title text for the list item.
-   */
-  title?: ReactNode;
-  /**
-   * Description text for the list item.
-   */
-  description?: ReactNode;
   /**
    * Main content area for the list item.
    * Displayed after title and description.
    */
   content?: ReactNode;
   /**
+   * Props for the list content component.
+   */
+  contentProps?: ListContentProps;
+  /**
+   * Description text for the list item.
+   */
+  description?: ReactNode;
+  /**
+   * Props for the list description component.
+   */
+  descriptionProps?: ListDescriptionProps;
+  /**
    * Custom divider element to display between list items.
    * If not provided, a default divider will be used when divider is true.
    */
   divider?: ReactNode | boolean;
   /**
-   * Props for the list content component.
+   * Content displayed at the start of the list item (e.g., avatar, thumbnail).
    */
-  contentProps?: ListContentProps;
+  leading?: ReactNode;
+  /**
+   * Title text for the list item.
+   */
+  title?: ReactNode;
   /**
    * Props for the list title component.
    */
   titleProps?: ListTitleProps;
   /**
-   * Props for the list description component.
+   * Content displayed at the end of the list item (e.g., action buttons, badge).
    */
-  descriptionProps?: ListDescriptionProps;
+  trailing?: ReactNode;
 }

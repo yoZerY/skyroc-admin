@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { HTMLComponentProps } from '@/types/shared';
-import type { KbdVariant, KbdSize } from './kbd-variants';
+import type { KbdSize, KbdVariant } from './kbd-variants';
 
 /**
  * Predefined keyboard keys that have built-in styling and special handling.
@@ -52,27 +52,27 @@ export type KbdValue = KbdKey | (string & {});
  */
 export interface KeyboardKeyProps extends Omit<HTMLComponentProps<'kbd'>, 'children'> {
   /**
-   * The keyboard key(s) to display.
-   * Can be a single key or an array of keys.
+   * Custom content to display. If not provided, will display the formatted value.
    */
-  value?: KbdValue | KbdValue[];
+  children?: ReactNode;
+  /**
+   * Size of the keyboard key(s).
+   */
+  size?: KbdSize;
   /**
    * Whether to convert the command value to symbol representation.
    * @defaultValue true
    */
   symbolize?: boolean;
   /**
+   * The keyboard key(s) to display.
+   * Can be a single key or an array of keys.
+   */
+  value?: KbdValue | KbdValue[];
+  /**
    * Visual variant style for the keyboard key(s).
    */
   variant?: KbdVariant;
-  /**
-   * Size of the keyboard key(s).
-   */
-  size?: KbdSize;
-  /**
-   * Custom content to display. If not provided, will display the formatted value.
-   */
-  children?: ReactNode;
 }
 
 /**
@@ -92,14 +92,14 @@ export interface KeyboardKeyProps extends Omit<HTMLComponentProps<'kbd'>, 'child
  */
 export interface KeyboardKeyGroupProps extends Omit<KeyboardKeyProps, 'value'> {
   /**
-   * Array of keyboard key values to display in the group.
-   */
-  values: KbdValue[];
-  /**
    * Content to display between keyboard keys (separator).
    * Defaults to a visual separator if not provided.
    */
   separator?: ReactNode;
+  /**
+   * Array of keyboard key values to display in the group.
+   */
+  values: KbdValue[];
 }
 
-export type { KbdVariant, KbdSize };
+export type { KbdSize, KbdVariant };

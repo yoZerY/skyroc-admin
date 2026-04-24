@@ -5,7 +5,7 @@ import { ListItemUI } from './ListItemUI';
 
 export const ListUI = React.forwardRef<HTMLUListElement, ListProps>(
   (props, ref) => {
-    const { children, className, classNames, leading, trailing, items, size, contentProps, titleProps, descriptionProps, ...rest } = props;
+    const { children: _children, className, classNames, contentProps, descriptionProps, items, leading, size, titleProps, trailing, ...rest } = props;
 
     const length = items.length;
 

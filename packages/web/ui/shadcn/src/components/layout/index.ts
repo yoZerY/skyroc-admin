@@ -1,4 +1,4 @@
-export { default as Layout } from './LayoutUI';
+export * from './layout-variants';
 
 export { default as LayoutFooter } from './LayoutFooter';
 export { default as LayoutHeader } from './LayoutHeader';
@@ -10,5 +10,5 @@ export { default as LayoutSidebar } from './LayoutSidebar';
 export { default as LayoutTab } from './LayoutTab';
 export { default as LayoutTrigger } from './LayoutTrigger';
 
+export { default as Layout } from './LayoutUI';
 export * from './types';
-export * from './layout-variants';

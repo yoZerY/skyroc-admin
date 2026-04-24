@@ -12,21 +12,21 @@ const TabsUI = forwardRef<ComponentRef<typeof Root>, TabsProps<TabsOptionData>>(
   const {
     className,
     classNames,
+    contentProps,
     dir,
     enableIndicator = true,
     forceMountContent,
     items,
-    shape = 'square',
+    listProps,
     loop,
     orientation = 'horizontal',
     renderContent,
     renderTrigger,
+    shape = 'square',
     size,
+    triggerProps,
     type,
     value,
-    listProps,
-    triggerProps,
-    contentProps,
     ...rest
   } = props;
 

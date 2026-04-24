@@ -1,11 +1,11 @@
 import type {
-  PopoverPortalProps,
   PopoverAnchorProps as _PopoverAnchorProps,
   PopoverArrowProps as _PopoverArrowProps,
   PopoverContentProps as _PopoverContentProps,
+  PopoverPortalProps,
   PopoverProps as _PopoverProps
 } from '@radix-ui/react-popover';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { PopoverSlots } from './popover-varianst';
 
 /**
@@ -70,14 +70,20 @@ export type PopoverContentProps = StyledComponentProps<_PopoverContentProps>;
 export type PopoverProps = _PopoverProps
   & Pick<PopoverPortalProps, 'container' | 'forceMount'>
   & Omit<PopoverContentProps, 'forceMount'> & {
+    /** Props for the popover anchor component */
+    anchorProps?: PopoverAnchorProps;
     /** Height of the arrow element in pixels */
     arrowHeight?: number;
+    /** Props for the popover arrow component */
+    arrowProps?: PopoverArrowProps;
     /** Width of the arrow element in pixels */
     arrowWidth?: number;
     /** Class names for customizing different parts of the popover */
     classNames?: PopoverClassNames;
     /** Icon or element to display as the close button */
     closeIcon?: React.ReactNode;
+    /** Props for the popover content component */
+    contentProps?: PopoverContentProps;
     /** Whether to disable the portal container */
     disabledPortal?: boolean;
     /** Force mount the popover portal */
@@ -86,12 +92,6 @@ export type PopoverProps = _PopoverProps
     showArrow?: boolean;
     /** Content to display in the popover trigger button */
     trigger?: React.ReactNode;
-    /** Props for the popover anchor component */
-    anchorProps?: PopoverAnchorProps;
-    /** Props for the popover content component */
-    contentProps?: PopoverContentProps;
-    /** Props for the popover arrow component */
-    arrowProps?: PopoverArrowProps;
   };
 
 /**

@@ -3,7 +3,7 @@ import { paginationVariants } from './pagination-variants';
 import type { PaginationContentProps } from './types';
 
 const PaginationContent = (props: PaginationContentProps) => {
-  const { className, children, size, ...rest } = props;
+  const { children, className, size, ...rest } = props;
 
   const { list } = paginationVariants({ size });
 

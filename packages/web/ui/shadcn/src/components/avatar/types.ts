@@ -3,7 +3,7 @@ import type {
   AvatarImageProps as _AvatarImageProps,
   AvatarProps as _AvatarRootProps
 } from '@radix-ui/react-avatar';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { AvatarSlots } from './avatar-variants';
 
 /**
@@ -55,11 +55,11 @@ export interface AvatarProps extends AvatarImageProps, Pick<AvatarFallbackProps,
    */
   fallback?: React.ReactNode;
   /**
-   * Props for the avatar root component.
-   */
-  rootProps?: AvatarRootProps;
-  /**
    * Props for the avatar fallback component.
    */
   fallbackProps?: AvatarFallbackProps;
+  /**
+   * Props for the avatar root component.
+   */
+  rootProps?: AvatarRootProps;
 }

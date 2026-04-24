@@ -15,15 +15,15 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
     classNames,
     color,
     description,
+    descriptionProps,
     icon,
     leading,
     size,
     title,
-    descriptionProps,
     titleProps,
-    wrapperProps,
     trailing,
     variant,
+    wrapperProps,
     ...rest
   } = props;
 

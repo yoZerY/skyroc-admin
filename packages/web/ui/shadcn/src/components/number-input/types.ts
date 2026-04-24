@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef } from 'react';
-import type { SlotProps, ClassValue, StyledComponentProps } from '@/types/shared';
+import type { ClassValue, SlotProps, StyledComponentProps } from '@/types/shared';
 import type { NumberInputSlots } from './number-input-variants';
 
 /**
@@ -12,11 +12,22 @@ export type NumberInputClassNames = Partial<Record<NumberInputSlots, ClassValue>
  * Props for the NumberInput control component.
  * The actual input element for numeric value entry.
  */
-export interface NumberInputControlProps extends StyledComponentProps<Omit<ComponentPropsWithoutRef<'input'>, 'min' | 'max' | 'value' | 'defaultValue'>> {
+export interface NumberInputControlProps extends StyledComponentProps<Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'max' | 'min' | 'value'>> {
+  /**
+   * Whether to center the input value with buttons on both sides.
+   * @default false
+   */
+  center?: boolean;
+  /**
+   * Default value for uncontrolled mode.
+   */
+  defaultValue?: number | string;
+
   /**
    * Maximum allowed value.
    */
   max?: number;
+
   /**
    * Minimum allowed value.
    */
@@ -26,17 +37,6 @@ export interface NumberInputControlProps extends StyledComponentProps<Omit<Compo
    * Current numeric value.
    */
   value?: number | string;
-
-  /**
-   * Default value for uncontrolled mode.
-   */
-  defaultValue?: number | string;
-
-  /**
-   * Whether to center the input value with buttons on both sides.
-   * @default false
-   */
-  center?: boolean;
 }
 
 /**
@@ -65,26 +65,21 @@ export interface NumberInputControlProps extends StyledComponentProps<Omit<Compo
  * ```
  */
 export interface NumberInputProps extends NumberInputControlProps, SlotProps {
-  classNames?: NumberInputClassNames;
   /**
    * Whether to center the input value with buttons on both sides.
    * @default false
    */
   center?: boolean;
+  classNames?: NumberInputClassNames;
   /**
    * Whether to show the clearable button.
    * @default false
    */
   clearable?: boolean;
   /**
-   * Callback fired when the input value changes.
+   * Props for the input control.
    */
-  onValueChange?: (value: number | string | undefined) => void;
-  /**
-   * Step value for increment/decrement operations.
-   * @default 1
-   */
-  step?: number;
+  controlProps?: Omit<NumberInputControlProps, 'onChange' | 'value'>;
   /**
    * Custom decrement icon.
    */
@@ -94,7 +89,12 @@ export interface NumberInputProps extends NumberInputControlProps, SlotProps {
    */
   incrementIcon?: React.ReactNode;
   /**
-   * Props for the input control.
+   * Callback fired when the input value changes.
    */
-  controlProps?: Omit<NumberInputControlProps, 'value' | 'onChange'>;
+  onValueChange?: (value: number | string | undefined) => void;
+  /**
+   * Step value for increment/decrement operations.
+   * @default 1
+   */
+  step?: number;
 }

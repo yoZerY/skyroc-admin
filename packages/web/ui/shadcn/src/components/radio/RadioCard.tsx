@@ -12,7 +12,6 @@ import type { RadioCardProps } from './types';
 const RadioCard = forwardRef<HTMLButtonElement, RadioCardProps>((props, ref) => {
   const {
     checked,
-    radioPosition = 'right',
     className,
     classNames,
     color,
@@ -21,6 +20,7 @@ const RadioCard = forwardRef<HTMLButtonElement, RadioCardProps>((props, ref) => 
     icon,
     id: controlId,
     label,
+    radioPosition = 'right',
     size,
     value,
     variant,
@@ -32,8 +32,8 @@ const RadioCard = forwardRef<HTMLButtonElement, RadioCardProps>((props, ref) => 
   const {
     card,
     cardContent,
-    cardLabel,
     cardDescription,
+    cardLabel,
     cardTextContent,
     control,
     indicator

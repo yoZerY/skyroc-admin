@@ -5,7 +5,7 @@ import { paginationVariants } from './pagination-variants';
 import type { PaginationRootProps } from './types';
 
 const PaginationRoot = forwardRef<ComponentRef<'nav'>, PaginationRootProps>((props, ref) => {
-  const { className, children, size, ...rest } = props;
+  const { children, className, size, ...rest } = props;
 
   const { root } = paginationVariants({ size });
 

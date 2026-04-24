@@ -83,31 +83,43 @@ export type AlertDialogProps = StyledComponentProps<_AlertDialogProps>
   & AlertDialogContentProps
   & _AlertDialogPortalProps & {
     /**
-     * Text of the cancel button. Default is "Cancel".
-     */
-    cancelText?: React.ReactNode;
-    /**
      * Props for the cancel button.
      */
     cancelButtonProps?: ButtonProps;
+    /**
+     * Text of the cancel button. Default is "Cancel".
+     */
+    cancelText?: React.ReactNode;
     /**
      * Class names for customizing different parts of the alert dialog.
      */
     classNames?: AlertDialogClassNames;
     /**
-     * Whether to disable portal rendering for the alert dialog.
+     * Props for the alert dialog content component.
      */
-    disabledPortal?: boolean;
+    contentProps?: AlertDialogContentProps;
     /**
      * Description text displayed in the alert dialog.
      */
     description: string;
+    /**
+     * Props for the alert dialog description component.
+     */
+    descriptionProps?: AlertDialogDescriptionProps;
+    /**
+     * Whether to disable portal rendering for the alert dialog.
+     */
+    disabledPortal?: boolean;
     /**
      * Content to display in the footer section (typically action buttons).
      * Set to `null` to hide the default footer buttons.
      * Set to a React node to render custom footer content.
      */
     footer?: React.ReactNode | null | false;
+    /**
+     * Props for the alert dialog footer component.
+     */
+    footerProps?: AlertDialogFooterProps;
     /**
      * Force mount the overlay element even when not visible.
      */
@@ -117,17 +129,21 @@ export type AlertDialogProps = StyledComponentProps<_AlertDialogProps>
      */
     forceMountPortal?: true;
     /**
+     * Props for the alert dialog header component.
+     */
+    headerProps?: AlertDialogHeaderProps;
+    /**
      * Icon or visual element displayed at the top of the alert dialog.
      */
     icon?: React.ReactNode;
     /**
-     * Text of the OK button. Default is "OK".
-     */
-    okText?: React.ReactNode;
-    /**
      * Props for the OK button.
      */
     okButtonProps?: ButtonProps;
+    /**
+     * Text of the OK button. Default is "OK".
+     */
+    okText?: React.ReactNode;
     /**
      * Callback when cancel button is clicked.
      */
@@ -137,6 +153,10 @@ export type AlertDialogProps = StyledComponentProps<_AlertDialogProps>
      */
     onOk?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     /**
+     * Props for the alert dialog overlay component.
+     */
+    overlayProps?: AlertDialogOverlayProps;
+    /**
      * Whether to show the cancel button. Default is true.
      */
     showCancel?: boolean;
@@ -145,6 +165,10 @@ export type AlertDialogProps = StyledComponentProps<_AlertDialogProps>
      */
     title?: React.ReactNode;
     /**
+     * Props for the alert dialog title component.
+     */
+    titleProps?: AlertDialogTitleProps;
+    /**
      * Element that triggers the alert dialog to open when clicked.
      */
     trigger?: React.ReactNode;
@@ -152,28 +176,4 @@ export type AlertDialogProps = StyledComponentProps<_AlertDialogProps>
      * The alert type which determines styling (destructive, info, success, or warning).
      */
     type?: AlertType;
-    /**
-     * Props for the alert dialog overlay component.
-     */
-    overlayProps?: AlertDialogOverlayProps;
-    /**
-     * Props for the alert dialog content component.
-     */
-    contentProps?: AlertDialogContentProps;
-    /**
-     * Props for the alert dialog header component.
-     */
-    headerProps?: AlertDialogHeaderProps;
-    /**
-     * Props for the alert dialog title component.
-     */
-    titleProps?: AlertDialogTitleProps;
-    /**
-     * Props for the alert dialog description component.
-     */
-    descriptionProps?: AlertDialogDescriptionProps;
-    /**
-     * Props for the alert dialog footer component.
-     */
-    footerProps?: AlertDialogFooterProps;
   };

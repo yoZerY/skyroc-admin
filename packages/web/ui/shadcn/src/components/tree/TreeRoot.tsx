@@ -5,32 +5,32 @@ import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { useComposedRefs } from '@radix-ui/react-compose-refs';
 import { cn } from '@skyroc/utils';
 import { TreeRootProvider } from './context';
-import { flattenChildren, flattenItems, findParentPath } from './shared';
+import { findParentPath, flattenChildren, flattenItems } from './shared';
 import type { FlattenedItem, TreeItemData, TreeRootProps } from './types';
 import { useAutoAnimate } from './hooks';
 
 const TreeRoot = <T extends TreeItemData = TreeItemData>(props: TreeRootProps<T>) => {
   const {
-    items,
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
-    expanded: controlledExpanded,
-    defaultExpanded = [],
-    onExpandedChange,
-    multiple,
-    selectionBehavior = 'toggle',
-    toggleBehavior = 'multiple',
-    disabled,
-    propagateSelect,
-    ref,
-    top,
+    allowParentSelect,
     bottom,
     bubbleSelect,
-    allowParentSelect,
-    size,
-    className,
     children,
+    className,
+    defaultExpanded = [],
+    defaultValue,
+    disabled,
+    expanded: controlledExpanded,
+    items,
+    multiple,
+    onExpandedChange,
+    onValueChange,
+    propagateSelect,
+    ref,
+    selectionBehavior = 'toggle',
+    size,
+    toggleBehavior = 'multiple',
+    top,
+    value: controlledValue,
     ...rest
   } = props;
 
@@ -63,6 +63,7 @@ const TreeRoot = <T extends TreeItemData = TreeItemData>(props: TreeRootProps<T>
 
   const expandedItems = flattenItems(items, expanded);
 
+  // eslint-disable-next-line complexity
   const onSelect = useCallback((value: string) => {
     if (disabled) {
       return;
@@ -118,13 +119,13 @@ const TreeRoot = <T extends TreeItemData = TreeItemData>(props: TreeRootProps<T>
     }
 
     if (propagateSelect && multiple && Array.isArray(newValue) && item) {
-      const children = flattenChildren(item.data.children);
+      const childItems = flattenChildren(item.data.children);
       const isSelected = newValue.includes(value);
       if (isSelected) {
-        newValue = newValue.filter(v => !children.some(child => child.value === v));
+        newValue = newValue.filter(v => !childItems.some(child => child.value === v));
       }
       else {
-        newValue = [...newValue, ...children.map(child => child.value)];
+        newValue = [...newValue, ...childItems.map(child => child.value)];
       }
     }
 

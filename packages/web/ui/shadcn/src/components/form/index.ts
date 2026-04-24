@@ -26,8 +26,8 @@ export type {
   ValidateMessages
 } from '@skyroc/form';
 
-export { default as FormField } from './FormFieldUI';
-
 export { default as FormComputedField } from './FormComputedField';
+
+export { default as FormField } from './FormFieldUI';
 
 export type { FormComputedFieldProps, FormFieldProps } from './types';

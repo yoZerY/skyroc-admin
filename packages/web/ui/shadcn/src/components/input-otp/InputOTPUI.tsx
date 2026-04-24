@@ -7,7 +7,7 @@ import InputOtpRoot from './InputOtpRoot';
 import type { InputOTPProps } from './types';
 
 const InputOTPUI = forwardRef<ComponentRef<typeof InputOtpRoot>, InputOTPProps>((props, ref) => {
-  const { className, classNames, inputCount = 6, mask, separator, size, groupProps, slotProps, separatorProps, ...rest } = props;
+  const { className, classNames, groupProps, inputCount = 6, mask, separator, separatorProps, size, slotProps, ...rest } = props;
 
   const isSeparator = Boolean(separator);
 

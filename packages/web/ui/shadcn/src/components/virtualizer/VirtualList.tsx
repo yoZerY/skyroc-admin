@@ -6,7 +6,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@skyroc/utils';
 import { virtualizerVariants } from './virtualizer-variants';
-import type { VirtualizerList, VirtualListProps } from './types';
+import type { VirtualListProps, VirtualizerList } from './types';
 
 /**
  * A styled virtual list component for efficiently rendering large lists.
@@ -45,9 +45,9 @@ import type { VirtualizerList, VirtualListProps } from './types';
  * ```
  */
 const VirtualList = <T, TScrollElement extends HTMLDivElement = HTMLDivElement, TItemElement extends Element = HTMLDivElement>(props: VirtualListProps<T, TScrollElement, TItemElement>) => {
-  const { classNames, style, data, onChange, onScroll, className, horizontal, itemSize, renderItem, width, height, keyExtractor, containerProps, ref, dynamic, ...rest } = props;
+  const { className, classNames, containerProps, data, dynamic, height, horizontal, itemSize, keyExtractor, onChange, onScroll, ref, renderItem, style, width, ...rest } = props;
 
-  const { root, inner } = virtualizerVariants();
+  const { inner, root } = virtualizerVariants();
 
   const mergedCls = cn(root(), className || classNames?.root);
 
@@ -126,6 +126,7 @@ const VirtualList = <T, TScrollElement extends HTMLDivElement = HTMLDivElement, 
           {items.map((virtualItem) => {
             const item = data[virtualItem.index];
 
+            // eslint-disable-next-line no-nested-ternary
             const key = keyExtractor ? typeof keyExtractor === 'function' ? keyExtractor(item, virtualItem.index) : item[keyExtractor] : virtualItem.index;
             return (
               <div
@@ -177,6 +178,7 @@ const VirtualList = <T, TScrollElement extends HTMLDivElement = HTMLDivElement, 
           transform: `translateY(${virtualItem.start}px)`
         };
 
+      // eslint-disable-next-line no-nested-ternary
       const key = keyExtractor ? typeof keyExtractor === 'function' ? keyExtractor(item, virtualItem.index) : item[keyExtractor] : virtualItem.index;
 
       return (

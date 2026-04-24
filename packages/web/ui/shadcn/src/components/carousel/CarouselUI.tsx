@@ -8,7 +8,7 @@ import CarouselRoot from './CarouselRoot';
 import type { CarouselProps } from './types';
 
 const CarouselUI = forwardRef<HTMLDivElement, CarouselProps>((props, ref) => {
-  const { children, className, classNames, counts, contentProps, itemProps, nextProps, previousProps, size, ...rest } = props;
+  const { children, className, classNames, contentProps, counts, itemProps, nextProps, previousProps, size, ...rest } = props;
 
   return (
     <CarouselRoot

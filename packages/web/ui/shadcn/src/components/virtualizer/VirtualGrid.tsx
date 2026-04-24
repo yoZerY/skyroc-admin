@@ -17,26 +17,26 @@ const VirtualGrid = <
   props: VirtualGridProps<T, TScrollElement, TItemElement>
 ) => {
   const {
-    data,
-    columns,
-    rowHeight,
-    columnWidth,
-    width,
-    height,
-    ref,
     className,
     classNames,
-    style,
+    columnProps,
+    columns,
+    columnWidth,
     containerProps,
+    data,
+    height,
     keyExtractor,
     onChange,
     onScroll,
+    ref,
     renderCell,
-    columnProps,
+    rowHeight,
+    style,
+    width,
     ...rest
   } = props;
 
-  const { root, inner } = virtualizerVariants();
+  const { inner, root } = virtualizerVariants();
 
   const mergedRootCls = cn(root(), className ?? classNames?.root);
   const innerCls = cn(inner(), classNames?.inner);
@@ -127,6 +127,7 @@ const VirtualGrid = <
                 transform: `translateX(${virtualColumn.start}px) translateY(${virtualRow.start}px)`
               };
 
+              // eslint-disable-next-line no-nested-ternary
               const key = keyExtractor
                 ? typeof keyExtractor === 'function'
                   ? keyExtractor(item, rowIndex * colIndex)

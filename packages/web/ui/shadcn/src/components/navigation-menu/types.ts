@@ -9,7 +9,7 @@ import type {
   NavigationMenuTriggerProps as _NavigationMenuTriggerProps,
   NavigationMenuViewportProps as _NavigationMenuViewportProps
 } from '@radix-ui/react-navigation-menu';
-import type { HTMLComponentProps, StyledComponentProps, ClassValue, SlotProps } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps, SlotProps, StyledComponentProps } from '@/types/shared';
 import type { NavigationMenuSlots } from './navigation-menu';
 
 /**
@@ -51,12 +51,12 @@ export interface NavigationMenuItemProps extends StyledComponentProps<_Navigatio
  * </NavigationMenuLink>
  */
 export interface NavigationMenuLinkProps extends StyledComponentProps<Omit<_NavigationMenuLinkProps, 'asChild'>>, SlotProps {
+  /** Class names for customizing link slots */
+  classNames?: Pick<NavigationMenuClassNames, 'itemIcon' | 'link' | 'linkIcon'>;
   /** Custom component for rendering the link */
   component?: ElementType;
   /** Whether the link is disabled */
   disabled?: boolean;
-  /** Class names for customizing link slots */
-  classNames?: Pick<NavigationMenuClassNames, 'itemIcon' | 'link' | 'linkIcon'>;
 }
 
 /**
@@ -98,10 +98,6 @@ export interface NavigationMenuTriggerProps
  */
 export interface NavigationMenuChildLinkProps extends StyledComponentProps<Omit<_NavigationMenuLinkProps, 'asChild'>>,
   SlotProps {
-  /** Description text for the link */
-  description?: ReactNode;
-  /** Whether the link is disabled */
-  disabled?: boolean;
   /** Class names for customizing child link slots */
   classNames?: NavigationMenuChildLinkClassNames;
   /**
@@ -113,6 +109,10 @@ export interface NavigationMenuChildLinkProps extends StyledComponentProps<Omit<
    *  </NavigationMenuChildLink>
    */
   component?: ElementType;
+  /** Description text for the link */
+  description?: ReactNode;
+  /** Whether the link is disabled */
+  disabled?: boolean;
 }
 
 /**
@@ -176,16 +176,16 @@ export interface NavigationMenuItemChildOption extends Omit<NavigationMenuChildL
  * Provides common properties shared by items with different display modes.
  */
 export interface NavigationMenuItemBaseOption extends Omit<NavigationMenuTriggerProps, 'children'> {
-  /** Unique identifier for the menu item */
-  value?: string;
+  /** Nested menu items to display when parent is expanded */
+  children?: NavigationMenuItemChildOption[];
   /** Description text for the menu item */
   description?: ReactNode;
   /** Label text for the menu item */
   label: ReactNode;
   /** Item type identifier */
   type?: 'item';
-  /** Nested menu items to display when parent is expanded */
-  children?: NavigationMenuItemChildOption[];
+  /** Unique identifier for the menu item */
+  value?: string;
 }
 
 /**
@@ -223,26 +223,26 @@ export type NavigationMenuItemOption = NavigationMenuItemBaseOption | Navigation
  * />
  */
 export interface NavigationMenuProps extends Omit<NavigationMenuRootProps, 'children'> {
-  /** Class names for customizing different parts of the navigation menu */
-  classNames?: NavigationMenuClassNames;
-  /** Array of navigation menu items to render */
-  items: NavigationMenuItemOption[];
-  /** Whether to display an arrow indicator for active items */
-  showArrow?: boolean;
-  /** Props for the navigation menu list */
-  listProps?: NavigationMenuListProps;
-  /** Props for the navigation menu item */
-  itemProps?: NavigationMenuItemProps;
-  /** Props for the navigation menu link */
-  linkProps?: NavigationMenuLinkProps;
-  /** Props for the navigation menu child list */
-  triggerProps?: NavigationMenuTriggerProps;
-  /** Props for the navigation menu content */
-  contentProps?: NavigationMenuContentProps;
-  /** Props for the navigation menu child list */
-  childListProps?: NavigationMenuChildListProps;
-  /** Props for the navigation menu child list item */
-  childListItemProps?: NavigationMenuChildListItemProps;
   /** Props for the navigation menu child link */
   childLinkProps?: NavigationMenuChildLinkProps;
+  /** Props for the navigation menu child list item */
+  childListItemProps?: NavigationMenuChildListItemProps;
+  /** Props for the navigation menu child list */
+  childListProps?: NavigationMenuChildListProps;
+  /** Class names for customizing different parts of the navigation menu */
+  classNames?: NavigationMenuClassNames;
+  /** Props for the navigation menu content */
+  contentProps?: NavigationMenuContentProps;
+  /** Props for the navigation menu item */
+  itemProps?: NavigationMenuItemProps;
+  /** Array of navigation menu items to render */
+  items: NavigationMenuItemOption[];
+  /** Props for the navigation menu link */
+  linkProps?: NavigationMenuLinkProps;
+  /** Props for the navigation menu list */
+  listProps?: NavigationMenuListProps;
+  /** Whether to display an arrow indicator for active items */
+  showArrow?: boolean;
+  /** Props for the navigation menu child list */
+  triggerProps?: NavigationMenuTriggerProps;
 }

@@ -3,39 +3,27 @@
 
 import type { CSSProperties, ReactNode, Ref } from 'react';
 import { useCallback, useImperativeHandle, useMemo, useRef } from 'react';
-import { useVirtualizer, type Virtualizer } from '@tanstack/react-virtual';
+import { type Virtualizer, useVirtualizer } from '@tanstack/react-virtual';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { cn } from '@skyroc/utils';
 import { Icon } from '../icon';
 import { TreeRootProvider } from './context';
-import { flattenChildren, flattenItems, findParentPath } from './shared';
+import { findParentPath, flattenChildren, flattenItems } from './shared';
 import { treeVariants } from './tree-variants';
 import TreeItem from './TreeItem';
 import type {
   FlattenedItem,
+  TreeClassNames,
   TreeItemData,
   TreeItemProps,
   TreeItemRenderProps,
   TreeRootProps,
-  TreeRootRenderProps,
-  TreeClassNames
+  TreeRootRenderProps
 } from './types';
 
 export interface TreeVirtualizerProps<T extends TreeItemData = TreeItemData>
-  extends Omit<TreeRootProps<T>, 'children' | 'onSelect' | 'onToggle' | 'onScroll'>,
-  Pick<TreeItemProps, 'onSelect' | 'onToggle' | 'indentSize' | 'disabledToggle' | 'disabledSelect'> {
-  /**
-   * Height of the virtual container
-   */
-  height: number | string;
-  /**
-   * Width of the virtual container
-   */
-  width?: number | string;
-  /**
-   * Estimated item height for virtualization
-   */
-  itemSize?: number | ((index: number) => number);
+  extends Omit<TreeRootProps<T>, 'children' | 'onScroll' | 'onSelect' | 'onToggle'>,
+  Pick<TreeItemProps, 'disabledSelect' | 'disabledToggle' | 'indentSize' | 'onSelect' | 'onToggle'> {
   /**
    * Custom class names for component slots
    */
@@ -43,6 +31,26 @@ export interface TreeVirtualizerProps<T extends TreeItemData = TreeItemData>
     virtualContainer?: string;
     virtualContent?: string;
   };
+  /**
+   * Whether to use dynamic item size measurement
+   */
+  dynamic?: boolean;
+  /**
+   * Height of the virtual container
+   */
+  height: number | string;
+  /**
+   * Estimated item height for virtualization
+   */
+  itemSize?: number | ((index: number) => number);
+  /**
+   * Callback when scroll offset changes
+   */
+  onScroll?: (offset: number) => void;
+  /**
+   * Overscan count for rendering extra items
+   */
+  overscan?: number;
   /**
    * Custom render function for each tree item
    */
@@ -52,25 +60,17 @@ export interface TreeVirtualizerProps<T extends TreeItemData = TreeItemData>
    */
   virtualizerRef?: Ref<TreeVirtualizerRef<T> | null>;
   /**
-   * Callback when scroll offset changes
+   * Width of the virtual container
    */
-  onScroll?: (offset: number) => void;
-  /**
-   * Whether to use dynamic item size measurement
-   */
-  dynamic?: boolean;
-  /**
-   * Overscan count for rendering extra items
-   */
-  overscan?: number;
+  width?: number | string;
 }
 
 export interface TreeVirtualizerRef<T extends TreeItemData = TreeItemData> {
   containerRef: HTMLDivElement | null;
-  virtualizer: Virtualizer<HTMLDivElement, Element>;
   flattenItems: FlattenedItem<T>[];
-  scrollToIndex: (index: number, options?: { align?: 'start' | 'center' | 'end' | 'auto' }) => void;
-  scrollToValue: (value: string, options?: { align?: 'start' | 'center' | 'end' | 'auto' }) => void;
+  scrollToIndex: (index: number, options?: { align?: 'auto' | 'center' | 'end' | 'start' }) => void;
+  scrollToValue: (value: string, options?: { align?: 'auto' | 'center' | 'end' | 'start' }) => void;
+  virtualizer: Virtualizer<HTMLDivElement, Element>;
 }
 
 const DefaultIndicator = ({ isExpanded }: { isExpanded: boolean }) => {
@@ -90,41 +90,40 @@ const DefaultIndicator = ({ isExpanded }: { isExpanded: boolean }) => {
 
 const TreeVirtualizer = <T extends TreeItemData = TreeItemData>(props: TreeVirtualizerProps<T>) => {
   const {
-    items,
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
-    expanded: controlledExpanded,
-    defaultExpanded = [],
-    onExpandedChange,
-    multiple,
-    selectionBehavior = 'toggle',
-    toggleBehavior = 'multiple',
-    disabled,
-    propagateSelect,
-    bubbleSelect,
     allowParentSelect,
-    size,
+    bottom,
+    bubbleSelect,
     className,
     classNames,
-    ref,
-    top,
-    bottom,
+    defaultExpanded = [],
+    defaultValue,
+    disabled,
+    disabledSelect,
+    disabledToggle,
+    dynamic,
+    expanded: controlledExpanded,
     // Virtual props
     height,
-    width,
+    indentSize,
+    items,
     itemSize = 36,
-    renderItem,
-    virtualizerRef,
+    multiple,
+    onExpandedChange,
     onScroll,
-    dynamic,
-    overscan = 5,
     // TreeItem props
     onSelect,
     onToggle,
-    indentSize,
-    disabledToggle,
-    disabledSelect,
+    onValueChange,
+    overscan = 5,
+    propagateSelect,
+    renderItem,
+    selectionBehavior = 'toggle',
+    size,
+    toggleBehavior = 'multiple',
+    top,
+    value: controlledValue,
+    virtualizerRef,
+    width,
     ..._rest
   } = props;
 
@@ -156,6 +155,7 @@ const TreeVirtualizer = <T extends TreeItemData = TreeItemData>(props: TreeVirtu
 
   const expandedItems = useMemo(() => flattenItems(items, expanded), [items, expanded]);
 
+  // eslint-disable-next-line complexity
   const handleSelect = useCallback((value: string) => {
     if (disabled) {
       return;
@@ -265,11 +265,11 @@ const TreeVirtualizer = <T extends TreeItemData = TreeItemData>(props: TreeVirtu
   const virtualItems = virtualizer.getVirtualItems();
   const totalSize = virtualizer.getTotalSize();
 
-  const scrollToIndex = useCallback((index: number, options?: { align?: 'start' | 'center' | 'end' | 'auto' }) => {
+  const scrollToIndex = useCallback((index: number, options?: { align?: 'auto' | 'center' | 'end' | 'start' }) => {
     virtualizer.scrollToIndex(index, options);
   }, [virtualizer]);
 
-  const scrollToValue = useCallback((value: string, options?: { align?: 'start' | 'center' | 'end' | 'auto' }) => {
+  const scrollToValue = useCallback((value: string, options?: { align?: 'auto' | 'center' | 'end' | 'start' }) => {
     const index = expandedItems.findIndex(item => item.value === value);
     if (index !== -1) {
       virtualizer.scrollToIndex(index, options);
@@ -367,7 +367,7 @@ const TreeVirtualizer = <T extends TreeItemData = TreeItemData>(props: TreeVirtu
                 onSelect={onSelect}
                 onToggle={onToggle}
               >
-                {({ isExpanded, isSelected, isIndeterminate, hasChildren }: TreeItemRenderProps) => {
+                {({ hasChildren, isExpanded, isIndeterminate, isSelected }: TreeItemRenderProps) => {
                   return renderItem
                     ? renderItem({ item, isExpanded, isSelected, isIndeterminate, hasChildren, ...renderProps })
                     : defaultRenderItemContent(item, isExpanded, hasChildren);
@@ -405,7 +405,7 @@ const TreeVirtualizer = <T extends TreeItemData = TreeItemData>(props: TreeVirtu
           onSelect={onSelect}
           onToggle={onToggle}
         >
-          {({ isExpanded, isSelected, isIndeterminate, hasChildren }: TreeItemRenderProps) => {
+          {({ hasChildren, isExpanded, isIndeterminate, isSelected }: TreeItemRenderProps) => {
             return renderItem
               ? renderItem({ item, isExpanded, isSelected, isIndeterminate, hasChildren, ...renderProps })
               : defaultRenderItemContent(item, isExpanded, hasChildren);

@@ -3,6 +3,7 @@ import type { FlattenedItem, TreeItemData } from './types';
 export const TREE_SELECT = 'tree.select';
 export const TREE_TOGGLE = 'tree.toggle';
 
+// eslint-disable-next-line max-params
 export function flattenItems<T extends TreeItemData>(
   items?: T[],
   expandedValues?: string[],

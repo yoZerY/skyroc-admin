@@ -1,4 +1,4 @@
-import type { PaginationPages, PaginationPageItem } from './types';
+import type { PaginationPageItem, PaginationPages } from './types';
 
 const ELLIPSIS = 'ellipsis' as const;
 
@@ -31,6 +31,7 @@ export function transform(items: (string | number)[]): PaginationPages {
  * @param showEdges - Whether to always show first/last page with ellipsis
  * @returns Array of page numbers and ellipsis markers
  */
+// eslint-disable-next-line max-params
 export function getRange(
   currentPage: number,
   pageCount: number,

@@ -50,6 +50,7 @@ const Ellipsis = <T extends BreadcrumbItem>(props: EllipsisProps<T>) => {
   );
 };
 
+// eslint-disable-next-line max-params
 function renderBreadcrumbContent<T extends BreadcrumbItem>(item: T, renderItem: BreadcrumbProps<T>['renderItem'], linkProps?: BreadcrumbProps<T>['linkProps'], pageProps?: BreadcrumbProps<T>['pageProps']) {
   if (renderItem)
     return renderItem(item);
@@ -80,20 +81,20 @@ const Breadcrumb = <T extends BreadcrumbItem>(props: BreadcrumbProps<T>, ref: Re
     className,
     classNames,
     ellipsis,
+    ellipsisDropdownProps,
     ellipsisIcon,
+    ellipsisProps,
     handleItemClick,
+    itemProps,
     items,
+    linkProps,
+    listProps,
+    pageProps,
     renderEllipsis,
     renderItem,
     separator,
-    size,
-    listProps,
-    itemProps,
-    ellipsisProps,
-    ellipsisDropdownProps,
     separatorProps,
-    linkProps,
-    pageProps,
+    size,
     ...rest
   } = props;
 

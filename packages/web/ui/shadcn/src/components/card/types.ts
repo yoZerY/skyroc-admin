@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { ClassValue, WithClassName, ThemeSize } from '@/types/shared';
+import type { ClassValue, ThemeSize, WithClassName } from '@/types/shared';
 import type { CardSlots } from './card-variants';
 
 /**
@@ -129,24 +129,36 @@ export interface CardProps extends CardRootProps {
    */
   classNames?: CardUi;
   /**
+   * Props for the card content component.
+   */
+  contentProps?: CardContentProps;
+  /**
    * Extra content displayed in the header area, typically alongside the title.
    */
   extra?: ReactNode;
+  /**
+   * Custom footer content rendered at the bottom of the card.
+   */
+  footer?: ReactNode;
+  /**
+   * Props for the card footer component.
+   */
+  footerProps?: CardFooterProps;
+  /**
+   * Custom header content rendered at the top of the card.
+   * Overrides default header if provided.
+   */
+  header?: ReactNode;
+  /**
+   * Props for the card header component.
+   */
+  headerProps?: CardHeaderProps;
   /**
    * If true, the card content will be scrollable.
    * When true, adds overflow-auto to the content wrapper.
    * @default true
    */
   scrollable?: boolean;
-  /**
-   * Custom footer content rendered at the bottom of the card.
-   */
-  footer?: ReactNode;
-  /**
-   * Custom header content rendered at the top of the card.
-   * Overrides default header if provided.
-   */
-  header?: ReactNode;
   /**
    * Main title text displayed in the card header.
    */
@@ -156,31 +168,19 @@ export interface CardProps extends CardRootProps {
    */
   titleLeading?: ReactNode;
   /**
+   * Props for the card title component.
+   */
+  titleProps?: CardTitleProps;
+  /**
    * Custom root wrapper for the title and optional leading/trailing content.
    */
   titleRoot?: ReactNode;
-  /**
-   * Content displayed after the title in the title section.
-   */
-  titleTrailing?: ReactNode;
-  /**
-   * Props for the card header component.
-   */
-  headerProps?: CardHeaderProps;
   /**
    * Props for the card title root component.
    */
   titleRootProps?: CardTitleRootProps;
   /**
-   * Props for the card title component.
+   * Content displayed after the title in the title section.
    */
-  titleProps?: CardTitleProps;
-  /**
-   * Props for the card content component.
-   */
-  contentProps?: CardContentProps;
-  /**
-   * Props for the card footer component.
-   */
-  footerProps?: CardFooterProps;
+  titleTrailing?: ReactNode;
 }

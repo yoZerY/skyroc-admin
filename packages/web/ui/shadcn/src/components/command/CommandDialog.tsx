@@ -2,7 +2,7 @@ import { DialogClose, DialogContent, DialogDescription, DialogHeader, DialogOver
 import type { CommandDialogProps } from './types';
 
 const CommandDialog = (props: CommandDialogProps) => {
-  const { children, className, classNames, defaultOpen, onOpenChange, open, title, description, ...rest } = props;
+  const { children, className, classNames, defaultOpen, description, onOpenChange, open, title, ...rest } = props;
 
   return (
     <DialogRoot

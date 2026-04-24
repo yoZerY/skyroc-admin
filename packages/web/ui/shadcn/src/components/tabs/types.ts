@@ -4,10 +4,10 @@ import type {
   TabsProps as _TabsRootProps,
   TabsTriggerProps as _TabsTriggerProps
 } from '@radix-ui/react-tabs';
-import type { StyledComponentProps, ClassValue, ThemeOrientation } from '@/types/shared';
+import type { ClassValue, StyledComponentProps, ThemeOrientation } from '@/types/shared';
 import type { TabsFill, TabsSlots, TabsType } from './tabs-variants';
 
-export type TabsShape = 'square' | 'rounded';
+export type TabsShape = 'rounded' | 'square';
 
 /**
  * Represents the visual style properties of the indicator.
@@ -191,11 +191,19 @@ export type TabsOptionData = Pick<TabsTriggerProps, 'disabled'> & {
  * />
  * ```
  */
-export interface TabsProps<T extends TabsOptionData = TabsOptionData> extends TabsRootProps, Pick<TabsListProps, 'enableIndicator' | 'orientation' | 'shape' | 'loop' | 'type'> {
+export interface TabsProps<T extends TabsOptionData = TabsOptionData> extends TabsRootProps, Pick<TabsListProps, 'enableIndicator' | 'loop' | 'orientation' | 'shape' | 'type'> {
   /**
    * Class names for customizing different slots of the tabs component.
    */
   classNames?: TabsUi;
+  /**
+   * Props for the tabs content component.
+   */
+  contentProps?: TabsContentProps;
+  /**
+   * Whether to disable the tabs component.
+   */
+  disabled?: boolean;
   /**
    * Whether to display an animated indicator under the active tab.
    */
@@ -211,9 +219,9 @@ export interface TabsProps<T extends TabsOptionData = TabsOptionData> extends Ta
    */
   items: T[];
   /**
-   * Whether to disable the tabs component.
+   * Props for the tabs list component.
    */
-  disabled?: boolean;
+  listProps?: TabsListProps;
   /**
    * Render function for the content of the tab.
    */
@@ -223,15 +231,7 @@ export interface TabsProps<T extends TabsOptionData = TabsOptionData> extends Ta
    */
   renderTrigger?: (props: { active: boolean; item: TabsOptionData }) => React.ReactNode;
   /**
-   * Props for the tabs list component.
-   */
-  listProps?: TabsListProps;
-  /**
    * Props for the tabs trigger component.
    */
   triggerProps?: Partial<TabsTriggerProps>;
-  /**
-   * Props for the tabs content component.
-   */
-  contentProps?: TabsContentProps;
 };

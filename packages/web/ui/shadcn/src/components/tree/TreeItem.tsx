@@ -11,18 +11,18 @@ const TREE_SELECT = 'tree.select';
 const TREE_TOGGLE = 'tree.toggle';
 
 const TreeItem = (props: TreeItemProps) => {
-  const { value, level, disabled: itemDisabled, disabledSelect, disabledToggle, onSelect, onToggle, children, className, indentSize, style, ...rest } = props;
+  const { children, className, disabled: itemDisabled, disabledSelect, disabledToggle, indentSize, level, onSelect, onToggle, style, value, ...rest } = props;
 
   const {
-    modelValue,
+    bubbleSelect,
     disabled: rootDisabled,
-    selectedKeys,
     expanded,
     expandedItems,
-    propagateSelect,
-    bubbleSelect,
+    modelValue,
     onSelect: contextOnSelect,
-    onToggle: contextOnToggle
+    onToggle: contextOnToggle,
+    propagateSelect,
+    selectedKeys
   } = useTreeRootContext('TreeItem');
 
   const currentItem = useMemo(() => expandedItems.find(item => item.value === value), [expandedItems, value]);
@@ -41,14 +41,14 @@ const TreeItem = (props: TreeItemProps) => {
     if (!currentItem || !hasChildren || !Array.isArray(modelValue)) {
       return undefined;
     }
-    const children = flattenChildren(currentItem.data.children);
+    const childItems = flattenChildren(currentItem.data.children);
     if (bubbleSelect) {
-      const someSelected = children.some(child => selectedKeys.includes(child.value));
-      const allSelected = children.every(child => selectedKeys.includes(child.value));
+      const someSelected = childItems.some(child => selectedKeys.includes(child.value));
+      const allSelected = childItems.every(child => selectedKeys.includes(child.value));
       return someSelected && !allSelected;
     }
     else if (propagateSelect && isSelected) {
-      return !children.every(child => selectedKeys.includes(child.value));
+      return !childItems.every(child => selectedKeys.includes(child.value));
     }
     return undefined;
   }, [currentItem, hasChildren, modelValue, bubbleSelect, propagateSelect, isSelected, selectedKeys]);

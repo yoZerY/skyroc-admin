@@ -4,13 +4,13 @@ import type { PaginationItemProps } from './types';
 
 const PaginationItem = (props: PaginationItemProps) => {
   const {
-    className,
     children,
+    className,
     isActive,
-    value,
-    size,
-    variant,
     shape,
+    size,
+    value,
+    variant,
     ...rest
   } = props;
 

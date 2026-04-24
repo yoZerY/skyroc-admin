@@ -1,6 +1,6 @@
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 import type { ComputedFieldProps, FieldProps } from '@skyroc/form';
-import type { StyledComponentProps, ClassValue } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '@/types/shared';
 import type { LabelProps } from '../label/types';
 import type { FormSlots } from './form-variants';
 

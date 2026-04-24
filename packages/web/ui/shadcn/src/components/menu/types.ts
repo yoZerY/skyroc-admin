@@ -13,7 +13,7 @@ import type {
   MenuSubContentProps as _MenuSubContentProps,
   MenuSubTriggerProps as _MenuSubTriggerProps
 } from '@radix-ui/react-menu';
-import type { HTMLComponentProps, StyledComponentProps, ClassValue, ThemeSize } from '@/types/shared';
+import type { ClassValue, HTMLComponentProps, StyledComponentProps, ThemeSize } from '@/types/shared';
 import type { MenuSlots } from './menu-variants';
 
 /**
