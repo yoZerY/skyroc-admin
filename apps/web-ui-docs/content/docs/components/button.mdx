@@ -3,17 +3,11 @@ title: Button
 description: 触发即时操作的按钮组件
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout';
-
 按钮（Button）用于触发即时操作，是用户界面中最常用的交互元素之一。
 
 ```tsx
 import { Button, ButtonIcon, ButtonGroup } from '@skyroc/web-ui';
 ```
-
-<Callout title="在线编辑">
-下面所有示例都直接读取自 `apps/web-ui-playground` 的源码，可以在线编辑、即时生效。
-</Callout>
 
 ## 何时使用
 
@@ -25,118 +19,97 @@ import { Button, ButtonIcon, ButtonGroup } from '@skyroc/web-ui';
 
 按钮提供 8 种主题颜色，每种颜色都有其语义含义：
 
-| 颜色 | 语义 | 适用场景 |
-| --- | --- | --- |
-| `primary` | 主操作 | 页面中最重要的行为 |
+| 颜色          | 语义     | 适用场景               |
+| ------------- | -------- | ---------------------- |
+| `primary`     | 主操作   | 页面中最重要的行为     |
 | `destructive` | 危险操作 | 删除、移除等不可逆操作 |
-| `success` | 成功确认 | 操作成功、确认完成 |
-| `warning` | 警告提示 | 需要注意的操作 |
-| `info` | 信息提示 | 信息性操作 |
-| `carbon` | 中性深色 | 不带语义倾向的中性操作 |
-| `secondary` | 次级操作 | 辅助性、低优先级操作 |
-| `accent` | 强调色 | 需要特殊视觉关注的操作 |
+| `success`     | 成功确认 | 操作成功、确认完成     |
+| `warning`     | 警告提示 | 需要注意的操作         |
+| `info`        | 信息提示 | 信息性操作             |
+| `carbon`      | 中性深色 | 不带语义倾向的中性操作 |
+| `secondary`   | 次级操作 | 辅助性、低优先级操作   |
+| `accent`      | 强调色   | 需要特殊视觉关注的操作 |
 
-<Demo
-  src="@playground/button/modules/ButtonColor"
-  defaultExpanded
-/>
+<Demo src="@playground/button/modules/ButtonColor" />
 
 ## 变体
 
 通过 `variant` 控制按钮的视觉强度，从高到低依次为：
 
-| 变体 | 视觉强度 | 适用场景 |
-| --- | --- | --- |
-| `solid` | 最强 | 主要操作，填充背景色（默认） |
-| `pure` | 较强 | 中性卡片风格，hover 时高亮 |
-| `plain` | 中等 | 朴素边框风格，hover 时着色 |
-| `outline` | 中等 | 次要操作，实线边框 |
-| `dashed` | 中低 | 可选操作，虚线边框 |
-| `soft` | 低 | 轻量操作，淡色背景 |
-| `ghost` | 极低 | 无背景，仅文字和 hover 效果 |
-| `link` | 最低 | 行内链接风格，带下划线 |
+| 变体      | 视觉强度 | 适用场景                     |
+| --------- | -------- | ---------------------------- |
+| `solid`   | 最强     | 主要操作，填充背景色（默认） |
+| `pure`    | 较强     | 中性卡片风格，hover 时高亮   |
+| `plain`   | 中等     | 朴素边框风格，hover 时着色   |
+| `outline` | 中等     | 次要操作，实线边框           |
+| `dashed`  | 中低     | 可选操作，虚线边框           |
+| `soft`    | 低       | 轻量操作，淡色背景           |
+| `ghost`   | 极低     | 无背景，仅文字和 hover 效果  |
+| `link`    | 最低     | 行内链接风格，带下划线       |
 
-<Demo
-  src="@playground/button/modules/ButtonVariant"
-/>
+<Demo src="@playground/button/modules/ButtonVariant" />
 
 ## 尺寸
 
 通过 `size` 调整按钮大小，从 `xs` 到 `2xl` 共 6 个尺寸。
 
-| 尺寸 | 高度 | 字号 | 适用场景 |
-| --- | --- | --- | --- |
-| `xs` | 24px | 10px | 紧凑布局、表格内操作 |
-| `sm` | 28px | 12px | 辅助操作、工具栏 |
-| `md` | 32px | 14px | 常规场景（默认） |
-| `lg` | 36px | 16px | 强调操作、表单提交 |
-| `xl` | 40px | 18px | 重要入口、CTA |
-| `2xl` | 48px | 20px | 首屏 Hero、大幅 CTA |
+| 尺寸  | 高度 | 字号 | 适用场景             |
+| ----- | ---- | ---- | -------------------- |
+| `xs`  | 24px | 10px | 紧凑布局、表格内操作 |
+| `sm`  | 28px | 12px | 辅助操作、工具栏     |
+| `md`  | 32px | 14px | 常规场景（默认）     |
+| `lg`  | 36px | 16px | 强调操作、表单提交   |
+| `xl`  | 40px | 18px | 重要入口、CTA        |
+| `2xl` | 48px | 20px | 首屏 Hero、大幅 CTA  |
 
-<Demo
-  src="@playground/button/modules/ButtonSize"
-/>
+<Demo src="@playground/button/modules/ButtonSize" />
 
 ## 形状
 
 通过 `shape` 控制按钮的圆角形态。
 
-| 形状 | 圆角 | 说明 |
-| --- | --- | --- |
-| `auto` | `rounded-md` | 标准圆角（默认） |
-| `rounded` | `rounded-full` | 药丸形，适用于标签和动作 |
-| `square` | `rounded-md` | 正方形，固定宽高，适用于图标 |
-| `circle` | `rounded-full` | 圆形，固定宽高，适用于圆形图标 |
+| 形状      | 圆角           | 说明                           |
+| --------- | -------------- | ------------------------------ |
+| `auto`    | `rounded-md`   | 标准圆角（默认）               |
+| `rounded` | `rounded-full` | 药丸形，适用于标签和动作       |
+| `square`  | `rounded-md`   | 正方形，固定宽高，适用于图标   |
+| `circle`  | `rounded-full` | 圆形，固定宽高，适用于圆形图标 |
 
-<Demo
-  src="@playground/button/modules/ButtonShape"
-/>
+<Demo src="@playground/button/modules/ButtonShape" />
 
 ## 阴影
 
 通过 `shadow` 控制按钮投影。默认值为 `sm`，`ghost` 和 `link` 变体会自动忽略阴影。
 
-<Demo
-  src="@playground/button/modules/ButtonShadow"
-/>
+<Demo src="@playground/button/modules/ButtonShadow" />
 
 ## 禁用
 
 设置 `disabled` 后，按钮变为不可交互状态，同时降低透明度。
 
-<Demo
-  src="@playground/button/modules/ButtonDisabled"
-/>
+<Demo src="@playground/button/modules/ButtonDisabled" />
 
 ## 加载
 
 设置 `loading={true}` 时，按钮自动禁用并在 `leading` 位置显示旋转图标。如果你已经为 `leading` 传入了自定义内容，加载状态会保留你的内容而不替换为默认 Spinner。
 
-<Demo
-  src="@playground/button/modules/ButtonLoading"
-/>
+<Demo src="@playground/button/modules/ButtonLoading" />
 
 ## 插槽
 
 通过 `leading` 和 `trailing` 插槽在按钮文字前后放置图标或其他内容。
 
-<Demo
-  src="@playground/button/modules/ButtonSlot"
-/>
+<Demo src="@playground/button/modules/ButtonSlot" />
 
 ## 图标按钮
 
 `ButtonIcon` 是专门为纯图标场景封装的组件。相比 `Button`，它默认使用 `ghost` 变体、`square` 形状和 `accent` 颜色，并通过 `fitContent` 让尺寸自适应内容。
 
-<Demo
-  src="@playground/button/modules/ButtonIconBasic"
-/>
+<Demo src="@playground/button/modules/ButtonIconBasic" />
 
 设置 `fitContent={false}` 可以恢复为固定尺寸。
 
-<Demo
-  src="@playground/button/modules/ButtonIconFitContent"
-/>
+<Demo src="@playground/button/modules/ButtonIconFitContent" />
 
 ## 按钮组
 
@@ -144,13 +117,9 @@ import { Button, ButtonIcon, ButtonGroup } from '@skyroc/web-ui';
 
 通过 `orientation` 控制排列方向：
 
-<Demo
-  src="@playground/button/modules/ButtonGroupHorizontal"
-/>
+<Demo src="@playground/button/modules/ButtonGroupHorizontal" />
 
-<Demo
-  src="@playground/button/modules/ButtonGroupVertical"
-/>
+<Demo src="@playground/button/modules/ButtonGroupVertical" />
 
 ## API
 
@@ -158,33 +127,63 @@ import { Button, ButtonIcon, ButtonGroup } from '@skyroc/web-ui';
 
 通用属性参考：支持原生 `button` 元素的所有属性。
 
-<PropsTable data={[
-  { name: 'color', description: '主题颜色', type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'", default: "'primary'" },
-  { name: 'variant', description: '视觉样式', type: "'solid' | 'outline' | 'dashed' | 'soft' | 'ghost' | 'link' | 'plain' | 'pure'", default: "'solid'" },
-  { name: 'size', description: '尺寸', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", default: "'md'" },
-  { name: 'shape', description: '形状', type: "'auto' | 'rounded' | 'square' | 'circle'", default: "'auto'" },
-  { name: 'shadow', description: '投影大小', type: "'none' | 'sm' | 'md' | 'lg'", default: "'sm'" },
-  { name: 'loading', description: '加载状态，自动禁用按钮并显示 Spinner', type: 'boolean', default: 'false' },
-  { name: 'disabled', description: '禁用状态', type: 'boolean', default: 'false' },
-  { name: 'leading', description: '前置插槽，放置图标或其他内容', type: 'ReactNode' },
-  { name: 'trailing', description: '后置插槽，放置图标或其他内容', type: 'ReactNode' },
-  { name: 'fitContent', description: '宽高自适应内容，不再使用固定高度', type: 'boolean', default: 'false' },
-  { name: 'asChild', description: '将渲染委托给子元素，合并 props 和行为', type: 'boolean', default: 'false' },
-]} />
+<PropsTable
+  data={[
+    {
+      name: 'color',
+      description: '主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'variant',
+      description: '视觉样式',
+      type: "'solid' | 'outline' | 'dashed' | 'soft' | 'ghost' | 'link' | 'plain' | 'pure'",
+      default: "'solid'"
+    },
+    { name: 'size', description: '尺寸', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", default: "'md'" },
+    { name: 'shape', description: '形状', type: "'auto' | 'rounded' | 'square' | 'circle'", default: "'auto'" },
+    { name: 'shadow', description: '投影大小', type: "'none' | 'sm' | 'md' | 'lg'", default: "'sm'" },
+    { name: 'loading', description: '加载状态，自动禁用按钮并显示 Spinner', type: 'boolean', default: 'false' },
+    { name: 'disabled', description: '禁用状态', type: 'boolean', default: 'false' },
+    { name: 'leading', description: '前置插槽，放置图标或其他内容', type: 'ReactNode' },
+    { name: 'trailing', description: '后置插槽，放置图标或其他内容', type: 'ReactNode' },
+    { name: 'fitContent', description: '宽高自适应内容，不再使用固定高度', type: 'boolean', default: 'false' },
+    { name: 'asChild', description: '将渲染委托给子元素，合并 props 和行为', type: 'boolean', default: 'false' }
+  ]}
+/>
 
 ### ButtonIcon
 
 继承 `Button` 的全部 Props，并新增以下属性：
 
-<PropsTable data={[
-  { name: 'icon', description: '图标名称（传入 Icon 组件）', type: 'string' },
-  { name: 'iconProps', description: '传递给内部 Icon 组件的额外 props', type: "Omit<IconProps, 'icon'>" },
-]} />
+<PropsTable
+  data={[
+    { name: 'icon', description: '图标名称（传入 Icon 组件）', type: 'string' },
+    { name: 'iconProps', description: '传递给内部 Icon 组件的额外 props', type: "Omit<IconProps, 'icon'>" }
+  ]}
+/>
 
 > `ButtonIcon` 的默认值与 `Button` 不同：`variant="ghost"`、`shape="square"`、`color="accent"`、`fitContent={true}`。
 
 ### ButtonGroup
 
-<PropsTable data={[
-  { name: 'orientation', description: '排列方向', type: "'horizontal' | 'vertical'", default: "'horizontal'" },
+<PropsTable
+  data={[{ name: 'orientation', description: '排列方向', type: "'horizontal' | 'vertical'", default: "'horizontal'" }]}
+/>
+
+## 类型
+
+<TypeTable data={[
+  {
+    name: 'IconProps',
+    description: 'Icon 组件的属性。',
+    fields: [
+      { name: 'icon', type: 'string', description: 'Iconify 图标名称。' },
+      { name: 'width', type: 'number | string', description: '图标宽度。' },
+      { name: 'height', type: 'number | string', description: '图标高度。' },
+      { name: 'color', type: 'string', description: '图标颜色。' },
+      { name: 'inline', type: 'boolean', description: '是否以内联方式显示图标。' }
+    ]
+  }
 ]} />
