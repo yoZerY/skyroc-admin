@@ -91,3 +91,9 @@ html > body[data-scroll-locked] {
   font-size: 13px;
   color: var(--color-fd-foreground);
 }
+
+.prose img {
+  margin: 0 auto !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
