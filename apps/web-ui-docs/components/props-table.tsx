@@ -34,9 +34,9 @@ const PropsTable = (props: PropsTableProps) => {
       <table className="w-full table-fixed border-collapse text-[14px] leading-[1.7]">
         <colgroup>
           <col className="w-[18%]" />
-          <col className="w-[37%]" />
-          <col className="w-[35%]" />
-          <col className="w-[10%]" />
+          <col className="w-[36%]" />
+          <col className="w-[33%]" />
+          <col className="w-[13%]" />
         </colgroup>
         <thead>
           <tr className="border-b-2 border-fd-border">
