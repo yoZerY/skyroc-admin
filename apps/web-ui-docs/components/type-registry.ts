@@ -10,7 +10,7 @@
  */
 export const TYPE_REGISTRY: Record<string, string> = {
   ButtonProps: '/docs/components/button#button',
-  IconProps: '/docs/components/button#type-icon-props',
+  IconProps: '/docs/components/icon#type-icon-props',
   MenuClassNames: '/docs/components/context-menu#type-menu-class-names',
   MenuCheckboxGroupItemProps: '/docs/components/context-menu#type-menu-checkbox-group-item-props',
   MenuRadioItemOptionProps: '/docs/components/context-menu#type-menu-radio-item-option-props',

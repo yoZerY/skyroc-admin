@@ -23,6 +23,8 @@ const BUILTIN_TYPE_NAMES = new Set([
   'Array',
   'Component',
   'Date',
+  'DeepPartial',
+  'ElementType',
   'Exclude',
   'Extract',
   'HTMLAttributes',
@@ -39,6 +41,8 @@ const BUILTIN_TYPE_NAMES = new Set([
   'RegExp',
   'Required',
   'Set',
+  'StandardSchema',
+  'Values',
   'VNode',
 ]);
 
