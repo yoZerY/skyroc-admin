@@ -1,0 +1,361 @@
+---
+title: BottomSheet
+description: 从屏幕底部滑出的移动端面板组件
+---
+
+底部抽屉（BottomSheet）用于在当前页面上方展示临时内容，常见于移动端操作面板、筛选器、表单确认和上下文操作。
+
+```tsx
+import {
+  BottomSheet,
+  BottomSheetClose,
+  BottomSheetContent,
+  BottomSheetContentBody,
+  BottomSheetDescription,
+  BottomSheetFooter,
+  BottomSheetHeader,
+  BottomSheetKnob,
+  BottomSheetOverlay,
+  BottomSheetRoot,
+  BottomSheetTitle,
+  BottomSheetTrigger
+} from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+BottomSheet 基于 Vaul 的 `Root`、`Content`、`Overlay`、`Close` 等能力，并复用项目 Dialog 的标题、描述、页脚、触发器和关闭按钮样式。
+
+- `BottomSheetRoot`：Vaul Root，负责打开状态、拖拽、snap point、背景缩放等行为。
+- `BottomSheetContent`：底部面板内容，内部自动挂载 Portal、Overlay、ContentBody 和 Knob。
+- `BottomSheetKnob`：面板顶部的拖拽指示条。
+- `BottomSheet`：组合式主组件，内置 Trigger、Content、Header、Title、Description、Close 和 Footer。
+
+## 何时使用
+
+- 移动端需要从屏幕底部展示补充内容或操作面板时。
+- 页面上下文不应完全跳转，但需要临时聚焦一个任务时。
+- 内容适合纵向阅读、拖拽关闭或配合底部操作按钮时。
+- 桌面端复杂表单或长内容弹窗优先考虑 Dialog 或 Drawer。
+
+## 基础用法
+
+通过 `trigger` 设置打开触发器，通过 `title`、`description`、`children` 和 `footer` 组织内容。
+
+<Demo src="@playground/bottom-sheet/modules/DrawerBasic" />
+
+## 页脚与关闭
+
+设置 `footer` 可在底部放置操作按钮。需要点击按钮关闭面板时，可使用 `BottomSheetClose asChild` 包裹自定义按钮。
+
+设置 `showClose` 后，头部会显示默认关闭按钮；通过 `closeProps` 可以调整关闭按钮属性。
+
+## 拖拽与打开状态
+
+BottomSheet 继承 Vaul Root 的行为属性，可通过 `open` / `onOpenChange` 控制打开状态，通过 `snapPoints`、`activeSnapPoint`、`setActiveSnapPoint` 配置吸附点，通过 `dismissible`、`handleOnly`、`closeThreshold` 控制关闭交互。
+
+## 自定义样式
+
+通过 `classNames` 控制 `overlay`、`content`、`contentBody`、`knob`、`header`、`title`、`description`、`footer`、`close` 等 slot。
+
+通过 `size` 可以统一控制 BottomSheet 的内容容器、正文间距、拖拽指示条、标题、描述、关闭按钮和页脚等结构尺寸。需要局部覆盖时，可继续通过 `contentProps`、各 slot props 或 `classNames` 精细调整。
+
+## API
+
+### BottomSheet
+
+通用属性参考：基于 Vaul Root，并额外提供项目化的 header、content、footer、trigger 和 slot 样式配置。
+
+<PropsTable
+  data={[
+    { name: 'trigger', description: '触发 BottomSheet 打开的元素', type: 'ReactNode' },
+    { name: 'title', description: '面板标题', type: 'ReactNode' },
+    { name: 'description', description: '面板描述文本', type: 'ReactNode' },
+    { name: 'children', description: '面板主体内容', type: 'ReactNode' },
+    { name: 'footer', description: '页脚内容，通常放置操作按钮', type: 'ReactNode' },
+    { name: 'showClose', description: '是否显示默认关闭按钮', type: 'boolean', default: 'false' },
+    {
+      name: 'size',
+      description: '尺寸，影响内容容器、正文间距、拖拽指示条、标题、描述、关闭按钮和页脚等样式',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    },
+    { name: 'classNames', description: '各 slot 的自定义 class', type: 'BottomSheetClassNames' },
+    { name: 'contentProps', description: '传递给 BottomSheetContent 的额外 props', type: 'BottomSheetContentProps' },
+    { name: 'closeProps', description: '传递给 BottomSheetClose 的额外 props', type: 'BottomSheetCloseProps' },
+    { name: 'headerProps', description: '传递给 BottomSheetHeader 的额外 props', type: 'BottomSheetHeaderProps' },
+    { name: 'titleProps', description: '传递给 BottomSheetTitle 的额外 props', type: 'BottomSheetTitleProps' },
+    {
+      name: 'descriptionProps',
+      description: '传递给 BottomSheetDescription 的额外 props',
+      type: 'BottomSheetDescriptionProps'
+    },
+    { name: 'footerProps', description: '传递给 BottomSheetFooter 的额外 props', type: 'BottomSheetFooterProps' },
+    { name: 'open', description: '受控模式下的打开状态', type: 'boolean' },
+    { name: 'defaultOpen', description: '非受控模式下的默认打开状态', type: 'boolean' },
+    { name: 'onOpenChange', description: '打开状态变化时触发', type: '(open: boolean) => void' },
+    { name: 'shouldScaleBackground', description: '打开时是否缩放背景', type: 'boolean', default: 'true' },
+    { name: 'modal', description: '是否使用模态交互；为 false 时允许与外部元素交互', type: 'boolean' },
+    { name: 'dismissible', description: '是否允许拖拽、点击外部、Esc 等方式关闭', type: 'boolean' },
+    { name: 'direction', description: '抽屉方向', type: "'top' | 'bottom' | 'left' | 'right'", default: "'bottom'" },
+    { name: 'snapPoints', description: '吸附点列表，可使用比例或 px 字符串', type: '(number | string)[]' },
+    { name: 'activeSnapPoint', description: '当前激活的吸附点', type: 'number | string | null' },
+    { name: 'setActiveSnapPoint', description: '更新当前吸附点', type: '(snapPoint: number | string | null) => void' },
+    { name: 'fadeFromIndex', description: '从哪个吸附点开始应用遮罩淡入', type: 'number' },
+    { name: 'closeThreshold', description: '拖拽关闭阈值，0 到 1 之间', type: 'number' },
+    { name: 'handleOnly', description: '是否只允许通过 handle/knob 拖拽', type: 'boolean' },
+    { name: 'fixed', description: '键盘打开时是否只改变高度而不整体上移', type: 'boolean' },
+    { name: 'nested', description: '是否作为嵌套抽屉使用', type: 'boolean' },
+    { name: 'container', description: 'Portal 挂载容器', type: 'HTMLElement | null' },
+    {
+      name: 'onDrag',
+      description: '拖拽过程中触发',
+      type: '(event: PointerEvent<HTMLDivElement>, percentageDragged: number) => void'
+    },
+    {
+      name: 'onRelease',
+      description: '拖拽释放时触发',
+      type: '(event: PointerEvent<HTMLDivElement>, open: boolean) => void'
+    },
+    { name: 'onClose', description: '关闭时触发', type: '() => void' },
+    { name: 'onAnimationEnd', description: '打开或关闭动画结束后触发', type: '(open: boolean) => void' }
+  ]}
+/>
+
+### 子组件
+
+<PropsTable
+  data={[
+    { name: 'BottomSheetRoot', description: 'Vaul Root，负责抽屉状态和交互行为', type: 'DialogProps' },
+    { name: 'BottomSheetTrigger', description: '打开触发器，复用 DialogTrigger', type: 'DialogTriggerProps' },
+    {
+      name: 'BottomSheetContent',
+      description: '面板内容容器，自动包含 Portal、Overlay、ContentBody 和 Knob',
+      type: 'BottomSheetContentProps'
+    },
+    { name: 'BottomSheetContentBody', description: '内容内部包裹容器', type: 'BottomSheetContentBodyProps' },
+    { name: 'BottomSheetKnob', description: '顶部拖拽指示条', type: 'BottomSheetKnobProps' },
+    { name: 'BottomSheetOverlay', description: '遮罩层', type: 'BottomSheetOverlayProps' },
+    { name: 'BottomSheetHeader', description: '头部容器，复用 DialogHeader', type: 'BottomSheetHeaderProps' },
+    { name: 'BottomSheetTitle', description: '标题组件', type: 'BottomSheetTitleProps' },
+    { name: 'BottomSheetDescription', description: '描述组件', type: 'BottomSheetDescriptionProps' },
+    { name: 'BottomSheetFooter', description: '页脚容器，复用 DialogFooter', type: 'BottomSheetFooterProps' },
+    { name: 'BottomSheetClose', description: '关闭触发器，内部使用 Vaul Close', type: 'BottomSheetCloseProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'BottomSheetProps',
+      description: '主组件属性。继承 Vaul DialogProps，并额外提供项目化内容、标题、描述、页脚和 slot 样式配置。',
+      fields: [
+        {
+          name: 'activeSnapPoint',
+          type: 'number | string | null',
+          description: '当前激活吸附点。来自 Vaul DialogProps。'
+        },
+        { name: 'children', type: 'React.ReactNode', description: '面板主体内容。' },
+        { name: 'classNames', type: 'BottomSheetClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'closeProps', type: 'BottomSheetCloseProps', description: '传递给关闭按钮的属性。' },
+        { name: 'closeThreshold', type: 'number', description: '拖拽关闭阈值。来自 Vaul DialogProps。' },
+        { name: 'container', type: 'HTMLElement | null', description: 'Portal 挂载容器。来自 Vaul DialogProps。' },
+        { name: 'contentProps', type: 'BottomSheetContentProps', description: '传递给内容容器的属性。' },
+        { name: 'defaultOpen', type: 'boolean', description: '默认打开状态。来自 Vaul DialogProps。' },
+        { name: 'description', type: 'React.ReactNode', description: '描述内容。' },
+        { name: 'descriptionProps', type: 'BottomSheetDescriptionProps', description: '传递给描述组件的属性。' },
+        {
+          name: 'direction',
+          type: "'top' | 'bottom' | 'left' | 'right'",
+          description: '抽屉方向。来自 Vaul DialogProps。'
+        },
+        { name: 'dismissible', type: 'boolean', description: '是否允许用户关闭。来自 Vaul DialogProps。' },
+        { name: 'fadeFromIndex', type: 'number', description: '遮罩淡入起始吸附点索引。仅在 snapPoints 存在时使用。' },
+        { name: 'fixed', type: 'boolean', description: '键盘打开时是否固定位置。来自 Vaul DialogProps。' },
+        { name: 'footer', type: 'React.ReactNode', description: '页脚内容。' },
+        { name: 'footerProps', type: 'BottomSheetFooterProps', description: '传递给页脚容器的属性。' },
+        { name: 'handleOnly', type: 'boolean', description: '是否只允许通过 handle 拖拽。来自 Vaul DialogProps。' },
+        { name: 'headerProps', type: 'BottomSheetHeaderProps', description: '传递给头部容器的属性。' },
+        { name: 'modal', type: 'boolean', description: '是否模态。来自 Vaul DialogProps。' },
+        { name: 'nested', type: 'boolean', description: '是否嵌套抽屉。来自 Vaul DialogProps。' },
+        {
+          name: 'onAnimationEnd',
+          type: '(open: boolean) => void',
+          description: '动画结束后触发。来自 Vaul DialogProps。'
+        },
+        { name: 'onClose', type: '() => void', description: '关闭时触发。来自 Vaul DialogProps。' },
+        {
+          name: 'onDrag',
+          type: '(event: React.PointerEvent<HTMLDivElement>, percentageDragged: number) => void',
+          description: '拖拽中触发。来自 Vaul DialogProps。'
+        },
+        {
+          name: 'onOpenChange',
+          type: '(open: boolean) => void',
+          description: '打开状态变化时触发。来自 Vaul DialogProps。'
+        },
+        {
+          name: 'onRelease',
+          type: '(event: React.PointerEvent<HTMLDivElement>, open: boolean) => void',
+          description: '拖拽释放时触发。来自 Vaul DialogProps。'
+        },
+        { name: 'open', type: 'boolean', description: '受控打开状态。来自 Vaul DialogProps。' },
+        {
+          name: 'setActiveSnapPoint',
+          type: '(snapPoint: number | string | null) => void',
+          description: '更新当前吸附点。来自 Vaul DialogProps。'
+        },
+        { name: 'shouldScaleBackground', type: 'boolean', description: '是否缩放背景。默认 true。' },
+        { name: 'showClose', type: 'boolean', description: '是否展示关闭按钮。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '统一控制 BottomSheet 结构尺寸。'
+        },
+        { name: 'snapPoints', type: '(number | string)[]', description: '吸附点列表。来自 Vaul DialogProps。' },
+        { name: 'title', type: 'React.ReactNode', description: '标题内容。' },
+        { name: 'titleProps', type: 'BottomSheetTitleProps', description: '传递给标题组件的属性。' },
+        { name: 'trigger', type: 'React.ReactNode', description: '触发打开的元素。' }
+      ]
+    },
+    {
+      name: 'BottomSheetClassNames',
+      description: 'BottomSheet 可定制 slot 的 class 集合。',
+      fields: [
+        { name: 'close', type: 'ClassValue', description: '关闭按钮 class，来自 DialogSlots。' },
+        { name: 'closeIcon', type: 'ClassValue', description: '关闭图标 class，来自 BottomSheetSlots。' },
+        { name: 'content', type: 'ClassValue', description: '面板内容容器 class。' },
+        { name: 'contentBody', type: 'ClassValue', description: '面板内部内容包裹区 class。' },
+        { name: 'description', type: 'ClassValue', description: '描述区域 class。' },
+        { name: 'footer', type: 'ClassValue', description: '页脚区域 class。' },
+        { name: 'header', type: 'ClassValue', description: '头部区域 class。' },
+        { name: 'knob', type: 'ClassValue', description: '拖拽指示条 class。' },
+        { name: 'overlay', type: 'ClassValue', description: '遮罩层 class。' },
+        { name: 'title', type: 'ClassValue', description: '标题区域 class。' }
+      ]
+    },
+    {
+      name: 'BottomSheetContentProps',
+      description: '内容容器属性。继承 Vaul ContentProps，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'React.ReactNode', description: '内容子节点。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' },
+        {
+          name: 'classNames',
+          type: "Pick<BottomSheetClassNames, 'content' | 'contentBody' | 'knob' | 'overlay'>",
+          description: '内容区域相关 slot class。'
+        },
+        { name: 'forceMount', type: 'true', description: '强制挂载内容。来自 Radix Dialog Content props。' },
+        {
+          name: 'onCloseAutoFocus',
+          type: '(event: Event) => void',
+          description: '关闭后自动聚焦前触发。来自 ContentProps。'
+        },
+        {
+          name: 'onEscapeKeyDown',
+          type: '(event: KeyboardEvent) => void',
+          description: '按 Escape 时触发。来自 ContentProps。'
+        },
+        {
+          name: 'onOpenAutoFocus',
+          type: '(event: Event) => void',
+          description: '打开后自动聚焦前触发。来自 ContentProps。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '内容容器尺寸。' }
+      ]
+    },
+    {
+      name: 'BottomSheetContentBodyProps',
+      description: '内容内部包裹容器属性，等价于 HTMLComponentProps<\"div\">。',
+      fields: [
+        { name: 'children', type: 'React.ReactNode', description: '子节点。' },
+        { name: 'className', type: 'ClassValue', description: '内容包裹区 class。' },
+        { name: 'id', type: 'string', description: 'DOM id。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetKnobProps',
+      description: '拖拽指示条属性，等价于 HTMLComponentProps<\"div\">。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '拖拽指示条 class。' },
+        { name: 'id', type: 'string', description: 'DOM id。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetOverlayProps',
+      description: '遮罩层属性，等价于 Omit<DialogOverlayProps, \"component\">。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '遮罩层 class。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载遮罩层。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetHeaderProps',
+      description: '头部容器属性，等价于 DialogHeaderProps。',
+      fields: [
+        { name: 'children', type: 'React.ReactNode', description: '头部内容。' },
+        { name: 'className', type: 'ClassValue', description: '头部 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetDescriptionProps',
+      description: '描述组件属性，等价于 Omit<DialogDescriptionProps, \"component\">。',
+      fields: [
+        { name: 'children', type: 'React.ReactNode', description: '描述内容。' },
+        { name: 'className', type: 'ClassValue', description: '描述 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetTitleProps',
+      description: '标题组件属性，等价于 Omit<DialogTitleProps, \"component\">。',
+      fields: [
+        { name: 'children', type: 'React.ReactNode', description: '标题内容。' },
+        { name: 'className', type: 'ClassValue', description: '标题 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetCloseProps',
+      description: '关闭按钮属性，等价于 Omit<DialogCloseProps, \"component\">。',
+      fields: [
+        { name: 'asChild', type: 'boolean', description: '将关闭行为绑定到子元素。' },
+        { name: 'children', type: 'React.ReactNode', description: '自定义关闭按钮内容。' },
+        { name: 'className', type: 'ClassValue', description: '关闭按钮 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    },
+    {
+      name: 'BottomSheetFooterProps',
+      description: '页脚容器属性，等价于 HTMLComponentProps<\"div\">。',
+      fields: [
+        { name: 'children', type: 'React.ReactNode', description: '页脚内容。' },
+        { name: 'className', type: 'ClassValue', description: '页脚 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸属性。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="BottomSheetSlots"
+  description="BottomSheet 自身的 slot"
+  type="'closeIcon' | 'content' | 'contentBody' | 'description' | 'footer' | 'header' | 'knob' | 'overlay' | 'title'"
+/>
+
+<UnionType
+  name="DialogSlots"
+  description="复用 Dialog 的 slot"
+  type="'close' | 'content' | 'description' | 'footer' | 'header' | 'overlay' | 'title'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>
