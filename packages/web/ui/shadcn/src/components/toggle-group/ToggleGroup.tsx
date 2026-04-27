@@ -7,17 +7,14 @@ const ToggleGroup = (props: ToggleGroupProps) => {
   const { className, classNames, itemRender, items, size, variant, ...rest } = props;
 
   return (
-    <ToggleGroupRoot
-      {...rest}
-      className={[classNames?.groupRoot, className]}
-      size={size}
-    >
-      {items.map((item) => {
-        const { label, ...restItem } = item;
+    <ToggleGroupRoot {...rest} className={[classNames?.groupRoot, className]} size={size}>
+      {items.map(item => {
+        const { className: itemClassName, label, ...restItem } = item;
 
         return (
           <ToggleGroupItem
             key={item.value}
+            className={[classNames?.toggle, itemClassName]}
             size={size}
             variant={variant}
             {...restItem}
