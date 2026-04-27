@@ -1,0 +1,139 @@
+---
+title: Badge
+description: 附着在元素上用于展示状态标记或计数的徽标组件
+---
+
+徽标（Badge）附着在按钮、图标等元素上，用于显示未读数量、状态标记或小红点提示，引导用户关注特定内容。
+
+```tsx
+import { Badge, BadgeRoot, BadgeContent } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 展示未读消息数、通知计数等数字信息。
+- 用小红点标记有新内容或状态变化的元素。
+- 在头像、图标、按钮等元素上附加状态提示。
+
+## 基本用法
+
+Badge 支持三种展示形态：不传 `content` 时显示为小红点，传入数字或文本时显示为计数徽标。
+
+<Demo src="@playground/badge/modules/BadgeBasic" />
+
+## 颜色
+
+Badge 提供 8 种主题颜色，每种颜色都有其语义含义：
+
+| 颜色          | 语义     | 适用场景               |
+| ------------- | -------- | ---------------------- |
+| `primary`     | 主要标记 | 常规通知、默认状态     |
+| `destructive` | 危险标记 | 错误计数、紧急通知     |
+| `success`     | 成功标记 | 已完成、在线状态       |
+| `warning`     | 警告标记 | 待处理、需注意         |
+| `info`        | 信息标记 | 一般消息、辅助信息     |
+| `carbon`      | 中性标记 | 无语义倾向的通用标记   |
+| `secondary`   | 次级标记 | 低优先级标记           |
+| `accent`      | 强调标记 | 需要特殊视觉关注的标记 |
+
+小红点模式下的 8 种颜色：
+
+<Demo src="@playground/badge/modules/BadgeColor" />
+
+带内容模式下的 8 种颜色：
+
+<Demo src="@playground/badge/modules/BadgeColorWithContent" />
+
+## 位置
+
+通过 `position` 控制徽标在元素上的定位：
+
+| 位置           | 说明           |
+| -------------- | -------------- |
+| `top-right`    | 右上角（默认） |
+| `top-left`     | 左上角         |
+| `bottom-right` | 右下角         |
+| `bottom-left`  | 左下角         |
+
+<Demo src="@playground/badge/modules/BadgePosition" />
+
+## 尺寸
+
+通过 `size` 调整徽标大小，从 `xs` 到 `2xl` 共 6 个尺寸。小红点和计数徽标均会随尺寸缩放。
+
+| 尺寸  | 最小高度 | 字号 | 适用场景         |
+| ----- | -------- | ---- | ---------------- |
+| `xs`  | 8px      | 8px  | 极紧凑、微型指示 |
+| `sm`  | 10px     | 9px  | 紧凑布局         |
+| `md`  | 12px     | 10px | 常规场景（默认） |
+| `lg`  | 14px     | 12px | 稍大标记         |
+| `xl`  | 16px     | 14px | 突出标记         |
+| `2xl` | 20px     | 16px | 大幅展示         |
+
+<Demo src="@playground/badge/modules/BadgeSize" />
+
+## API
+
+### Badge
+
+通用属性参考：支持原生 `div` 元素的所有属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'color',
+      description: '主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响徽标大小与字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'position',
+      description: '徽标在元素上的定位',
+      type: "'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'",
+      default: "'top-right'"
+    },
+    {
+      name: 'content',
+      description: '徽标内容，不传时显示为小红点',
+      type: 'ReactNode'
+    },
+    {
+      name: 'open',
+      description: '控制徽标的显示/隐藏',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / content）',
+      type: 'BadgeUi'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'BadgeUi',
+      description: '各 slot 的自定义 class，用于精细化控制 Badge 各部分的样式。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器的 class。' },
+        { name: 'content', type: 'ClassValue', description: '徽标内容区的 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>
