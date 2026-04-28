@@ -1,0 +1,238 @@
+---
+title: ScrollArea
+description: 带自定义滚动条的可滚动内容区域
+---
+
+ScrollArea 用于在固定尺寸容器内展示超出范围的内容，并提供一致的自定义滚动条样式。组件基于 Radix Scroll Area 封装，默认组合 Root、Viewport、Scrollbar、Thumb 和 Corner。
+
+```tsx
+import {
+  ScrollArea,
+  ScrollAreaRoot,
+  ScrollAreaScrollbar,
+  ScrollAreaThumb,
+  ScrollAreaViewport
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 内容高度或宽度固定，但内部列表、图片或文本会溢出。
+- 需要自定义滚动条视觉，而不是完全依赖浏览器默认滚动条。
+- 需要在菜单、侧栏、列表、卡片或预览区域内限制内容尺寸。
+- 页面主体滚动优先使用原生滚动；虚拟长列表优先使用 Virtualizer。
+
+## 纵向滚动
+
+设置固定高度后，默认 `orientation="vertical"` 会渲染纵向滚动条。
+
+<Demo src="@playground/scroll-area/modules/ScrollAreaVertical" />
+
+```tsx
+<ScrollArea className="h-72 w-48">
+  <div>Scrollable content</div>
+</ScrollArea>
+```
+
+## 横向滚动
+
+设置 `orientation="horizontal"` 后，主组件会渲染横向滚动条。内容需要自身产生横向溢出，例如使用 `w-max` 或 `whitespace-nowrap`。
+
+<Demo src="@playground/scroll-area/modules/ScrollAreaHorizontal" />
+
+```tsx
+<ScrollArea
+  className="w-96 whitespace-nowrap"
+  orientation="horizontal"
+>
+  <div className="w-max">Wide content</div>
+</ScrollArea>
+```
+
+## 尺寸
+
+通过 `size` 调整滚动条厚度，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/scroll-area/modules/ScrollAreaSize" />
+
+| 尺寸  | 纵向宽度 | 横向高度 | 适用场景           |
+| ----- | -------- | -------- | ------------------ |
+| `xs`  | 6px      | 6px      | 紧凑列表、菜单     |
+| `sm`  | 8px      | 8px      | 小型卡片           |
+| `md`  | 10px     | 10px     | 常规场景（默认）   |
+| `lg`  | 12px     | 12px     | 大号内容区         |
+| `xl`  | 14px     | 14px     | 展示区、图片列表   |
+| `2xl` | 16px     | 16px     | 触控友好的大滚动条 |
+
+## 自定义样式
+
+通过 `classNames` 覆盖内部 slot。常用 slot 包括 `root`、`viewport`、`scrollbar`、`thumb` 和 `corner`。
+
+<Demo src="@playground/scroll-area/modules/ScrollAreaCustom" />
+
+```tsx
+<ScrollArea
+  classNames={{
+    scrollbar: 'bg-muted/60',
+    thumb: 'bg-primary'
+  }}
+>
+  <div>Content</div>
+</ScrollArea>
+```
+
+## API
+
+### ScrollArea
+
+主组件组合 Root、Viewport、Scrollbar、Thumb 和 Corner。当前主组件一次渲染一个方向的 Scrollbar；如果需要同时显示横向和纵向滚动条，可使用结构组件手动组合。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '可滚动内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'orientation',
+      description: '滚动条方向',
+      type: "'vertical' | 'horizontal'",
+      default: "'vertical'"
+    },
+    {
+      name: 'type',
+      description: '滚动条显示策略，透传给 Radix Root',
+      type: "'auto' | 'always' | 'scroll' | 'hover'"
+    },
+    {
+      name: 'scrollHideDelay',
+      description: 'type 为 hover 时滚动条隐藏延迟',
+      type: 'number'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响滚动条厚度',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / viewport / scrollbar / thumb / corner）',
+      type: 'ScrollAreaUi'
+    },
+    {
+      name: 'viewportProps',
+      description: '传递给 ScrollAreaViewport 的额外 props',
+      type: 'ScrollAreaViewportProps'
+    },
+    {
+      name: 'scrollbarProps',
+      description: '传递给 ScrollAreaScrollbar 的额外 props',
+      type: 'ScrollAreaScrollbarProps'
+    },
+    {
+      name: 'thumbProps',
+      description: '传递给 ScrollAreaThumb 的额外 props',
+      type: 'ScrollAreaThumbProps'
+    }
+  ]}
+/>
+
+### 结构组件
+
+ScrollArea 也导出结构组件，适合需要同时渲染横向和纵向滚动条，或需要完全控制 DOM 结构时使用。
+
+<PropsTable
+  data={[
+    { name: 'ScrollAreaRoot', description: '根容器，基于 Radix Root', type: 'ScrollAreaRootProps' },
+    { name: 'ScrollAreaViewport', description: '可滚动内容视口', type: 'ScrollAreaViewportProps' },
+    { name: 'ScrollAreaScrollbar', description: '滚动条轨道', type: 'ScrollAreaScrollbarProps' },
+    { name: 'ScrollAreaThumb', description: '滚动条拖拽指示器', type: 'ScrollAreaThumbProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ScrollAreaProps',
+      description: '主组件属性。组合 Root、Viewport 和 Scrollbar props，并增加 slot class 与子组件 props。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '可滚动内容。' },
+        { name: 'orientation', type: "'vertical' | 'horizontal'", description: '滚动条方向。' },
+        { name: 'type', type: "'auto' | 'always' | 'scroll' | 'hover'", description: '滚动条显示策略。' },
+        { name: 'scrollHideDelay', type: 'number', description: '滚动条隐藏延迟。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'ScrollAreaUi', description: 'slot class 配置。' },
+        { name: 'viewportProps', type: 'ScrollAreaViewportProps', description: '视口属性。' },
+        { name: 'scrollbarProps', type: 'ScrollAreaScrollbarProps', description: '滚动条属性。' },
+        { name: 'thumbProps', type: 'ScrollAreaThumbProps', description: '拖拽指示器属性。' }
+      ]
+    },
+    {
+      name: 'ScrollAreaUi',
+      description: 'ScrollArea 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'viewport', type: 'ClassValue', description: '可滚动视口 class。' },
+        { name: 'scrollbar', type: 'ClassValue', description: '滚动条轨道 class。' },
+        { name: 'thumb', type: 'ClassValue', description: '滚动条 thumb class。' },
+        { name: 'corner', type: 'ClassValue', description: '双向滚动时角落区域 class。' }
+      ]
+    },
+    {
+      name: 'ScrollAreaRootProps',
+      description: '根容器属性，继承 Radix ScrollArea Root props，并增加项目 className 类型。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '子节点。' },
+        { name: 'type', type: "'auto' | 'always' | 'scroll' | 'hover'", description: '滚动条显示策略。' },
+        { name: 'scrollHideDelay', type: 'number', description: '滚动条隐藏延迟。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '继承字段，Root 当前不直接使用。' }
+      ]
+    },
+    {
+      name: 'ScrollAreaViewportProps',
+      description: '可滚动视口属性，继承 Radix ScrollArea Viewport props。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '视口内容。' },
+        { name: 'className', type: 'ClassValue', description: '视口 class。' },
+        { name: 'nonce', type: 'string', description: '传给 Radix Viewport 的 nonce。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '继承字段，Viewport 当前不直接使用。' }
+      ]
+    },
+    {
+      name: 'ScrollAreaScrollbarProps',
+      description: '滚动条属性，继承 Radix ScrollArea Scrollbar props，并增加项目尺寸和 className 类型。',
+      fields: [
+        { name: 'orientation', type: "'vertical' | 'horizontal'", description: '滚动条方向。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载滚动条。' },
+        { name: 'className', type: 'ClassValue', description: '滚动条 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '滚动条尺寸。' }
+      ]
+    },
+    {
+      name: 'ScrollAreaThumbProps',
+      description: '滚动条 thumb 属性，继承 Radix ScrollArea Thumb props。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: 'thumb class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '继承字段，Thumb 当前不直接使用。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

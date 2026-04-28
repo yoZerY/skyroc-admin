@@ -1,0 +1,293 @@
+---
+title: Carousel
+description: 用于横向或纵向浏览一组内容的轮播组件
+---
+
+轮播（Carousel）基于 Embla Carousel 封装，用于在有限空间内展示一组可滑动的图片、卡片或内容面板。
+
+```tsx
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselRoot } from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Carousel 由根容器、内容轨道、轮播项和前后切换按钮组成。主组件会自动组合这些子组件，也可以按需使用子组件自定义结构。
+
+- `CarouselRoot`：根容器，创建 Embla 实例并通过上下文提供滚动状态与控制方法。
+- `CarouselContent`：视口与内容轨道容器，连接 Embla 的 viewport ref。
+- `CarouselItem`：单个 slide，默认占满一屏宽度，可通过 class 调整为多项展示。
+- `CarouselNext`：下一项按钮，会在无法继续滚动时自动禁用。
+- `CarouselPrevious`：上一项按钮，会在无法继续滚动时自动禁用。
+
+## 何时使用
+
+- 需要在一个区域内浏览多张图片、多张卡片或多个推荐项时。
+- 需要支持横向、纵向或多项同时露出的内容浏览时。
+- 需要通过 Embla `opts` 或插件扩展滚动行为时。
+- 如果内容数量较少且需要同时比较，优先使用普通网格或列表。
+
+## 基础用法
+
+通过 `counts` 搭配函数 children 按索引生成轮播项。`opts` 会透传给 Embla Carousel。
+
+<Demo src="@playground/carousel/modules/CarouselBasic" />
+
+## 多项展示
+
+通过 `classNames.item` 调整每个 slide 的 `basis`，可以让一屏中同时露出多个项目。
+
+<Demo src="@playground/carousel/modules/CarouselMultiple" />
+
+## 垂直方向
+
+设置 `orientation="vertical"` 后，Carousel 使用纵向滚动轴，键盘方向键也会切换为上下键。
+
+<Demo src="@playground/carousel/modules/CarouselVertical" />
+
+## 插件
+
+通过 `plugins` 接入 Embla 插件，例如自动播放、淡入淡出或自定义滚动效果。插件实例会作为数组传给底层 `useEmblaCarousel`。
+
+```tsx
+<Carousel counts={5} opts={{ loop: true }} plugins={[Autoplay({ delay: 2000 })]}>
+  {index => <div>{index + 1}</div>}
+</Carousel>
+```
+
+## API
+
+### Carousel
+
+通用属性参考：根容器支持原生 `div` 元素属性，轮播行为由 Embla `opts` 控制。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '轮播内容；可传渲染函数或 ReactNode 数组',
+      type: 'CarouselChildren',
+      required: true
+    },
+    {
+      name: 'className',
+      description: '根容器 class；存在时优先于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / contentWrapper / content / item / next / previous）',
+      type: 'CarouselUi'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 CarouselContent 的额外 props',
+      type: 'CarouselContentProps'
+    },
+    {
+      name: 'counts',
+      description: '轮播项数量；使用函数 children 时必填，使用数组 children 时可省略',
+      type: 'number'
+    },
+    {
+      name: 'itemProps',
+      description: '传递给每个 CarouselItem 的额外 props',
+      type: 'CarouselItemProps'
+    },
+    {
+      name: 'nextProps',
+      description: '传递给 CarouselNext 的额外 props',
+      type: "Omit<ButtonProps, 'class'>"
+    },
+    {
+      name: 'opts',
+      description: 'Embla Carousel 配置项',
+      type: 'CarouselOptions'
+    },
+    {
+      name: 'orientation',
+      description: '轮播方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'plugins',
+      description: 'Embla 插件列表',
+      type: 'CarouselPlugin'
+    },
+    {
+      name: 'previousProps',
+      description: '传递给 CarouselPrevious 的额外 props',
+      type: "Omit<ButtonProps, 'class'>"
+    },
+    {
+      name: 'setApi',
+      description: '接收 Embla API 实例，用于外部程序化控制',
+      type: '(api: CarouselApi) => void'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响根容器字号、slide 间距和按钮位置',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    }
+  ]}
+/>
+
+### 子组件
+
+<PropsTable
+  data={[
+    { name: 'CarouselRoot', description: '根容器，创建轮播上下文并支持原生 div 属性', type: 'CarouselRootProps' },
+    { name: 'CarouselContent', description: '视口与内容轨道容器', type: 'CarouselContentProps' },
+    { name: 'CarouselItem', description: '单个轮播项，支持原生 div 属性', type: 'CarouselItemProps' },
+    { name: 'CarouselNext', description: '下一项按钮，继承 ButtonProps', type: 'CarouselNextProps' },
+    { name: 'CarouselPrevious', description: '上一项按钮，继承 ButtonProps', type: 'CarouselPreviousProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'CarouselProps',
+      description: '主组件属性。继承 CarouselRootProps，并增加内容生成、slot class 和子组件 props 配置。',
+      fields: [
+        { name: 'children', type: 'CarouselChildren', required: true, description: '轮播项内容。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class；存在时优先于 classNames.root。' },
+        { name: 'classNames', type: 'CarouselUi', description: '各 slot 的自定义 class。' },
+        { name: 'contentProps', type: 'CarouselContentProps', description: '内容轨道组件属性。' },
+        { name: 'counts', type: 'number', description: '轮播项数量。函数 children 模式下必填。' },
+        { name: 'itemProps', type: 'CarouselItemProps', description: '轮播项组件属性。' },
+        { name: 'nextProps', type: "Omit<ButtonProps, 'class'>", description: '下一项按钮属性。' },
+        { name: 'opts', type: 'CarouselOptions', description: 'Embla 配置项。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '轮播方向。' },
+        { name: 'plugins', type: 'CarouselPlugin', description: 'Embla 插件列表。' },
+        { name: 'previousProps', type: "Omit<ButtonProps, 'class'>", description: '上一项按钮属性。' },
+        { name: 'setApi', type: '(api: CarouselApi) => void', description: '接收 Embla API 实例。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响样式间距。' }
+      ]
+    },
+    {
+      name: 'CarouselRootProps',
+      description: '根容器属性。支持原生 div 属性，并增加 Embla 配置、方向、插件和 API 回调。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '子节点。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'opts', type: 'CarouselOptions', description: 'Embla 配置项。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '轮播方向。' },
+        { name: 'plugins', type: 'CarouselPlugin', description: 'Embla 插件列表。' },
+        { name: 'setApi', type: '(api: CarouselApi) => void', description: '接收 Embla API 实例。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响根容器字号。' }
+      ]
+    },
+    {
+      name: 'CarouselContentProps',
+      description: '内容轨道属性。支持原生 div 属性，并允许单独定制 content 与 contentWrapper slot。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '轮播项节点。' },
+        {
+          name: 'className',
+          type: 'ClassValue',
+          description: '内容外层 viewport class；存在时优先于 classNames.contentWrapper。'
+        },
+        {
+          name: 'classNames',
+          type: "Pick<CarouselUi, 'content' | 'contentWrapper'>",
+          description: '内容相关 slot class。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响轮播项间距。' }
+      ]
+    },
+    {
+      name: 'CarouselItemProps',
+      description: '单个轮播项属性，等价于 HTMLComponentProps<\"div\">。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: 'slide 内容。' },
+        { name: 'className', type: 'ClassValue', description: '轮播项 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响轮播项间距。' }
+      ]
+    },
+    {
+      name: 'CarouselNextProps',
+      description: '下一项按钮属性，继承 ButtonProps。默认 shape=\"circle\"、variant=\"pure\"。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义按钮内容，默认是 ChevronRight 图标。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'disabled', type: 'boolean', description: '手动禁用；无法继续向后滚动时也会自动禁用。' },
+        { name: 'shape', type: "'auto' | 'rounded' | 'square' | 'circle'", description: '按钮形状。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '按钮尺寸。' },
+        {
+          name: 'variant',
+          type: "'solid' | 'outline' | 'dashed' | 'soft' | 'ghost' | 'link' | 'plain' | 'pure'",
+          description: '按钮视觉样式。'
+        }
+      ]
+    },
+    {
+      name: 'CarouselPreviousProps',
+      description: '上一项按钮属性，继承 ButtonProps。默认 shape=\"circle\"、variant=\"pure\"。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义按钮内容，默认是 ChevronLeft 图标。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'disabled', type: 'boolean', description: '手动禁用；无法继续向前滚动时也会自动禁用。' },
+        { name: 'shape', type: "'auto' | 'rounded' | 'square' | 'circle'", description: '按钮形状。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '按钮尺寸。' },
+        {
+          name: 'variant',
+          type: "'solid' | 'outline' | 'dashed' | 'soft' | 'ghost' | 'link' | 'plain' | 'pure'",
+          description: '按钮视觉样式。'
+        }
+      ]
+    },
+    {
+      name: 'CarouselUi',
+      description: 'Carousel 全部 slot 的 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'contentWrapper', type: 'ClassValue', description: '视口外层容器 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容轨道 class。' },
+        { name: 'item', type: 'ClassValue', description: '轮播项 class。' },
+        { name: 'next', type: 'ClassValue', description: '下一项按钮 class。' },
+        { name: 'previous', type: 'ClassValue', description: '上一项按钮 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="CarouselChildren" description="轮播内容类型" type="((index: number) => ReactNode) | ReactNode[]" />
+
+<UnionType
+  name="UseCarouselParameters"
+  description="useEmblaCarousel 参数类型，用于从 Embla hook 中派生配置和插件类型"
+  type="Parameters<typeof useEmblaCarousel>"
+/>
+
+<UnionType
+  name="CarouselOptions"
+  description="Embla Carousel 配置项类型，等价于 useEmblaCarousel 的第一个参数"
+  type="UseCarouselParameters[0]"
+/>
+
+<UnionType
+  name="CarouselPlugin"
+  description="Embla Carousel 插件列表类型，等价于 useEmblaCarousel 的第二个参数"
+  type="UseCarouselParameters[1]"
+/>
+
+<UnionType
+  name="CarouselApi"
+  description="Embla Carousel API 实例类型，用于调用 scrollNext、scrollPrev、canScrollNext 等方法"
+  type="UseEmblaCarouselType[1]"
+/>
+
+<UnionType
+  name="UseEmblaCarouselType"
+  description="embla-carousel-react 导出的 useEmblaCarousel 返回元组类型"
+  type="import('embla-carousel-react').UseEmblaCarouselType"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

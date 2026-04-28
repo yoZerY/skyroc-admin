@@ -1,0 +1,430 @@
+---
+title: Textarea
+description: 用于收集多行文本并支持尺寸、字数统计和自定义计数展示的文本域组件
+---
+
+Textarea 用于收集评论、备注、描述等多行文本。组件基于原生 `<textarea>` 封装，保留常用原生属性透传，并提供统一尺寸、受控状态和可选字数统计。
+
+```tsx
+import { Textarea, TextareaContent, TextareaCount, TextareaRoot } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要输入多行文本，如备注、评论、问题描述、长文本表单项。
+- 需要显示当前输入长度，或配合 `maxLength` 给用户明确的输入限制反馈。
+- 需要按项目统一尺寸体系调整文本域高度、字号和内边距。
+- 只收集单行文本时优先使用 Input；需要富文本编辑时不适合使用 Textarea。
+
+## 基础用法
+
+Textarea 支持原生 `textarea` 属性，`placeholder`、`disabled`、`readOnly`、`name`、`required` 等属性会透传到底层 `<textarea>`。
+
+<Demo src="@playground/textarea/modules/TextareaBasic" />
+
+```tsx
+<Textarea placeholder="请输入内容" />
+```
+
+## 字数统计
+
+通过 `showCount` 显示字数统计。默认统计 `String(value).length`，没有 `maxLength` 时只显示当前数量。
+
+<Demo src="@playground/textarea/modules/TextareaDemo" />
+
+```tsx
+<Textarea showCount />
+```
+
+## 最大长度
+
+通过原生 `maxLength` 限制输入长度，并在开启 `showCount` 后显示 `当前数量 / 最大长度`。
+
+<Demo src="@playground/textarea/modules/TextareaMaxlength" />
+
+```tsx
+<Textarea showCount maxLength={200} />
+```
+
+## 自定义统计内容
+
+通过 `countRender` 自定义统计区域的渲染内容。`countRender` 接收组件格式化后的统计文本。
+
+<Demo src="@playground/textarea/modules/TextCustomCount" />
+
+```tsx
+<Textarea showCount countRender={count => <span>{count}</span>} />
+```
+
+## 字符簇计数
+
+通过 `countGraphemes` 自定义计数逻辑，适合 emoji、组合字符等需要按用户可见字符统计的场景。
+
+<Demo src="@playground/textarea/modules/TextareaCountGraphemes" />
+
+```tsx
+<Textarea
+  showCount
+  countGraphemes={value =>
+    Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(String(value ?? ''))).length
+  }
+/>
+```
+
+## 尺寸
+
+通过 `size` 调整文本域的最小高度、字号、内边距和计数位置，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 最小高度 | 字号 | 适用场景           |
+| ----- | -------- | ---- | ------------------ |
+| `xs`  | 24px     | 10px | 紧凑表单、表格内嵌 |
+| `sm`  | 28px     | 12px | 辅助说明、侧边栏   |
+| `md`  | 32px     | 14px | 常规场景（默认）   |
+| `lg`  | 36px     | 16px | 重点表单项         |
+| `xl`  | 40px     | 18px | 大号输入区域       |
+| `2xl` | 48px     | 20px | 大幅文本输入       |
+
+<Demo src="@playground/textarea/modules/TextareaSize" />
+
+## 自定义样式
+
+通过 `classNames` 分别控制 `root`、`content` 和 `count` 三个 slot。`className` 作为原生 textarea 属性会传给内容元素；如果需要精细控制外层容器或计数区域，优先使用 `classNames`。
+
+<Demo src="@playground/textarea/modules/TextareaCustomStyle" />
+
+```tsx
+<Textarea
+  showCount
+  classNames={{
+    root: 'max-w-md',
+    content: 'min-h-32',
+    count: 'text-primary'
+  }}
+/>
+```
+
+## API
+
+### Textarea
+
+通用属性参考：继承原生 textarea 属性，并增加字数统计、项目尺寸和 slot class 配置。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '受控输入值',
+      type: 'string | number | readonly string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下的默认值',
+      type: 'string | number | readonly string[]'
+    },
+    {
+      name: 'onChange',
+      description: '输入值变化时触发的原生 change 事件回调',
+      type: '(event) => void'
+    },
+    {
+      name: 'onTextChange',
+      description: '输入值变化时触发，接收更新后的文本值',
+      type: '(value: string | number | readonly string[] | undefined) => void'
+    },
+    {
+      name: 'placeholder',
+      description: '占位文本',
+      type: 'string'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用文本域',
+      type: 'boolean'
+    },
+    {
+      name: 'readOnly',
+      description: '是否只读',
+      type: 'boolean'
+    },
+    {
+      name: 'maxLength',
+      description: '最大输入长度；开启 showCount 后会参与统计文本展示',
+      type: 'number'
+    },
+    {
+      name: 'showCount',
+      description: '是否显示字数统计',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'countRender',
+      description: '自定义统计内容渲染函数，接收格式化后的统计文本',
+      type: '(count: string) => ReactNode'
+    },
+    {
+      name: 'countGraphemes',
+      description: '自定义计数函数，用于覆盖默认字符串长度统计',
+      type: '(input: string | number | readonly string[] | undefined) => number'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响最小高度、字号、内边距和计数位置',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '底层 textarea 的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / content / count）',
+      type: 'TextareaClassNames'
+    },
+    {
+      name: 'name',
+      description: '表单字段名称',
+      type: 'string'
+    },
+    {
+      name: 'required',
+      description: '是否必填',
+      type: 'boolean'
+    },
+    {
+      name: 'autoComplete',
+      description: '浏览器自动完成策略',
+      type: 'string'
+    },
+    {
+      name: 'autoFocus',
+      description: '是否自动聚焦',
+      type: 'boolean'
+    }
+  ]}
+/>
+
+### TextareaRoot
+
+外层容器组件，继承原生 `div` 属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'className',
+      description: '外层容器的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'size',
+      description: '尺寸，用于设置 data-size 并参与 root slot 变体计算',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    }
+  ]}
+/>
+
+### TextareaContent
+
+底层内容组件，继承原生 `textarea` 属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'className',
+      description: '底层 textarea 的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响最小高度、字号和内边距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'value',
+      description: 'textarea 当前值',
+      type: 'string | number | readonly string[]'
+    },
+    {
+      name: 'maxLength',
+      description: '最大输入长度',
+      type: 'number'
+    }
+  ]}
+/>
+
+### TextareaCount
+
+统计展示组件，继承原生 `div` 属性，但 `children` 被定义为统计文本渲染函数。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '用于统计的 textarea 当前值',
+      type: 'string | number | readonly string[]'
+    },
+    {
+      name: 'maxLength',
+      description: '最大输入长度；存在时展示为 当前数量 / 最大长度',
+      type: 'number'
+    },
+    {
+      name: 'children',
+      description: '自定义统计内容渲染函数',
+      type: '(count: string) => ReactNode'
+    },
+    {
+      name: 'countGraphemes',
+      description: '自定义计数函数',
+      type: '(input: string | number | readonly string[] | undefined) => number'
+    },
+    {
+      name: 'className',
+      description: '统计区域的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响统计区域字号和定位',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'TextareaProps',
+      description: 'Textarea 主组件属性。继承原生 textarea 属性，并增加字数统计、项目尺寸和 slot class 配置。',
+      fields: [
+        { name: 'autoComplete', type: 'string', description: '浏览器自动完成策略。' },
+        { name: 'autoFocus', type: 'boolean', description: '是否自动聚焦。' },
+        { name: 'className', type: 'ClassValue', description: '底层 textarea 的自定义 class。' },
+        { name: 'classNames', type: 'TextareaClassNames', description: '各 slot 的自定义 class。' },
+        {
+          name: 'countGraphemes',
+          type: '(input: string | number | readonly string[] | undefined) => number',
+          description: '自定义计数函数。'
+        },
+        { name: 'countRender', type: '(count: string) => ReactNode', description: '自定义统计内容渲染函数。' },
+        { name: 'defaultValue', type: 'string | number | readonly string[]', description: '非受控默认值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'maxLength', type: 'number', description: '最大输入长度。' },
+        { name: 'name', type: 'string', description: '表单字段名称。' },
+        { name: 'onChange', type: '(event) => void', description: '原生 change 事件回调。' },
+        {
+          name: 'onTextChange',
+          type: '(value: string | number | readonly string[] | undefined) => void',
+          description: '文本值变化回调。'
+        },
+        { name: 'placeholder', type: 'string', description: '占位文本。' },
+        { name: 'readOnly', type: 'boolean', description: '是否只读。' },
+        { name: 'required', type: 'boolean', description: '是否必填。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。来自 StyledComponentProps。'
+        },
+        { name: 'showCount', type: 'boolean', description: '是否显示字数统计。' },
+        { name: 'value', type: 'string | number | readonly string[]', description: '受控输入值。' },
+        {
+          name: '...textareaProps',
+          type: 'textarea element props without native className',
+          description: '其他原生 textarea 属性。'
+        }
+      ]
+    },
+    {
+      name: 'TextareaClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 Textarea 各部分样式。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '外层容器的 class。' },
+        { name: 'content', type: 'ClassValue', description: '底层 textarea 的 class。' },
+        { name: 'count', type: 'ClassValue', description: '统计区域的 class。' }
+      ]
+    },
+    {
+      name: 'TextareaContentProps',
+      description: '底层 textarea 子组件属性，继承原生 textarea 属性并支持项目尺寸。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'maxLength', type: 'number', description: '最大输入长度。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。'
+        },
+        { name: 'value', type: 'string | number | readonly string[]', description: 'textarea 当前值。' },
+        {
+          name: '...textareaProps',
+          type: 'textarea element props without native className',
+          description: '其他原生 textarea 属性。'
+        }
+      ]
+    },
+    {
+      name: 'TextareaCountProps',
+      description: '统计展示子组件属性，继承原生 div 属性并使用函数式 children 渲染统计文本。',
+      fields: [
+        { name: 'children', type: '(count: string) => ReactNode', description: '自定义统计内容渲染函数。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        {
+          name: 'countGraphemes',
+          type: '(input: string | number | readonly string[] | undefined) => number',
+          description: '自定义计数函数。'
+        },
+        { name: 'maxLength', type: 'number', description: '最大输入长度。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。'
+        },
+        { name: 'value', type: 'string | number | readonly string[]', description: '用于统计的当前值。' },
+        {
+          name: '...divProps',
+          type: 'div element props without native className and children',
+          description: '其他原生 div 属性。'
+        }
+      ]
+    },
+    {
+      name: 'TextareaRootProps',
+      description: '外层容器子组件属性，继承原生 div 属性并支持项目尺寸。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。'
+        },
+        { name: '...divProps', type: 'div element props without native className', description: '其他原生 div 属性。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        {
+          name: '...sourceProps',
+          type: 'inherited props without className',
+          description: '继承原始组件属性，但重新定义 className。'
+        },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

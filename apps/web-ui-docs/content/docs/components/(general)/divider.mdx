@@ -1,0 +1,189 @@
+---
+title: Divider
+description: 分隔线组件，用于在内容之间创建视觉分隔
+---
+
+分隔线（Divider）用于在页面内容之间创建视觉分隔，支持水平和垂直方向，可附带标签文本。组件基于 Radix Separator 封装，提供边框样式、标签对齐和尺寸控制。
+
+```tsx
+import { Divider, DividerRoot, DividerLabel } from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Divider 由两个结构组件组成：
+
+- `DividerRoot`：分隔线根容器，渲染为 Radix Separator，负责方向和边框样式。
+- `DividerLabel`：标签文本，绝对定位在分隔线中央或指定对齐位置。
+
+`Divider` 主组件自动组合二者，传入 `children` 时渲染标签，否则仅渲染纯分隔线。
+
+## 何时使用
+
+- 在同一页面中区分不同内容区块。
+- 列表项或表单区域之间需要视觉分隔。
+- 需要带标签文本的分隔线（如"或"、"更多"）。
+- 工具栏或导航中需要垂直分隔不同操作组。
+
+## 基础用法
+
+传入 `children` 作为分隔线上的标签文本，不传则渲染纯分隔线。
+
+<Demo src="@playground/divider/modules/DividerBasic" />
+
+## 边框样式
+
+通过 `border` 控制分隔线的线条样式。
+
+| 样式     | 说明           |
+| -------- | -------------- |
+| `solid`  | 实线（默认）   |
+| `dashed` | 虚线           |
+| `dotted` | 点线           |
+
+<Demo src="@playground/divider/modules/DividerBorder" />
+
+## 标签对齐
+
+通过 `align` 控制标签在分隔线上的水平位置。
+
+| 对齐     | 说明           |
+| -------- | -------------- |
+| `start`  | 靠左对齐       |
+| `center` | 居中（默认）   |
+| `end`    | 靠右对齐       |
+
+<Demo src="@playground/divider/modules/DividerAlign" />
+
+## 垂直方向
+
+设置 `orientation="vertical"` 将分隔线切换为垂直方向，适合在行内元素之间使用。
+
+<Demo src="@playground/divider/modules/DividerVertical" />
+
+## API
+
+### Divider
+
+通用属性参考：支持 Radix Separator 的 `decorative`、`asChild` 属性，以及原生 `div` 元素属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '标签内容，传入时在分隔线上显示文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'orientation',
+      description: '分隔线方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'border',
+      description: '边框线条样式',
+      type: "'solid' | 'dashed' | 'dotted'",
+      default: "'solid'"
+    },
+    {
+      name: 'align',
+      description: '标签对齐位置（有 children 时生效）',
+      type: "'start' | 'center' | 'end'",
+      default: "'center'"
+    },
+    {
+      name: 'size',
+      description: '标签文本尺寸和间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'leading',
+      description: '前置插槽，位于标签之前',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '后置插槽，位于标签之后',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '根容器的 class，优先级低于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / label）',
+      type: 'DividerUi'
+    },
+    {
+      name: 'decorative',
+      description: '是否为纯装饰性分隔线（true 时不输出 ARIA role）',
+      type: 'boolean'
+    }
+  ]}
+/>
+
+### 子组件
+
+Divider 也导出基础结构组件，适合需要手动组合 Root 和 Label 的场景。
+
+<PropsTable
+  data={[
+    {
+      name: 'DividerRoot',
+      description: '分隔线根容器，支持 Radix Separator props、border 和 className',
+      type: 'DividerRootProps'
+    },
+    {
+      name: 'DividerLabel',
+      description: '标签文本，支持 align、orientation、size 和 className',
+      type: 'DividerLabelProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'DividerUi',
+      description: 'Divider 各 slot 的自定义 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器（分隔线）的 class。' },
+        { name: 'label', type: 'ClassValue', description: '标签文本的 class。' }
+      ]
+    },
+    {
+      name: 'DividerRootProps',
+      description: '根容器属性。继承 Radix Separator props，并增加 className、size 和 border。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '方向。' },
+        { name: 'border', type: "'solid' | 'dashed' | 'dotted'", description: '边框样式。' },
+        { name: 'decorative', type: 'boolean', description: '是否为装饰性分隔线。' },
+        { name: 'asChild', type: 'boolean', description: '将渲染委托给子元素。' }
+      ]
+    },
+    {
+      name: 'DividerLabelProps',
+      description: '标签属性。继承 span 元素属性，并增加 className、size、align 和 orientation。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '标签 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '标签文本尺寸。' },
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '标签对齐位置。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '分隔线方向，影响标签间距方向。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

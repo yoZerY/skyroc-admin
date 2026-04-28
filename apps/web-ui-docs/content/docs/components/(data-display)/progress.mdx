@@ -1,0 +1,164 @@
+---
+title: Progress
+description: 用于展示任务完成度或加载状态的进度条组件
+---
+
+Progress 用于展示任务、上传、下载、表单流程等操作的完成进度。组件基于 Radix Progress 封装，支持受控 `value`、最大值 `max`、主题色、尺寸和自定义 slot 样式。
+
+```tsx
+import { Progress } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 展示确定进度的任务，例如上传、下载、安装或流程完成度。
+- 需要用颜色表达状态，例如成功、警告、错误或信息提示。
+- 需要和项目主题尺寸、圆角和动效保持一致。
+- 只需要表达忙碌状态且没有明确百分比时，可使用动画进度或 Skeleton。
+
+## 基础用法
+
+通过 `value` 设置当前进度，默认最大值为 `100`。如果传入 `max`，实际显示宽度会按 `value / max` 计算。
+
+<Demo src="@playground/progress/modules/ProgressBasic" />
+
+```tsx
+<Progress value={60} />
+```
+
+## 颜色
+
+通过 `color` 切换进度条语义颜色。根轨道会使用对应颜色的浅色背景，指示条使用对应主题色。
+
+<Demo src="@playground/progress/modules/Color" />
+
+| 颜色          | 语义     | 适用场景                 |
+| ------------- | -------- | ------------------------ |
+| `primary`     | 主要进度 | 默认进度、主流程         |
+| `destructive` | 危险状态 | 失败、错误或不可逆流程   |
+| `success`     | 成功状态 | 上传完成、任务完成       |
+| `warning`     | 警告状态 | 接近限制、需要关注       |
+| `info`        | 信息状态 | 中性信息或后台处理       |
+| `carbon`      | 中性深色 | 无明显语义倾向的进度     |
+| `secondary`   | 次级状态 | 辅助进度、低优先级任务   |
+| `accent`      | 强调状态 | 需要视觉强调的进度或步骤 |
+
+## 尺寸
+
+通过 `size` 调整进度条高度，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/progress/modules/Size" />
+
+| 尺寸  | 高度 | 适用场景           |
+| ----- | ---- | ------------------ |
+| `xs`  | 7px  | 紧凑列表、表格内嵌 |
+| `sm`  | 8px  | 小型卡片、辅助进度 |
+| `md`  | 10px | 常规场景（默认）   |
+| `lg`  | 12px | 重点流程           |
+| `xl`  | 14px | 强调进度           |
+| `2xl` | 16px | 大号展示区         |
+
+## 动态进度
+
+Progress 是受控组件，外部状态变化时会通过 CSS transition 平滑更新指示条位置。
+
+<Demo src="@playground/progress/modules/ProgressAnimated" />
+
+```tsx
+const [value, setValue] = useState(0);
+
+<Progress value={value} />
+```
+
+## API
+
+### Progress
+
+通用属性参考：继承 Radix Progress Root props，并增加主题色、尺寸和 slot class 配置。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '当前进度值',
+      type: 'number | null'
+    },
+    {
+      name: 'max',
+      description: '最大进度值，用于计算显示百分比',
+      type: 'number',
+      default: '100'
+    },
+    {
+      name: 'color',
+      description: '主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响进度条高度',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '根轨道 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / indicator）',
+      type: 'ProgressClassNames'
+    },
+    {
+      name: 'id',
+      description: '根元素 id',
+      type: 'string'
+    },
+    {
+      name: 'aria-label',
+      description: '无可见标签时提供给辅助技术的说明',
+      type: 'string'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ProgressProps',
+      description: 'Progress 组件属性。继承 Radix Progress Root props，并增加项目主题色、尺寸和 slot class 配置。',
+      fields: [
+        { name: 'value', type: 'number | null', description: '当前进度值。' },
+        { name: 'max', type: 'number', description: '最大进度值。默认 100。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根轨道 class。' },
+        { name: 'classNames', type: 'ProgressClassNames', description: 'slot class 配置。' },
+        { name: 'id', type: 'string', description: '根元素 id。' },
+        { name: 'aria-label', type: 'string', description: '无可见标签时的无障碍说明。' }
+      ]
+    },
+    {
+      name: 'ProgressClassNames',
+      description: 'Progress 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根轨道 class。' },
+        { name: 'indicator', type: 'ClassValue', description: '进度指示条 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

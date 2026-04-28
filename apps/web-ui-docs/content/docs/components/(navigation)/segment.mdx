@@ -1,0 +1,286 @@
+---
+title: Segment
+description: 用于在少量互斥选项之间切换的分段控制器
+---
+
+Segment 用于在同一上下文中切换少量互斥选项。组件基于 Tabs 的结构和样式能力封装，只渲染触发项，不渲染内容面板，适合视图模式、时间范围、筛选维度等轻量选择场景。
+
+```tsx
+import { Segment } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 选项数量较少，用户需要直接看到全部可选项。
+- 选项之间互斥，切换后通常影响同一区域的展示方式或过滤条件。
+- 需要比 Radio 更紧凑、更像工具栏的选择控件。
+- 需要展示独立内容面板时使用 Tabs；需要表单语义更明确的单选项时使用 Radio。
+
+## 基础用法
+
+通过 `items` 定义选项，使用 `value` 和 `onValueChange` 可以实现受控模式，也可以使用 `defaultValue` 作为非受控默认值。
+
+<Demo src="@playground/segment/modules/SegmentBasic" />
+
+```tsx
+<Segment
+  defaultValue="day"
+  items={[
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week' }
+  ]}
+/>
+```
+
+## 方向
+
+通过 `orientation` 控制排列方向。默认横向排列，纵向排列适合侧栏筛选、设置面板或窄容器。
+
+<Demo src="@playground/segment/modules/SegmentOrientation" />
+
+```tsx
+<Segment
+  items={items}
+  orientation="vertical"
+/>
+```
+
+## 形状
+
+通过 `shape` 控制外层容器和激活指示器的圆角。
+
+<Demo src="@playground/segment/modules/SegmentShape" />
+
+| 形状      | 说明                 |
+| --------- | -------------------- |
+| `square`  | 中等圆角，默认样式   |
+| `rounded` | 胶囊圆角，适合工具栏 |
+
+## 尺寸
+
+通过 `size` 调整字号、间距和触发项尺寸，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/segment/modules/SegmentSize" />
+
+| 尺寸  | 适用场景           |
+| ----- | ------------------ |
+| `xs`  | 表格、紧凑工具栏   |
+| `sm`  | 小型筛选区         |
+| `md`  | 常规场景（默认）   |
+| `lg`  | 设置页或表单区域   |
+| `xl`  | 强调型切换控件     |
+| `2xl` | 大尺寸展示或触控区 |
+
+## 样式类型
+
+通过 `type` 切换分段样式。`pill` 是默认填充式样式，`line` 使用线性指示器。设置 `enableIndicator={false}` 时，组件会使用触发项自身的激活背景。
+
+<Demo src="@playground/segment/modules/SegmentType" />
+
+```tsx
+<Segment
+  items={items}
+  type="line"
+/>
+
+<Segment
+  enableIndicator={false}
+  items={items}
+/>
+```
+
+## 禁用
+
+可以禁用整个 Segment，也可以在单个 item 上设置 `disabled` 禁用部分选项。
+
+<Demo src="@playground/segment/modules/SegmentDisabled" />
+
+```tsx
+<Segment
+  items={[
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week', disabled: true }
+  ]}
+/>
+
+<Segment disabled items={items} />
+```
+
+## API
+
+### Segment
+
+通用属性参考：Segment 复用 Tabs Root、List 和 Trigger 的交互能力，但不会渲染内容面板。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '分段选项数据',
+      type: 'SegmentOptionData[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前选中的值',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认选中的值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'orientation',
+      description: '排列方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'shape',
+      description: '圆角形状',
+      type: "'square' | 'rounded'",
+      default: "'square'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响字号、间距和触发项大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'type',
+      description: '样式类型',
+      type: "'pill' | 'line'",
+      default: "'pill'"
+    },
+    {
+      name: 'fill',
+      description: '根容器填充方式',
+      type: "'auto' | 'full'",
+      default: "'auto'"
+    },
+    {
+      name: 'enableIndicator',
+      description: '是否显示滑动指示器',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用全部选项',
+      type: 'boolean'
+    },
+    {
+      name: 'loop',
+      description: '键盘导航是否循环',
+      type: 'boolean'
+    },
+    {
+      name: 'dir',
+      description: '文本方向，透传给 Radix Tabs Root/List',
+      type: "'ltr' | 'rtl'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'TabsUi'
+    },
+    {
+      name: 'listProps',
+      description: '传递给内部 TabsList 的额外 props',
+      type: 'TabsListProps'
+    },
+    {
+      name: 'triggerProps',
+      description: '传递给每个内部 TabsTrigger 的额外 props',
+      type: 'Partial<TabsTriggerProps>'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'SegmentProps',
+      description: 'Segment 主组件属性。基于 TabsProps 收窄，移除了内容面板相关能力。',
+      fields: [
+        { name: 'items', type: 'SegmentOptionData[]', description: '分段选项列表。' },
+        { name: 'value', type: 'string', description: '受控选中值。' },
+        { name: 'defaultValue', type: 'string', description: '默认选中值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '排列方向。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '圆角形状。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' },
+        { name: 'type', type: "'pill' | 'line'", description: '样式类型。' },
+        { name: 'fill', type: "'auto' | 'full'", description: '根容器填充方式。' },
+        { name: 'enableIndicator', type: 'boolean', description: '是否显示滑动指示器。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用全部选项。' },
+        { name: 'loop', type: 'boolean', description: '键盘导航是否循环。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'TabsUi', description: 'slot class 配置。' },
+        { name: 'listProps', type: 'TabsListProps', description: '内部列表属性。' },
+        { name: 'triggerProps', type: 'Partial<TabsTriggerProps>', description: '内部触发项属性。' }
+      ]
+    },
+    {
+      name: 'SegmentOptionData',
+      description: '单个分段选项的数据结构。',
+      fields: [
+        { name: 'value', type: 'string', description: '选项唯一值。' },
+        { name: 'label', type: 'ReactNode', description: '选项显示内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前选项。' }
+      ]
+    },
+    {
+      name: 'TabsUi',
+      description: 'Segment 复用 Tabs 的 slot class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'list', type: 'ClassValue', description: '选项列表 class。' },
+        { name: 'trigger', type: 'ClassValue', description: '触发项 class。' },
+        { name: 'indicatorRoot', type: 'ClassValue', description: '指示器定位容器 class。' },
+        { name: 'indicator', type: 'ClassValue', description: '指示器元素 class。' }
+      ]
+    },
+    {
+      name: 'TabsListProps',
+      description: '内部列表属性，基于 Radix Tabs List，并增加项目样式变体。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '列表 class。' },
+        { name: 'classNames', type: "Pick<TabsUi, 'indicator' | 'indicatorRoot'>", description: '指示器相关 slot class。' },
+        { name: 'enableIndicator', type: 'boolean', description: '是否显示滑动指示器。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '排列方向。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '圆角形状。' },
+        { name: 'type', type: "'pill' | 'line'", description: '样式类型。' },
+        { name: 'value', type: 'string', description: '当前选中值。' }
+      ]
+    },
+    {
+      name: 'TabsTriggerProps',
+      description: '内部触发项属性，基于 Radix Tabs Trigger，并增加项目样式变体。',
+      fields: [
+        { name: 'value', type: 'string', description: '触发项对应值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用触发项。' },
+        { name: 'className', type: 'ClassValue', description: '触发项 class。' },
+        { name: 'enableIndicator', type: 'boolean', description: '是否配合滑动指示器渲染。' },
+        { name: 'type', type: "'pill' | 'line'", description: '样式类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="ClassValue" description="CSS 类名类型" type="string | null | undefined | Record<string, boolean> | ClassValue[]" />

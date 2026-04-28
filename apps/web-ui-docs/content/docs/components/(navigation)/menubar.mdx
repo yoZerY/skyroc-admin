@@ -1,0 +1,458 @@
+---
+title: Menubar
+description: 用于构建横向应用菜单和多级菜单的菜单栏组件
+---
+
+Menubar 用于构建类似桌面应用的横向菜单栏。组件基于 Radix Menubar，并复用项目 Menu 的菜单项、分隔线、子菜单、checkbox 和 radio 组选项能力。
+
+```tsx
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRoot,
+  MenubarTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在顶部区域展示应用级菜单，例如 File、Edit、View。
+- 菜单项包含快捷键、分隔线、子菜单、checkbox 或 radio 选项。
+- 需要键盘可访问的横向菜单栏。
+- 普通下拉操作菜单优先使用 DropdownMenu；右键上下文菜单使用 ContextMenu。
+
+## 基础用法
+
+通过 `items` 传入菜单数据。每个顶层 item 会渲染一个菜单触发器和一个内容面板。
+
+<Demo src="@playground/menubar/modules/MenubarBasic" />
+
+## 顶层菜单类型
+
+Menubar 支持三类顶层菜单：
+
+| type       | 说明                                 |
+| ---------- | ------------------------------------ |
+| `item`     | 默认菜单，children 使用普通菜单项数据 |
+| `checkbox` | checkbox 菜单组，支持多选            |
+| `radio`    | radio 菜单组，支持单选               |
+
+## 菜单项类型
+
+普通菜单的 children 复用 Menu 的数据结构，支持 item、label、separator 和 sub。
+
+```tsx
+const fileMenu = [
+  { label: 'New Tab', shortcut: '⌘T' },
+  { type: 'separator' },
+  {
+    type: 'sub',
+    label: 'Share',
+    children: [
+      { label: 'Email link' },
+      { label: 'Messages' }
+    ]
+  }
+];
+```
+
+## 受控选项
+
+checkbox 顶层菜单通过 `checks` 和 `onChecksChange` 管理选中值；radio 顶层菜单通过 `value` 和 `onValueChange` 管理当前值。
+
+## 尺寸与样式
+
+通过 `size` 控制根菜单栏间距和菜单项尺寸。通过 `classNames` 控制菜单内容、菜单项、快捷键和触发器等 slot，其中 `trigger` 是 Menubar 额外扩展的 slot。
+
+## API
+
+### Menubar
+
+通用属性参考：基于 Radix Menubar Root，并使用 `items` 渲染数据驱动菜单栏。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '顶层菜单数据',
+      type: 'MenubarOption[]',
+      required: true
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响菜单栏间距和菜单项尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'classNames',
+      description: '菜单相关 slot 的自定义 class，额外支持 trigger',
+      type: 'MenubarClassNames'
+    },
+    {
+      name: 'className',
+      description: '根菜单栏 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前打开的顶层菜单 value',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认打开的顶层菜单 value',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '打开的顶层菜单变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'loop',
+      description: '键盘导航是否循环',
+      type: 'boolean'
+    },
+    {
+      name: 'dir',
+      description: '文本方向',
+      type: "'ltr' | 'rtl'"
+    }
+  ]}
+/>
+
+### 顶层菜单项
+
+`items` 中的每个对象都会渲染为一个顶层菜单。
+
+<PropsTable
+  data={[
+    {
+      name: 'label',
+      description: '顶层菜单触发器内容',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'type',
+      description: '顶层菜单类型',
+      type: "'item' | 'checkbox' | 'radio'",
+      default: "'item'"
+    },
+    {
+      name: 'children',
+      description: '当前菜单的子项数据',
+      type: 'MenuOptionData[] | MenuCheckboxGroupItemProps[] | MenuRadioItemOptionProps[]',
+      required: true
+    },
+    {
+      name: 'checks',
+      description: 'checkbox 菜单当前选中的值列表',
+      type: 'string[]'
+    },
+    {
+      name: 'onChecksChange',
+      description: 'checkbox 菜单选中值变化时触发',
+      type: '(checks: string[]) => void'
+    },
+    {
+      name: 'value',
+      description: 'radio 菜单当前选中的值，或顶层菜单 value',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: 'radio 菜单选中值变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'leading',
+      description: '顶层触发器前置内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '顶层触发器后置内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'shortcut',
+      description: '顶层触发器快捷键提示',
+      type: 'string | string[]'
+    }
+  ]}
+/>
+
+### 结构组件
+
+Menubar 同时导出 Radix 风格结构组件，适合需要完全手动组合菜单结构时使用。
+
+<PropsTable
+  data={[
+    { name: 'MenubarRoot', description: '根菜单栏容器', type: 'MenubarRootProps' },
+    { name: 'MenubarMenu', description: 'Radix Menu 原语包装', type: 'MenubarMenuPrimitiveProps' },
+    { name: 'MenubarTrigger', description: '顶层菜单触发器', type: 'MenubarTriggerProps' },
+    { name: 'MenubarContent', description: '菜单内容容器，默认通过 Portal 渲染', type: 'MenubarContentProps' },
+    { name: 'MenubarItem', description: '普通菜单项', type: 'MenubarItemProps' },
+    { name: 'MenubarLabel', description: '菜单分组标签', type: 'MenubarLabelProps' },
+    { name: 'MenubarSeparator', description: '菜单分隔线', type: 'MenubarSeparatorProps' },
+    { name: 'MenubarSub', description: '子菜单根组件', type: 'MenubarSubProps' },
+    { name: 'MenubarSubTrigger', description: '子菜单触发项', type: 'MenubarSubTriggerProps' },
+    { name: 'MenubarSubContent', description: '子菜单内容', type: 'MenubarSubContentProps' },
+    { name: 'MenubarCheckboxItem', description: 'checkbox 菜单项', type: 'MenubarCheckboxItemProps' },
+    { name: 'MenubarRadioItem', description: 'radio 菜单项', type: 'MenubarRadioItemProps' },
+    { name: 'MenubarRadioGroup', description: 'Radix RadioGroup 原语包装', type: 'MenubarRadioGroupPrimitiveProps' },
+    { name: 'MenubarRadioGroupData', description: '数据驱动 radio 组', type: 'MenubarRadioGroupProps' },
+    { name: 'MenubarCheckboxGroup', description: '数据驱动 checkbox 组', type: 'MenubarCheckboxGroupProps' },
+    { name: 'MenubarShortcut', description: '快捷键展示', type: 'MenubarShortcutProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'MenubarProps',
+      description: '主组件属性。继承 Radix Menubar Root props，并通过 items 渲染数据驱动菜单。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根菜单栏 class。' },
+        { name: 'classNames', type: 'MenubarClassNames', description: '菜单 slot class，额外支持 trigger。' },
+        { name: 'defaultValue', type: 'string', description: '默认打开的顶层菜单 value。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'items', type: 'MenubarOption[]', required: true, description: '顶层菜单数据。' },
+        { name: 'loop', type: 'boolean', description: '键盘导航是否循环。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '打开菜单变化回调。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'value', type: 'string', description: '受控打开的顶层菜单 value。' }
+      ]
+    },
+    {
+      name: 'MenubarOption',
+      description: '顶层菜单数据。根据 type 分为普通菜单、checkbox 菜单和 radio 菜单。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '顶层菜单触发器内容。' },
+        { name: 'type', type: "'item' | 'checkbox' | 'radio'", description: '顶层菜单类型。默认普通菜单可省略。' },
+        { name: 'children', type: 'MenuOptionData[] | MenuCheckboxGroupItemProps[] | MenuRadioItemOptionProps[]', description: '子项数据。' },
+        { name: 'checks', type: 'string[]', description: 'checkbox 菜单选中值列表。' },
+        { name: 'onChecksChange', type: '(checks: string[]) => void', description: 'checkbox 菜单选中值变化回调。' },
+        { name: 'value', type: 'string', description: 'radio 菜单选中值或顶层菜单 value。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: 'radio 菜单值变化回调。' },
+        { name: 'leading', type: 'ReactNode', description: '触发器前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '触发器后置内容。' },
+        { name: 'shortcut', type: 'string | string[]', description: '快捷键提示。' }
+      ]
+    },
+    {
+      name: 'MenuOptionData',
+      description: '普通菜单子项数据。',
+      fields: [
+        { name: 'type', type: "'item' | 'label' | 'separator' | 'sub'", description: '菜单项类型。普通 item 可省略。' },
+        { name: 'label', type: 'ReactNode', description: '菜单项内容。' },
+        { name: 'children', type: 'MenuOptionData[]', description: '子菜单 children，仅 sub 类型使用。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'shortcut', type: 'string | string[]', description: '快捷键提示。' }
+      ]
+    },
+    {
+      name: 'MenubarClassNames',
+      description: 'Menubar classNames 类型。继承 MenuClassNames，并额外增加 trigger。',
+      fields: [
+        { name: 'trigger', type: 'ClassValue', description: '顶层触发器 class。' },
+        { name: 'content', type: 'ClassValue', description: '菜单内容 class，来自 MenuClassNames。' },
+        { name: 'item', type: 'ClassValue', description: '菜单项 class，来自 MenuClassNames。' },
+        { name: 'shortcut', type: 'ClassValue', description: '快捷键 class，来自 MenuClassNames。' },
+        { name: 'label', type: 'ClassValue', description: '标签 class，来自 MenuClassNames。' },
+        { name: 'separator', type: 'ClassValue', description: '分隔线 class，来自 MenuClassNames。' }
+      ]
+    },
+    {
+      name: 'MenubarRootProps',
+      description: '根菜单栏属性。继承 Radix Menubar Root props，并支持 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '菜单栏内容。' },
+        { name: 'className', type: 'ClassValue', description: '根菜单栏 class。' },
+        { name: 'defaultValue', type: 'string', description: '默认打开菜单 value。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'loop', type: 'boolean', description: '键盘导航是否循环。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '打开菜单变化回调。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'value', type: 'string', description: '受控打开菜单 value。' }
+      ]
+    },
+    {
+      name: 'MenubarTriggerProps',
+      description: '顶层触发器属性。继承 Radix Trigger props，并支持前后插槽和 shortcut。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '触发器内容。' },
+        { name: 'className', type: 'ClassValue', description: '触发器 class。' },
+        { name: 'classNames', type: 'MenubarTriggerClassNames', description: '触发器相关 slot class。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'shortcut', type: 'string | string[]', description: '快捷键提示。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' }
+      ]
+    },
+    {
+      name: 'MenubarContentProps',
+      description: '菜单内容属性。继承 Radix Content props，默认 align=start、alignOffset=-4、sideOffset=8。',
+      fields: [
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '对齐方式。默认值为 start。' },
+        { name: 'alignOffset', type: 'number', description: '对齐偏移。默认值为 -4。' },
+        { name: 'children', type: 'ReactNode', description: '菜单内容。' },
+        { name: 'className', type: 'ClassValue', description: '内容 class。' },
+        { name: 'sideOffset', type: 'number', description: '侧向偏移。默认值为 8。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'MenubarItemProps',
+      description: '普通菜单项属性。复用 MenuItemProps，并支持 inset。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '菜单项内容。' },
+        { name: 'className', type: 'ClassValue', description: '菜单项 class。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'inset', type: 'boolean', description: '是否增加左侧缩进。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'shortcut', type: 'string | string[]', description: '快捷键提示。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' }
+      ]
+    },
+    {
+      name: 'MenubarCheckboxGroupProps',
+      description: '数据驱动 checkbox 菜单组属性。',
+      fields: [
+        { name: 'checks', type: 'string[]', description: '选中值列表。' },
+        { name: 'items', type: 'MenuCheckboxGroupItemProps[]', required: true, description: 'checkbox 菜单项数据。' },
+        { name: 'onChecksChange', type: '(checks: string[]) => void', description: '选中值变化回调。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'MenubarRadioGroupProps',
+      description: '数据驱动 radio 菜单组属性。',
+      fields: [
+        { name: 'items', type: 'MenuRadioItemOptionProps[]', required: true, description: 'radio 菜单项数据。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'value', type: 'string', description: '当前选中值。' }
+      ]
+    },
+    {
+      name: 'MenubarShortcutProps',
+      description: '快捷键展示属性。children 为字符串时会作为 shortcut value 展示。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '快捷键内容。字符串会被转换为 value。' },
+        { name: 'className', type: 'ClassValue', description: '快捷键 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="MenubarMenuPrimitiveProps"
+  description="MenubarMenu 透传的 Radix Menu props"
+  type="radix menubar menu props"
+/>
+
+<UnionType
+  name="MenubarMenuComposedProps"
+  description="内部使用的数据驱动顶层菜单组合属性"
+  type="MenubarTriggerProps with trigger, value and children"
+/>
+
+<UnionType
+  name="MenubarLabelProps"
+  description="MenubarLabel 复用 MenuLabelProps"
+  type="menu label props"
+/>
+
+<UnionType
+  name="MenubarOptionProps"
+  description="MenubarOption 复用 MenuOptionProps 并替换内部组件"
+  type="menu option props"
+/>
+
+<UnionType
+  name="MenubarItemIndicatorProps"
+  description="MenubarItemIndicator 复用 MenuItemIndicatorProps"
+  type="menu item indicator props"
+/>
+
+<UnionType
+  name="MenubarSeparatorProps"
+  description="MenubarSeparator 复用 MenuSeparatorProps"
+  type="menu separator props"
+/>
+
+<UnionType
+  name="MenubarSubContentProps"
+  description="MenubarSubContent 复用 MenuSubContentProps"
+  type="menu sub content props"
+/>
+
+<UnionType
+  name="MenubarSubTriggerProps"
+  description="MenubarSubTrigger 复用 MenuSubTriggerProps"
+  type="menu sub trigger props"
+/>
+
+<UnionType
+  name="MenubarCheckboxItemProps"
+  description="MenubarCheckboxItem 复用 MenuCheckboxItemProps"
+  type="menu checkbox item props"
+/>
+
+<UnionType
+  name="MenubarRadioItemProps"
+  description="MenubarRadioItem 复用 MenuRadioItemProps"
+  type="menu radio item props"
+/>
+
+<UnionType
+  name="MenubarRadioGroupPrimitiveProps"
+  description="MenubarRadioGroup 透传的 Radix RadioGroup props"
+  type="radix menubar radio group props"
+/>
+
+<UnionType
+  name="MenubarGroupProps"
+  description="MenubarGroup 透传的 Radix Group props"
+  type="radix menubar group props"
+/>
+
+<UnionType
+  name="MenubarPortalProps"
+  description="MenubarPortal 透传的 Radix Portal props"
+  type="radix menubar portal props"
+/>
+
+<UnionType
+  name="MenubarSubProps"
+  description="MenubarSub 透传的 Radix Sub props"
+  type="radix menubar sub props"
+/>
+
+<UnionType
+  name="MenubarTriggerClassNames"
+  description="MenubarTrigger 可配置的 slot class"
+  type="{ trigger?: ClassValue; shortcut?: ClassValue }"
+/>
+
+<UnionType
+  name="MenubarSlots"
+  description="Menubar 根组件 slot"
+  type="'root'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

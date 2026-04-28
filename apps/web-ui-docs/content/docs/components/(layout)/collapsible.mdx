@@ -1,0 +1,201 @@
+---
+title: Collapsible
+description: 用于展开或收起局部内容的折叠组件
+---
+
+折叠面板（Collapsible）用于在当前页面中隐藏或显示一段局部内容，适合展示可选详情、附加信息或可展开的配置区域。
+
+```tsx
+import { Collapsible, CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Collapsible 基于 Radix Collapsible 封装，主组件负责组合根容器和动画内容区，触发器通过 `CollapsibleTrigger` 放在 children 中。
+
+- `Collapsible`：主组件，接收触发器区域 children，并通过 `content` 渲染可折叠内容。
+- `CollapsibleRoot`：状态根容器，支持受控和非受控打开状态。
+- `CollapsibleContent`：内容区，带展开/收起动画。
+- `CollapsibleTrigger`：触发器，直接导出自 Radix，常配合 `asChild` 包裹按钮。
+
+## 何时使用
+
+- 页面中有次要信息，需要由用户按需展开时。
+- 需要在列表、卡片或设置项中收纳额外内容时。
+- 需要保持当前页面上下文，不希望打开 Dialog 或 Drawer 时。
+- 如果内容是多个互斥展开项，优先使用 Accordion。
+
+## 基础用法
+
+将固定展示内容和 `CollapsibleTrigger` 放在 children 中，将可展开内容传给 `content`。
+
+<Demo src="@playground/collapsible/modules/CollapsibleBasic" />
+
+## 受控状态
+
+通过 `open` 和 `onOpenChange` 可以完全控制展开状态；通过 `defaultOpen` 可以设置非受控默认状态。
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Collapsible open={open} onOpenChange={setOpen} content={<div>Details</div>}>
+  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+</Collapsible>;
+```
+
+## API
+
+### Collapsible
+
+通用属性参考：支持 Radix Collapsible Root 的属性，如 `open`、`defaultOpen`、`onOpenChange` 和 `disabled`。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '常驻内容，通常包含 CollapsibleTrigger',
+      type: 'ReactNode'
+    },
+    {
+      name: 'content',
+      description: '展开后显示的内容，渲染到 CollapsibleContent 内',
+      type: 'ReactNode'
+    },
+    {
+      name: 'open',
+      description: '受控展开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控默认展开状态',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'onOpenChange',
+      description: '展开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'disabled',
+      description: '禁用触发交互',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'forceMountContent',
+      description: '强制挂载内容区，适合需要保留 DOM 或自定义动画时使用',
+      type: 'true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响根容器字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class；存在时优先于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / content）',
+      type: 'CollapsibleClassNames'
+    }
+  ]}
+/>
+
+### 子组件
+
+<PropsTable
+  data={[
+    {
+      name: 'CollapsibleRoot',
+      description: '状态根容器，支持 Radix Collapsible Root 属性',
+      type: 'CollapsibleRootProps'
+    },
+    {
+      name: 'CollapsibleContent',
+      description: '可展开内容区，支持 Radix Collapsible Content 属性',
+      type: 'CollapsibleContentProps'
+    },
+    {
+      name: 'CollapsibleTrigger',
+      description: '展开触发器，直接导出自 Radix Collapsible Trigger，支持 asChild',
+      type: 'CollapsibleTriggerProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'CollapsibleProps',
+      description: '主组件属性。继承 CollapsibleRootProps，并增加 content、forceMountContent 和 slot class 配置。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '常驻内容，通常包含触发器。' },
+        { name: 'content', type: 'ReactNode', description: '展开内容。' },
+        { name: 'open', type: 'boolean', description: '受控展开状态。来自 Radix Root props。' },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控默认展开状态。来自 Radix Root props。' },
+        {
+          name: 'onOpenChange',
+          type: '(open: boolean) => void',
+          description: '展开状态变化回调。来自 Radix Root props。'
+        },
+        { name: 'disabled', type: 'boolean', description: '禁用触发交互。来自 Radix Root props。' },
+        { name: 'forceMountContent', type: 'true', description: '强制挂载内容区。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'CollapsibleClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响根容器字号。' }
+      ]
+    },
+    {
+      name: 'CollapsibleClassNames',
+      description: 'Collapsible 可配置 slot 的 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容区 class。' }
+      ]
+    },
+    {
+      name: 'CollapsibleRootProps',
+      description: '根容器属性。继承 Radix Collapsible Root 属性，并增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '子节点。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'open', type: 'boolean', description: '受控展开状态。' },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控默认展开状态。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '展开状态变化回调。' },
+        { name: 'disabled', type: 'boolean', description: '禁用触发交互。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响根容器字号。' }
+      ]
+    },
+    {
+      name: 'CollapsibleContentProps',
+      description: '内容区属性。继承 Radix Collapsible Content 属性，并增加 className。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '内容区内容。' },
+        { name: 'className', type: 'ClassValue', description: '内容区 class。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载内容区。' }
+      ]
+    },
+    {
+      name: 'CollapsibleTriggerProps',
+      description: '触发器属性。直接来自 Radix Collapsible Trigger。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '触发器内容。' },
+        { name: 'asChild', type: 'boolean', description: '将触发行为合并到子元素。' },
+        { name: 'disabled', type: 'boolean', description: '禁用触发交互。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

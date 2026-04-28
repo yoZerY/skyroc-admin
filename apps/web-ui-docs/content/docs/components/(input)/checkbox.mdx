@@ -1,0 +1,624 @@
+---
+title: Checkbox
+description: 用于多选、批量选择和卡片式选项的复选框组件
+---
+
+复选框（Checkbox）用于在一组选项中选择一个或多个值。组件同时提供基础复选框、数据驱动的复选框组、卡片式复选框和卡片式复选框组。
+
+```tsx
+import {
+  Checkbox,
+  CheckboxCard,
+  CheckboxControl,
+  CheckboxGroup,
+  CheckboxGroupCard,
+  CheckboxIndicator,
+  CheckboxRoot
+} from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Checkbox 由 Radix Checkbox 封装而来，基础组件负责单个选中状态，Group 组件负责多值集合状态。
+
+- `Checkbox`：单个复选框，支持 `checked`、`defaultChecked` 和 `indeterminate`。
+- `CheckboxGroup`：数据驱动的复选框组，通过 `items` 渲染多个 `Checkbox`。
+- `CheckboxCard`：卡片样式的单个复选框，支持图标、标题、描述和左右控制器位置。
+- `CheckboxGroupCard`：数据驱动的卡片式复选框组，状态模型与 `CheckboxGroup` 一致。
+- `CheckboxRoot`、`CheckboxControl`、`CheckboxIndicator`：基础结构子组件，适合需要完全自定义组合时使用。
+
+## 何时使用
+
+- 用户可以选择多个选项，且每个选项可以独立开关时。
+- 需要通过“全选”展示部分选中状态时。
+- 需要从一组配置项、权限项、偏好项中选择多个值时。
+- 选项需要图标、描述或更大点击区域时，使用 `CheckboxCard` 或 `CheckboxGroupCard`。
+- 如果用户只能选择一个选项，应使用 Radio；如果只是开关单一功能状态，应使用 Switch。
+
+## 基础用法
+
+`Checkbox` 支持受控与非受控模式。受控模式通过 `checked` 和 `onCheckedChange` 管理状态。
+
+<Demo src="@playground/checkbox/modules/CheckboxBasic" />
+
+## 颜色
+
+通过 `color` 控制选中和半选状态的颜色。基础 Checkbox 和卡片 Checkbox 都使用同一套主题颜色。
+
+<Demo src="@playground/checkbox/modules/CheckboxColor" />
+
+## 尺寸
+
+通过 `size` 控制控制器尺寸、文字间距以及 Group 间距，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/checkbox/modules/CheckboxSize" />
+
+## 状态
+
+`checked` 可以是 `true`、`false` 或 `'indeterminate'`。半选状态常用于全选控件，表示子项只选中了其中一部分。
+
+<Demo src="@playground/checkbox/modules/CheckboxIndeterminate" />
+
+## 禁用
+
+设置 `disabled` 后，复选框不可交互。Group 上的 `disabled` 会传递给所有子项，子项也可以单独设置 `disabled`。
+
+<Demo src="@playground/checkbox/modules/CheckboxDisabled" />
+
+## 复选框组
+
+`CheckboxGroup` 使用 `items` 渲染选项列表，`value` / `defaultValue` 是当前选中的 value 数组。`onValueChange` 返回完整的新数组。
+
+<Demo src="@playground/checkbox/modules/CheckboxGroupDemo" />
+
+## 卡片复选框
+
+`CheckboxCard` 适合展示更丰富的可选项。`icon`、`label` 和 `description` 组成内容区，`checkboxPosition` 控制复选框在左侧还是右侧。
+
+<Demo src="@playground/checkbox/modules/CheckboxCardDemo" />
+
+## 卡片复选框组
+
+`CheckboxGroupCard` 与 `CheckboxGroup` 使用相同的多值状态模型，但每个选项会渲染为 `CheckboxCard`。适合权限、能力、套餐、偏好等更强调内容说明的选择场景。
+
+<Demo src="@playground/checkbox/modules/CheckboxGroupCardDemo" />
+
+## API
+
+### Checkbox
+
+通用属性参考：支持 Radix Checkbox Root 的属性，如 `checked`、`defaultChecked`、`disabled`、`required`、`name`、`value` 和 `onCheckedChange`。
+
+<PropsTable
+  data={[
+    {
+      name: 'checked',
+      description: '受控选中状态，支持半选状态',
+      type: "boolean | 'indeterminate'"
+    },
+    {
+      name: 'defaultChecked',
+      description: '非受控默认选中状态',
+      type: "boolean | 'indeterminate'"
+    },
+    {
+      name: 'onCheckedChange',
+      description: '选中状态变化时触发',
+      type: "(checked: boolean | 'indeterminate') => void"
+    },
+    {
+      name: 'color',
+      description: '主题颜色，影响选中和半选状态',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'shape',
+      description: '控制器形状',
+      type: "'square' | 'rounded'",
+      default: "'square'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响控制器大小和文字间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'children',
+      description: '标签内容，存在时会渲染为可点击 Label',
+      type: 'ReactNode'
+    },
+    {
+      name: 'checkedIcon',
+      description: '选中状态图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'indeterminateIcon',
+      description: '半选状态图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'forceMountIndicator',
+      description: '强制挂载 Indicator，常用于动画控制',
+      type: 'true'
+    },
+    {
+      name: 'className',
+      description: '根容器 class；存在时优先于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'CheckboxUi'
+    },
+    {
+      name: 'indicatorProps',
+      description: '传递给 CheckboxIndicator 的额外 props',
+      type: 'CheckboxIndicatorProps'
+    },
+    {
+      name: 'rootProps',
+      description: '传递给 CheckboxRoot 的额外 props',
+      type: 'CheckboxRootProps'
+    }
+  ]}
+/>
+
+### CheckboxGroup
+
+`CheckboxGroup` 是数据驱动组件。`items` 中每一项都会渲染为一个 `Checkbox`，Group 负责维护 value 数组。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '复选框组选项列表',
+      type: 'CheckboxItemProps[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控选中值数组',
+      type: 'string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控默认选中值数组',
+      type: 'string[]'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值数组变化时触发',
+      type: '(value: string[]) => void'
+    },
+    {
+      name: 'orientation',
+      description: '排列方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'color',
+      description: '统一设置子项主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'size',
+      description: '统一设置子项尺寸和组间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '禁用整组复选框',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'checkedIcon',
+      description: '统一设置子项选中图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'indeterminateIcon',
+      description: '统一设置子项半选图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '组根容器 class；存在时优先于 classNames.groupRoot',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '组和子项共用的 slot class',
+      type: 'CheckboxUi'
+    }
+  ]}
+/>
+
+### CheckboxCard
+
+`CheckboxCard` 支持 Radix Checkbox Root 的属性，并额外提供卡片内容和布局属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'checked',
+      description: '受控选中状态，支持半选状态',
+      type: "boolean | 'indeterminate'"
+    },
+    {
+      name: 'defaultChecked',
+      description: '非受控默认选中状态',
+      type: "boolean | 'indeterminate'"
+    },
+    {
+      name: 'onCheckedChange',
+      description: '选中状态变化时触发',
+      type: "(checked: boolean | 'indeterminate') => void"
+    },
+    {
+      name: 'label',
+      description: '卡片标题',
+      type: 'ReactNode'
+    },
+    {
+      name: 'description',
+      description: '卡片描述文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'icon',
+      description: '卡片内容区图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'checkboxPosition',
+      description: '复选框在卡片中的位置',
+      type: "'left' | 'right'",
+      default: "'left'"
+    },
+    {
+      name: 'color',
+      description: '主题颜色，影响控制器和选中边框',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'shape',
+      description: '控制器形状',
+      type: "'square' | 'rounded'",
+      default: "'square'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响控制器大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'checkedIcon',
+      description: '选中状态图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'indeterminateIcon',
+      description: '半选状态图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'forceMountIndicator',
+      description: '强制挂载 Indicator',
+      type: 'true'
+    },
+    {
+      name: 'className',
+      description: '卡片根容器 class；存在时优先于 classNames.card',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'CheckboxUi'
+    }
+  ]}
+/>
+
+### CheckboxGroupCard
+
+`CheckboxGroupCard` 使用 `CheckboxGroupCardItem[]` 渲染卡片式选项，受控和非受控规则与 `CheckboxGroup` 一致。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '卡片式复选框组选项列表',
+      type: 'CheckboxGroupCardItem[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控选中值数组',
+      type: 'string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控默认选中值数组',
+      type: 'string[]'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值数组变化时触发',
+      type: '(value: string[]) => void'
+    },
+    {
+      name: 'checkboxPosition',
+      description: '复选框在卡片中的位置',
+      type: "'left' | 'right'",
+      default: "'right'"
+    },
+    {
+      name: 'shape',
+      description: '控制器形状',
+      type: "'square' | 'rounded'",
+      default: "'rounded'"
+    },
+    {
+      name: 'orientation',
+      description: '排列方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'color',
+      description: '统一设置子项主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'size',
+      description: '统一设置子项尺寸和组间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '禁用整组卡片复选框',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'className',
+      description: '组根容器 class；存在时优先于 classNames.groupRoot',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '组和卡片子项共用的 slot class',
+      type: 'CheckboxUi'
+    }
+  ]}
+/>
+
+### 子组件
+
+<PropsTable
+  data={[
+    { name: 'CheckboxRoot', description: '基础根容器，支持原生 div 属性', type: 'CheckboxRootProps' },
+    { name: 'CheckboxControl', description: 'Radix Checkbox Root 控制器', type: 'CheckboxControlProps' },
+    { name: 'CheckboxIndicator', description: '选中状态指示器', type: 'CheckboxIndicatorProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'CheckboxProps',
+      description: '基础 Checkbox 属性。继承 CheckboxControlProps，并增加图标、slot class 和子组件 props 配置。',
+      fields: [
+        { name: 'checked', type: "boolean | 'indeterminate'", description: '受控选中状态。' },
+        { name: 'defaultChecked', type: "boolean | 'indeterminate'", description: '非受控默认选中状态。' },
+        {
+          name: 'onCheckedChange',
+          type: "(checked: boolean | 'indeterminate') => void",
+          description: '选中状态变化回调。'
+        },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。来自 CheckboxControlProps。'
+        },
+        { name: 'shape', type: "'square' | 'rounded'", description: '控制器形状。来自 CheckboxControlProps。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '尺寸。来自 CheckboxControlProps。'
+        },
+        { name: 'checkedIcon', type: 'ReactNode', description: '选中状态图标。' },
+        { name: 'children', type: 'ReactNode', description: '标签内容。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'CheckboxUi', description: '各 slot 的自定义 class。' },
+        { name: 'forceMountIndicator', type: 'true', description: '强制挂载 Indicator。' },
+        { name: 'indeterminateIcon', type: 'ReactNode', description: '半选状态图标。' },
+        { name: 'indicatorProps', type: 'CheckboxIndicatorProps', description: 'Indicator 属性。' },
+        { name: 'rootProps', type: 'CheckboxRootProps', description: '根容器属性。' }
+      ]
+    },
+    {
+      name: 'CheckboxGroupProps',
+      description: '复选框组属性。通过 items 渲染多个 Checkbox，并维护多值数组。',
+      fields: [
+        { name: 'items', type: 'CheckboxItemProps[]', required: true, description: '选项列表。' },
+        { name: 'value', type: 'string[]', description: '受控选中值数组。' },
+        { name: 'defaultValue', type: 'string[]', description: '非受控默认选中值数组。' },
+        { name: 'onValueChange', type: '(value: string[]) => void', description: '选中值数组变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '排列方向。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '统一设置子项颜色。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '统一设置尺寸。' },
+        { name: 'disabled', type: 'boolean', description: '禁用整组。' },
+        { name: 'checkedIcon', type: 'ReactNode', description: '统一设置选中图标。' },
+        { name: 'className', type: 'ClassValue', description: '组根容器 class。' },
+        { name: 'classNames', type: 'CheckboxUi', description: '组和子项 slot class。' },
+        { name: 'indeterminateIcon', type: 'ReactNode', description: '统一设置半选图标。' }
+      ]
+    },
+    {
+      name: 'CheckboxCardProps',
+      description: '卡片式 Checkbox 属性。继承 CheckboxControlProps，并增加卡片内容和布局配置。',
+      fields: [
+        { name: 'checked', type: "boolean | 'indeterminate'", description: '受控选中状态。' },
+        { name: 'defaultChecked', type: "boolean | 'indeterminate'", description: '非受控默认选中状态。' },
+        {
+          name: 'onCheckedChange',
+          type: "(checked: boolean | 'indeterminate') => void",
+          description: '选中状态变化回调。'
+        },
+        { name: 'checkboxPosition', type: "'left' | 'right'", description: '复选框在卡片中的位置。' },
+        { name: 'checkedIcon', type: 'ReactNode', description: '选中状态图标。' },
+        { name: 'className', type: 'ClassValue', description: '卡片根容器 class。' },
+        { name: 'classNames', type: 'CheckboxUi', description: '各 slot 的自定义 class。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'description', type: 'ReactNode', description: '描述文本。' },
+        { name: 'disabled', type: 'boolean', description: '禁用状态。' },
+        { name: 'forceMountIndicator', type: 'true', description: '强制挂载 Indicator。' },
+        { name: 'icon', type: 'ReactNode', description: '内容区图标。' },
+        { name: 'indeterminateIcon', type: 'ReactNode', description: '半选状态图标。' },
+        { name: 'label', type: 'ReactNode', description: '卡片标题。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '控制器形状。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CheckboxGroupCardProps',
+      description:
+        '卡片式复选框组属性。继承 CheckboxGroupProps 的多值状态模型，并使用 CheckboxGroupCardItem 渲染子项。',
+      fields: [
+        { name: 'items', type: 'CheckboxGroupCardItem[]', required: true, description: '卡片选项列表。' },
+        { name: 'value', type: 'string[]', description: '受控选中值数组。' },
+        { name: 'defaultValue', type: 'string[]', description: '非受控默认选中值数组。' },
+        { name: 'onValueChange', type: '(value: string[]) => void', description: '选中值数组变化回调。' },
+        { name: 'checkboxPosition', type: "'left' | 'right'", description: '复选框在卡片中的位置。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '控制器形状。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '排列方向。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '统一设置子项颜色。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '统一设置尺寸。' },
+        { name: 'disabled', type: 'boolean', description: '禁用整组。' },
+        { name: 'className', type: 'ClassValue', description: '组根容器 class。' },
+        { name: 'classNames', type: 'CheckboxUi', description: '组和卡片子项 slot class。' }
+      ]
+    },
+    {
+      name: 'CheckboxItemProps',
+      description: 'CheckboxGroup 的单个选项配置。继承 CheckboxProps 的大部分属性，但使用 label 作为展示内容。',
+      fields: [
+        { name: 'label', type: 'ReactNode', required: true, description: '选项显示内容。' },
+        { name: 'value', type: 'string', required: true, description: '选项值。' },
+        { name: 'checkedIcon', type: 'ReactNode', description: '该项选中图标。' },
+        { name: 'classNames', type: 'CheckboxUi', description: '该项 slot class。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '该项主题颜色。'
+        },
+        { name: 'disabled', type: 'boolean', description: '该项禁用状态。' },
+        { name: 'indeterminateIcon', type: 'ReactNode', description: '该项半选图标。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '该项尺寸。' }
+      ]
+    },
+    {
+      name: 'CheckboxGroupCardItem',
+      description: 'CheckboxGroupCard 的单个选项配置。继承 CheckboxItemProps，并增加 icon。',
+      fields: [
+        { name: 'icon', type: 'ReactNode', description: '卡片内容区图标。' },
+        { name: 'label', type: 'ReactNode', required: true, description: '卡片标题。' },
+        { name: 'value', type: 'string', required: true, description: '选项值。' },
+        { name: 'description', type: 'ReactNode', description: '卡片描述文本。' },
+        { name: 'disabled', type: 'boolean', description: '该项禁用状态。' },
+        { name: 'classNames', type: 'CheckboxUi', description: '该项 slot class。' }
+      ]
+    },
+    {
+      name: 'CheckboxUi',
+      description: 'Checkbox 全部 slot 的 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '基础 Checkbox 根容器 class。' },
+        { name: 'control', type: 'ClassValue', description: '复选框控制器 class。' },
+        { name: 'indicator', type: 'ClassValue', description: '选中指示器 class。' },
+        { name: 'label', type: 'ClassValue', description: '基础 Checkbox 标签 class。' },
+        { name: 'groupRoot', type: 'ClassValue', description: 'Group 根容器 class。' },
+        { name: 'card', type: 'ClassValue', description: '卡片根容器 class。' },
+        { name: 'cardContent', type: 'ClassValue', description: '卡片内容区 class。' },
+        { name: 'cardLabel', type: 'ClassValue', description: '卡片标题 class。' },
+        { name: 'cardDescription', type: 'ClassValue', description: '卡片描述 class。' }
+      ]
+    },
+    {
+      name: 'CheckboxRootProps',
+      description: '基础根容器属性，支持原生 div 属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '子节点。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响与标签的间距。' }
+      ]
+    },
+    {
+      name: 'CheckboxControlProps',
+      description: '复选框控制器属性。继承 Radix Checkbox Root 属性，并增加主题颜色、尺寸和形状。',
+      fields: [
+        { name: 'checked', type: "boolean | 'indeterminate'", description: '受控选中状态。' },
+        { name: 'defaultChecked', type: "boolean | 'indeterminate'", description: '非受控默认选中状态。' },
+        {
+          name: 'onCheckedChange',
+          type: "(checked: boolean | 'indeterminate') => void",
+          description: '选中状态变化回调。'
+        },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'shape', type: "'square' | 'rounded'", description: '控制器形状。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '控制器尺寸。' },
+        { name: 'disabled', type: 'boolean', description: '禁用状态。' },
+        { name: 'id', type: 'string', description: '控制器 id。' },
+        { name: 'name', type: 'string', description: '表单字段名。' },
+        { name: 'required', type: 'boolean', description: '是否必填。' },
+        { name: 'value', type: 'string', description: '表单提交值。' }
+      ]
+    },
+    {
+      name: 'CheckboxIndicatorProps',
+      description: '选中指示器属性，继承 Radix Checkbox Indicator 属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '指示器内容。' },
+        { name: 'className', type: 'ClassValue', description: '指示器 class。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载指示器。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

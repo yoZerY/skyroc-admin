@@ -1,0 +1,576 @@
+---
+title: Tree
+description: 用于展示层级数据并支持展开、选择和虚拟滚动的树组件
+---
+
+Tree 用于展示文件目录、组织结构、分类层级等嵌套数据。组件提供数据驱动的高层 `Tree`、可完全自定义渲染的 `TreeRoot` / `TreeItem`，以及面向大数据量的 `TreeVirtualizer`。
+
+```tsx
+import { Tree, TreeItem, TreeRoot, TreeVirtualizer } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要展示父子层级结构，如目录、菜单、分类、权限树。
+- 需要在层级节点上进行单选或多选。
+- 需要自定义节点内容，如图标、状态、徽标或操作区。
+- 数据量较大且展开后节点很多时，使用 `TreeVirtualizer`。
+
+## 基础用法
+
+通过 `items` 传入树数据。每个节点至少需要 `value` 和 `label`，有子节点时使用 `children`。
+
+<Demo src="@playground/tree/modules/TreeBasic" />
+
+```tsx
+<Tree items={items} defaultExpanded={['components']} defaultValue="button" />
+```
+
+## 多选
+
+设置 `multiple` 后，`value` 和 `defaultValue` 使用字符串数组。默认 `selectionBehavior="toggle"`，点击已选节点会取消选择。
+
+<Demo src="@playground/tree/modules/TreeMultiple" />
+
+```tsx
+<Tree multiple items={items} value={value} onValueChange={nextValue => setValue(nextValue as string[])} />
+```
+
+## 自定义渲染
+
+通过 `renderItem` 自定义节点内容。回调会收到当前节点、展开状态、选中状态、半选状态以及树级操作方法。
+
+<Demo src="@playground/tree/modules/TreeBasic" />
+
+```tsx
+<Tree
+  items={items}
+  renderItem={({ item, isExpanded, hasChildren }) => (
+    <>
+      {hasChildren ? <FolderIcon open={isExpanded} /> : <FileIcon />}
+      <span>{item.data.label}</span>
+    </>
+  )}
+/>
+```
+
+## 虚拟滚动
+
+`TreeVirtualizer` 适合展开后节点数量较多的场景。需要设置 `height`，并通过 `itemSize` 提供预估行高。
+
+<Demo src="@playground/tree/modules/TreeVirtualizer" />
+
+```tsx
+<TreeVirtualizer height={300} itemSize={36} items={items} />
+```
+
+## 选择传播
+
+Tree 支持父子节点选择联动：
+
+| 属性                | 说明                                        |
+| ------------------- | ------------------------------------------- |
+| `allowParentSelect` | 允许选中有子节点的父节点                    |
+| `propagateSelect`   | 多选时选中父节点会向下联动选择子节点        |
+| `bubbleSelect`      | 多选时子节点全选后向上联动选择父节点        |
+| `selectionBehavior` | `toggle` 可取消已选节点，`replace` 替换选择 |
+
+```tsx
+<Tree multiple allowParentSelect propagateSelect bubbleSelect items={items} />
+```
+
+## 展开行为
+
+`defaultExpanded` 设置非受控初始展开项，`expanded` + `onExpandedChange` 用于受控展开。`toggleBehavior="single"` 会让同层路径保持单展开。
+
+```tsx
+<Tree expanded={expanded} toggleBehavior="single" onExpandedChange={setExpanded} />
+```
+
+## API
+
+### Tree
+
+高层数据驱动组件。继承 `TreeRoot` 的状态能力，并自动渲染 `TreeItem`。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '树节点数据',
+      type: 'TreeItemData[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控选中值；单选为字符串，多选为字符串数组',
+      type: 'string | string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控默认选中值',
+      type: 'string | string[]'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化时触发',
+      type: '(value: string | string[]) => void'
+    },
+    {
+      name: 'expanded',
+      description: '受控展开节点值列表',
+      type: 'string[]'
+    },
+    {
+      name: 'defaultExpanded',
+      description: '非受控默认展开节点值列表',
+      type: 'string[]',
+      default: '[]'
+    },
+    {
+      name: 'onExpandedChange',
+      description: '展开值变化时触发',
+      type: '(expanded: string[]) => void'
+    },
+    {
+      name: 'multiple',
+      description: '是否启用多选',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'selectionBehavior',
+      description: '选择行为；toggle 可取消已选节点，replace 替换当前选择',
+      type: "'replace' | 'toggle'",
+      default: "'toggle'"
+    },
+    {
+      name: 'toggleBehavior',
+      description: '展开行为；single 保持单展开路径，multiple 允许多个节点展开',
+      type: "'multiple' | 'single'",
+      default: "'multiple'"
+    },
+    {
+      name: 'allowParentSelect',
+      description: '是否允许选择有子节点的父节点',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'propagateSelect',
+      description: '多选时是否将父节点选择向下传播给子节点',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'bubbleSelect',
+      description: '多选时是否在子节点全选后向上选择父节点',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用整棵树',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'disabledSelect',
+      description: '是否禁用节点选择',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'disabledToggle',
+      description: '是否禁用节点展开/收起',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'indentSize',
+      description: '每级缩进宽度，单位 px',
+      type: 'number',
+      default: '16'
+    },
+    {
+      name: 'renderItem',
+      description: '自定义节点内容渲染函数',
+      type: '(props: TreeItemRenderProps & { item: FlattenedItem } & TreeRootRenderProps) => ReactNode'
+    },
+    {
+      name: 'className',
+      description: '根节点自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / item / virtualContainer / virtualContent）',
+      type: 'TreeClassNames'
+    },
+    {
+      name: 'top',
+      description: '显示在树顶部的内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'bottom',
+      description: '显示在树底部的内容',
+      type: 'ReactNode'
+    }
+  ]}
+/>
+
+### TreeRoot
+
+底层根组件，负责状态、上下文和无序列表语义，节点渲染完全交给 `children` 函数。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '自定义渲染函数，接收扁平节点列表、选中值、展开值和操作方法',
+      type: '(props: TreeRootRenderProps) => ReactNode',
+      required: true
+    },
+    {
+      name: 'items',
+      description: '树节点数据',
+      type: 'TreeItemData[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控选中值',
+      type: 'string | string[]'
+    },
+    {
+      name: 'expanded',
+      description: '受控展开节点值列表',
+      type: 'string[]'
+    },
+    {
+      name: 'multiple',
+      description: '是否启用多选',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'className',
+      description: '根节点自定义 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### TreeItem
+
+底层节点组件，必须放在 `TreeRoot` 或 `TreeVirtualizer` 上下文中使用。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '节点唯一值',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'level',
+      description: '节点层级，从 1 开始',
+      type: 'number',
+      required: true
+    },
+    {
+      name: 'children',
+      description: '节点内容，或接收节点状态的渲染函数',
+      type: 'ReactNode | (props: TreeItemRenderProps) => ReactNode'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用当前节点',
+      type: 'boolean'
+    },
+    {
+      name: 'disabledSelect',
+      description: '是否禁用当前节点选择',
+      type: 'boolean'
+    },
+    {
+      name: 'disabledToggle',
+      description: '是否禁用当前节点展开/收起',
+      type: 'boolean'
+    },
+    {
+      name: 'indentSize',
+      description: '每级缩进宽度，单位 px',
+      type: 'number',
+      default: '16'
+    },
+    {
+      name: 'onSelect',
+      description: '节点选择事件回调；可通过 preventDefault 阻止默认选择',
+      type: '(event: TreeSelectEvent) => void'
+    },
+    {
+      name: 'onToggle',
+      description: '节点展开/收起事件回调；可通过 preventDefault 阻止默认切换',
+      type: '(event: TreeToggleEvent) => void'
+    }
+  ]}
+/>
+
+### TreeVirtualizer
+
+虚拟滚动树组件。继承 Tree 状态能力，并使用 `@tanstack/react-virtual` 只渲染可视区域节点。
+
+<PropsTable
+  data={[
+    {
+      name: 'height',
+      description: '虚拟滚动容器高度',
+      type: 'number | string',
+      required: true
+    },
+    {
+      name: 'items',
+      description: '树节点数据',
+      type: 'TreeItemData[]',
+      required: true
+    },
+    {
+      name: 'itemSize',
+      description: '预估节点高度，或根据索引返回高度的函数',
+      type: 'number | (index: number) => number',
+      default: '36'
+    },
+    {
+      name: 'overscan',
+      description: '额外渲染的节点数量',
+      type: 'number',
+      default: '5'
+    },
+    {
+      name: 'dynamic',
+      description: '是否使用动态节点高度测量模式',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'width',
+      description: '虚拟滚动容器宽度',
+      type: 'number | string',
+      default: "'100%'"
+    },
+    {
+      name: 'onScroll',
+      description: '滚动偏移变化时触发',
+      type: '(offset: number) => void'
+    },
+    {
+      name: 'virtualizerRef',
+      description: '虚拟滚动实例引用',
+      type: 'TreeVirtualizerRef'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class，额外支持 virtualContainer / virtualContent',
+      type: 'TreeVirtualizerClassNames'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'TreeItemBaseData',
+      description: '树节点的基础数据结构。',
+      fields: [
+        { name: 'value', type: 'string', description: '节点唯一值。' },
+        { name: 'label', type: 'ReactNode', description: '节点展示内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用节点。' }
+      ]
+    },
+    {
+      name: 'TreeItemData',
+      description: '带 children 的树节点数据结构。',
+      fields: [
+        { name: '...base', type: 'TreeItemBaseData', description: '基础节点字段。' },
+        { name: 'children', type: 'TreeItemData[]', description: '子节点列表。' }
+      ]
+    },
+    {
+      name: 'FlattenedItem',
+      description: 'Tree 内部渲染使用的扁平节点结构。',
+      fields: [
+        { name: '_id', type: 'string', description: '内部唯一标识。' },
+        { name: 'value', type: 'string', description: '节点值。' },
+        { name: 'label', type: 'ReactNode', description: '节点标签。' },
+        { name: 'data', type: 'TreeItemData', description: '原始节点数据。' },
+        { name: 'level', type: 'number', description: '节点层级。' },
+        { name: 'index', type: 'number', description: '同级索引。' },
+        { name: 'parent', type: 'TreeItemData', description: '父节点数据。' },
+        { name: 'hasChildren', type: 'boolean', description: '是否有子节点。' }
+      ]
+    },
+    {
+      name: 'TreeRootRenderProps',
+      description: 'TreeRoot children 函数和 renderItem 可用的树级状态与操作。',
+      fields: [
+        { name: 'expanded', type: 'string[]', description: '当前展开节点值列表。' },
+        { name: 'flattenItems', type: 'FlattenedItem[]', description: '当前可见的扁平节点列表。' },
+        { name: 'modelValue', type: 'string | string[] | undefined', description: '当前选中值。' },
+        { name: 'select', type: '(value: string) => void', description: '选择节点。' },
+        { name: 'toggle', type: '(value: string) => void', description: '展开或收起节点。' }
+      ]
+    },
+    {
+      name: 'TreeItemRenderProps',
+      description: 'TreeItem children 函数和 Tree renderItem 可用的节点状态。',
+      fields: [
+        { name: 'hasChildren', type: 'boolean', description: '是否有子节点。' },
+        { name: 'isExpanded', type: 'boolean', description: '是否已展开。' },
+        { name: 'isSelected', type: 'boolean', description: '是否已选中。' },
+        { name: 'isIndeterminate', type: 'boolean | undefined', description: '是否处于半选状态。' }
+      ]
+    },
+    {
+      name: 'TreeClassNames',
+      description: 'Tree 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根节点 class。' },
+        { name: 'item', type: 'ClassValue', description: '节点 class。' },
+        { name: 'itemIndicator', type: 'ClassValue', description: '节点指示器 class。' },
+        { name: 'itemChildren', type: 'ClassValue', description: '子节点容器 class。' },
+        { name: 'virtualContainer', type: 'ClassValue', description: '虚拟滚动容器 class。' },
+        { name: 'virtualContent', type: 'ClassValue', description: '虚拟滚动内容层 class。' }
+      ]
+    },
+    {
+      name: 'TreeProps',
+      description: 'Tree 高层组件属性。',
+      fields: [
+        { name: 'items', type: 'TreeItemData[]', description: '树节点数据。' },
+        { name: 'value', type: 'string | string[]', description: '受控选中值。' },
+        { name: 'expanded', type: 'string[]', description: '受控展开值。' },
+        { name: 'multiple', type: 'boolean', description: '是否多选。' },
+        {
+          name: 'renderItem',
+          type: '(props: TreeItemRenderProps & { item: FlattenedItem } & TreeRootRenderProps) => ReactNode',
+          description: '自定义节点渲染函数。'
+        },
+        { name: 'classNames', type: 'TreeClassNames', description: '各 slot 的自定义 class。' }
+      ]
+    },
+    {
+      name: 'TreeRootProps',
+      description: 'TreeRoot 底层根组件属性。',
+      fields: [
+        { name: 'children', type: '(props: TreeRootRenderProps) => ReactNode', description: '自定义渲染函数。' },
+        { name: 'items', type: 'TreeItemData[]', description: '树节点数据。' },
+        { name: 'value', type: 'string | string[]', description: '受控选中值。' },
+        { name: 'expanded', type: 'string[]', description: '受控展开值。' },
+        { name: 'multiple', type: 'boolean', description: '是否多选。' },
+        { name: 'className', type: 'ClassValue', description: '根节点 class。' }
+      ]
+    },
+    {
+      name: 'TreeItemProps',
+      description: 'TreeItem 底层节点组件属性。',
+      fields: [
+        { name: 'value', type: 'string', description: '节点唯一值。' },
+        { name: 'level', type: 'number', description: '节点层级。' },
+        { name: 'children', type: 'ReactNode | (props: TreeItemRenderProps) => ReactNode', description: '节点内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用节点。' },
+        { name: 'onSelect', type: '(event: TreeSelectEvent) => void', description: '选择事件回调。' },
+        { name: 'onToggle', type: '(event: TreeToggleEvent) => void', description: '展开/收起事件回调。' }
+      ]
+    },
+    {
+      name: 'TreeVirtualizerProps',
+      description: 'TreeVirtualizer 虚拟滚动树属性。',
+      fields: [
+        { name: 'height', type: 'number | string', description: '容器高度。' },
+        { name: 'items', type: 'TreeItemData[]', description: '树节点数据。' },
+        { name: 'itemSize', type: 'number | (index: number) => number', description: '预估节点高度。' },
+        { name: 'overscan', type: 'number', description: '额外渲染节点数量。' },
+        { name: 'dynamic', type: 'boolean', description: '是否动态测量节点高度。' },
+        { name: 'virtualizerRef', type: 'TreeVirtualizerRef', description: '虚拟滚动引用。' },
+        { name: 'classNames', type: 'TreeVirtualizerClassNames', description: '各 slot 的自定义 class。' }
+      ]
+    },
+    {
+      name: 'TreeVirtualizerClassNames',
+      description: 'TreeVirtualizer 支持的 classNames 结构。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '虚拟内容 ul 的 class。' },
+        { name: 'item', type: 'ClassValue', description: '节点 class。' },
+        { name: 'virtualContainer', type: 'ClassValue', description: '滚动容器 class。' },
+        { name: 'virtualContent', type: 'ClassValue', description: '虚拟内容层 class。' }
+      ]
+    },
+    {
+      name: 'TreeVirtualizerRef',
+      description: 'TreeVirtualizer 暴露的命令式引用。',
+      fields: [
+        { name: 'containerRef', type: 'div element | null', description: '滚动容器元素。' },
+        { name: 'flattenItems', type: 'FlattenedItem[]', description: '当前可见扁平节点。' },
+        { name: 'scrollToIndex', type: '(index: number, options?) => void', description: '滚动到指定索引。' },
+        { name: 'scrollToValue', type: '(value: string, options?) => void', description: '滚动到指定节点值。' },
+        { name: 'virtualizer', type: 'object', description: '@tanstack/react-virtual 实例。' }
+      ]
+    },
+    {
+      name: 'TreeSelectEvent',
+      description: '节点选择事件的 detail 字段。',
+      fields: [
+        { name: 'value', type: 'string', description: '节点值。' },
+        { name: 'isExpanded', type: 'boolean', description: '事件发生前是否展开。' },
+        { name: 'isSelected', type: 'boolean', description: '事件发生前是否选中。' },
+        { name: 'originalEvent', type: 'native mouse or keyboard event', description: '原始事件。' }
+      ]
+    },
+    {
+      name: 'TreeToggleEvent',
+      description: '节点展开/收起事件的 detail 字段。',
+      fields: [
+        { name: 'value', type: 'string', description: '节点值。' },
+        { name: 'isExpanded', type: 'boolean', description: '事件发生前是否展开。' },
+        { name: 'isSelected', type: 'boolean', description: '事件发生前是否选中。' },
+        { name: 'originalEvent', type: 'native mouse or keyboard event', description: '原始事件。' }
+      ]
+    },
+    {
+      name: 'TreeRootContextValue',
+      description: 'Tree 内部上下文值，供底层 TreeItem 读取状态。',
+      fields: [
+        { name: 'items', type: 'TreeItemData[]', description: '原始树数据。' },
+        { name: 'expanded', type: 'string[]', description: '展开值列表。' },
+        { name: 'selectedKeys', type: 'string[]', description: '选中值列表。' },
+        { name: 'expandedItems', type: 'FlattenedItem[]', description: '当前可见扁平节点。' },
+        { name: 'onSelect', type: '(value: string) => void', description: '选择节点。' },
+        { name: 'onToggle', type: '(value: string) => void', description: '展开或收起节点。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        {
+          name: '...sourceProps',
+          type: 'inherited props without className',
+          description: '继承原始组件属性，但重新定义 className。'
+        },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

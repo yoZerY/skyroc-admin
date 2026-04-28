@@ -1,0 +1,230 @@
+---
+title: NumberInput
+description: 带递增/递减按钮的数值输入框组件
+---
+
+数值输入框（NumberInput）用于精确输入数值，内置递增/递减按钮，支持步进、范围限制、居中布局和自定义图标。
+
+```tsx
+import { NumberInput } from '@skyroc/web-ui';
+import type { NumberInputProps, NumberInputClassNames, NumberInputControlProps } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要用户输入精确数值时（数量、价格、年龄等）。
+- 需要通过按钮快速递增/递减调整数值时。
+- 需要限制输入范围（min/max）或设定步进值（step）时。
+- 如果只是普通文本输入，优先使用 Input。
+
+## 基础用法
+
+默认模式下，递增和递减按钮显示在输入框右侧。
+
+<Demo src="@playground/number-input/modules/NumberInputBase" />
+
+```tsx
+<NumberInput placeholder="请输入数字" />
+```
+
+## 居中布局
+
+设置 `center` 后，减号按钮移至左侧、加号按钮在右侧，输入值居中显示。
+
+<Demo src="@playground/number-input/modules/NumberInputCenter" />
+
+```tsx
+<NumberInput center />
+```
+
+## 自定义图标
+
+通过 `decrementIcon` 和 `incrementIcon` 替换默认的加减号图标。
+
+<Demo src="@playground/number-input/modules/NumberInputSlot" />
+
+```tsx
+<NumberInput
+  decrementIcon={<Icon icon="lucide:dollar-sign" />}
+  incrementIcon={<Icon icon="lucide:percent" />}
+/>
+```
+
+## 可清除
+
+设置 `clearable` 后，hover 时显示清除按钮，点击可清空输入值。
+
+<Demo src="@playground/number-input/modules/NumberInputClearable" />
+
+```tsx
+<NumberInput clearable />
+```
+
+## 范围限制与步进
+
+通过 `min`、`max` 限制输入范围，`step` 设置每次递增/递减的步进值。到达边界时对应按钮自动禁用。
+
+```tsx
+<NumberInput min={0} max={100} step={5} />
+```
+
+## 受控用法
+
+通过 `value` + `onValueChange` 实现受控模式；非受控模式使用 `defaultValue`。
+
+```tsx
+const [count, setCount] = useState(0);
+
+<NumberInput value={count} onValueChange={setCount} />
+```
+
+## 键盘操作
+
+- `ArrowUp` — 递增
+- `ArrowDown` — 递减
+- `Escape` — 失焦
+
+## API
+
+### NumberInput
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '受控模式的当前值',
+      type: 'number | string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式的默认值',
+      type: 'number | string'
+    },
+    {
+      name: 'onValueChange',
+      description: '值变化时的回调',
+      type: '(value: number | string | undefined) => void'
+    },
+    {
+      name: 'min',
+      description: '允许的最小值，到达后递减按钮自动禁用',
+      type: 'number'
+    },
+    {
+      name: 'max',
+      description: '允许的最大值，到达后递增按钮自动禁用',
+      type: 'number'
+    },
+    {
+      name: 'step',
+      description: '每次递增/递减的步进值',
+      type: 'number',
+      default: '1'
+    },
+    {
+      name: 'center',
+      description: '居中布局，减号在左、加号在右、输入居中',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'clearable',
+      description: '是否显示清除按钮（hover 时出现）',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'disabled',
+      description: '禁用状态',
+      type: 'boolean'
+    },
+    {
+      name: 'readOnly',
+      description: '只读状态',
+      type: 'boolean'
+    },
+    {
+      name: 'placeholder',
+      description: '输入框占位文本',
+      type: 'string'
+    },
+    {
+      name: 'decrementIcon',
+      description: '自定义递减按钮图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'incrementIcon',
+      description: '自定义递增按钮图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'leading',
+      description: '输入框前置插槽内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '输入框后置插槽内容（位于清除按钮和操作按钮之前）',
+      type: 'ReactNode'
+    },
+    {
+      name: 'controlProps',
+      description: '透传给内部 input 控件的属性',
+      type: 'NumberInputControlProps'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响高度、内边距和字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'NumberInputClassNames'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'NumberInputClassNames',
+      description: 'NumberInput 各 slot 的自定义 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'control', type: 'ClassValue', description: '输入框 class。' },
+        { name: 'increment', type: 'ClassValue', description: '递增按钮 class。' },
+        { name: 'decrement', type: 'ClassValue', description: '递减按钮 class。' },
+        { name: 'clearable', type: 'ClassValue', description: '清除按钮 class。' }
+      ]
+    },
+    {
+      name: 'NumberInputControlProps',
+      description: '内部输入控件的属性。继承原生 input 属性（排除 value / defaultValue / min / max），并增加以下字段。',
+      fields: [
+        { name: 'value', type: 'number | string', description: '当前值。' },
+        { name: 'defaultValue', type: 'number | string', description: '默认值。' },
+        { name: 'min', type: 'number', description: '最小值。' },
+        { name: 'max', type: 'number', description: '最大值。' },
+        { name: 'center', type: 'boolean', description: '是否居中显示输入值。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '输入框 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

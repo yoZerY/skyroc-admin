@@ -1,0 +1,268 @@
+---
+title: Combobox
+description: 可搜索的下拉选择器，由 Popover、Command 和 Button 组合而成
+---
+
+组合选择器（Combobox）是一种常见的输入模式，允许用户在弹出面板中通过关键词搜索并选择选项。它不是一个独立组件，而是由 `Popover`（弹出容器）、`Command`（可搜索列表）和 `Button`（触发器）三个组件组合实现。
+
+```tsx
+import { Button, Command, Popover, cn } from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Combobox 由三个组件协作完成：
+
+- `Popover`：提供弹出层容器，管理打开/关闭状态。
+- `Command`：数据驱动的可搜索列表，接收 `items` 数组自动渲染选项、分组和分隔符。
+- `Button`：作为 `Popover` 的 `trigger`，展示当前选中值和下拉指示器。
+
+组合方式：
+
+```tsx
+<Popover trigger={<Button>...</Button>}>
+  <Command items={[...]} />
+</Popover>
+```
+
+## 何时使用
+
+- 选项较多（超过 5 个），需要搜索过滤时。
+- 需要在弹出面板中展示结构化选项（分组、分隔符、快捷键）。
+- 替代原生 `<select>`，需要更丰富的选项展示和交互。
+- 与 Select 组件的区分：Combobox 侧重「搜索 + 选择」，Select 侧重「浏览 + 选择」。
+
+## 基础用法
+
+通过 `Popover` 包裹 `Command`，将 `Button` 作为触发器。`Command` 的 `items` 接收选项数组，每个选项包含 `label`（显示文本）和 `value`（匹配值）。
+
+<Demo src="@playground/combobox/modules/ComboboxDemo" />
+
+## API
+
+### Command
+
+数据驱动的可搜索命令面板。继承 `CommandRoot` 的所有属性，支持通过 `items` 数组声明式渲染选项。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '选项数据数组，支持 item、group、separator 三种类型',
+      type: 'CommandOptionData[]',
+      required: true
+    },
+    {
+      name: 'empty',
+      description: '无匹配结果时显示的内容',
+      type: 'ReactNode',
+      default: "'No results.'"
+    },
+    {
+      name: 'inputProps',
+      description: '传递给搜索输入框的属性',
+      type: 'CommandInputProps'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'CommandClassNames'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响所有子组件的字号与间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '根容器的 class，优先级低于 classNames.root',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### 选项数据结构
+
+`items` 数组中的每个元素通过 `type` 字段区分类型：
+
+| 类型        | 说明                     | 必填字段        |
+| ----------- | ------------------------ | --------------- |
+| `item`      | 可选择的选项（默认类型） | `label`         |
+| `group`     | 选项分组                 | `children`      |
+| `separator` | 分隔线                   | `type` 必须显式 |
+
+**选项（item）**
+
+<PropsTable
+  data={[
+    {
+      name: 'label',
+      description: '选项显示文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'value',
+      description: '选项值，用于搜索匹配和选中标识',
+      type: 'string'
+    },
+    {
+      name: 'onSelect',
+      description: '选中时触发的回调',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用',
+      type: 'boolean'
+    },
+    {
+      name: 'keywords',
+      description: '额外搜索关键词，不影响显示',
+      type: 'string[]'
+    },
+    {
+      name: 'leading',
+      description: '前置插槽，位于 label 之前',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '后置插槽，位于 label 之后',
+      type: 'ReactNode'
+    },
+    {
+      name: 'shortcut',
+      description: '关联的键盘快捷键',
+      type: "string | string[]"
+    },
+    {
+      name: 'className',
+      description: '选项的 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'size',
+      description: '选项尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    }
+  ]}
+/>
+
+**分组（group）**
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '分组内的子选项数组',
+      type: 'CommandOptionData[]',
+      required: true
+    },
+    {
+      name: 'label',
+      description: '分组标题',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '分组容器的 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '分组内各 slot 的 class（group / groupLabel）',
+      type: "Pick<CommandClassNames, 'group' | 'groupLabel'>"
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'CommandClassNames',
+      description: 'Command 各 slot 的自定义 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器。' },
+        { name: 'list', type: 'ClassValue', description: '列表容器。' },
+        { name: 'empty', type: 'ClassValue', description: '空状态区域。' },
+        { name: 'input', type: 'ClassValue', description: '搜索输入框。' },
+        { name: 'inputWrapper', type: 'ClassValue', description: '输入框外层包裹区。' },
+        { name: 'inputIcon', type: 'ClassValue', description: '搜索图标。' },
+        { name: 'item', type: 'ClassValue', description: '选项行。' },
+        { name: 'itemIcon', type: 'ClassValue', description: '选项图标。' },
+        { name: 'group', type: 'ClassValue', description: '分组容器。' },
+        { name: 'groupLabel', type: 'ClassValue', description: '分组标题。' },
+        { name: 'separator', type: 'ClassValue', description: '分隔线。' },
+        { name: 'shortcut', type: 'ClassValue', description: '快捷键展示区。' },
+        { name: 'dialog', type: 'ClassValue', description: '对话框模式容器。' }
+      ]
+    },
+    {
+      name: 'CommandInputProps',
+      description: '搜索输入框属性。继承 cmdk CommandInput 的属性，并增加 className、size 和 slot 插槽。',
+      fields: [
+        { name: 'placeholder', type: 'string', description: '输入框占位文本。' },
+        { name: 'value', type: 'string', description: '受控搜索文本。' },
+        { name: 'onValueChange', type: '(search: string) => void', description: '搜索文本变化时触发。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽，默认为搜索图标。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽。' },
+        { name: 'className', type: 'ClassValue', description: '输入框 class。' },
+        { name: 'classNames', type: "Pick<CommandClassNames, 'input' | 'inputIcon' | 'inputWrapper'>", description: '输入框相关 slot 的 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '输入框尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandItemOptionProps',
+      description: '选项数据结构。继承 CommandItem 的属性（排除 children），通过 label 显示文本。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '选项显示文本。' },
+        { name: 'type', type: "'item'", description: '标识为选项类型，可省略。' },
+        { name: 'value', type: 'string', description: '选项值，用于搜索匹配。' },
+        { name: 'onSelect', type: '(value: string) => void', description: '选中时回调。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'keywords', type: 'string[]', description: '额外搜索关键词。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽。' },
+        { name: 'shortcut', type: 'string | string[]', description: '关联键盘快捷键。' },
+        { name: 'className', type: 'ClassValue', description: '选项 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '选项尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandGroupOptionProps',
+      description: '分组数据结构。将多个选项归入同一分组，显示分组标题。',
+      fields: [
+        { name: 'children', type: 'CommandOptionData[]', description: '分组内的子选项数组。', required: true },
+        { name: 'label', type: 'ReactNode', description: '分组标题文本。' },
+        { name: 'type', type: "'group'", description: '标识为分组类型，可省略（含 children 字段时自动识别）。' },
+        { name: 'className', type: 'ClassValue', description: '分组容器 class。' },
+        { name: 'classNames', type: "Pick<CommandClassNames, 'group' | 'groupLabel'>", description: '分组内 slot class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '分组尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandSeparatorOptionProps',
+      description: '分隔线数据结构。在选项列表中插入视觉分隔。',
+      fields: [
+        { name: 'type', type: "'separator'", description: '标识为分隔线类型，必须显式指定。', required: true },
+        { name: 'className', type: 'ClassValue', description: '分隔线 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '分隔线尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="CommandOptionData"
+  description="选项数据联合类型，每个元素可以是选项、分组或分隔线"
+  type="CommandItemOptionProps | CommandGroupOptionProps | CommandSeparatorOptionProps"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

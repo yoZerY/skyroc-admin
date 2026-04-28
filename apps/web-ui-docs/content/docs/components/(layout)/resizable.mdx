@@ -1,0 +1,270 @@
+---
+title: Resizable
+description: 用于构建可拖拽调整尺寸的分栏布局
+---
+
+Resizable 用于构建可拖拽调整尺寸的面板组。组件基于 `react-resizable-panels` 封装，导出 `ResizablePanelGroup`、`ResizablePanel` 和 `ResizableHandle`，适合编辑器、控制台、详情页和左右/上下分栏布局。
+
+```tsx
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要用户手动调整左右或上下区域的空间比例。
+- 构建 IDE、日志面板、数据看板、侧边栏和主内容区等分栏界面。
+- 需要支持嵌套分栏，组合出更复杂的布局。
+- 只需要静态栅格布局时使用 CSS Grid 或 Layout 组件；需要折叠导航时使用 Collapsible。
+
+## 横向分栏
+
+设置 `direction="horizontal"` 后，面板按左右方向排列。`ResizableHandle` 放在两个 `ResizablePanel` 之间，作为可拖拽分隔线。
+
+<Demo src="@playground/resizable/modules/ResizableHorizontal" />
+
+```tsx
+<ResizablePanelGroup direction="horizontal">
+  <ResizablePanel defaultSize={50}>Left</ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize={50}>Right</ResizablePanel>
+</ResizablePanelGroup>
+```
+
+## 纵向分栏
+
+设置 `direction="vertical"` 后，面板按上下方向排列。Handle 会根据面板方向自动切换为横向分隔线。
+
+<Demo src="@playground/resizable/modules/ResizableVertical" />
+
+```tsx
+<ResizablePanelGroup direction="vertical">
+  <ResizablePanel defaultSize={50}>Top</ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel defaultSize={50}>Bottom</ResizablePanel>
+</ResizablePanelGroup>
+```
+
+## 嵌套布局
+
+ResizablePanel 内可以继续嵌套新的 `ResizablePanelGroup`，用于构建多区域布局。Handle 支持 `withHandle` 和自定义图标。
+
+<Demo src="@playground/resizable/modules/Default" />
+
+```tsx
+<ResizablePanelGroup direction="horizontal">
+  <ResizablePanel defaultSize={50}>One</ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize={50}>
+    <ResizablePanelGroup direction="vertical">...</ResizablePanelGroup>
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
+
+## 尺寸
+
+通过 `size` 调整面板组文字尺寸和 handle 图标容器尺寸。`ResizablePanelGroup` 与 `ResizableHandle` 分别接收 `size`，需要统一视觉时同时传入。
+
+<Demo src="@playground/resizable/modules/ResizableSize" />
+
+| 尺寸  | 组内字号 | Handle 图标容器 | 适用场景           |
+| ----- | -------- | --------------- | ------------------ |
+| `xs`  | 10px     | 8px × 10.5px    | 紧凑面板、表格内嵌 |
+| `sm`  | 12px     | 10px × 13px     | 小型工具面板       |
+| `md`  | 14px     | 12px × 16px     | 常规场景（默认）   |
+| `lg`  | 16px     | 14px × 18px     | 重点布局区域       |
+| `xl`  | 18px     | 16px × 21px     | 大号编辑面板       |
+| `2xl` | 20px     | 18px × 24px     | 大幅展示布局       |
+
+## API
+
+### ResizablePanelGroup
+
+面板组容器，负责定义分栏方向和管理子面板布局。
+
+<PropsTable
+  data={[
+    {
+      name: 'direction',
+      description: '面板排列方向',
+      type: "'horizontal' | 'vertical'",
+      required: true
+    },
+    {
+      name: 'children',
+      description: 'ResizablePanel 与 ResizableHandle 组合内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'autoSaveId',
+      description: '布局持久化 id，传入后底层库会保存面板尺寸',
+      type: 'string'
+    },
+    {
+      name: 'onLayout',
+      description: '面板尺寸变化后触发，参数是每个面板的百分比尺寸',
+      type: '(sizes: number[]) => void'
+    },
+    {
+      name: 'keyboardResizeBy',
+      description: '键盘调整尺寸时每次变化的百分比',
+      type: 'number'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响组内字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '面板组容器 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### ResizablePanel
+
+单个可调整尺寸的面板，直接来自 `react-resizable-panels` 的 `Panel`。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '面板内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'defaultSize',
+      description: '默认尺寸百分比',
+      type: 'number'
+    },
+    {
+      name: 'minSize',
+      description: '最小尺寸百分比',
+      type: 'number'
+    },
+    {
+      name: 'maxSize',
+      description: '最大尺寸百分比',
+      type: 'number'
+    },
+    {
+      name: 'collapsible',
+      description: '是否允许折叠',
+      type: 'boolean'
+    },
+    {
+      name: 'collapsedSize',
+      description: '折叠后的尺寸百分比',
+      type: 'number'
+    },
+    {
+      name: 'order',
+      description: '面板顺序，用于动态渲染场景',
+      type: 'number'
+    },
+    {
+      name: 'id',
+      description: '面板 id，建议在持久化或动态面板中提供',
+      type: 'string'
+    }
+  ]}
+/>
+
+### ResizableHandle
+
+面板之间的拖拽分隔线。
+
+<PropsTable
+  data={[
+    {
+      name: 'withHandle',
+      description: '是否显示可视化拖拽手柄',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'children',
+      description: '自定义手柄图标；未传入时使用 GripVertical',
+      type: 'ReactNode'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用拖拽',
+      type: 'boolean'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响手柄图标容器大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '分隔线 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '手柄图标相关 slot class',
+      type: 'ResizableClassNames'
+    },
+    {
+      name: 'id',
+      description: '分隔线 id',
+      type: 'string'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ResizablePanelGroupProps',
+      description: '面板组属性。继承 react-resizable-panels 的 Group props，并增加项目尺寸和 className 类型。',
+      fields: [
+        { name: 'direction', type: "'horizontal' | 'vertical'", required: true, description: '面板排列方向。' },
+        { name: 'children', type: 'ReactNode', description: '面板组内容。' },
+        { name: 'autoSaveId', type: 'string', description: '布局持久化 id。' },
+        { name: 'onLayout', type: '(sizes: number[]) => void', description: '布局变化回调。' },
+        { name: 'keyboardResizeBy', type: 'number', description: '键盘调整尺寸步长。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '面板组 class。' }
+      ]
+    },
+    {
+      name: 'ResizableHandleProps',
+      description: '拖拽分隔线属性。继承 react-resizable-panels 的 PanelResizeHandle props，并增加可视化手柄配置。',
+      fields: [
+        { name: 'withHandle', type: 'boolean', description: '是否显示可视化拖拽手柄。' },
+        { name: 'children', type: 'ReactNode', description: '自定义手柄图标。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用拖拽。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '分隔线 class。' },
+        { name: 'classNames', type: 'ResizableClassNames', description: '手柄图标 slot class。' },
+        { name: 'id', type: 'string', description: '分隔线 id。' }
+      ]
+    },
+    {
+      name: 'ResizableClassNames',
+      description: 'ResizableHandle 可覆盖的 slot class。',
+      fields: [
+        { name: 'handleIconRoot', type: 'ClassValue', description: '可视化手柄外层容器 class。' },
+        { name: 'handleIcon', type: 'ClassValue', description: '可视化手柄图标 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

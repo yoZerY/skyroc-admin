@@ -1,0 +1,247 @@
+---
+title: List
+description: 用于展示标题、描述、前后插槽和补充内容的列表组件
+---
+
+List 用于展示一组结构一致的内容项。每一项可以包含前置内容、标题、描述、主体内容、后置内容和分隔线，适合通知、设置入口、消息列表等场景。
+
+```tsx
+import {
+  List,
+  ListContent,
+  ListDescription,
+  ListItem,
+  ListItemUI,
+  ListRoot,
+  ListTitle
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要展示多条结构类似的信息项。
+- 列表项需要图标、标题、描述、右侧操作或状态。
+- 需要通过数据数组批量渲染列表项。
+- 大量数据或虚拟滚动场景优先使用 VirtualList。
+
+## 基础用法
+
+通过 `items` 传入列表项数据。`List` 会自动渲染每个 item，并在非最后一项后追加默认 Divider。
+
+<Demo src="@playground/list/modules/ListWithIcons" />
+
+## 列表项结构
+
+每个 item 支持 `leading`、`title`、`description`、`content`、`trailing` 和 `divider`。其中 `divider` 传 React element 时会使用自定义分隔线；传 `false` 或空值时不渲染分隔线。
+
+```tsx
+<List
+  items={[
+    {
+      leading: <Icon icon="lucide:bell" />,
+      title: 'Notifications',
+      description: 'You have 3 unread messages.',
+      content: <span>Extra content</span>,
+      trailing: <Icon icon="lucide:chevron-right" />
+    }
+  ]}
+/>
+```
+
+## 尺寸
+
+通过 `size` 调整列表间距、列表项间距、正文字号和标题字号，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 列表间距 | 标题字号 | 适用场景           |
+| ----- | -------- | -------- | ------------------ |
+| `xs`  | 8px      | 12px     | 紧凑列表、表格内嵌 |
+| `sm`  | 12px     | 14px     | 次级信息列表       |
+| `md`  | 16px     | 16px     | 常规场景（默认）   |
+| `lg`  | 20px     | 18px     | 设置页、详情入口   |
+| `xl`  | 24px     | 20px     | 大号内容列表       |
+| `2xl` | 28px     | 24px     | 重点展示列表       |
+
+## 自定义样式
+
+通过 `classNames` 控制不同 slot：`root`、`item`、`content`、`title` 和 `description`。也可以通过 `contentProps`、`titleProps`、`descriptionProps` 分别向内部结构组件传入额外属性。
+
+## API
+
+### List
+
+通用属性参考：基于 `ul` 元素，使用 `items` 数据渲染复合列表项。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '列表项数据',
+      type: 'ListItemUIProps[]',
+      required: true
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响间距、字号和标题样式',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'leading',
+      description: '统一设置每一项的前置插槽；会被 item.leading 覆盖',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '统一设置每一项的后置插槽；会被 item.trailing 覆盖',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '根列表 class；优先级高于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / item / content / title / description）',
+      type: 'ListUi'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 ListContent 的额外 props',
+      type: 'ListContentProps'
+    },
+    {
+      name: 'titleProps',
+      description: '传递给 ListTitle 的额外 props',
+      type: 'ListTitleProps'
+    },
+    {
+      name: 'descriptionProps',
+      description: '传递给 ListDescription 的额外 props',
+      type: 'ListDescriptionProps'
+    }
+  ]}
+/>
+
+### 结构组件
+
+当需要手动组合列表结构时，可以直接使用导出的结构组件。
+
+<PropsTable
+  data={[
+    { name: 'ListRoot', description: '列表根容器，渲染 ul', type: 'ListRootProps' },
+    { name: 'ListItem', description: '列表项容器，渲染 li', type: 'ListItemProps' },
+    { name: 'ListItemUI', description: '复合列表项，组合 leading / content / trailing / divider', type: 'ListItemUIProps' },
+    { name: 'ListContent', description: '列表项内容容器', type: 'ListContentProps' },
+    { name: 'ListTitle', description: '列表项标题', type: 'ListTitleProps' },
+    { name: 'ListDescription', description: '列表项描述文本', type: 'ListDescriptionProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ListProps',
+      description: '主组件属性。继承 ListRootProps，并通过 items 渲染多个复合列表项。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根列表 class。' },
+        { name: 'classNames', type: 'ListUi', description: '各 slot 的自定义 class。' },
+        { name: 'contentProps', type: 'ListContentProps', description: '传递给每个 ListContent 的属性。' },
+        { name: 'descriptionProps', type: 'ListDescriptionProps', description: '传递给每个 ListDescription 的属性。' },
+        { name: 'items', type: 'ListItemUIProps[]', required: true, description: '列表项数据。' },
+        { name: 'leading', type: 'ReactNode', description: '统一前置插槽。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'titleProps', type: 'ListTitleProps', description: '传递给每个 ListTitle 的属性。' },
+        { name: 'trailing', type: 'ReactNode', description: '统一后置插槽。' }
+      ]
+    },
+    {
+      name: 'ListItemUIProps',
+      description: '复合列表项属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '列表项 class。' },
+        { name: 'classNames', type: 'ListUi', description: '各 slot 的自定义 class。' },
+        { name: 'content', type: 'ReactNode', description: '显示在标题和描述之后的主体内容。' },
+        { name: 'contentProps', type: 'ListContentProps', description: '内容容器属性。' },
+        { name: 'description', type: 'ReactNode', description: '描述内容。' },
+        { name: 'descriptionProps', type: 'ListDescriptionProps', description: '描述组件属性。' },
+        { name: 'divider', type: 'ReactNode | boolean', description: '分隔线配置。React element 会作为自定义分隔线渲染。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'title', type: 'ReactNode', description: '标题内容。' },
+        { name: 'titleProps', type: 'ListTitleProps', description: '标题组件属性。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽。' }
+      ]
+    },
+    {
+      name: 'ListUi',
+      description: '各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根列表 class。' },
+        { name: 'item', type: 'ClassValue', description: '列表项 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'title', type: 'ClassValue', description: '标题 class。' },
+        { name: 'description', type: 'ClassValue', description: '描述文本 class。' }
+      ]
+    },
+    {
+      name: 'ListRootProps',
+      description: '根列表属性。继承 ul 元素属性，并支持 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '列表项内容。' },
+        { name: 'className', type: 'ClassValue', description: '根列表 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'ListItemProps',
+      description: '列表项容器属性。继承 li 元素属性，并支持 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '列表项内容。' },
+        { name: 'className', type: 'ClassValue', description: '列表项 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'ListContentProps',
+      description: '列表项内容容器属性。继承 div 元素属性，并支持 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '内容节点。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'ListTitleProps',
+      description: '列表标题属性。继承 h3 元素属性，并支持 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '标题内容。' },
+        { name: 'className', type: 'ClassValue', description: '标题 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'ListDescriptionProps',
+      description: '列表描述属性。继承 p 元素属性，并支持 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '描述内容。' },
+        { name: 'className', type: 'ClassValue', description: '描述 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ListSlots"
+  description="List 可配置 classNames 的内置 slot"
+  type="'content' | 'description' | 'item' | 'root' | 'title'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

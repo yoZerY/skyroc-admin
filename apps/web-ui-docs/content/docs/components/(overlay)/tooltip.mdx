@@ -1,0 +1,313 @@
+---
+title: Tooltip
+description: 用于在悬停或聚焦时展示简短说明的浮层提示组件
+---
+
+Tooltip 用于给按钮、图标、快捷操作等元素提供轻量说明。组件基于 Radix Tooltip 封装，提供内容浮层、箭头、位置、尺寸和 slot class 配置。
+
+```tsx
+import { Tooltip, TooltipArrow, TooltipContent, TooltipProvider, TooltipRoot, TooltipTrigger } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要解释图标按钮、短标签、快捷操作等界面元素的含义。
+- 信息足够简短，不需要用户在浮层内进行交互。
+- 需要在 hover 或 focus 时展示辅助说明。
+- 需要承载复杂内容或可交互操作时使用 Popover；需要展示对象预览时使用 HoverCard。
+
+## 基础用法
+
+通过 `content` 设置提示内容。`Tooltip` 会把子元素作为触发器，内部使用 `TooltipTrigger asChild` 渲染。
+
+<Demo src="@playground/tooltip/modules/TooltipBasic" />
+
+```tsx
+<Tooltip content="Save your changes">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+## 位置
+
+通过 `contentProps.side` 和 `contentProps.align` 控制浮层位置。`sideOffset` 默认是 `8`，`avoidCollisions` 默认开启。
+
+<Demo src="@playground/tooltip/modules/TooltipDemo" />
+
+```tsx
+<Tooltip
+  content="Tooltip content"
+  contentProps={{
+    align: 'center',
+    side: 'top'
+  }}
+>
+  <Button>Top</Button>
+</Tooltip>
+```
+
+## 箭头
+
+通过 `showArrow` 显示指向触发器的箭头。`arrowProps` 会传递给内部 `TooltipArrow`。
+
+<Demo src="@playground/tooltip/modules/TooltipArrow" />
+
+```tsx
+<Tooltip showArrow content="Tooltip content">
+  <Button>with arrow</Button>
+</Tooltip>
+```
+
+## 尺寸
+
+通过 `size` 调整内容浮层的字号、内边距和箭头大小。默认尺寸为 `md`。
+
+| 尺寸  | 字号 | 适用场景           |
+| ----- | ---- | ------------------ |
+| `xs`  | 10px | 紧凑工具栏         |
+| `sm`  | 12px | 表格内操作提示     |
+| `md`  | 14px | 常规场景（默认）   |
+| `lg`  | 16px | 较醒目的操作说明   |
+| `xl`  | 18px | 大号操作区说明     |
+| `2xl` | 20px | 大尺寸展示或演示区 |
+
+<Demo src="@playground/tooltip/modules/TooltipSize" />
+
+## 自定义样式
+
+通过 `classNames.content` 控制内容浮层，通过 `classNames.arrow` 控制箭头。`className` 当前会作为内容浮层的自定义 class 使用。
+
+<Demo src="@playground/tooltip/modules/TooltipCustomStyle" />
+
+```tsx
+<Tooltip
+  showArrow
+  content="Custom tooltip"
+  classNames={{
+    arrow: 'fill-primary',
+    content: 'border-primary bg-primary text-primary-foreground'
+  }}
+>
+  <Button>Custom</Button>
+</Tooltip>
+```
+
+## API
+
+### Tooltip
+
+高层封装组件。继承 Radix Tooltip Root 属性，并增加 `content`、内容浮层配置、箭头配置和项目尺寸。
+
+<PropsTable
+  data={[
+    {
+      name: 'content',
+      description: '提示内容',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'children',
+      description: '触发元素',
+      type: 'ReactNode'
+    },
+    {
+      name: 'open',
+      description: '受控打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下的默认打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '打开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'showArrow',
+      description: '是否显示箭头',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响内容浮层的字号、内边距和箭头大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 TooltipContent 的额外属性',
+      type: "Omit<TooltipContentProps, 'children' | 'className'>"
+    },
+    {
+      name: 'arrowProps',
+      description: '传递给 TooltipArrow 的额外属性',
+      type: 'TooltipArrowProps'
+    },
+    {
+      name: 'className',
+      description: '内容浮层的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（content / arrow）',
+      type: 'TooltipClassNames'
+    }
+  ]}
+/>
+
+### TooltipContent
+
+内容浮层组件。默认通过 Portal 渲染，`avoidCollisions` 默认为 `true`，`sideOffset` 默认为 `8`。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '浮层内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'side',
+      description: '浮层出现方向',
+      type: "'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      name: 'align',
+      description: '浮层对齐方式',
+      type: "'start' | 'center' | 'end'"
+    },
+    {
+      name: 'sideOffset',
+      description: '浮层与触发元素之间的距离',
+      type: 'number',
+      default: '8'
+    },
+    {
+      name: 'avoidCollisions',
+      description: '是否自动避让视口碰撞',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响字号与内边距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '内容浮层自定义 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### TooltipArrow
+
+箭头组件，通常通过 `Tooltip` 的 `showArrow` 自动渲染。
+
+<PropsTable
+  data={[
+    {
+      name: 'size',
+      description: '尺寸，影响箭头大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '箭头自定义 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### TooltipProvider / TooltipRoot / TooltipTrigger
+
+这些组件直接从 Radix Tooltip re-export。需要统一延迟、跳过延迟窗口或自定义组合结构时，可以使用这些底层组件。
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'TooltipProps',
+      description: 'Tooltip 高层封装组件属性。继承 Radix Tooltip Root 属性，并增加内容、箭头、尺寸和 slot class 配置。',
+      fields: [
+        { name: 'arrowProps', type: 'TooltipArrowProps', description: '传递给箭头组件的额外属性。' },
+        { name: 'children', type: 'ReactNode', description: '触发元素。' },
+        { name: 'className', type: 'ClassValue', description: '内容浮层的自定义 class。' },
+        { name: 'classNames', type: 'TooltipClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'content', type: 'ReactNode', description: '提示内容。' },
+        {
+          name: 'contentProps',
+          type: "Omit<TooltipContentProps, 'children' | 'className'>",
+          description: '内容浮层额外属性。'
+        },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控默认打开状态。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化回调。' },
+        { name: 'open', type: 'boolean', description: '受控打开状态。' },
+        { name: 'showArrow', type: 'boolean', description: '是否显示箭头。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'TooltipClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 Tooltip 样式。',
+      fields: [
+        { name: 'content', type: 'ClassValue', description: '内容浮层的 class。' },
+        { name: 'arrow', type: 'ClassValue', description: '箭头的 class。' }
+      ]
+    },
+    {
+      name: 'TooltipContentProps',
+      description: '内容浮层组件属性。继承 Radix Tooltip Content 属性并支持项目尺寸。',
+      fields: [
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '浮层对齐方式。' },
+        { name: 'avoidCollisions', type: 'boolean', description: '是否自动避让视口碰撞。' },
+        { name: 'children', type: 'ReactNode', description: '浮层内容。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '浮层出现方向。' },
+        { name: 'sideOffset', type: 'number', description: '浮层与触发元素之间的距离。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'TooltipArrowProps',
+      description: '箭头组件属性。继承 Radix Tooltip Arrow 属性并支持项目尺寸。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        {
+          name: '...sourceProps',
+          type: 'inherited props without className',
+          description: '继承原始组件属性，但重新定义 className。'
+        },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="TooltipSide" description="Tooltip 出现方向类型" type="'top' | 'right' | 'bottom' | 'left'" />
+
+<UnionType name="TooltipAlign" description="Tooltip 对齐方式类型" type="'start' | 'center' | 'end'" />
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

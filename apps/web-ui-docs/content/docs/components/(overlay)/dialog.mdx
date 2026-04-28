@@ -1,0 +1,449 @@
+---
+title: Dialog
+description: 用于承载表单、确认内容或短流程操作的通用模态对话框
+---
+
+Dialog 用于在当前页面之上展示一段需要用户关注的内容。它基于 Radix Dialog 封装，提供标题、描述、关闭按钮、内容区和页脚操作的常用组合。
+
+```tsx
+import {
+  Dialog,
+  DialogAction,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在不离开当前页面的情况下展示补充内容、表单或短流程。
+- 需要用户完成一个轻量操作后再回到原页面。
+- 需要自定义页脚按钮、关闭按钮或内容布局。
+- 需要确认高风险操作时使用 AlertDialog；只展示页面内提示时使用 Alert。
+
+## 基础用法
+
+通过 `trigger` 提供打开对话框的触发元素，通过 `title`、`description` 和 `children` 组织内容。
+
+<Demo src="@playground/dialog/modules/DialogBasic" />
+
+## 页脚操作
+
+默认页脚包含一个 OK 按钮，点击后会触发 `onOk` 并关闭对话框。通过 `footer` 可以完全替换页脚内容；设置为 `null` 或 `false` 时隐藏页脚。
+
+<Demo src="@playground/dialog/modules/DialogWithFooter" />
+
+## 尺寸
+
+通过 `size` 调整对话框最大宽度、字号、内边距和各区域间距，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 最大宽度    | 字号 | 适用场景             |
+| ----- | ----------- | ---- | -------------------- |
+| `xs`  | `max-w-md`  | 10px | 紧凑内容、短文本     |
+| `sm`  | `max-w-md`  | 12px | 小型表单或辅助操作   |
+| `md`  | `max-w-lg`  | 14px | 常规场景（默认）     |
+| `lg`  | `max-w-xl`  | 16px | 内容较多的通用弹窗   |
+| `xl`  | `max-w-2xl` | 18px | 较宽的表单或信息展示 |
+| `2xl` | `max-w-3xl` | 20px | 大幅内容或复杂布局   |
+
+## 自定义样式
+
+通过 `classNames` 可以分别控制 `overlay`、`content`、`header`、`title`、`description`、`close` 和 `footer`。也可以通过 `contentProps`、`headerProps`、`titleProps`、`descriptionProps`、`closeProps`、`footerProps`、`overlayProps` 向对应结构组件传入额外属性。
+
+## 受控状态
+
+Dialog 透传 Radix Root 的 `open`、`defaultOpen`、`onOpenChange` 和 `modal`。当前封装会始终渲染 `DialogTrigger`，因此实际使用时应提供 `trigger` 元素。
+
+## API
+
+### Dialog
+
+通用属性参考：基于 Radix Dialog Root，支持打开状态、模态行为、标题描述、内容区、页脚和 slot 样式配置。
+
+<PropsTable
+  data={[
+    {
+      name: 'trigger',
+      description: '触发对话框打开的元素，通常是 Button',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'title',
+      description: '对话框标题，用于说明当前弹窗的目的',
+      type: 'ReactNode'
+    },
+    {
+      name: 'description',
+      description: '对话框描述文本，用于补充说明上下文',
+      type: 'ReactNode'
+    },
+    {
+      name: 'children',
+      description: '内容区节点，显示在头部和页脚之间',
+      type: 'ReactNode'
+    },
+    {
+      name: 'footer',
+      description: '自定义页脚内容；设为 null 或 false 时隐藏页脚',
+      type: 'ReactNode | null | false'
+    },
+    {
+      name: 'okText',
+      description: '默认 OK 按钮文本',
+      type: 'ReactNode',
+      default: "'OK'"
+    },
+    {
+      name: 'onOk',
+      description: '点击默认 OK 按钮时触发',
+      type: 'DialogActionHandler'
+    },
+    {
+      name: 'okButtonProps',
+      description: '传递给默认 OK 按钮的 Button 属性',
+      type: 'ButtonProps'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响对话框宽度、字号与间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（overlay / content / header / title / description / close / footer）',
+      type: 'DialogClassNames'
+    },
+    {
+      name: 'contentComponent',
+      description: '替换默认内容容器的自定义组件',
+      type: 'DialogContentComponent'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 DialogContent 的额外 props',
+      type: 'DialogContentProps'
+    },
+    {
+      name: 'closeProps',
+      description: '传递给 DialogClose 的额外 props',
+      type: 'DialogCloseProps'
+    },
+    {
+      name: 'headerProps',
+      description: '传递给 DialogHeader 的额外 props',
+      type: 'DialogHeaderProps'
+    },
+    {
+      name: 'titleProps',
+      description: '传递给 DialogTitle 的额外 props',
+      type: 'DialogTitleProps'
+    },
+    {
+      name: 'descriptionProps',
+      description: '传递给 DialogDescription 的额外 props',
+      type: 'DialogDescriptionProps'
+    },
+    {
+      name: 'footerProps',
+      description: '传递给 DialogFooter 的额外 props',
+      type: 'DialogFooterProps'
+    },
+    {
+      name: 'overlayProps',
+      description: '传递给 DialogOverlay 的额外 props',
+      type: 'DialogOverlayProps'
+    },
+    {
+      name: 'open',
+      description: '受控模式下的打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下的默认打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '打开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'modal',
+      description: '是否以模态方式打开',
+      type: 'boolean'
+    },
+    {
+      name: 'className',
+      description: '传递给内容容器的自定义 class；优先级高于 classNames.content',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### 子组件
+
+Dialog 也导出基础结构组件，适合在需要更细粒度组合时使用。
+
+<PropsTable
+  data={[
+    {
+      name: 'DialogRoot',
+      description: 'Radix Dialog Root 原语，用于自定义组合根节点',
+      type: 'radix primitive'
+    },
+    {
+      name: 'DialogTrigger',
+      description: 'Radix Dialog Trigger 原语，用于自定义触发元素',
+      type: 'radix primitive'
+    },
+    {
+      name: 'DialogPortal',
+      description: 'Radix Dialog Portal 原语，用于控制挂载位置',
+      type: 'DialogPortalProps'
+    },
+    {
+      name: 'DialogOverlay',
+      description: '遮罩层，支持对应 Radix Overlay props、size 和 className',
+      type: 'DialogOverlayProps'
+    },
+    {
+      name: 'DialogContent',
+      description: '对话框内容容器，支持对应 Radix Content props、size 和 className',
+      type: 'DialogContentProps'
+    },
+    {
+      name: 'DialogHeader',
+      description: '头部容器，支持 header 元素 props、size 和 className',
+      type: 'DialogHeaderProps'
+    },
+    {
+      name: 'DialogTitle',
+      description: '标题区域，支持对应 Radix Title props、size 和 className',
+      type: 'DialogTitleProps'
+    },
+    {
+      name: 'DialogDescription',
+      description: '描述文本区域，支持对应 Radix Description props、size 和 className',
+      type: 'DialogDescriptionProps'
+    },
+    {
+      name: 'DialogClose',
+      description: '关闭按钮，未传 children 时显示默认 X 图标按钮',
+      type: 'DialogCloseProps'
+    },
+    {
+      name: 'DialogFooter',
+      description: '页脚容器，支持 footer 元素 props、size 和 className',
+      type: 'DialogFooterProps'
+    },
+    {
+      name: 'DialogAction',
+      description: '默认操作按钮，继承 ButtonProps，并会在点击后关闭对话框',
+      type: 'ButtonProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'DialogProps',
+      description:
+        '主组件属性。组合了 Radix Dialog Root 属性，并额外提供标题、描述、内容区、页脚、默认操作按钮和 slot 样式配置。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '内容区节点。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器的 class。来自 StyledComponentProps。' },
+        { name: 'classNames', type: 'DialogClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'closeProps', type: 'DialogCloseProps', description: '传递给关闭按钮的额外属性。' },
+        { name: 'contentComponent', type: 'DialogContentComponent', description: '替换默认内容容器的组件。' },
+        { name: 'contentProps', type: 'DialogContentProps', description: '传递给内容容器的额外属性。' },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控模式下的默认打开状态。来自 Radix Root props。' },
+        { name: 'description', type: 'ReactNode', description: '对话框描述内容。' },
+        {
+          name: 'descriptionProps',
+          type: 'DialogDescriptionProps',
+          description: '传递给描述文本区域的额外属性。'
+        },
+        { name: 'footer', type: 'ReactNode | null | false', description: '页脚内容。设为 null 或 false 时隐藏页脚。' },
+        { name: 'footerProps', type: 'DialogFooterProps', description: '传递给页脚容器的额外属性。' },
+        { name: 'headerProps', type: 'DialogHeaderProps', description: '传递给头部容器的额外属性。' },
+        { name: 'modal', type: 'boolean', description: '是否以模态方式打开。来自 Radix Root props。' },
+        {
+          name: 'okButtonProps',
+          type: 'ButtonProps',
+          description: '默认 OK 按钮属性。这里只引用 ButtonProps，不展开 Button 的字段。'
+        },
+        { name: 'okText', type: 'ReactNode', description: '默认 OK 按钮文本。默认值为 OK。' },
+        { name: 'onOk', type: 'DialogActionHandler', description: '点击默认 OK 按钮时触发。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化时触发。' },
+        { name: 'open', type: 'boolean', description: '受控模式下的打开状态。来自 Radix Root props。' },
+        { name: 'overlayProps', type: 'DialogOverlayProps', description: '传递给遮罩层的额外属性。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。来自 StyledComponentProps。'
+        },
+        { name: 'title', type: 'ReactNode', description: '对话框标题内容。' },
+        { name: 'titleProps', type: 'DialogTitleProps', description: '传递给标题区域的额外属性。' },
+        { name: 'trigger', type: 'ReactNode', required: true, description: '触发对话框打开的元素。' }
+      ]
+    },
+    {
+      name: 'DialogClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 Dialog 各部分的样式。',
+      fields: [
+        { name: 'overlay', type: 'ClassValue', description: '遮罩层的 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容容器的 class。' },
+        { name: 'header', type: 'ClassValue', description: '头部区域的 class。' },
+        { name: 'title', type: 'ClassValue', description: '标题区域的 class。' },
+        { name: 'description', type: 'ClassValue', description: '描述文本的 class。' },
+        { name: 'close', type: 'ClassValue', description: '关闭按钮的 class。' },
+        { name: 'footer', type: 'ClassValue', description: '页脚区域的 class。' }
+      ]
+    },
+    {
+      name: 'DialogCloseProps',
+      description: '关闭按钮属性。继承 Radix Dialog Close props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义关闭按钮内容；不传时显示默认 X 图标按钮。' },
+        { name: 'className', type: 'ClassValue', description: '关闭按钮的 class。' },
+        { name: 'component', type: 'Component', description: '替换底层关闭组件，默认使用 Radix Close。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '尺寸，影响默认图标按钮大小和定位。'
+        }
+      ]
+    },
+    {
+      name: 'DialogContentProps',
+      description: '内容容器属性。继承 Radix Dialog Content props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '内容区域子节点。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器的 class。' },
+        { name: 'component', type: 'Component', description: '替换底层内容组件，默认使用 Radix Content。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载内容容器。' },
+        { name: 'id', type: 'string', description: 'DOM id。来自 div 元素属性。' },
+        { name: 'onCloseAutoFocus', type: 'function', description: '关闭后自动聚焦前触发。' },
+        { name: 'onEscapeKeyDown', type: 'function', description: '按 Escape 时触发。' },
+        { name: 'onInteractOutside', type: 'function', description: '与内容区域外部交互时触发。' },
+        { name: 'onOpenAutoFocus', type: 'function', description: '打开后自动聚焦前触发。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '尺寸，影响内容容器字号、宽度和间距。'
+        }
+      ]
+    },
+    {
+      name: 'DialogDescriptionProps',
+      description: '描述文本属性。继承 Radix Dialog Description props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '描述文本或自定义描述内容。' },
+        { name: 'className', type: 'ClassValue', description: '描述区域的 class。' },
+        { name: 'component', type: 'Component', description: '替换底层描述组件，默认使用 Radix Description。' },
+        { name: 'id', type: 'string', description: 'DOM id。来自 p 元素属性。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响描述文本字号。' }
+      ]
+    },
+    {
+      name: 'DialogFooterProps',
+      description: '页脚容器属性。继承 footer 元素属性，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '页脚内容，通常是操作按钮。' },
+        { name: 'className', type: 'ClassValue', description: '页脚容器的 class。' },
+        { name: 'id', type: 'string', description: 'DOM id。来自 footer 元素属性。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响页脚按钮间距。' }
+      ]
+    },
+    {
+      name: 'DialogHeaderProps',
+      description: '头部容器属性。继承 header 元素属性，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '头部内容，通常包含标题和描述。' },
+        { name: 'className', type: 'ClassValue', description: '头部容器的 class。' },
+        { name: 'id', type: 'string', description: 'DOM id。来自 header 元素属性。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响头部内容间距。' }
+      ]
+    },
+    {
+      name: 'DialogOverlayProps',
+      description: '遮罩层属性。继承 Radix Dialog Overlay props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '遮罩层子节点。通常不需要传入。' },
+        { name: 'className', type: 'ClassValue', description: '遮罩层的 class。' },
+        { name: 'component', type: 'Component', description: '替换底层遮罩组件，默认使用 Radix Overlay。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载遮罩层。' },
+        { name: 'id', type: 'string', description: 'DOM id。来自 div 元素属性。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '尺寸属性会被接收，但当前遮罩层样式不依赖 size。'
+        }
+      ]
+    },
+    {
+      name: 'DialogTitleProps',
+      description: '标题区域属性。继承 Radix Dialog Title props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '标题内容。' },
+        { name: 'className', type: 'ClassValue', description: '标题区域的 class。' },
+        { name: 'component', type: 'Component', description: '替换底层标题组件，默认使用 Radix Title。' },
+        { name: 'id', type: 'string', description: 'DOM id。来自 h2 元素属性。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响标题字号。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装 Radix props 或原生元素 props 的通用类型。',
+      fields: [
+        { name: '...sourceProps', type: 'inherited props without className', description: '继承原始组件属性，但重新定义 className。' },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="DialogSlots"
+  description="Dialog 可配置 classNames 的内置 slot"
+  type="'close' | 'content' | 'description' | 'footer' | 'header' | 'overlay' | 'title'"
+/>
+
+<UnionType
+  name="DialogActionHandler"
+  description="默认 OK 按钮点击回调"
+  type="(event) => void"
+/>
+
+<UnionType
+  name="DialogContentComponent"
+  description="自定义内容容器组件类型"
+  type="(props: DialogContentProps) => ReactNode"
+/>
+
+<UnionType
+  name="DialogPortalProps"
+  description="DialogPortal 透传的 Radix Portal 属性"
+  type="portal props from @radix-ui/react-dialog"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

@@ -1,0 +1,163 @@
+---
+title: Icon
+description: 基于 Iconify 渲染 SVG 图标的通用图标组件
+---
+
+Icon 用于通过 Iconify 图标名渲染 SVG 图标。组件直接封装 `@iconify/react` 的 `Icon`，默认宽高为 `1.25em`，可以随文本字号缩放，也可以通过 `width` 和 `height` 显式设置尺寸。
+
+```tsx
+import { Icon } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在按钮、菜单、提示或表单中展示语义图标。
+- 需要统一使用 Iconify 图标集，例如 `lucide:home`、`mdi:account`、`ri:settings-3-line`。
+- 图标需要跟随文字颜色或主题色变化。
+- 如果是纯图标按钮，优先使用 ButtonIcon；如果需要在按钮内组合文字和图标，使用 Button 的 `leading` 或 `trailing` 插槽。
+
+## 基础用法
+
+通过 `icon` 传入 Iconify 图标名称，格式通常为 `prefix:name`。
+
+<Demo src="@playground/icon/modules/IconBasic" />
+
+## 尺寸
+
+默认尺寸为 `1.25em`，会跟随当前字号。也可以通过 `width` 和 `height` 设置固定尺寸。
+
+<Demo src="@playground/icon/modules/IconSize" />
+
+## 颜色
+
+Icon 支持通过 `className` 使用主题色，也支持通过 `color` 传入 CSS 颜色值。颜色只对可重设颜色的单色图标生效，带固定调色板的图标不会被强制改色。
+
+<Demo src="@playground/icon/modules/IconColor" />
+
+## 动画与变换
+
+Icon 透传 Iconify 的变换属性和 SVG 属性，可以使用 `rotate`、`flip`、`inline`、`className` 等能力。
+
+```tsx
+<Icon
+  className="animate-spin text-primary"
+  icon="lucide:loader-circle"
+/>
+```
+
+## API
+
+### Icon
+
+通用属性参考：继承 `@iconify/react` 的 Icon props，并支持常规 SVG 元素属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'icon',
+      description: 'Iconify 图标名称或图标数据对象',
+      type: 'string | icon data',
+      required: true
+    },
+    {
+      name: 'width',
+      description: '图标宽度',
+      type: 'string | number | null',
+      default: "'1.25em'"
+    },
+    {
+      name: 'height',
+      description: '图标高度',
+      type: 'string | number | null',
+      default: "'1.25em'"
+    },
+    {
+      name: 'color',
+      description: '图标颜色，支持任意 CSS 颜色值',
+      type: 'string'
+    },
+    {
+      name: 'className',
+      description: '自定义 class，可用于颜色、尺寸、动画等样式',
+      type: 'string'
+    },
+    {
+      name: 'style',
+      description: '内联样式，来自 svg 元素属性',
+      type: 'style object'
+    },
+    {
+      name: 'inline',
+      description: '是否按内联图标方式对齐文本基线',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'rotate',
+      description: '旋转图标，可传角度字符串或四分之一圈数值',
+      type: 'string | number'
+    },
+    {
+      name: 'flip',
+      description: '翻转图标',
+      type: "'horizontal' | 'vertical' | 'horizontal,vertical'"
+    },
+    {
+      name: 'mode',
+      description: '渲染模式',
+      type: "'style' | 'bg' | 'mask' | 'svg'"
+    },
+    {
+      name: 'fallback',
+      description: '图标加载前或加载失败时展示的内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'onLoad',
+      description: '图标数据加载完成时触发',
+      type: '(name: string) => void'
+    },
+    {
+      name: 'ssr',
+      description: '是否启用 Iconify 的服务端立即渲染模式',
+      type: 'boolean'
+    },
+    {
+      name: 'id',
+      description: '图标唯一 id，也会透传给底层 SVG',
+      type: 'string'
+    },
+    {
+      name: 'aria-label',
+      description: '无文字说明的语义图标应提供可访问名称',
+      type: 'string'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'IconProps',
+      description: 'Icon 组件属性。来自 @iconify/react 的 IconProps，并由本组件补充默认 width 和 height。',
+      fields: [
+        { name: 'icon', type: 'string | icon data', required: true, description: 'Iconify 图标名称或图标数据对象。' },
+        { name: 'width', type: 'string | number | null', description: '图标宽度。默认值为 1.25em。' },
+        { name: 'height', type: 'string | number | null', description: '图标高度。默认值为 1.25em。' },
+        { name: 'color', type: 'string', description: '图标颜色。' },
+        { name: 'className', type: 'string', description: '自定义 class。' },
+        { name: 'style', type: 'style object', description: '内联样式。' },
+        { name: 'inline', type: 'boolean', description: '是否按内联图标方式对齐文本基线。' },
+        { name: 'rotate', type: 'string | number', description: '旋转图标。' },
+        { name: 'flip', type: "'horizontal' | 'vertical' | 'horizontal,vertical'", description: '翻转图标。' },
+        { name: 'mode', type: "'style' | 'bg' | 'mask' | 'svg'", description: 'Iconify 渲染模式。' },
+        { name: 'fallback', type: 'ReactNode', description: '加载前或加载失败时的回退内容。' },
+        { name: 'onLoad', type: '(name: string) => void', description: '图标数据加载完成回调。' },
+        { name: 'ssr', type: 'boolean', description: '是否启用 Iconify 服务端立即渲染模式。' },
+        { name: '...svgProps', type: 'svg element props', description: '透传常规 svg 元素属性。' }
+      ]
+    }
+  ]}
+/>

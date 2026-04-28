@@ -1,0 +1,342 @@
+---
+title: InputOTP
+description: 用于验证码、一次性密码和分段短码输入的 OTP 输入组件
+---
+
+InputOTP 用于输入固定长度的一次性密码、短信验证码、邮箱验证码或短码。组件基于 `input-otp` 封装，默认渲染 6 个输入槽，并提供分隔符、掩码、受控值和完成回调。
+
+```tsx
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+  InputOtpRoot
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要输入固定长度验证码、一次性密码或短码。
+- 输入内容需要按位展示，并在填满后触发完成逻辑。
+- 需要支持粘贴完整验证码、自动补全或密码管理器兼容策略。
+- 普通单行文本输入使用 Input；数字步进输入使用 NumberInput。
+
+## 基础用法
+
+默认渲染 6 个输入槽。通过 `onComplete` 可以在输入填满后触发业务逻辑。
+
+<Demo src="@playground/input-otp/modules/InputOtpDefault" />
+
+## 自定义长度
+
+通过 `inputCount` 控制输入槽数量。组件会把该值作为底层 `maxLength`。
+
+<Demo src="@playground/input-otp/modules/InputOtpCustomCount" />
+
+## 受控值
+
+通过 `value` 和 `onChange` 控制输入值，可以在回调中对输入内容做转换。
+
+<Demo src="@playground/input-otp/modules/UpperCase" />
+
+## 分隔符
+
+通过 `separator` 开启分隔展示。传入 `true` 时使用默认 Minus 图标；如果需要自定义分隔符，请传入 React element。
+
+<Demo src="@playground/input-otp/modules/Separator" />
+
+<Demo src="@playground/input-otp/modules/CustomSeparator" />
+
+## 密码模式
+
+通过 `mask` 将已输入字符显示为圆点，适合验证码或一次性密码等敏感输入。
+
+<Demo src="@playground/input-otp/modules/Password" />
+
+## 禁用
+
+通过 `disabled` 禁用底层输入能力。
+
+<Demo src="@playground/input-otp/modules/Disabled" />
+
+## 尺寸
+
+通过 `size` 调整每个输入槽的宽高、字号和分隔符字号，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 槽尺寸 | 字号 | 适用场景           |
+| ----- | ------ | ---- | ------------------ |
+| `xs`  | 24px   | 10px | 紧凑表单、表格内嵌 |
+| `sm`  | 28px   | 12px | 辅助验证流程       |
+| `md`  | 32px   | 14px | 常规场景（默认）   |
+| `lg`  | 36px   | 16px | 重点验证区域       |
+| `xl`  | 40px   | 18px | 大号验证输入       |
+| `2xl` | 48px   | 20px | 首屏或强引导流程   |
+
+## 自定义样式
+
+通过 `classNames` 控制不同 slot：`root`、`group`、`input` 和 `separator`。也可以通过 `groupProps`、`slotProps`、`separatorProps` 分别向内部结构组件传入额外属性。
+
+## API
+
+### InputOTP
+
+通用属性参考：封装 `InputOtpRoot`、`InputOTPGroup`、`InputOTPSlot` 和 `InputOTPSeparator` 的便捷组件。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '受控 OTP 值',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下的默认 OTP 值',
+      type: 'string'
+    },
+    {
+      name: 'onChange',
+      description: 'OTP 值变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'onComplete',
+      description: '输入槽全部填满时触发',
+      type: 'function'
+    },
+    {
+      name: 'inputCount',
+      description: '输入槽数量，同时作为底层 maxLength',
+      type: 'number',
+      default: '6'
+    },
+    {
+      name: 'mask',
+      description: '是否用圆点隐藏已输入字符',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'separator',
+      description: '是否显示分隔符；true 使用默认 Minus 图标，自定义内容建议传 React element',
+      type: 'ReactNode | true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响输入槽宽高、字号和分隔符字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'placeholder',
+      description: '空槽位的占位字符',
+      type: 'string'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用输入',
+      type: 'boolean'
+    },
+    {
+      name: 'inputMode',
+      description: '移动端输入键盘类型',
+      type: 'string'
+    },
+    {
+      name: 'type',
+      description: '底层 input 类型，例如 password',
+      type: 'string'
+    },
+    {
+      name: 'pasteTransformer',
+      description: '粘贴内容转换函数，用于清理空格、短横线等格式',
+      type: '(pasted: string) => string'
+    },
+    {
+      name: 'pushPasswordManagerStrategy',
+      description: '密码管理器兼容策略',
+      type: "'increase-width' | 'none'"
+    },
+    {
+      name: 'textAlign',
+      description: '输入文本对齐方式',
+      type: "'center' | 'left' | 'right'"
+    },
+    {
+      name: 'className',
+      description: '传递给根节点的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / group / input / separator）',
+      type: 'InputOTPClassNames'
+    },
+    {
+      name: 'groupProps',
+      description: '传递给 InputOTPGroup 的额外 props',
+      type: 'InputOTPGroupProps'
+    },
+    {
+      name: 'slotProps',
+      description: '传递给每个 InputOTPSlot 的额外 props',
+      type: 'InputOTPSlotProps'
+    },
+    {
+      name: 'separatorProps',
+      description: '传递给 InputOTPSeparator 的额外 props',
+      type: 'InputOTPSeparatorProps'
+    }
+  ]}
+/>
+
+### 结构组件
+
+当需要完全自定义 OTP 结构时，可以直接组合底层结构组件。
+
+<PropsTable
+  data={[
+    {
+      name: 'InputOtpRoot',
+      description: '根输入组件，基于 input-otp 的 OTPInput',
+      type: 'InputOTPRootProps'
+    },
+    {
+      name: 'InputOTPGroup',
+      description: '输入槽容器，负责排列多个 slot',
+      type: 'InputOTPGroupProps'
+    },
+    {
+      name: 'InputOTPSlot',
+      description: '单个输入槽，必须提供 index',
+      type: 'InputOTPSlotProps'
+    },
+    {
+      name: 'InputOTPSeparator',
+      description: '分隔符容器，默认显示 Minus 图标',
+      type: 'InputOTPSeparatorProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'InputOTPProps',
+      description:
+        '主组件属性。基于 input-otp 根输入属性，移除 maxLength，并通过 inputCount 自动生成输入槽。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根节点 class。' },
+        { name: 'classNames', type: 'InputOTPClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'defaultValue', type: 'string', description: '非受控默认值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'groupProps', type: 'InputOTPGroupProps', description: '传递给分组容器的属性。' },
+        { name: 'inputCount', type: 'number', description: '输入槽数量。默认值为 6。' },
+        { name: 'inputMode', type: 'string', description: '移动端输入键盘类型。' },
+        { name: 'mask', type: 'boolean', description: '是否隐藏槽位字符。默认值为 false。' },
+        { name: 'onChange', type: '(value: string) => void', description: '输入值变化回调。' },
+        { name: 'onComplete', type: 'function', description: '输入完成回调。' },
+        { name: 'pasteTransformer', type: '(pasted: string) => string', description: '粘贴内容转换函数。' },
+        { name: 'placeholder', type: 'string', description: '空槽位占位字符。' },
+        {
+          name: 'pushPasswordManagerStrategy',
+          type: "'increase-width' | 'none'",
+          description: '密码管理器兼容策略。'
+        },
+        { name: 'separator', type: 'ReactNode | true', description: '分隔符配置。true 使用默认 Minus 图标。' },
+        { name: 'separatorProps', type: 'InputOTPSeparatorProps', description: '传递给分隔符的属性。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。'
+        },
+        { name: 'slotProps', type: 'InputOTPSlotProps', description: '传递给每个输入槽的属性。' },
+        { name: 'textAlign', type: "'center' | 'left' | 'right'", description: '输入文本对齐方式。' },
+        { name: 'type', type: 'string', description: '底层 input 类型。' },
+        { name: 'value', type: 'string', description: '受控输入值。' }
+      ]
+    },
+    {
+      name: 'InputOTPClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 InputOTP 各部分的样式。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根节点 class。' },
+        { name: 'group', type: 'ClassValue', description: '输入槽分组容器 class。' },
+        { name: 'input', type: 'ClassValue', description: '输入槽 class。' },
+        { name: 'separator', type: 'ClassValue', description: '分隔符 class。' }
+      ]
+    },
+    {
+      name: 'InputOTPRootProps',
+      description: '根输入属性。基于 input-otp 的 OTPInput，支持 children 组合或 render 函数二选一。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义结构子节点。与 render 二选一。' },
+        { name: 'className', type: 'ClassValue', description: '根节点 class。' },
+        { name: 'containerClassName', type: 'string', description: '底层容器 class。' },
+        { name: 'maxLength', type: 'number', required: true, description: '最大输入长度。' },
+        { name: 'onChange', type: '(value: string) => void', description: '输入值变化回调。' },
+        { name: 'onComplete', type: 'function', description: '输入完成回调。' },
+        { name: 'pasteTransformer', type: '(pasted: string) => string', description: '粘贴内容转换函数。' },
+        {
+          name: 'pushPasswordManagerStrategy',
+          type: "'increase-width' | 'none'",
+          description: '密码管理器兼容策略。'
+        },
+        { name: 'render', type: 'InputOTPRenderFn', description: '自定义渲染函数。与 children 二选一。' },
+        { name: 'textAlign', type: "'center' | 'left' | 'right'", description: '输入文本对齐方式。' },
+        { name: 'value', type: 'string', description: '受控输入值。' }
+      ]
+    },
+    {
+      name: 'InputOTPGroupProps',
+      description: '输入槽分组容器属性。继承 div 元素属性，并支持 separate 和 size。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '输入槽和分隔符内容。' },
+        { name: 'className', type: 'ClassValue', description: '分组容器 class。' },
+        { name: 'separate', type: 'boolean', description: '是否让输入槽分离展示。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'InputOTPSlotProps',
+      description: '单个输入槽属性。通过 index 从 InputOTP 上下文中读取对应槽位状态。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '输入槽 class。' },
+        { name: 'index', type: 'number', required: true, description: '槽位索引，从 0 开始。' },
+        { name: 'mask', type: 'boolean', description: '是否隐藏当前槽位字符。' },
+        { name: 'separate', type: 'boolean', description: '是否按分离样式显示。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'InputOTPSeparatorProps',
+      description: '分隔符容器属性。继承 div 元素属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义分隔符。当前只有 React element 会替换默认 Minus 图标。' },
+        { name: 'className', type: 'ClassValue', description: '分隔符 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="InputOTPSlots"
+  description="InputOTP 可配置 classNames 的内置 slot"
+  type="'root' | 'group' | 'input' | 'separator'"
+/>
+
+<UnionType
+  name="InputOTPRenderFn"
+  description="InputOtpRoot 的自定义渲染函数"
+  type="(props) => ReactNode"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

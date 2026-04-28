@@ -1,0 +1,10 @@
+{
+  "title": "布局容器",
+  "pages": [
+    "accordion",
+    "collapsible",
+    "resizable",
+    "scroll-area",
+    "aspect-ratio"
+  ]
+}

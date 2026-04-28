@@ -1,0 +1,223 @@
+---
+title: Skeleton
+description: 用于在内容加载前展示占位状态的骨架屏组件
+---
+
+Skeleton 用于在数据加载、图片加载或异步内容渲染前提供视觉占位。`Skeleton` 适合手动拼出固定形状，`SkeletonContainer` 可以保留子节点结构并自动把文本、媒体和交互元素转换成骨架块。
+
+```tsx
+import { Skeleton, SkeletonContainer } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 内容正在异步加载，但页面布局已经确定。
+- 需要减少空白状态和加载闪烁，让用户感知到内容结构。
+- 需要为卡片、列表、头像、图片或详情页展示占位块。
+- 只有短暂等待且不需要表现内容结构时，可以使用 Spinner 或 Progress。
+
+## 基础用法
+
+使用 `className` 控制 `Skeleton` 的宽高、圆角和布局位置。
+
+<Demo src="@playground/skeleton/modules/DefaultDemo" />
+
+```tsx
+<Skeleton className="size-12 rounded-full" />
+<Skeleton className="h-4 w-[250px]" />
+<Skeleton className="h-[125px] w-[250px] rounded-xl" />
+```
+
+## 自动骨架化
+
+`SkeletonContainer` 在 `loading` 为 `true` 时会递归处理子节点：文本会变成文本占位，媒体和无内容布局块会变成媒体占位，Button 等交互组件会变成交互占位。
+
+<Demo src="@playground/skeleton/modules/CustomSize" />
+
+```tsx
+<SkeletonContainer loading>
+  <article>
+    <h2>Article Title</h2>
+    <p>Article preview content</p>
+  </article>
+</SkeletonContainer>
+```
+
+## 动画
+
+通过 `animation` 控制自动生成骨架块的动效。`pulse` 是默认脉冲动画，`wave` 使用横向渐变扫光，`none` 展示静态占位。
+
+<Demo src="@playground/skeleton/modules/SkeletonAnimation" />
+
+| 动画    | 说明             |
+| ------- | ---------------- |
+| `pulse` | 默认脉冲动画     |
+| `wave`  | 横向渐变扫光动画 |
+| `none`  | 静态占位         |
+
+## 控制范围和样式
+
+通过 `depth` 限制递归深度，通过 `skeletonColor` 和 `skeletonRadius` 控制生成骨架块的颜色和圆角。
+
+<Demo src="@playground/skeleton/modules/SkeletonControl" />
+
+```tsx
+<SkeletonContainer
+  depth={1}
+  loading
+/>
+
+<SkeletonContainer
+  animation="wave"
+  loading
+  skeletonColor="hsl(var(--primary) / 0.18)"
+  skeletonRadius="999px"
+/>
+```
+
+## 排除元素
+
+通过 `excludeKeys` 保留指定 key 的元素。被排除的元素会带上 `data-skeleton-exclude`，不会被容器的 loading 样式隐藏。
+
+<Demo src="@playground/skeleton/modules/CustomSize" />
+
+```tsx
+<SkeletonContainer
+  excludeKeys={['action-btn']}
+  loading
+>
+  <button key="action-btn">Take Action</button>
+</SkeletonContainer>
+```
+
+## API
+
+### Skeleton
+
+基础占位块。通常通过 `className` 设置具体形状，组件本身渲染为 `div`。
+
+<PropsTable
+  data={[
+    {
+      name: 'className',
+      description: '占位块 class，用于控制宽高、圆角和布局',
+      type: 'ClassValue'
+    },
+    {
+      name: 'children',
+      description: '当 loading 为 true 时渲染到占位块内部的内容；常规占位用法通常不传',
+      type: 'ReactNode'
+    },
+    {
+      name: 'loading',
+      description: '是否渲染 children 到占位块内部',
+      type: 'boolean'
+    },
+    {
+      name: 'id',
+      description: '根元素 id',
+      type: 'string'
+    },
+    {
+      name: 'aria-label',
+      description: '无可见文本时提供给辅助技术的说明',
+      type: 'string'
+    }
+  ]}
+/>
+
+### SkeletonContainer
+
+自动骨架化容器。`loading=false` 时直接返回 children；`loading=true` 时渲染包装容器并把 children 转换成骨架结构。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '需要显示或自动骨架化的内容',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'loading',
+      description: '是否进入骨架屏状态',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'animation',
+      description: '自动生成骨架块的动画类型',
+      type: "'none' | 'pulse' | 'wave'",
+      default: "'pulse'"
+    },
+    {
+      name: 'depth',
+      description: '递归骨架化深度，0 表示只处理直接文本内容',
+      type: 'number',
+      default: 'Infinity'
+    },
+    {
+      name: 'excludeKeys',
+      description: '需要排除骨架化的元素 key 列表',
+      type: 'string[]',
+      default: '[]'
+    },
+    {
+      name: 'skeletonColor',
+      description: '自动生成骨架块的自定义背景色',
+      type: 'string'
+    },
+    {
+      name: 'skeletonRadius',
+      description: '自动生成骨架块的自定义圆角',
+      type: 'string'
+    },
+    {
+      name: 'className',
+      description: 'loading 状态下包装容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'id',
+      description: 'loading 状态下包装容器 id',
+      type: 'string'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'SkeletonProps',
+      description: 'Skeleton 基础占位块属性。继承 div 属性，并增加 loading 控制。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '占位块 class。' },
+        { name: 'children', type: 'ReactNode', description: '可选子节点。' },
+        { name: 'loading', type: 'boolean', description: '是否渲染 children 到占位块内部。' },
+        { name: 'id', type: 'string', description: '根元素 id。' },
+        { name: 'aria-label', type: 'string', description: '无障碍说明。' }
+      ]
+    },
+    {
+      name: 'SkeletonContainerProps',
+      description: '自动骨架化容器属性。继承 SkeletonProps，并增加递归转换、动画和样式控制。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '需要显示或骨架化的内容。' },
+        { name: 'loading', type: 'boolean', description: '是否进入骨架屏状态。' },
+        { name: 'animation', type: 'SkeletonAnimation', description: '骨架动画类型。' },
+        { name: 'depth', type: 'number', description: '递归骨架化深度。' },
+        { name: 'excludeKeys', type: 'string[]', description: '需要排除的元素 key 列表。' },
+        { name: 'skeletonColor', type: 'string', description: '自定义骨架背景色。' },
+        { name: 'skeletonRadius', type: 'string', description: '自定义骨架圆角。' },
+        { name: 'className', type: 'ClassValue', description: 'loading 状态下包装容器 class。' },
+        { name: 'id', type: 'string', description: 'loading 状态下包装容器 id。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="SkeletonAnimation" description="SkeletonContainer 自动生成骨架块的动画类型" type="'none' | 'pulse' | 'wave'" />
+
+<UnionType name="ClassValue" description="CSS 类名类型" type="string | null | undefined | Record<string, boolean> | ClassValue[]" />

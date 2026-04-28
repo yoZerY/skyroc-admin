@@ -1,0 +1,554 @@
+---
+title: NavigationMenu
+description: 用于构建站点顶部导航、产品导航和带预览面板的多级导航菜单
+---
+
+NavigationMenu 用于构建横向导航菜单。组件基于 Radix Navigation Menu 封装，既支持通过 `items` 数据快速渲染链接和下拉内容，也支持使用结构组件手动组合复杂导航。
+
+```tsx
+import {
+  NavigationMenu,
+  NavigationMenuChildLink,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuRoot,
+  NavigationMenuTrigger,
+  NavigationMenuViewport
+} from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+NavigationMenu 提供两层使用方式：
+
+- `NavigationMenu`：数据驱动入口，接收 `items` 后自动渲染顶层链接、带子菜单的触发器、子链接列表、指示器和视口。
+- 结构组件：`NavigationMenuRoot`、`NavigationMenuList`、`NavigationMenuItem`、`NavigationMenuTrigger`、`NavigationMenuContent`、`NavigationMenuLink` 等，适合需要完全控制 DOM 结构时使用。
+
+主组件会把 `size` 传递给列表、触发器、链接、子列表、指示器和视口，使导航整体保持统一尺寸。`classNames` 用于按 slot 覆盖样式，例如 `list`、`trigger`、`subLink`、`viewport`。
+
+## 何时使用
+
+- 页面顶部需要展示站点级导航或产品导航。
+- 顶层导航包含链接和可展开的二级链接面板。
+- 需要键盘可访问、带 active 指示器和 viewport 动画的导航菜单。
+- 简单面包屑路径优先使用 Breadcrumb；应用菜单栏和命令菜单优先使用 Menubar 或 DropdownMenu。
+
+## 基础用法
+
+通过 `items` 描述顶层导航。带 `children` 的项会渲染为触发器和下拉内容；没有 `children` 或 `type: 'link'` 的项会渲染为直接跳转链接。
+
+<Demo src="@/content/demos/navigation-menu-basic" />
+
+## 导航项类型
+
+`items` 支持两类顶层导航项：
+
+| 类型   | 说明                                           |
+| ------ | ---------------------------------------------- |
+| `item` | 带子菜单的导航项，`children` 渲染为二级链接列表 |
+| `link` | 顶层直接链接；没有 `children` 时也按链接处理     |
+
+```tsx
+<NavigationMenu
+  items={[
+    {
+      value: 'guide',
+      label: 'Guide',
+      children: [
+        {
+          label: 'Introduction',
+          href: '/docs',
+          description: 'Start with the core concepts.'
+        }
+      ]
+    },
+    {
+      type: 'link',
+      label: 'GitHub',
+      href: 'https://github.com'
+    }
+  ]}
+/>
+```
+
+## 自定义链接组件
+
+顶层链接和子链接都支持 `component`，可传入路由组件，例如 Next.js `Link`。组件会通过 Radix `asChild` 组合到底层链接上。
+
+```tsx
+<NavigationMenu
+  items={[
+    {
+      label: 'Components',
+      children: [
+        {
+          label: 'Button',
+          component: Link,
+          href: '/components/button',
+          description: 'Trigger actions and submit forms.'
+        }
+      ]
+    }
+  ]}
+/>
+```
+
+## 插槽与样式
+
+通过 `leading` 和 `trailing` 为触发器或链接加入前后内容。没有传入 `trailing` 时，顶层链接默认展示外链箭头，带子菜单的触发器默认展示向下箭头。
+
+`classNames` 可精确覆盖内部 slot：
+
+```tsx
+<NavigationMenu
+  classNames={{
+    trigger: 'px-3',
+    subLink: 'w-80',
+    viewport: 'shadow-xl'
+  }}
+  items={items}
+/>
+```
+
+## API
+
+### NavigationMenu
+
+通用属性参考：基于 Radix Navigation Menu Root，并使用 `items` 渲染数据驱动导航。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '顶层导航项数据',
+      type: 'NavigationMenuItemOption[]',
+      required: true
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响列表间距、链接字号、子菜单间距、指示器和 viewport 间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'classNames',
+      description: '导航菜单各 slot 的自定义 class',
+      type: 'NavigationMenuClassNames'
+    },
+    {
+      name: 'childLinkProps',
+      description: '传递给每个子链接的额外属性',
+      type: 'NavigationMenuChildLinkProps'
+    },
+    {
+      name: 'childListItemProps',
+      description: '传递给每个子链接 li 容器的额外属性',
+      type: 'NavigationMenuChildListItemProps'
+    },
+    {
+      name: 'childListProps',
+      description: '传递给子链接 ul 容器的额外属性',
+      type: 'NavigationMenuChildListProps'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给下拉内容容器的额外属性',
+      type: 'NavigationMenuContentProps'
+    },
+    {
+      name: 'itemProps',
+      description: '传递给每个顶层 item 容器的额外属性',
+      type: 'NavigationMenuItemProps'
+    },
+    {
+      name: 'linkProps',
+      description: '传递给顶层直接链接的额外属性',
+      type: 'NavigationMenuLinkProps'
+    },
+    {
+      name: 'listProps',
+      description: '传递给顶层列表容器的额外属性',
+      type: 'NavigationMenuListProps'
+    },
+    {
+      name: 'triggerProps',
+      description: '传递给带子菜单的顶层触发器的额外属性',
+      type: 'NavigationMenuTriggerProps'
+    },
+    {
+      name: 'showArrow',
+      description: '保留字段；当前实现中不会改变 Indicator 的渲染',
+      type: 'boolean'
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前打开的顶层导航项 value',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认打开的顶层导航项 value',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '打开的顶层导航项变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'delayDuration',
+      description: '鼠标进入触发器后打开内容的延迟时间',
+      type: 'number'
+    },
+    {
+      name: 'skipDelayDuration',
+      description: '从一个触发器移动到另一个触发器时跳过延迟的时间窗口',
+      type: 'number'
+    },
+    {
+      name: 'dir',
+      description: '文本方向',
+      type: "'ltr' | 'rtl'"
+    }
+  ]}
+/>
+
+### 顶层导航项
+
+`NavigationMenuItemOption` 描述 `items` 中的每个顶层导航项。
+
+<PropsTable
+  data={[
+    {
+      name: 'label',
+      description: '顶层导航项显示内容',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'type',
+      description: '导航项类型；带 children 时通常省略',
+      type: "'item' | 'link'"
+    },
+    {
+      name: 'children',
+      description: '二级导航链接数据；存在时渲染为下拉内容',
+      type: 'NavigationMenuItemChildOption[]'
+    },
+    {
+      name: 'value',
+      description: '带子菜单导航项的标识，用于 Radix 受控状态',
+      type: 'string'
+    },
+    {
+      name: 'href',
+      description: '链接地址；顶层直接链接和子链接均可使用',
+      type: 'string'
+    },
+    {
+      name: 'component',
+      description: '自定义链接渲染组件，例如 Next.js Link',
+      type: 'ElementType'
+    },
+    {
+      name: 'description',
+      description: '子链接描述文本；顶层 item 类型中也保留该字段',
+      type: 'ReactNode'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用链接交互样式',
+      type: 'boolean'
+    },
+    {
+      name: 'leading',
+      description: '前置插槽，常用于图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '后置插槽；未提供时链接或触发器会渲染默认图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '当前项根元素的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '当前链接或触发器可覆盖的 slot class',
+      type: 'NavigationMenuClassNames | NavigationMenuChildLinkClassNames'
+    }
+  ]}
+/>
+
+### 结构组件
+
+NavigationMenu 同时导出 Radix 风格结构组件，适合手动组织导航结构。
+
+<PropsTable
+  data={[
+    { name: 'NavigationMenuRoot', description: '根导航容器，基于 Radix Root', type: 'NavigationMenuRootProps' },
+    { name: 'NavigationMenuList', description: '顶层列表容器，基于 Radix List', type: 'NavigationMenuListProps' },
+    { name: 'NavigationMenuItem', description: '顶层导航项容器，基于 Radix Item', type: 'NavigationMenuItemProps' },
+    { name: 'NavigationMenuTrigger', description: '带子菜单导航项的触发器', type: 'NavigationMenuTriggerProps' },
+    { name: 'NavigationMenuContent', description: '展开后的下拉内容容器', type: 'NavigationMenuContentProps' },
+    { name: 'NavigationMenuLink', description: '顶层直接链接，基于 Radix Link asChild', type: 'NavigationMenuLinkProps' },
+    { name: 'NavigationMenuChildList', description: '二级链接列表 ul 容器', type: 'NavigationMenuChildListProps' },
+    { name: 'NavigationMenuChildListItem', description: '二级链接列表 li 容器', type: 'NavigationMenuChildListItemProps' },
+    { name: 'NavigationMenuChildLink', description: '二级导航链接，支持描述文本', type: 'NavigationMenuChildLinkProps' },
+    { name: 'NavigationMenuIndicator', description: '当前触发项下方的箭头指示器', type: 'NavigationMenuIndicatorProps' },
+    { name: 'NavigationMenuViewport', description: '承载下拉内容动画与尺寸的 viewport', type: 'NavigationMenuViewportProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'NavigationMenuProps',
+      description: '主组件属性。继承 Radix Navigation Menu Root props，并通过 items 渲染数据驱动导航。',
+      fields: [
+        { name: 'items', type: 'NavigationMenuItemOption[]', required: true, description: '顶层导航项数据。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根导航容器 class。' },
+        { name: 'classNames', type: 'NavigationMenuClassNames', description: '导航菜单各 slot 的自定义 class。' },
+        { name: 'childLinkProps', type: 'NavigationMenuChildLinkProps', description: '传递给每个子链接的属性。' },
+        { name: 'childListItemProps', type: 'NavigationMenuChildListItemProps', description: '传递给每个子链接 li 容器的属性。' },
+        { name: 'childListProps', type: 'NavigationMenuChildListProps', description: '传递给二级链接列表容器的属性。' },
+        { name: 'contentProps', type: 'NavigationMenuContentProps', description: '传递给下拉内容容器的属性。' },
+        { name: 'itemProps', type: 'NavigationMenuItemProps', description: '传递给顶层 item 容器的属性。' },
+        { name: 'linkProps', type: 'NavigationMenuLinkProps', description: '传递给顶层直接链接的属性。' },
+        { name: 'listProps', type: 'NavigationMenuListProps', description: '传递给顶层列表容器的属性。' },
+        { name: 'triggerProps', type: 'NavigationMenuTriggerProps', description: '传递给带子菜单触发器的属性。' },
+        { name: 'showArrow', type: 'boolean', description: '保留字段；当前实现中不会改变 Indicator 的渲染。' },
+        { name: 'value', type: 'string', description: '受控打开项 value。' },
+        { name: 'defaultValue', type: 'string', description: '默认打开项 value。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '打开项变化回调。' },
+        { name: 'delayDuration', type: 'number', description: '打开延迟时间。' },
+        { name: 'skipDelayDuration', type: 'number', description: '跳过延迟的时间窗口。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuItemBaseOption',
+      description: '带子菜单的顶层导航项。继承 NavigationMenuTriggerProps 的可用字段。',
+      fields: [
+        { name: 'label', type: 'ReactNode', required: true, description: '顶层触发器内容。' },
+        { name: 'type', type: "'item'", description: '导航项类型，可省略。' },
+        { name: 'children', type: 'NavigationMenuItemChildOption[]', description: '二级导航链接数据。' },
+        { name: 'description', type: 'ReactNode', description: '描述文本，当前主组件不会直接渲染该字段。' },
+        { name: 'value', type: 'string', description: '顶层导航项标识。' },
+        { name: 'leading', type: 'ReactNode', description: '触发器前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '触发器后置内容；未提供时显示默认下拉图标。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用触发器。' },
+        { name: 'className', type: 'ClassValue', description: '触发器 class。' },
+        { name: 'classNames', type: "Pick<NavigationMenuClassNames, 'trigger' | 'triggerIcon'>", description: '触发器相关 slot class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuLinkBaseOption',
+      description: '顶层直接链接。继承 NavigationMenuLinkProps 的可用字段。',
+      fields: [
+        { name: 'label', type: 'ReactNode', required: true, description: '链接显示内容。' },
+        { name: 'type', type: "'link'", required: true, description: '标识为顶层直接链接。' },
+        { name: 'href', type: 'string', description: '链接地址。' },
+        { name: 'component', type: 'ElementType', description: '自定义链接渲染组件。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用链接交互样式。' },
+        { name: 'leading', type: 'ReactNode', description: '链接前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '链接后置内容；未提供时显示默认外链图标。' },
+        { name: 'className', type: 'ClassValue', description: '链接 class。' },
+        { name: 'classNames', type: "Pick<NavigationMenuClassNames, 'itemIcon' | 'link' | 'linkIcon'>", description: '链接相关 slot class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuItemChildOption',
+      description: '二级导航链接数据。继承 NavigationMenuChildLinkProps 的可用字段。',
+      fields: [
+        { name: 'label', type: 'ReactNode', required: true, description: '子链接显示内容。' },
+        { name: 'href', type: 'string', description: '链接地址。' },
+        { name: 'component', type: 'ElementType', description: '自定义链接渲染组件。' },
+        { name: 'description', type: 'ReactNode', description: '显示在 label 下方的描述文本。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用链接交互样式。' },
+        { name: 'leading', type: 'ReactNode', description: '子链接前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '子链接后置内容；未提供时显示默认图标。' },
+        { name: 'className', type: 'ClassValue', description: '子链接 class。' },
+        { name: 'classNames', type: 'NavigationMenuChildLinkClassNames', description: '子链接相关 slot class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuClassNames',
+      description: '导航菜单各 slot 的自定义 class，用于精细化覆盖内部样式。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根导航容器 class。' },
+        { name: 'viewportRoot', type: 'ClassValue', description: 'viewport 外层定位容器 class。' },
+        { name: 'viewport', type: 'ClassValue', description: 'viewport 容器 class。' },
+        { name: 'content', type: 'ClassValue', description: '下拉内容容器 class。' },
+        { name: 'arrow', type: 'ClassValue', description: '指示器箭头 class。' },
+        { name: 'list', type: 'ClassValue', description: '顶层列表 class。' },
+        { name: 'subList', type: 'ClassValue', description: '二级链接列表 class。' },
+        { name: 'item', type: 'ClassValue', description: '顶层 item 容器 class。' },
+        { name: 'subItem', type: 'ClassValue', description: '二级链接 li 容器 class。' },
+        { name: 'itemIcon', type: 'ClassValue', description: '链接前置图标 class。' },
+        { name: 'trigger', type: 'ClassValue', description: '触发器 class。' },
+        { name: 'subItemContent', type: 'ClassValue', description: '保留 slot，当前实现中未直接使用。' },
+        { name: 'triggerIcon', type: 'ClassValue', description: '触发器默认下拉图标 class。' },
+        { name: 'indicator', type: 'ClassValue', description: '指示器容器 class。' },
+        { name: 'link', type: 'ClassValue', description: '顶层直接链接 class。' },
+        { name: 'subLink', type: 'ClassValue', description: '二级链接 class。' },
+        { name: 'linkIcon', type: 'ClassValue', description: '链接默认后置图标 class。' },
+        { name: 'subLinkContent', type: 'ClassValue', description: '二级链接文本容器 class。' },
+        { name: 'subLinkLabel', type: 'ClassValue', description: '二级链接标题 class。' },
+        { name: 'subLinkDescription', type: 'ClassValue', description: '二级链接描述 class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuChildLinkClassNames',
+      description: '二级链接可覆盖的 slot class。类型上与 NavigationMenuClassNames 保持同一组 slot。',
+      fields: [
+        { name: 'subLink', type: 'ClassValue', description: '二级链接 class。' },
+        { name: 'subLinkContent', type: 'ClassValue', description: '二级链接文本容器 class。' },
+        { name: 'subLinkLabel', type: 'ClassValue', description: '二级链接标题 class。' },
+        { name: 'subLinkDescription', type: 'ClassValue', description: '二级链接描述 class。' },
+        { name: 'itemIcon', type: 'ClassValue', description: '前置图标 class。' },
+        { name: 'linkIcon', type: 'ClassValue', description: '后置图标 class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuRootProps',
+      description: '根导航容器属性，继承 Radix Navigation Menu Root props。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸字段，根容器当前不直接使用。' },
+        { name: 'value', type: 'string', description: '受控打开项 value。' },
+        { name: 'defaultValue', type: 'string', description: '默认打开项 value。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '打开项变化回调。' },
+        { name: 'delayDuration', type: 'number', description: '打开延迟时间。' },
+        { name: 'skipDelayDuration', type: 'number', description: '跳过延迟的时间窗口。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuListProps',
+      description: '顶层列表容器属性，继承 Radix Navigation Menu List props。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '列表容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '列表尺寸，影响 gap 与字号。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuItemProps',
+      description: '顶层 item 容器属性，继承 Radix Navigation Menu Item props。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: 'item 容器 class。' },
+        { name: 'value', type: 'string', description: 'item 标识。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuTriggerProps',
+      description: '触发器属性，继承 Radix Trigger props 并增加前后插槽。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '触发器文本或内容。' },
+        { name: 'className', type: 'ClassValue', description: '触发器 class。' },
+        { name: 'classNames', type: "Pick<NavigationMenuClassNames, 'trigger' | 'triggerIcon'>", description: '触发器相关 slot class。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽；未提供时显示默认下拉图标。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '触发器尺寸。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用触发器。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuLinkProps',
+      description: '顶层直接链接属性，继承 Radix Link props 并通过 asChild 渲染自定义组件。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '链接显示内容。' },
+        { name: 'className', type: 'ClassValue', description: '链接 class。' },
+        { name: 'classNames', type: "Pick<NavigationMenuClassNames, 'itemIcon' | 'link' | 'linkIcon'>", description: '链接相关 slot class。' },
+        { name: 'component', type: 'ElementType', description: '自定义链接渲染组件。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用链接交互样式。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽；未提供时显示默认外链图标。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '链接尺寸。' },
+        { name: 'href', type: 'string', description: '链接地址。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuChildLinkProps',
+      description: '二级导航链接属性，继承 Radix Link props 并支持描述文本。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '子链接显示内容。' },
+        { name: 'className', type: 'ClassValue', description: '子链接 class。' },
+        { name: 'classNames', type: 'NavigationMenuChildLinkClassNames', description: '子链接相关 slot class。' },
+        { name: 'component', type: 'ElementType', description: '自定义链接渲染组件，默认 a。' },
+        { name: 'description', type: 'ReactNode', description: '显示在 label 下方的描述文本。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用链接交互样式。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽；未提供时显示默认图标。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '子链接尺寸。' },
+        { name: 'href', type: 'string', description: '链接地址。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuChildListProps',
+      description: '二级链接列表容器属性，继承原生 ul 元素属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '列表容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '列表尺寸，影响 gap、padding 与字号。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuChildListItemProps',
+      description: '二级链接列表项属性，继承原生 li 元素属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '列表项 class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuContentProps',
+      description: '下拉内容容器属性，继承 Radix Navigation Menu Content props。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuIndicatorProps',
+      description: '指示器属性，继承 Radix Indicator props；当前封装固定渲染内部箭头元素。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '指示器容器 class。' },
+        { name: 'classNames', type: "Pick<NavigationMenuClassNames, 'arrow' | 'indicator'>", description: '指示器与箭头 slot class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '指示器尺寸。' }
+      ]
+    },
+    {
+      name: 'NavigationMenuViewportProps',
+      description: 'viewport 属性，继承 Radix Navigation Menu Viewport props。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: 'viewport class。' },
+        { name: 'classNames', type: "Pick<NavigationMenuClassNames, 'viewport' | 'viewportRoot'>", description: 'viewport 与外层容器 slot class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: 'viewport 尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="NavigationMenuItemOption"
+  description="顶层导航项联合类型。带 children 的项渲染为触发器和内容面板；type 为 link 或没有 children 的项渲染为直接链接。"
+  type="NavigationMenuItemBaseOption | NavigationMenuLinkBaseOption"
+/>
+
+<UnionType
+  name="ElementType"
+  description="可作为链接渲染目标的 React 元素或组件类型，例如 'a' 或 Next.js Link。"
+  type="intrinsic element tag | component constructor"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

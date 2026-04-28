@@ -1,0 +1,530 @@
+---
+title: Radio
+description: 用于在一组选项中进行单选的表单控件
+---
+
+Radio 用于在多个互斥选项中选择一个值。组件基于 Radix Radio Group 封装，提供数据驱动的 `RadioGroup`、单个 `Radio`、结构组件，以及带图标和描述的 `RadioCardGroup`。
+
+```tsx
+import {
+  Radio,
+  RadioCard,
+  RadioCardGroup,
+  RadioGroup,
+  RadioGroupItem,
+  RadioIndicator,
+  RadioRoot
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要用户从一组选项中选择一个值。
+- 选项数量较少，用户需要直接看到所有选项。
+- 需要通过颜色、尺寸或卡片样式强调选项差异。
+- 可以多选时使用 Checkbox；需要从大量选项中选择时使用 Select 或 Combobox。
+
+## 基础用法
+
+通过 `items` 渲染一组单选项。使用 `defaultValue` 设置默认选中项，使用 `value` 和 `onValueChange` 实现受控模式。
+
+<Demo src="@playground/radio/modules/RadioBasic" />
+
+```tsx
+<RadioGroup
+  defaultValue="apple"
+  items={[
+    { label: 'Apple', value: 'apple' },
+    { label: 'Orange', value: 'orange' }
+  ]}
+/>
+```
+
+## 颜色
+
+通过 `color` 设置单选控件和指示器的主题色。颜色会应用到整组 Radio，也可在单个 item 上覆盖。
+
+<Demo src="@playground/radio/modules/RadioColor" />
+
+| 颜色          | 语义     | 适用场景               |
+| ------------- | -------- | ---------------------- |
+| `primary`     | 主要选项 | 常规表单、默认选择     |
+| `destructive` | 危险选项 | 删除、不可逆配置       |
+| `success`     | 成功选项 | 正向状态、推荐方案     |
+| `warning`     | 警告选项 | 需要注意的配置         |
+| `info`        | 信息选项 | 中性信息类选择         |
+| `carbon`      | 中性深色 | 不带语义倾向的选项     |
+| `secondary`   | 次级选项 | 辅助配置、低优先级选择 |
+| `accent`      | 强调选项 | 需要特殊视觉关注的选择 |
+
+## 变体
+
+通过 `variant` 切换选中样式。`dot` 使用点状指示器，`outline` 会在选中后填充控件背景并反转指示器颜色。
+
+<Demo src="@playground/radio/modules/RadioVariant" />
+
+```tsx
+<RadioGroup
+  defaultValue="apple"
+  items={items}
+  variant="outline"
+/>
+```
+
+## 方向
+
+通过 `orientation` 控制排列方向。默认横向排列，纵向排列适合表单字段和设置面板。
+
+<Demo src="@playground/radio/modules/RadioVertical" />
+
+```tsx
+<RadioGroup
+  items={items}
+  orientation="vertical"
+/>
+```
+
+## 尺寸
+
+通过 `size` 调整控件尺寸、组间距和标签间距，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/radio/modules/RadioSize" />
+
+| 尺寸  | 控件尺寸 | 适用场景           |
+| ----- | -------- | ------------------ |
+| `xs`  | 12px     | 紧凑表单、表格内嵌 |
+| `sm`  | 14px     | 小型表单           |
+| `md`  | 16px     | 常规场景（默认）   |
+| `lg`  | 18px     | 强调选项           |
+| `xl`  | 20px     | 大号设置项         |
+| `2xl` | 24px     | 大幅展示或卡片表单 |
+
+## 禁用
+
+可以禁用整个 RadioGroup，也可以只禁用某个 item。
+
+<Demo src="@playground/radio/modules/RadioDisabledItem" />
+
+```tsx
+<RadioGroup
+  items={[
+    { label: 'A', value: 'a' },
+    { disabled: true, label: 'B', value: 'b' }
+  ]}
+/>
+```
+
+<Demo src="@playground/radio/modules/RadioDisabledAll" />
+
+```tsx
+<RadioGroup disabled items={items} />
+```
+
+## 卡片组选项
+
+`RadioCardGroup` 用卡片承载单选项，支持图标、标题、描述和单选控件位置，适合展示套餐、模板、支付方式等更复杂的选项。
+
+<Demo src="@playground/radio/modules/RadioCardGroupDemo" />
+
+```tsx
+<RadioCardGroup
+  defaultValue="apple"
+  items={[
+    { label: 'Apple', value: 'apple', description: 'This is an apple' },
+    { label: 'Cherry', value: 'cherry', description: 'This is a cherry' }
+  ]}
+  radioPosition="right"
+/>
+```
+
+## API
+
+### RadioGroup
+
+通用属性参考：基于 Radix RadioGroup Root，通过 `items` 数据渲染一组 `Radio`。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '单选项数据',
+      type: 'RadioProps[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前选中的值',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认选中的值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'orientation',
+      description: '排列方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'color',
+      description: '主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'variant',
+      description: '选中样式',
+      type: "'dot' | 'outline'",
+      default: "'dot'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响控件大小、标签间距和组间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用整组单选项',
+      type: 'boolean'
+    },
+    {
+      name: 'className',
+      description: '组容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'RadioClassNames'
+    }
+  ]}
+/>
+
+### Radio
+
+单个单选项。通常通过 `RadioGroup.items` 使用；手动组合时需要放在 Radix RadioGroup Root 下。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '选项值',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'label',
+      description: '选项标签',
+      type: 'ReactNode'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用当前选项',
+      type: 'boolean'
+    },
+    {
+      name: 'color',
+      description: '当前选项主题色，会覆盖组级 color',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'"
+    },
+    {
+      name: 'variant',
+      description: '当前选项选中样式',
+      type: "'dot' | 'outline'",
+      default: "'dot'"
+    },
+    {
+      name: 'size',
+      description: '当前选项尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '当前选项根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '当前选项可覆盖的 slot class（root / control / indicator / label）',
+      type: 'RadioClassNames'
+    },
+    {
+      name: 'itemProps',
+      description: '传递给 RadioGroupItem 的额外 props',
+      type: 'RadioGroupItemProps'
+    },
+    {
+      name: 'indicatorProps',
+      description: '传递给 RadioIndicator 的额外 props',
+      type: 'RadioIndicatorProps'
+    },
+    {
+      name: 'rootProps',
+      description: '传递给 RadioRoot 的额外 props',
+      type: 'RadioRootProps'
+    }
+  ]}
+/>
+
+### RadioCardGroup
+
+卡片式单选组。适合需要展示标题、描述和图标的场景。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '卡片选项数据',
+      type: 'RadioCardGroupItem[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前选中的值',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认选中的值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'radioPosition',
+      description: '单选控件相对内容的位置',
+      type: "'left' | 'right'",
+      default: "'right'"
+    },
+    {
+      name: 'orientation',
+      description: '排列方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'color',
+      description: '主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'variant',
+      description: '选中样式',
+      type: "'dot' | 'outline'",
+      default: "'dot'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响卡片间距、文本和控件大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用整组卡片选项',
+      type: 'boolean'
+    },
+    {
+      name: 'className',
+      description: '卡片组容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'RadioClassNames'
+    }
+  ]}
+/>
+
+### 结构组件
+
+Radio 同时导出底层结构组件，适合需要手动组织 DOM 结构时使用。
+
+<PropsTable
+  data={[
+    { name: 'RadioRoot', description: '单个 Radio 的外层容器', type: 'RadioRootProps' },
+    { name: 'RadioGroupItem', description: 'Radix RadioGroup Item 包装', type: 'RadioGroupItemProps' },
+    { name: 'RadioIndicator', description: '选中指示器', type: 'RadioIndicatorProps' },
+    { name: 'RadioCard', description: '卡片式单选项', type: 'RadioCardProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'RadioGroupProps',
+      description: '数据驱动单选组属性。继承 Radix RadioGroup Root props，并通过 items 渲染 Radio。',
+      fields: [
+        { name: 'items', type: 'RadioProps[]', required: true, description: '单选项数据。' },
+        { name: 'value', type: 'string', description: '受控选中值。' },
+        { name: 'defaultValue', type: 'string', description: '默认选中值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '排列方向。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'variant', type: "'dot' | 'outline'", description: '选中样式。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用整组。' },
+        { name: 'className', type: 'ClassValue', description: '组容器 class。' },
+        { name: 'classNames', type: 'RadioClassNames', description: 'slot class 配置。' }
+      ]
+    },
+    {
+      name: 'RadioProps',
+      description: '单个 Radio 属性。继承 RadioGroupItemProps，并增加 label、rootProps、itemProps、indicatorProps 等封装字段。',
+      fields: [
+        { name: 'value', type: 'string', required: true, description: '选项值。' },
+        { name: 'label', type: 'ReactNode', description: '选项标签。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前选项。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '当前选项主题色。'
+        },
+        { name: 'variant', type: "'dot' | 'outline'", description: '选中样式。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'RadioClassNames', description: 'slot class 配置。' },
+        { name: 'itemProps', type: 'RadioGroupItemProps', description: '传递给内部 RadioGroupItem 的属性。' },
+        { name: 'indicatorProps', type: 'RadioIndicatorProps', description: '传递给内部 RadioIndicator 的属性。' },
+        { name: 'rootProps', type: 'RadioRootProps', description: '传递给内部 RadioRoot 的属性。' }
+      ]
+    },
+    {
+      name: 'RadioCardGroupProps',
+      description: '卡片式单选组属性。继承 Radix RadioGroup Root props，并通过 items 渲染 RadioCard。',
+      fields: [
+        { name: 'items', type: 'RadioCardGroupItem[]', required: true, description: '卡片选项数据。' },
+        { name: 'value', type: 'string', description: '受控选中值。' },
+        { name: 'defaultValue', type: 'string', description: '默认选中值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'radioPosition', type: "'left' | 'right'", description: '单选控件位置。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '排列方向。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'variant', type: "'dot' | 'outline'", description: '选中样式。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用整组。' },
+        { name: 'className', type: 'ClassValue', description: '组容器 class。' },
+        { name: 'classNames', type: 'RadioClassNames', description: 'slot class 配置。' }
+      ]
+    },
+    {
+      name: 'RadioCardGroupItem',
+      description: '卡片式单选组选项数据。',
+      fields: [
+        { name: 'value', type: 'string', required: true, description: '选项值。' },
+        { name: 'label', type: 'ReactNode', description: '卡片标题。' },
+        { name: 'description', type: 'ReactNode', description: '卡片描述。' },
+        { name: 'icon', type: 'ReactNode', description: '卡片图标。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前卡片。' },
+        { name: 'itemProps', type: 'RadioGroupItemProps', description: '传递给内部单选项的属性。' },
+        { name: 'indicatorProps', type: 'RadioIndicatorProps', description: '传递给内部指示器的属性。' },
+        { name: 'rootProps', type: 'RadioRootProps', description: '继承自 RadioProps 的字段，RadioCardGroup 当前不会直接使用。' }
+      ]
+    },
+    {
+      name: 'RadioCardProps',
+      description: '单个卡片式 Radio 属性。',
+      fields: [
+        { name: 'value', type: 'string', required: true, description: '选项值。' },
+        { name: 'checked', type: 'boolean', description: '卡片外层选中状态。' },
+        { name: 'label', type: 'ReactNode', description: '卡片标题。' },
+        { name: 'description', type: 'ReactNode', description: '卡片描述。' },
+        { name: 'icon', type: 'ReactNode', description: '卡片图标。' },
+        { name: 'radioPosition', type: "'left' | 'right'", description: '单选控件位置。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'variant', type: "'dot' | 'outline'", description: '选中样式。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '卡片 class。' },
+        { name: 'classNames', type: 'RadioClassNames', description: 'slot class 配置。' }
+      ]
+    },
+    {
+      name: 'RadioGroupItemProps',
+      description: '底层单选控件属性，继承 Radix RadioGroup Item props，并增加项目尺寸、颜色和变体。',
+      fields: [
+        { name: 'value', type: 'string', required: true, description: '选项值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'variant', type: "'dot' | 'outline'", description: '选中样式。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '控件 class。' }
+      ]
+    },
+    {
+      name: 'RadioIndicatorProps',
+      description: '选中指示器属性，继承 Radix RadioGroup Indicator props，并增加项目颜色和变体。',
+      fields: [
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'variant', type: "'dot' | 'outline'", description: '选中样式。' },
+        { name: 'className', type: 'ClassValue', description: '指示器 class。' }
+      ]
+    },
+    {
+      name: 'RadioRootProps',
+      description: '单个 Radio 外层容器属性，继承原生 div 属性，并增加项目尺寸。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'RadioClassNames',
+      description: 'Radio 各 slot 的自定义 class。',
+      fields: [
+        { name: 'group', type: 'ClassValue', description: '组容器 class。' },
+        { name: 'root', type: 'ClassValue', description: '普通 Radio 外层容器 class。' },
+        { name: 'control', type: 'ClassValue', description: '单选控件 class。' },
+        { name: 'indicator', type: 'ClassValue', description: '选中指示器 class。' },
+        { name: 'label', type: 'ClassValue', description: '普通 Radio 标签 class。' },
+        { name: 'card', type: 'ClassValue', description: '卡片容器 class。' },
+        { name: 'cardContent', type: 'ClassValue', description: '卡片内容区域 class。' },
+        { name: 'cardTextContent', type: 'ClassValue', description: '卡片文本区域 class。' },
+        { name: 'cardLabel', type: 'ClassValue', description: '卡片标题 class。' },
+        { name: 'cardDescription', type: 'ClassValue', description: '卡片描述 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

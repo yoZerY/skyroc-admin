@@ -1,0 +1,430 @@
+---
+title: Select
+description: 用于从下拉列表中选择单个值的选择器
+---
+
+Select 用于在有限选项中选择一个值。组件基于 Radix Select 封装，支持数据驱动的选项、分组、分隔线、禁用项、自定义图标、尺寸和弹层位置。
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要从一组选项中选择一个值，并希望节省页面空间。
+- 选项数量中等，适合收纳到弹层中展示。
+- 需要分组、分隔线、禁用选项或自定义选项内容。
+- 少量选项且需要直接展示时使用 Radio 或 Segment；需要搜索过滤时使用 Combobox。
+
+## 基础用法
+
+通过 `items` 渲染选项，使用 `triggerProps.placeholder` 设置占位文案。
+
+<Demo src="@playground/select/modules/Default" />
+
+```tsx
+<Select
+  items={[
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' }
+  ]}
+  triggerProps={{ placeholder: 'Please select a fruit' }}
+/>
+```
+
+## 受控模式
+
+使用 `value` 和 `onValueChange` 控制当前选中值。
+
+<Demo src="@playground/select/modules/Controlled" />
+
+```tsx
+const [value, setValue] = useState('apple');
+
+<Select
+  items={items}
+  onValueChange={setValue}
+  value={value}
+/>
+```
+
+## 默认值
+
+使用 `defaultValue` 设置非受控模式下的默认选中项。
+
+<Demo src="@playground/select/modules/DefaultValue" />
+
+```tsx
+<Select
+  defaultValue="cherry"
+  items={items}
+/>
+```
+
+## 分组选项
+
+选项数据可以通过 `children` 组织为分组。分组的 `label` 会渲染为组标题，`children` 内部渲染普通选项。
+
+<Demo src="@playground/select/modules/GroupOption" />
+
+```tsx
+<Select
+  items={[
+    {
+      label: 'Fruits',
+      children: [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' }
+      ]
+    }
+  ]}
+/>
+```
+
+## 分隔线
+
+在 `items` 中插入 `{ type: 'separator' }` 可以渲染分隔线，用于区分不同选项区域。
+
+<Demo src="@playground/select/modules/AllSeparator" />
+
+```tsx
+<Select
+  items={[
+    { label: 'Apple', value: 'apple' },
+    { type: 'separator' },
+    { label: 'Banana', value: 'banana' }
+  ]}
+/>
+```
+
+## 弹层位置
+
+默认 `contentProps.position` 为 `popper`，弹层会基于触发器尺寸和位置渲染。设置为 `item-aligned` 可以使用 Radix 的选项对齐模式。
+
+<Demo src="@playground/select/modules/PositionItemAligned" />
+
+```tsx
+<Select
+  contentProps={{ position: 'item-aligned' }}
+  items={items}
+/>
+```
+
+## 尺寸
+
+通过 `size` 调整触发器、弹层、选项和分隔线尺寸，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/select/modules/SelectSize" />
+
+| 尺寸  | 适用场景           |
+| ----- | ------------------ |
+| `xs`  | 表格、紧凑筛选器   |
+| `sm`  | 小型表单           |
+| `md`  | 常规表单（默认）   |
+| `lg`  | 设置页表单         |
+| `xl`  | 强调型选择区域     |
+| `2xl` | 大尺寸展示或触控区 |
+
+## 自定义样式
+
+通过 `classNames` 覆盖内部 slot。常用 slot 包括 `trigger`、`content`、`item`、`groupLabel` 和 `separator`。
+
+<Demo src="@playground/select/modules/SelectCustom" />
+
+```tsx
+<Select
+  classNames={{
+    content: 'border-primary/30',
+    item: 'focus:bg-primary/10',
+    trigger: 'border-primary/40'
+  }}
+  items={items}
+/>
+```
+
+## 禁用
+
+可以禁用整个 Select，也可以在单个 item 上设置 `disabled` 禁用部分选项。
+
+<Demo src="@playground/select/modules/Disabled" />
+
+```tsx
+<Select disabled items={items} />
+```
+
+<Demo src="@playground/select/modules/DisabledOption" />
+
+```tsx
+<Select
+  items={[
+    { label: 'Apple', value: 'apple' },
+    { disabled: true, label: 'Banana', value: 'banana' }
+  ]}
+/>
+```
+
+## API
+
+### Select
+
+主组件基于 Radix Select Root，使用 `items` 数据渲染 Trigger、Content 和 Option。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '下拉选项数据，支持普通项、分组和分隔线',
+      type: 'SelectOptionData[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前选中的值',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认选中的值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'open',
+      description: '受控模式下弹层是否打开',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下弹层默认是否打开',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '弹层打开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用整个 Select',
+      type: 'boolean'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响触发器、弹层和选项',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'indicatorIcon',
+      description: '选中项指示器图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: 'Root class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'SelectClassNames'
+    },
+    {
+      name: 'triggerProps',
+      description: '传递给 SelectTrigger 的额外 props',
+      type: 'SelectTriggerProps'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 SelectContent 的额外 props',
+      type: 'Omit<SelectContentProps, "children">'
+    }
+  ]}
+/>
+
+### 结构组件
+
+结构组件适合需要手动组合 Select，或需要完全控制 Trigger / Content / Item 结构时使用。
+
+<PropsTable
+  data={[
+    { name: 'SelectTrigger', description: '打开下拉弹层的触发器', type: 'SelectTriggerProps' },
+    { name: 'SelectContent', description: '下拉弹层内容容器', type: 'SelectContentProps' },
+    { name: 'SelectItem', description: '单个可选项', type: 'SelectItemProps' },
+    { name: 'SelectLabel', description: '分组标题', type: 'SelectLabelProps' },
+    { name: 'SelectSeparator', description: '分隔线', type: 'SelectSeparatorProps' },
+    { name: 'SelectOption', description: '根据 SelectOptionData 渲染 item、group 或 separator 的数据渲染组件', type: 'SelectOptionProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'SelectProps',
+      description: 'Select 主组件属性，基于 Radix Select Root，并增加数据驱动渲染和 slot 配置。',
+      fields: [
+        { name: 'items', type: 'SelectOptionData[]', description: '下拉选项数据。' },
+        { name: 'value', type: 'string', description: '受控选中值。' },
+        { name: 'defaultValue', type: 'string', description: '默认选中值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'open', type: 'boolean', description: '受控打开状态。' },
+        { name: 'defaultOpen', type: 'boolean', description: '默认打开状态。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化回调。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' },
+        { name: 'indicatorIcon', type: 'ReactNode', description: '选中项指示器图标。' },
+        { name: 'className', type: 'ClassValue', description: 'Root class。' },
+        { name: 'classNames', type: 'SelectClassNames', description: 'slot class 配置。' },
+        { name: 'triggerProps', type: 'SelectTriggerProps', description: '触发器属性。' },
+        { name: 'contentProps', type: 'Omit<SelectContentProps, "children">', description: '弹层内容属性。' }
+      ]
+    },
+    {
+      name: 'SelectClassNames',
+      description: 'Select 各 slot 的自定义 class。',
+      fields: [
+        { name: 'content', type: 'ClassValue', description: '弹层内容容器 class。' },
+        { name: 'group', type: 'ClassValue', description: '分组容器 class。' },
+        { name: 'groupLabel', type: 'ClassValue', description: '分组标题 class。' },
+        { name: 'item', type: 'ClassValue', description: '选项 class。' },
+        { name: 'itemIndicator', type: 'ClassValue', description: '选中指示器 class。' },
+        { name: 'itemText', type: 'ClassValue', description: '选项文本 class。' },
+        { name: 'scrollDownButton', type: 'ClassValue', description: '向下滚动按钮 class。' },
+        { name: 'scrollUpButton', type: 'ClassValue', description: '向上滚动按钮 class。' },
+        { name: 'selectedValue', type: 'ClassValue', description: '触发器当前值 class。' },
+        { name: 'separator', type: 'ClassValue', description: '分隔线 class。' },
+        { name: 'trigger', type: 'ClassValue', description: '触发器 class。' },
+        { name: 'triggerIcon', type: 'ClassValue', description: '触发器图标 class。' },
+        { name: 'viewport', type: 'ClassValue', description: '弹层视口 class。' }
+      ]
+    },
+    {
+      name: 'SelectOptionItemData',
+      description: '普通选项数据。继承 SelectItemProps，但用 label 表示显示内容。',
+      fields: [
+        { name: 'value', type: 'string', description: '选项值。' },
+        { name: 'label', type: 'ReactNode', description: '选项显示内容。' },
+        { name: 'type', type: "'item'", description: '选项类型标识，可省略。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前选项。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'indicatorIcon', type: 'ReactNode', description: '当前选项的选中指示器图标。' },
+        { name: 'className', type: 'ClassValue', description: '选项 class。' },
+        { name: 'classNames', type: "Pick<SelectClassNames, 'item' | 'itemIndicator' | 'itemText'>", description: '选项相关 slot class。' }
+      ]
+    },
+    {
+      name: 'SelectGroupOptionData',
+      description: '分组选项数据。',
+      fields: [
+        { name: 'type', type: "'group'", description: '分组类型标识，可省略。' },
+        { name: 'label', type: 'ReactNode', description: '分组标题。' },
+        { name: 'children', type: 'SelectOptionItemData[]', description: '分组内选项。' },
+        { name: 'className', type: 'ClassValue', description: '分组标题 class。' }
+      ]
+    },
+    {
+      name: 'SelectSeparatorOptionData',
+      description: '分隔线选项数据。',
+      fields: [
+        { name: 'type', type: "'separator'", description: '分隔线类型标识。' },
+        { name: 'className', type: 'ClassValue', description: '分隔线 class。' }
+      ]
+    },
+    {
+      name: 'SelectTriggerProps',
+      description: '触发器属性，基于 Radix Select Trigger 和 Value。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义当前值渲染内容。' },
+        { name: 'placeholder', type: 'ReactNode', description: '未选择时的占位内容。' },
+        { name: 'triggerIcon', type: 'ReactNode', description: '触发器图标。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用触发器。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '触发器尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '触发器 class。' },
+        { name: 'classNames', type: "Pick<SelectClassNames, 'selectedValue' | 'trigger' | 'triggerIcon'>", description: '触发器相关 slot class。' }
+      ]
+    },
+    {
+      name: 'SelectContentProps',
+      description: '弹层内容属性，基于 Radix Select Content。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '弹层内容。' },
+        { name: 'position', type: "'popper' | 'item-aligned'", description: '弹层定位模式。' },
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '弹层出现方向。' },
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '弹层对齐方式。' },
+        { name: 'sideOffset', type: 'number', description: '弹层与触发器的距离。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '弹层尺寸。' },
+        { name: 'scrollUpButton', type: 'ReactNode', description: '向上滚动按钮内容。' },
+        { name: 'scrollDownButton', type: 'ReactNode', description: '向下滚动按钮内容。' },
+        { name: 'className', type: 'ClassValue', description: '弹层内容 class。' },
+        { name: 'classNames', type: "Pick<SelectClassNames, 'content' | 'scrollDownButton' | 'scrollUpButton' | 'viewport'>", description: '弹层相关 slot class。' }
+      ]
+    },
+    {
+      name: 'SelectItemProps',
+      description: '单个选项属性，基于 Radix Select Item，并增加前后置内容和指示器图标。',
+      fields: [
+        { name: 'value', type: 'string', description: '选项值。' },
+        { name: 'children', type: 'ReactNode', description: '选项内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用选项。' },
+        { name: 'textValue', type: 'string', description: '用于无障碍和类型选择的文本值。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'indicatorIcon', type: 'ReactNode', description: '选中指示器图标。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '选项尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '选项 class。' },
+        { name: 'classNames', type: "Pick<SelectClassNames, 'item' | 'itemIndicator' | 'itemText'>", description: '选项相关 slot class。' }
+      ]
+    },
+    {
+      name: 'SelectLabelProps',
+      description: '分组标题属性，基于 Radix Select Label。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '标题内容。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '标题尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '标题 class。' }
+      ]
+    },
+    {
+      name: 'SelectSeparatorProps',
+      description: '分隔线属性，基于 Radix Select Separator。',
+      fields: [
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '分隔线尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '分隔线 class。' }
+      ]
+    },
+    {
+      name: 'SelectOptionProps',
+      description: '数据渲染组件属性，用于根据 SelectOptionData 渲染普通项、分组或分隔线。',
+      fields: [
+        { name: 'item', type: 'SelectOptionData', description: '待渲染的选项数据。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '选项尺寸。' },
+        { name: 'indicatorIcon', type: 'ReactNode', description: '选中指示器图标。' },
+        { name: 'classNames', type: 'SelectClassNames', description: 'slot class 配置。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="SelectOptionData"
+  description="Select items 中可使用的选项数据联合类型"
+  type="SelectOptionItemData | SelectGroupOptionData | SelectSeparatorOptionData"
+/>
+
+<UnionType name="ClassValue" description="CSS 类名类型" type="string | null | undefined | Record<string, boolean> | ClassValue[]" />

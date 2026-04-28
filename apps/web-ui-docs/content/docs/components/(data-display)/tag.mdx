@@ -1,0 +1,192 @@
+---
+title: Tag
+description: 用于标记状态、分类或短文本信息的标签组件
+---
+
+Tag 是一个轻量标签组件，用于展示状态、分类、属性或短文本信息。组件渲染为 `div`，通过 `color`、`variant`、`size` 和 `shape` 控制视觉样式，图标、计数或关闭图标可以直接作为 children 组合。
+
+```tsx
+import { Tag } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在列表、卡片、表格或详情中展示状态、分类、标签。
+- 需要用颜色表达语义，例如成功、警告、错误或信息。
+- 内容较短，通常是一两个词或小图标加文本。
+- 需要可点击操作时优先使用 Button；需要表单选择时使用 Checkbox、Radio 或 Select。
+
+## 基础用法
+
+直接传入 children 即可。Tag 没有专门的关闭或图标 API，可以通过 children 组合图标和文本。
+
+<Demo src="@playground/tag/modules/TagBasic" />
+
+```tsx
+<Tag>Default</Tag>
+
+<Tag color="success" variant="soft">
+  <Check className="size-3" />
+  Verified
+</Tag>
+```
+
+## 颜色
+
+通过 `color` 设置主题色。默认颜色为 `primary`。
+
+<Demo src="@playground/tag/modules/TagColor" />
+
+| 颜色          | 语义     | 适用场景             |
+| ------------- | -------- | -------------------- |
+| `primary`     | 主要标签 | 默认状态、主分类     |
+| `destructive` | 危险状态 | 错误、删除、风险     |
+| `success`     | 成功状态 | 已完成、通过、可用   |
+| `warning`     | 警告状态 | 待处理、临界、注意   |
+| `info`        | 信息状态 | 提示、说明、中性信息 |
+| `carbon`      | 中性深色 | 无语义分类           |
+| `secondary`   | 次级标签 | 辅助信息             |
+| `accent`      | 强调标签 | 特殊标记             |
+
+## 变体
+
+通过 `variant` 控制标签视觉强度。`solid` 强调最高，`raw` 最轻量。
+
+<Demo src="@playground/tag/modules/TagVariant" />
+
+| 变体      | 说明                     |
+| --------- | ------------------------ |
+| `solid`   | 实色背景，默认样式       |
+| `pure`    | 中性背景和边框           |
+| `outline` | 透明背景，保留主题色边框 |
+| `soft`    | 浅色背景，无边框         |
+| `ghost`   | 浅色背景，保留主题色边框 |
+| `raw`     | 无背景、无边框           |
+
+## 尺寸
+
+通过 `size` 调整标签高度、字号、水平间距和内容间距，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/tag/modules/TagSize" />
+
+| 尺寸  | 适用场景           |
+| ----- | ------------------ |
+| `xs`  | 表格内、密集列表   |
+| `sm`  | 小型列表           |
+| `md`  | 常规场景（默认）   |
+| `lg`  | 卡片辅助信息       |
+| `xl`  | 更醒目的状态标签   |
+| `2xl` | 大尺寸展示或触控区 |
+
+## 形状
+
+通过 `shape` 控制圆角。`auto` 使用固定圆角，`rounded` 使用胶囊圆角。
+
+<Demo src="@playground/tag/modules/TagShape" />
+
+```tsx
+<Tag shape="auto">auto</Tag>
+<Tag shape="rounded">rounded</Tag>
+```
+
+## 颜色和变体组合
+
+颜色与变体可以自由组合，用于不同语义和视觉强度。
+
+<Demo src="@playground/tag/modules/TagVariantColors" />
+
+```tsx
+<Tag color="warning" variant="soft">
+  Pending
+</Tag>
+
+<Tag color="destructive" variant="outline">
+  Failed
+</Tag>
+```
+
+## API
+
+### Tag
+
+Tag 继承 `div` 属性，并增加项目主题色、尺寸、形状和变体。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '标签内容，可包含文本、图标或其他内联元素',
+      type: 'ReactNode'
+    },
+    {
+      name: 'color',
+      description: '主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'variant',
+      description: '视觉变体',
+      type: "'solid' | 'pure' | 'outline' | 'soft' | 'ghost' | 'raw'",
+      default: "'solid'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响高度、字号和间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'shape',
+      description: '圆角形状',
+      type: "'auto' | 'rounded'",
+      default: "'auto'"
+    },
+    {
+      name: 'className',
+      description: '自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'id',
+      description: '根元素 id',
+      type: 'string'
+    },
+    {
+      name: 'title',
+      description: '原生 title 属性',
+      type: 'string'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'TagProps',
+      description: 'Tag 组件属性。继承 div 属性，并增加主题色、尺寸、形状和变体。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '标签内容。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'variant', type: "'solid' | 'pure' | 'outline' | 'soft' | 'ghost' | 'raw'", description: '视觉变体。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'shape', type: "'auto' | 'rounded'", description: '圆角形状。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'id', type: 'string', description: '根元素 id。' },
+        { name: 'title', type: 'string', description: '原生 title 属性。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="TagVariant" description="Tag 视觉变体" type="'solid' | 'pure' | 'outline' | 'soft' | 'ghost' | 'raw'" />
+
+<UnionType name="TagShape" description="Tag 圆角形状" type="'auto' | 'rounded'" />
+
+<UnionType name="ClassValue" description="CSS 类名类型" type="string | null | undefined | Record<string, boolean> | ClassValue[]" />

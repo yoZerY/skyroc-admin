@@ -1,0 +1,357 @@
+---
+title: Slider
+description: 用于在连续区间内选择数值或数值范围的滑块组件
+---
+
+Slider 用于在连续范围中选择一个值或一段范围。组件基于 Radix Slider 封装，支持受控值、范围值、方向、尺寸、主题色和内部 slot 样式覆盖。
+
+```tsx
+import {
+  Slider,
+  SliderRange,
+  SliderRoot,
+  SliderThumb,
+  SliderTrack
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在连续范围中选择数值，例如音量、亮度、百分比或价格范围。
+- 用户更关注相对大小，而不是精确输入。
+- 需要范围选择时，可以通过两个值渲染双 thumb。
+- 需要精确输入或键盘录入时，优先使用 NumberInput。
+
+## 基础用法
+
+通过 `defaultValue` 设置非受控初始值。`Slider` 会根据 `defaultValue` 或 `value` 数组渲染对应数量的 thumb。
+
+<Demo src="@playground/slider/modules/SliderBasic" />
+
+```tsx
+<Slider
+  defaultValue={[40]}
+  max={100}
+  step={1}
+/>
+```
+
+## 受控模式
+
+使用 `value` 和 `onValueChange` 控制当前值。`value` 始终是数组，即使只有一个 thumb。
+
+<Demo src="@playground/slider/modules/SliderControlled" />
+
+```tsx
+const [value, setValue] = useState([35]);
+
+<Slider
+  value={value}
+  onValueChange={setValue}
+/>
+```
+
+## 范围选择
+
+传入两个数值会渲染两个 thumb，用于选择范围。可以通过 `minStepsBetweenThumbs` 控制两个 thumb 的最小间距。
+
+<Demo src="@playground/slider/modules/SliderRangeDemo" />
+
+```tsx
+<Slider
+  defaultValue={[25, 75]}
+  max={100}
+  minStepsBetweenThumbs={1}
+  step={5}
+/>
+```
+
+## 颜色
+
+通过 `color` 设置轨道、已选范围和 thumb 的主题色。
+
+<Demo src="@playground/slider/modules/SliderColor" />
+
+| 颜色          | 语义     | 适用场景               |
+| ------------- | -------- | ---------------------- |
+| `primary`     | 主要操作 | 默认滑块、主设置项     |
+| `destructive` | 危险状态 | 风险阈值、危险范围     |
+| `success`     | 成功状态 | 正向范围、推荐值       |
+| `warning`     | 警告状态 | 临界值、需要注意的范围 |
+| `info`        | 信息状态 | 中性信息调节           |
+| `carbon`      | 中性深色 | 无语义调节             |
+| `secondary`   | 次级状态 | 辅助设置               |
+| `accent`      | 强调状态 | 需要视觉强调的调节项   |
+
+## 方向
+
+通过 `orientation="vertical"` 使用纵向滑块。纵向滑块需要外层容器提供明确高度。
+
+<Demo src="@playground/slider/modules/SliderVertical" />
+
+```tsx
+<div className="h-40">
+  <Slider
+    defaultValue={[10, 60]}
+    orientation="vertical"
+  />
+</div>
+```
+
+## 尺寸
+
+通过 `size` 调整轨道厚度和 thumb 大小，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/slider/modules/SliderSize" />
+
+| 尺寸  | 适用场景           |
+| ----- | ------------------ |
+| `xs`  | 紧凑筛选器、表格项 |
+| `sm`  | 小型表单           |
+| `md`  | 常规场景（默认）   |
+| `lg`  | 设置页             |
+| `xl`  | 强调调节项         |
+| `2xl` | 大尺寸展示或触控区 |
+
+## 自定义样式
+
+通过 `classNames` 覆盖内部 slot。常用 slot 包括 `root`、`track`、`range` 和 `thumb`。
+
+<Demo src="@playground/slider/modules/SliderCustom" />
+
+```tsx
+<Slider
+  classNames={{
+    track: 'bg-carbon/15',
+    range: 'bg-carbon',
+    thumb: 'border-carbon'
+  }}
+  defaultValue={[55]}
+/>
+```
+
+## API
+
+### Slider
+
+主组件组合 Root、Track、Range 和 Thumb。`defaultValue` / `value` 的数组长度决定 thumb 数量。
+
+<PropsTable
+  data={[
+    {
+      name: 'defaultValue',
+      description: '非受控模式下的默认值数组',
+      type: 'number[]'
+    },
+    {
+      name: 'value',
+      description: '受控模式下的当前值数组',
+      type: 'number[]'
+    },
+    {
+      name: 'onValueChange',
+      description: '拖动过程中值变化时触发',
+      type: '(value: number[]) => void'
+    },
+    {
+      name: 'onValueCommit',
+      description: '拖动结束提交值时触发',
+      type: '(value: number[]) => void'
+    },
+    {
+      name: 'min',
+      description: '最小值',
+      type: 'number',
+      default: '0'
+    },
+    {
+      name: 'max',
+      description: '最大值',
+      type: 'number',
+      default: '100'
+    },
+    {
+      name: 'step',
+      description: '步长',
+      type: 'number',
+      default: '1'
+    },
+    {
+      name: 'minStepsBetweenThumbs',
+      description: '多个 thumb 之间的最小步数间距',
+      type: 'number'
+    },
+    {
+      name: 'orientation',
+      description: '滑块方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'dir',
+      description: '文本方向，透传给 Radix Slider Root',
+      type: "'ltr' | 'rtl'"
+    },
+    {
+      name: 'inverted',
+      description: '是否反转取值方向',
+      type: 'boolean'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用滑块',
+      type: 'boolean'
+    },
+    {
+      name: 'color',
+      description: '主题颜色，影响 range、track 和 thumb',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响轨道厚度和 thumb 大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'SliderClassNames'
+    },
+    {
+      name: 'trackProps',
+      description: '传递给 SliderTrack 的额外 props',
+      type: 'SliderTrackProps'
+    },
+    {
+      name: 'rangeProps',
+      description: '传递给 SliderRange 的额外 props',
+      type: 'SliderRangeProps'
+    },
+    {
+      name: 'thumbProps',
+      description: '传递给每个 SliderThumb 的额外 props',
+      type: 'SliderThumbProps'
+    }
+  ]}
+/>
+
+### 结构组件
+
+需要完全控制结构时，可以手动组合 Root、Track、Range 和 Thumb。
+
+<PropsTable
+  data={[
+    { name: 'SliderRoot', description: '滑块根容器，基于 Radix Slider Root', type: 'SliderRootProps' },
+    { name: 'SliderTrack', description: '轨道容器', type: 'SliderTrackProps' },
+    { name: 'SliderRange', description: '已选范围', type: 'SliderRangeProps' },
+    { name: 'SliderThumb', description: '可拖动手柄', type: 'SliderThumbProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'SliderProps',
+      description: 'Slider 主组件属性。继承 SliderRootProps，并增加主题色、slot class 和结构组件 props。',
+      fields: [
+        { name: 'defaultValue', type: 'number[]', description: '默认值数组。' },
+        { name: 'value', type: 'number[]', description: '受控值数组。' },
+        { name: 'onValueChange', type: '(value: number[]) => void', description: '值变化回调。' },
+        { name: 'onValueCommit', type: '(value: number[]) => void', description: '值提交回调。' },
+        { name: 'min', type: 'number', description: '最小值。' },
+        { name: 'max', type: 'number', description: '最大值。' },
+        { name: 'step', type: 'number', description: '步长。' },
+        { name: 'minStepsBetweenThumbs', type: 'number', description: '多个 thumb 的最小步数间距。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '滑块方向。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'inverted', type: 'boolean', description: '是否反转取值方向。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'SliderClassNames', description: 'slot class 配置。' },
+        { name: 'trackProps', type: 'SliderTrackProps', description: '轨道属性。' },
+        { name: 'rangeProps', type: 'SliderRangeProps', description: '范围属性。' },
+        { name: 'thumbProps', type: 'SliderThumbProps', description: '手柄属性。' }
+      ]
+    },
+    {
+      name: 'SliderClassNames',
+      description: 'Slider 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'track', type: 'ClassValue', description: '轨道 class。' },
+        { name: 'range', type: 'ClassValue', description: '已选范围 class。' },
+        { name: 'thumb', type: 'ClassValue', description: '手柄 class。' }
+      ]
+    },
+    {
+      name: 'SliderRootProps',
+      description: '根容器属性，基于 Radix Slider Root。',
+      fields: [
+        { name: 'defaultValue', type: 'number[]', description: '默认值数组。' },
+        { name: 'value', type: 'number[]', description: '受控值数组。' },
+        { name: 'onValueChange', type: '(value: number[]) => void', description: '值变化回调。' },
+        { name: 'onValueCommit', type: '(value: number[]) => void', description: '值提交回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '滑块方向。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '根容器尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' }
+      ]
+    },
+    {
+      name: 'SliderTrackProps',
+      description: '轨道属性，基于 Radix Slider Track，并增加主题色和尺寸。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '通常放置 SliderRange。' },
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '轨道尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '轨道 class。' }
+      ]
+    },
+    {
+      name: 'SliderRangeProps',
+      description: '已选范围属性，基于 Radix Slider Range，并增加主题色。',
+      fields: [
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'className', type: 'ClassValue', description: '范围 class。' }
+      ]
+    },
+    {
+      name: 'SliderThumbProps',
+      description: '手柄属性，基于 Radix Slider Thumb，并增加主题色和尺寸。',
+      fields: [
+        {
+          name: 'color',
+          type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+          description: '主题颜色。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '手柄尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '手柄 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="ClassValue" description="CSS 类名类型" type="string | null | undefined | Record<string, boolean> | ClassValue[]" />

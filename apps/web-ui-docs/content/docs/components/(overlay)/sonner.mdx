@@ -1,0 +1,295 @@
+---
+title: Sonner
+description: 用于展示全局消息、通知和 Toast 反馈
+---
+
+Sonner 基于 `sonner` 封装，用于展示全局轻提示和通知反馈。组件库导出三层能力：`Sonner` 作为全局 Toaster 容器，`message` 用于轻量单句反馈，`notification` 用于带标题、描述和操作按钮的通知，`toast` 则保留 sonner 原始 API。
+
+```tsx
+import {
+  Message,
+  Notification,
+  Sonner,
+  message,
+  notification,
+  toast
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 操作成功、失败、警告或加载状态需要即时反馈。
+- 需要不打断用户流程的全局提示。
+- 简短单句反馈使用 `message`；带标题、说明或按钮的反馈使用 `notification`。
+- 需要完全使用 sonner 原始能力时直接使用 `toast`。
+
+## 全局容器
+
+在应用根部挂载一次 `Sonner`，之后即可在任意客户端组件中调用 `toast`、`message` 或 `notification`。playground 已在 locale layout 中全局挂载。
+
+<Demo src="@playground/sonner/modules/Toast" />
+
+```tsx
+<Sonner />
+
+toast.success('Saved', {
+  description: 'Your changes have been saved'
+});
+```
+
+## Message
+
+`message` 是轻量提示 API，适合成功、失败、警告、信息和加载等单句反馈。它支持字符串调用、配置对象、Promise 状态和手动关闭。
+
+<Demo src="@playground/sonner/modules/Message" />
+
+```tsx
+message.success('Operation successful');
+message.error('Operation failed');
+
+const id = message.loading('Loading...');
+message.dismiss(id);
+```
+
+## Notification
+
+`notification` 用于更丰富的通知内容，支持标题、描述、关闭按钮和操作按钮。
+
+<Demo src="@playground/sonner/modules/Notification" />
+
+```tsx
+notification.info({
+  title: 'New Message',
+  description: 'You have a new message',
+  action: {
+    label: 'View',
+    onClick: () => {}
+  }
+});
+```
+
+## 原生 Toast
+
+`toast` 直接从 sonner re-export，适合需要使用 sonner 原始 API 的场景，例如 `toast.promise`、自定义 action、description 或更细粒度的 toast 配置。
+
+<Demo src="@playground/sonner/modules/Toast" />
+
+```tsx
+toast.promise(
+  fetchData(),
+  {
+    loading: 'Loading...',
+    success: 'Loaded',
+    error: 'Failed'
+  }
+);
+```
+
+## 全局配置
+
+`message.config` 和 `notification.config` 用于设置默认时长、默认位置和最大展示数量。`destroy` 是 `dismiss` 的别名，不传 id 时会清理当前 API 维护的全部实例记录。
+
+<Demo src="@playground/sonner/modules/SonnerConfig" />
+
+```tsx
+message.config({
+  duration: 1500,
+  maxCount: 2,
+  position: 'top-center'
+});
+
+notification.config({
+  closeButton: true,
+  duration: 0,
+  maxCount: 2,
+  position: 'top-right'
+});
+```
+
+## API
+
+### Sonner
+
+全局 Toaster 容器。基于 sonner 的 Toaster，默认读取 `next-themes` 当前主题，并合并项目内置 toast 样式。
+
+<PropsTable
+  data={[
+    {
+      name: 'position',
+      description: 'Toast 默认展示位置',
+      type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'"
+    },
+    {
+      name: 'expand',
+      description: '是否展开同位置的 toast 列表',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'richColors',
+      description: '是否使用 sonner 的富色彩模式',
+      type: 'boolean'
+    },
+    {
+      name: 'theme',
+      description: '主题。组件默认跟随 next-themes',
+      type: "'light' | 'dark' | 'system'"
+    },
+    {
+      name: 'toastOptions',
+      description: '传递给 sonner 的默认 toast 配置',
+      type: 'ExternalToast'
+    },
+    {
+      name: 'closeButton',
+      description: '是否显示关闭按钮',
+      type: 'boolean'
+    },
+    {
+      name: 'visibleToasts',
+      description: '同一时间可见 toast 数量',
+      type: 'number'
+    }
+  ]}
+/>
+
+### message
+
+轻量全局消息 API。
+
+<PropsTable
+  data={[
+    { name: 'message.success', description: '展示成功消息', type: '(content: ReactNode | MessageConfig, duration?: number, onClose?: () => void) => string | number' },
+    { name: 'message.error', description: '展示错误消息', type: '(content: ReactNode | MessageConfig, duration?: number, onClose?: () => void) => string | number' },
+    { name: 'message.warning', description: '展示警告消息', type: '(content: ReactNode | MessageConfig, duration?: number, onClose?: () => void) => string | number' },
+    { name: 'message.info', description: '展示信息消息', type: '(content: ReactNode | MessageConfig, duration?: number, onClose?: () => void) => string | number' },
+    { name: 'message.loading', description: '展示加载消息', type: '(content: ReactNode | MessageConfig, duration?: number, onClose?: () => void) => string | number' },
+    { name: 'message.promise', description: '展示 Promise 加载、成功、失败状态', type: '(promise, data: MessagePromiseData, options?: Omit<MessageConfig, "content">) => string | number' },
+    { name: 'message.open', description: '通过配置对象打开消息', type: '(config: MessageConfig & { type?: MessageType }) => string | number' },
+    { name: 'message.dismiss', description: '关闭指定消息；不传 id 时关闭全部消息', type: '(id?: string | number) => void' },
+    { name: 'message.destroy', description: 'dismiss 的别名', type: '(id?: string | number) => void' },
+    { name: 'message.config', description: '设置 message 全局配置', type: '(options: MessageGlobalConfig) => void' }
+  ]}
+/>
+
+### notification
+
+富通知 API。
+
+<PropsTable
+  data={[
+    { name: 'notification.success', description: '展示成功通知', type: '(config: NotificationConfig) => string | number' },
+    { name: 'notification.error', description: '展示错误通知', type: '(config: NotificationConfig) => string | number' },
+    { name: 'notification.warning', description: '展示警告通知', type: '(config: NotificationConfig) => string | number' },
+    { name: 'notification.info', description: '展示信息通知', type: '(config: NotificationConfig) => string | number' },
+    { name: 'notification.open', description: '通过配置对象打开通知', type: '(config: NotificationConfig & { type?: NotificationType }) => string | number' },
+    { name: 'notification.dismiss', description: '关闭指定通知；不传 id 时关闭全部通知', type: '(id?: string | number) => void' },
+    { name: 'notification.destroy', description: 'dismiss 的别名', type: '(id?: string | number) => void' },
+    { name: 'notification.config', description: '设置 notification 全局配置', type: '(options: NotificationGlobalConfig) => void' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ToasterProps',
+      description: 'Sonner 容器属性，来自 sonner ToasterProps，并由组件封装默认主题和样式。',
+      fields: [
+        { name: 'position', type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'", description: '默认展示位置。' },
+        { name: 'expand', type: 'boolean', description: '是否展开 toast 列表。' },
+        { name: 'richColors', type: 'boolean', description: '是否使用富色彩模式。' },
+        { name: 'theme', type: "'light' | 'dark' | 'system'", description: '主题。' },
+        { name: 'toastOptions', type: 'ExternalToast', description: '默认 toast 配置。' },
+        { name: 'closeButton', type: 'boolean', description: '是否显示关闭按钮。' },
+        { name: 'visibleToasts', type: 'number', description: '可见 toast 数量。' }
+      ]
+    },
+    {
+      name: 'MessageConfig',
+      description: '单条 message 配置。',
+      fields: [
+        { name: 'content', type: 'ReactNode', description: '消息内容。' },
+        { name: 'duration', type: 'number', description: '自动关闭延迟，单位毫秒。0 表示不自动关闭。' },
+        { name: 'key', type: 'string | number', description: '唯一 key，同时作为 toast id。' },
+        { name: 'icon', type: 'ReactNode', description: '自定义图标。' },
+        { name: 'position', type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'", description: '展示位置。' },
+        { name: 'className', type: 'string', description: '自定义 class。' },
+        { name: 'style', type: 'object', description: '内联样式。' },
+        { name: 'onClose', type: '() => void', description: '关闭回调。' }
+      ]
+    },
+    {
+      name: 'MessageGlobalConfig',
+      description: 'message 全局配置。',
+      fields: [
+        { name: 'duration', type: 'number', description: '默认自动关闭延迟。' },
+        { name: 'maxCount', type: 'number', description: '最大消息数量，超出时关闭最早消息。' },
+        { name: 'position', type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'", description: '默认展示位置。' }
+      ]
+    },
+    {
+      name: 'MessagePromiseData',
+      description: 'message.promise 的状态文案配置。',
+      fields: [
+        { name: 'loading', type: 'ReactNode', description: '加载中内容。' },
+        { name: 'success', type: 'ReactNode | ((data) => ReactNode)', description: '成功内容。' },
+        { name: 'error', type: 'ReactNode | ((error) => ReactNode)', description: '失败内容。' },
+        { name: 'finally', type: '() => void | Promise<void>', description: 'Promise 结束后的回调。' }
+      ]
+    },
+    {
+      name: 'NotificationConfig',
+      description: '单条 notification 配置。',
+      fields: [
+        { name: 'title', type: 'ReactNode', description: '通知标题。' },
+        { name: 'description', type: 'ReactNode', description: '通知描述。' },
+        { name: 'type', type: "'error' | 'info' | 'success' | 'warning'", description: '通知类型。' },
+        { name: 'duration', type: 'number', description: '自动关闭延迟，单位毫秒。0 表示不自动关闭。' },
+        { name: 'key', type: 'string | number', description: '唯一 key，同时作为 toast id。' },
+        { name: 'icon', type: 'ReactNode', description: '自定义图标。' },
+        { name: 'action', type: 'ActionConfig | ReactNode', description: '主操作按钮。' },
+        { name: 'cancel', type: 'ActionConfig | ReactNode', description: '取消按钮。' },
+        { name: 'closeButton', type: 'boolean', description: '是否显示关闭按钮。' },
+        { name: 'position', type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'", description: '展示位置。' },
+        { name: 'className', type: 'string', description: '自定义 class。' },
+        { name: 'style', type: 'object', description: '内联样式。' },
+        { name: 'onClose', type: '() => void', description: '关闭回调。' }
+      ]
+    },
+    {
+      name: 'ActionConfig',
+      description: 'notification 操作按钮配置。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '按钮内容。' },
+        { name: 'onClick', type: '(event) => void', description: '点击回调。' },
+        { name: 'style', type: 'object', description: '按钮内联样式。' }
+      ]
+    },
+    {
+      name: 'NotificationGlobalConfig',
+      description: 'notification 全局配置。',
+      fields: [
+        { name: 'duration', type: 'number', description: '默认自动关闭延迟。' },
+        { name: 'maxCount', type: 'number', description: '最大通知数量，超出时关闭最早通知。' },
+        { name: 'position', type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'", description: '默认展示位置。' },
+        { name: 'closeButton', type: 'boolean', description: '默认是否显示关闭按钮。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="MessageType" description="message 类型" type="'error' | 'info' | 'loading' | 'success' | 'warning'" />
+
+<UnionType name="NotificationType" description="notification 类型" type="'error' | 'info' | 'success' | 'warning'" />
+
+<UnionType name="Action" description="从 sonner re-export 的操作按钮类型" type="object" />
+
+<UnionType name="ExternalToast" description="从 sonner re-export 的 toast 配置类型" type="object" />
+
+<UnionType name="ToastClassnames" description="从 sonner re-export 的 toast classNames 配置类型" type="object" />
+
+<UnionType name="ToastT" description="从 sonner re-export 的 toast 实例类型" type="object" />
+
+<UnionType name="ToastToDismiss" description="从 sonner re-export 的待关闭 toast 类型" type="object" />

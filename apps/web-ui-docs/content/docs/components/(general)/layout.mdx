@@ -1,0 +1,394 @@
+---
+title: Layout
+description: 用于构建带侧边栏、头部、页签、内容区和页脚的应用布局
+---
+
+Layout 用于搭建典型后台或工具类应用布局。它内置侧边栏展开/折叠状态、移动端抽屉侧栏、侧栏拖拽触发轨道、头部、页签、主内容区和页脚结构。
+
+```tsx
+import {
+  Layout,
+  LayoutFooter,
+  LayoutHeader,
+  LayoutMain,
+  LayoutRail,
+  LayoutRoot,
+  LayoutSidebar,
+  LayoutTab,
+  LayoutTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 页面需要固定的应用外壳，包括侧边栏、头部、内容区和页脚。
+- 侧边栏需要支持桌面端折叠、移动端抽屉展开。
+- 需要在同一布局中切换 `sidebar`、`floating`、`inset` 三种视觉结构。
+- 只需要局部内容排列时，不应使用 Layout，直接使用普通容器或 CSS grid/flex 即可。
+
+## 基础结构
+
+`Layout` 是便捷组合组件，内部会创建 `LayoutRoot`、`LayoutSidebar`、`LayoutMain`、`LayoutHeader`、`LayoutTab`、`LayoutFooter` 和 `LayoutRail`。
+
+```tsx
+<Layout
+  defaultOpen
+  header={<div className="h-12 px-4">Header</div>}
+  sidebar={<div className="p-2">Sidebar</div>}
+  tab={<div className="border-b p-4">Tab</div>}
+  footer={<div className="border-t p-4">Footer</div>}
+>
+  <div className="p-4">Content</div>
+</Layout>
+```
+
+## 触发器
+
+在 `header` 或自定义结构中放置 `LayoutTrigger`，可以切换侧边栏。桌面端切换 `open`，移动端切换移动抽屉。
+
+```tsx
+<Layout
+  defaultOpen
+  header={(
+    <div className="flex items-center gap-2 px-4">
+      <LayoutTrigger />
+      <span>Dashboard</span>
+    </div>
+  )}
+  sidebar={<nav className="p-2">Menu</nav>}
+>
+  <main className="p-4">Content</main>
+</Layout>
+```
+
+## 变体
+
+通过 `variant` 控制侧边栏和主内容区的视觉关系。
+
+| 变体       | 说明                               |
+| ---------- | ---------------------------------- |
+| `sidebar`  | 标准侧边栏布局，主内容贴合侧栏     |
+| `floating` | 侧边栏带间距、圆角、边框和阴影     |
+| `inset`    | 页面背景使用侧栏色，主内容内嵌卡片 |
+
+## 折叠模式
+
+通过 `collapsible` 控制桌面端折叠行为。
+
+| 模式        | 说明                                   |
+| ----------- | -------------------------------------- |
+| `icon`      | 折叠到 `collapsedSidebarWidth`，适合图标菜单 |
+| `offcanvas` | 折叠时侧边栏滑出画布并隐藏             |
+
+## 方向与尺寸
+
+通过 `side` 控制侧边栏在左侧或右侧；通过 `size` 调整布局字体和布局间距变量。`sidebarWidth` 和 `collapsedSidebarWidth` 以 px 为输入，会按当前 `size` 比例换算为 CSS rem 变量。
+
+## 自定义样式
+
+通过 `ui` 控制各 slot 的 class，包括 `root`、`sidebarRoot`、`sidebarWrapper`、`sidebar`、`sidebarGapHandler`、`mobileRoot`、`mobile`、`rail`、`trigger`、`main`、`header`、`tab` 和 `footer`。
+
+## API
+
+### Layout
+
+便捷组合组件，适合大多数页面级布局。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '主内容区内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'header',
+      description: '头部区域内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'sidebar',
+      description: '侧边栏内容，支持 render function 获取折叠状态',
+      type: 'ReactNode | LayoutSidebarRenderFn'
+    },
+    {
+      name: 'tab',
+      description: '页签区域内容，显示在 header 下方',
+      type: 'ReactNode'
+    },
+    {
+      name: 'footer',
+      description: '页脚区域内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'variant',
+      description: '布局视觉变体',
+      type: "'sidebar' | 'floating' | 'inset'",
+      default: "'sidebar'"
+    },
+    {
+      name: 'collapsible',
+      description: '侧边栏折叠模式',
+      type: "'offcanvas' | 'icon'",
+      default: "'offcanvas'"
+    },
+    {
+      name: 'side',
+      description: '侧边栏方向',
+      type: "'left' | 'right'",
+      default: "'left'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响字体、布局间距和宽度换算',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'open',
+      description: '受控模式下的桌面侧边栏打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下的默认打开状态',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'onOpenChange',
+      description: '桌面侧边栏打开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'sidebarWidth',
+      description: '展开时侧边栏宽度，单位 px，会按 size 比例换算',
+      type: 'number',
+      default: '240'
+    },
+    {
+      name: 'collapsedSidebarWidth',
+      description: 'icon 折叠模式下的侧边栏宽度，单位 px，会按 size 比例换算',
+      type: 'number',
+      default: '50'
+    },
+    {
+      name: 'ui',
+      description: '各 slot 的自定义 class',
+      type: 'LayoutUi'
+    }
+  ]}
+/>
+
+### 结构组件
+
+需要更细粒度控制时，可以直接组合结构组件。`LayoutSidebar`、`LayoutRail`、`LayoutTrigger` 必须在 `LayoutRoot` 内使用，因为它们依赖布局上下文。
+
+<PropsTable
+  data={[
+    {
+      name: 'LayoutRoot',
+      description: '布局根容器，提供侧边栏状态和上下文',
+      type: 'LayoutRootProps'
+    },
+    {
+      name: 'LayoutSidebar',
+      description: '桌面侧边栏和移动端抽屉侧栏',
+      type: 'LayoutSidebarProps'
+    },
+    {
+      name: 'LayoutMain',
+      description: '主内容区域',
+      type: 'LayoutMainProps'
+    },
+    {
+      name: 'LayoutHeader',
+      description: '头部区域',
+      type: 'LayoutHeaderProps'
+    },
+    {
+      name: 'LayoutTab',
+      description: '页签区域',
+      type: 'LayoutTabProps'
+    },
+    {
+      name: 'LayoutFooter',
+      description: '页脚区域',
+      type: 'LayoutFooterProps'
+    },
+    {
+      name: 'LayoutRail',
+      description: '侧边栏边缘触发轨道，点击切换侧边栏',
+      type: 'LayoutRailProps'
+    },
+    {
+      name: 'LayoutTrigger',
+      description: '侧边栏切换按钮，内部使用 ButtonIcon',
+      type: 'LayoutTriggerProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'LayoutProps',
+      description: '便捷组合组件属性。继承 LayoutRootProps，并额外提供 header、sidebar、tab、footer 和 ui。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '主内容区内容。' },
+        { name: 'collapsedSidebarWidth', type: 'number', description: '折叠侧边栏宽度，单位 px。默认值为 50。' },
+        { name: 'collapsible', type: "'offcanvas' | 'icon'", description: '侧边栏折叠模式。默认值为 offcanvas。' },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控默认打开状态。默认值为 false。' },
+        { name: 'footer', type: 'ReactNode', description: '页脚内容。' },
+        { name: 'header', type: 'ReactNode', description: '头部内容。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化回调。' },
+        { name: 'open', type: 'boolean', description: '受控打开状态。' },
+        { name: 'side', type: "'left' | 'right'", description: '侧边栏方向。默认值为 left。' },
+        { name: 'sidebar', type: 'ReactNode | LayoutSidebarRenderFn', description: '侧边栏内容或 render function。' },
+        { name: 'sidebarWidth', type: 'number', description: '展开侧边栏宽度，单位 px。默认值为 240。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '布局尺寸。默认值为 md。' },
+        { name: 'tab', type: 'ReactNode', description: '页签内容。' },
+        { name: 'ui', type: 'LayoutUi', description: '各 slot 的自定义 class。' },
+        { name: 'variant', type: "'sidebar' | 'floating' | 'inset'", description: '布局变体。默认值为 sidebar。' }
+      ]
+    },
+    {
+      name: 'LayoutRootProps',
+      description: '布局根组件属性，负责状态、上下文和 CSS 宽度变量。',
+      fields: [
+        { name: 'children', type: 'ReactNode | LayoutRootRenderFn', description: '子节点或接收 open 的 render function。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'collapsedSidebarWidth', type: 'number', description: '折叠侧边栏宽度，单位 px。' },
+        { name: 'collapsible', type: "'offcanvas' | 'icon'", description: '侧边栏折叠模式。' },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控默认打开状态。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化回调。' },
+        { name: 'open', type: 'boolean', description: '受控打开状态。' },
+        { name: 'side', type: "'left' | 'right'", description: '侧边栏方向。' },
+        { name: 'sidebarWidth', type: 'number', description: '展开侧边栏宽度，单位 px。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '布局尺寸。' },
+        { name: 'variant', type: "'sidebar' | 'floating' | 'inset'", description: '布局变体。' }
+      ]
+    },
+    {
+      name: 'LayoutSidebarProps',
+      description: '侧边栏组件属性。桌面端渲染固定侧栏，移动端渲染抽屉内容。',
+      fields: [
+        { name: 'children', type: 'ReactNode | LayoutSidebarRenderFn', description: '侧边栏内容或接收 collapsed 状态的 render function。' },
+        { name: 'className', type: 'ClassValue', description: '侧边栏主体 class。' },
+        { name: 'collapsible', type: "'offcanvas' | 'icon'", description: '折叠模式。' },
+        { name: 'side', type: "'left' | 'right'", description: '侧边栏方向。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '布局尺寸。' },
+        { name: 'ui', type: 'LayoutUi', description: '侧边栏相关 slot class。' },
+        { name: 'variant', type: "'sidebar' | 'floating' | 'inset'", description: '布局变体。' }
+      ]
+    },
+    {
+      name: 'LayoutSidebarChildrenProps',
+      description: '传给 sidebar render function 的状态。',
+      fields: [
+        { name: 'collapsed', type: 'boolean', description: '侧边栏是否折叠。' },
+        { name: 'collapsedWidth', type: 'number', description: '折叠宽度，单位 px。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '布局尺寸。' }
+      ]
+    },
+    {
+      name: 'LayoutMainProps',
+      description: '主内容区域属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '主内容。' },
+        { name: 'className', type: 'ClassValue', description: '主内容区域 class。' },
+        { name: 'collapsible', type: "'offcanvas' | 'icon'", description: '折叠模式，用于匹配布局样式。' },
+        { name: 'variant', type: "'sidebar' | 'floating' | 'inset'", description: '布局变体，用于匹配主区域样式。' }
+      ]
+    },
+    {
+      name: 'LayoutHeaderProps',
+      description: '头部区域属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '头部内容。' },
+        { name: 'className', type: 'ClassValue', description: '头部区域 class。' }
+      ]
+    },
+    {
+      name: 'LayoutTabProps',
+      description: '页签区域属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '页签内容。' },
+        { name: 'className', type: 'ClassValue', description: '页签区域 class。' }
+      ]
+    },
+    {
+      name: 'LayoutFooterProps',
+      description: '页脚区域属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '页脚内容。' },
+        { name: 'className', type: 'ClassValue', description: '页脚区域 class。' }
+      ]
+    },
+    {
+      name: 'LayoutRailProps',
+      description: '侧边栏边缘触发轨道属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '触发轨道 class。' },
+        { name: 'collapsible', type: "'offcanvas' | 'icon'", description: '折叠模式，用于匹配轨道位置。' },
+        { name: 'side', type: "'left' | 'right'", description: '侧边栏方向。' },
+        { name: 'variant', type: "'sidebar' | 'floating' | 'inset'", description: '布局变体，用于匹配轨道位置。' }
+      ]
+    },
+    {
+      name: 'LayoutTriggerProps',
+      description: '侧边栏切换按钮属性。基于 ButtonIcon 使用，点击时会调用布局上下文的 toggleSidebar。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '触发按钮 class。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用按钮。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '按钮尺寸。' }
+      ]
+    },
+    {
+      name: 'LayoutUi',
+      description: '各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'sidebarRoot', type: 'ClassValue', description: '侧边栏外层 class。' },
+        { name: 'sidebarWrapper', type: 'ClassValue', description: '侧边栏定位包裹层 class。' },
+        { name: 'sidebar', type: 'ClassValue', description: '侧边栏主体 class。' },
+        { name: 'sidebarGapHandler', type: 'ClassValue', description: '侧边栏占位区域 class。' },
+        { name: 'mobileRoot', type: 'ClassValue', description: '移动端抽屉根容器 class。' },
+        { name: 'mobile', type: 'ClassValue', description: '移动端侧栏内容 class。' },
+        { name: 'rail', type: 'ClassValue', description: '触发轨道 class。' },
+        { name: 'trigger', type: 'ClassValue', description: '触发按钮 class。' },
+        { name: 'main', type: 'ClassValue', description: '主内容区域 class。' },
+        { name: 'header', type: 'ClassValue', description: '头部区域 class。' },
+        { name: 'tab', type: 'ClassValue', description: '页签区域 class。' },
+        { name: 'footer', type: 'ClassValue', description: '页脚区域 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="LayoutSidebarRenderFn"
+  description="侧边栏渲染函数"
+  type="(props: LayoutSidebarChildrenProps) => ReactNode"
+/>
+
+<UnionType
+  name="LayoutRootRenderFn"
+  description="根布局渲染函数"
+  type="(props: { open: boolean }) => ReactNode"
+/>
+
+<UnionType
+  name="LayoutSlots"
+  description="Layout 可配置 ui 的内置 slot"
+  type="'root' | 'sidebarRoot' | 'sidebarWrapper' | 'sidebar' | 'sidebarGapHandler' | 'mobileRoot' | 'mobileOverlay' | 'mobile' | 'rail' | 'trigger' | 'main' | 'header' | 'tab' | 'footer'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

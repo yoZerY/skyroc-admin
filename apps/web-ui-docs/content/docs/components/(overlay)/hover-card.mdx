@@ -1,0 +1,354 @@
+---
+title: HoverCard
+description: 鼠标悬停或聚焦时展示补充信息的浮层卡片
+---
+
+HoverCard 用于在用户悬停或聚焦某个触发元素时展示简短的补充信息。它基于 Radix HoverCard 封装，适合展示用户资料、术语说明、链接预览或上下文摘要。
+
+```tsx
+import {
+  HoverCard,
+  HoverCardArrow,
+  HoverCardContent,
+  HoverCardRoot,
+  HoverCardTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在不打断当前流程的情况下展示补充信息。
+- 触发内容和浮层内容之间存在明确关联，例如用户、链接、指标或术语。
+- 内容较短，用户可以快速扫读并离开。
+- 需要点击确认或承载复杂交互时使用 Dialog；只需要纯文本提示时优先使用 Tooltip。
+
+## 基础用法
+
+通过 `trigger` 提供触发元素，`children` 作为悬停后展示的浮层内容。
+
+<Demo src="@playground/hover-card/modules/HoverCardBasic" />
+
+## 箭头
+
+通过 `showArrow` 显示箭头，让浮层和触发元素的视觉关系更明确。箭头样式可以通过 `classNames.arrow` 或 `arrowProps` 调整。
+
+<Demo src="@playground/hover-card/modules/HoverCardArrow" />
+
+## 位置与偏移
+
+通过 `contentProps` 传递 Radix Content 的定位属性，例如 `side`、`align`、`sideOffset`、`alignOffset` 和碰撞检测相关配置。
+
+```tsx
+<HoverCard
+  trigger={<button type="button">Hover me</button>}
+  contentProps={{ align: 'start', side: 'right', sideOffset: 12 }}
+>
+  <div>Content</div>
+</HoverCard>
+```
+
+## 自定义样式
+
+通过 `classNames.content` 控制浮层内容容器，通过 `classNames.arrow` 控制箭头。也可以直接使用 `className` 设置内容容器样式，`className` 的优先级高于 `classNames.content`。
+
+## API
+
+### HoverCard
+
+通用属性参考：基于 Radix HoverCard Root，支持打开状态、延迟、触发元素、内容属性和箭头配置。
+
+<PropsTable
+  data={[
+    {
+      name: 'trigger',
+      description: '触发 HoverCard 打开的元素，通常是 Button、链接或文本节点',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'children',
+      description: '浮层内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'showArrow',
+      description: '是否显示指向触发元素的箭头',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'arrowProps',
+      description: '传递给 HoverCardArrow 的额外 props，仅在 showArrow 为 true 时生效',
+      type: 'HoverCardArrowProps'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 HoverCardContent 的定位和交互 props，不包含 children 与 className',
+      type: "Omit<HoverCardContentProps, 'children' | 'className'>"
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（content / arrow）',
+      type: 'HoverCardClassNames'
+    },
+    {
+      name: 'className',
+      description: '传递给内容容器的自定义 class；优先级高于 classNames.content',
+      type: 'ClassValue'
+    },
+    {
+      name: 'open',
+      description: '受控模式下的打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下的默认打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '打开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'openDelay',
+      description: '鼠标进入或聚焦后延迟打开的毫秒数，透传给 Radix Root',
+      type: 'number'
+    },
+    {
+      name: 'closeDelay',
+      description: '鼠标离开或失焦后延迟关闭的毫秒数，透传给 Radix Root',
+      type: 'number'
+    },
+    {
+      name: 'size',
+      description: '类型中存在，但当前 HoverCard 样式没有 size 分支，不建议依赖',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    }
+  ]}
+/>
+
+### HoverCardContent
+
+浮层内容容器会自动通过 Portal 渲染，并默认设置 `align="center"`、`sideOffset={8}`。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '浮层内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '内容容器的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'side',
+      description: '浮层相对触发元素的位置',
+      type: "'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      name: 'align',
+      description: '浮层相对触发元素的对齐方式',
+      type: "'start' | 'center' | 'end'",
+      default: "'center'"
+    },
+    {
+      name: 'sideOffset',
+      description: '浮层和触发元素之间的距离',
+      type: 'number',
+      default: '8'
+    },
+    {
+      name: 'alignOffset',
+      description: '沿对齐轴偏移的距离',
+      type: 'number'
+    },
+    {
+      name: 'avoidCollisions',
+      description: '是否启用碰撞检测以避免浮层超出视口',
+      type: 'boolean'
+    },
+    {
+      name: 'collisionPadding',
+      description: '碰撞检测时和边界之间保留的距离',
+      type: 'number | Partial<Record<Side, number>>'
+    },
+    {
+      name: 'forceMount',
+      description: '强制挂载内容容器',
+      type: 'true'
+    }
+  ]}
+/>
+
+### HoverCardArrow
+
+箭头组件用于在浮层和触发元素之间建立视觉连接。主组件中只有 `showArrow` 为 true 时才会渲染。
+
+<PropsTable
+  data={[
+    {
+      name: 'className',
+      description: '箭头的自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'width',
+      description: '箭头宽度，透传给 Radix Arrow',
+      type: 'number'
+    },
+    {
+      name: 'height',
+      description: '箭头高度，透传给 Radix Arrow',
+      type: 'number'
+    },
+    {
+      name: 'asChild',
+      description: '使用子元素替代默认箭头元素',
+      type: 'boolean'
+    },
+    {
+      name: 'size',
+      description: '类型中存在，但当前箭头样式没有 size 分支，不建议依赖',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    }
+  ]}
+/>
+
+### 子组件
+
+HoverCard 也导出 Radix 原语，适合在需要完全自定义组合结构时使用。
+
+<PropsTable
+  data={[
+    {
+      name: 'HoverCardRoot',
+      description: 'Radix HoverCard Root 原语，用于自定义组合根节点',
+      type: 'radix primitive'
+    },
+    {
+      name: 'HoverCardTrigger',
+      description: 'Radix HoverCard Trigger 原语，用于自定义触发元素',
+      type: 'radix primitive'
+    },
+    {
+      name: 'HoverCardContent',
+      description: '浮层内容容器，支持对应 Radix Content props、className 和 Portal 渲染',
+      type: 'HoverCardContentProps'
+    },
+    {
+      name: 'HoverCardArrow',
+      description: '浮层箭头，支持对应 Radix Arrow props 和 className',
+      type: 'HoverCardArrowProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'HoverCardProps',
+      description:
+        '主组件属性。组合了 Radix HoverCard Root 属性，并额外提供触发元素、内容属性、箭头和 slot 样式配置。',
+      fields: [
+        { name: 'arrowProps', type: 'HoverCardArrowProps', description: '传递给箭头组件的额外属性。' },
+        { name: 'children', type: 'ReactNode', description: '浮层内容。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器的 class。来自 StyledComponentProps。' },
+        { name: 'classNames', type: 'HoverCardClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'closeDelay', type: 'number', description: '延迟关闭时间。来自 Radix Root props。' },
+        {
+          name: 'contentProps',
+          type: "Omit<HoverCardContentProps, 'children' | 'className'>",
+          description: '传递给内容容器的定位和交互属性。'
+        },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控模式下的默认打开状态。来自 Radix Root props。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化时触发。' },
+        { name: 'open', type: 'boolean', description: '受控模式下的打开状态。来自 Radix Root props。' },
+        { name: 'openDelay', type: 'number', description: '延迟打开时间。来自 Radix Root props。' },
+        { name: 'showArrow', type: 'boolean', description: '是否显示箭头。默认值为 false。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '类型中存在，但当前主组件没有将 size 应用到内容或箭头样式。'
+        },
+        { name: 'trigger', type: 'ReactNode', required: true, description: '触发 HoverCard 打开的元素。' }
+      ]
+    },
+    {
+      name: 'HoverCardClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 HoverCard 各部分的样式。',
+      fields: [
+        { name: 'content', type: 'ClassValue', description: '内容容器的 class。' },
+        { name: 'arrow', type: 'ClassValue', description: '箭头的 class。' }
+      ]
+    },
+    {
+      name: 'HoverCardContentProps',
+      description: '内容容器属性。继承 Radix HoverCard Content props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '对齐方式。默认值为 center。' },
+        { name: 'alignOffset', type: 'number', description: '沿对齐轴偏移的距离。' },
+        { name: 'avoidCollisions', type: 'boolean', description: '是否启用碰撞检测。' },
+        { name: 'children', type: 'ReactNode', description: '浮层内容。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器的 class。' },
+        { name: 'collisionPadding', type: 'number | Partial<Record<Side, number>>', description: '碰撞检测边距。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载内容容器。' },
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '浮层位置。' },
+        { name: 'sideOffset', type: 'number', description: '浮层和触发元素之间的距离。默认值为 8。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '类型中存在，但当前内容容器样式不依赖 size。'
+        }
+      ]
+    },
+    {
+      name: 'HoverCardArrowProps',
+      description: '箭头属性。继承 Radix HoverCard Arrow props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'asChild', type: 'boolean', description: '使用子元素替代默认箭头元素。' },
+        { name: 'className', type: 'ClassValue', description: '箭头的 class。' },
+        { name: 'height', type: 'number', description: '箭头高度。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '类型中存在，但当前箭头样式不依赖 size。'
+        },
+        { name: 'width', type: 'number', description: '箭头宽度。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装 Radix props 或原生元素 props 的通用类型。',
+      fields: [
+        { name: '...sourceProps', type: 'inherited props without className', description: '继承原始组件属性，但重新定义 className。' },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="HoverCardSlots"
+  description="HoverCard 可配置 classNames 的内置 slot"
+  type="'arrow' | 'content'"
+/>
+
+<UnionType
+  name="Side"
+  description="碰撞检测边距支持的方向键"
+  type="'top' | 'right' | 'bottom' | 'left'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

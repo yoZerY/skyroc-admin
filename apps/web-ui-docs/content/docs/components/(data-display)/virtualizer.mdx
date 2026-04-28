@@ -1,0 +1,361 @@
+---
+title: Virtualizer
+description: 用于高效渲染大列表和大网格的虚拟滚动组件
+---
+
+Virtualizer 基于 `@tanstack/react-virtual` 封装，提供 `VirtualList` 和 `VirtualGrid` 两个常用组件，并 re-export `useVirtualizer`、`useWindowVirtualizer` 供更底层的自定义场景使用。
+
+```tsx
+import { VirtualList, VirtualGrid, useVirtualizer, useWindowVirtualizer } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 列表或网格数据量很大，直接渲染全部 DOM 会影响性能。
+- 每一项高度或宽度可以预估，或可以通过动态测量处理。
+- 需要保留滚动容器、滚动位置、滚动到指定索引等底层控制能力。
+- 数据量很小或内容高度不可预测且频繁变化时，普通列表通常更简单。
+
+## 基础列表
+
+`VirtualList` 只渲染可视区域附近的项目。垂直列表需要设置 `height` 和 `itemSize`；横向列表可以设置 `horizontal`、`width` 和 `itemSize`。
+
+<Demo src="@playground/virtualizer/modules/VirtualListBasic" />
+
+```tsx
+<VirtualList data={items} height={300} itemSize={40} renderItem={({ item, index }) => <div>{item.name}</div>} />
+```
+
+## 可变尺寸
+
+`itemSize` 可以是函数，用于根据索引返回不同的预估尺寸。适合内容高度存在规律差异，但不需要动态测量的场景。
+
+<Demo src="@playground/virtualizer/modules/VirtualListVariable" />
+
+```tsx
+<VirtualList
+  data={items}
+  height={300}
+  itemSize={index => items[index].height}
+  keyExtractor="id"
+  renderItem={({ item }) => <div>{item.content}</div>}
+/>
+```
+
+## 虚拟网格
+
+`VirtualGrid` 同时对行和列进行虚拟化。通过 `columns` 指定总列数，`rowHeight` 和 `columnWidth` 提供行高与列宽预估。
+
+<Demo src="@playground/virtualizer/modules/VirtualGridBasic" />
+
+```tsx
+<VirtualGrid
+  data={items}
+  columns={10}
+  rowHeight={60}
+  columnWidth={100}
+  height={300}
+  renderCell={(item, rowIndex, colIndex) => <div>{item.content}</div>}
+/>
+```
+
+## 实例控制
+
+`VirtualList` 的 `ref` 会暴露底层 virtualizer 实例和滚动容器引用，可用于滚动到指定索引、读取可见项等控制场景。
+
+<Demo src="@playground/virtualizer/modules/VirtualizerHook" />
+
+```tsx
+const virtualizerRef = useRef<VirtualizerList>(null);
+
+virtualizerRef.current?.scrollToIndex(5000, { align: 'center' });
+```
+
+## 动态测量
+
+设置 `dynamic` 后，`VirtualList` 会把渲染项挂到 `measureElement` 上，让 TanStack Virtual 在实际 DOM 渲染后测量尺寸。动态测量适合真实高度难以准确预估的内容。
+
+```tsx
+<VirtualList dynamic data={items} height={300} itemSize={48} renderItem={({ item }) => <div>{item.description}</div>} />
+```
+
+## API
+
+### VirtualList
+
+一维虚拟列表组件，支持垂直、横向、固定尺寸、函数式预估尺寸和动态测量。
+
+<PropsTable
+  data={[
+    {
+      name: 'data',
+      description: '需要虚拟化渲染的数据列表',
+      type: 'item[]',
+      required: true
+    },
+    {
+      name: 'itemSize',
+      description: '项目预估尺寸；垂直列表表示高度，横向列表表示宽度',
+      type: 'number | (index: number) => number',
+      required: true
+    },
+    {
+      name: 'renderItem',
+      description: '项目渲染函数',
+      type: '(props: VirtualListItem) => ReactNode',
+      required: true
+    },
+    {
+      name: 'height',
+      description: '滚动容器高度',
+      type: 'number | string'
+    },
+    {
+      name: 'width',
+      description: '滚动容器宽度',
+      type: 'number | string'
+    },
+    {
+      name: 'horizontal',
+      description: '是否启用横向虚拟滚动',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'dynamic',
+      description: '是否启用动态尺寸测量',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'keyExtractor',
+      description: '从数据项中提取稳定 key',
+      type: 'property key | (item, index) => string'
+    },
+    {
+      name: 'onScroll',
+      description: '滚动偏移变化时触发',
+      type: '(offset: number) => void'
+    },
+    {
+      name: 'className',
+      description: '滚动容器自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / inner）',
+      type: 'VirtualizerClassNames'
+    },
+    {
+      name: 'containerProps',
+      description: '传递给滚动容器 div 的额外属性',
+      type: 'container div props'
+    },
+    {
+      name: 'ref',
+      description: '虚拟列表实例引用',
+      type: 'VirtualizerList'
+    }
+  ]}
+/>
+
+### VirtualGrid
+
+二维虚拟网格组件，同时虚拟化行与列。
+
+<PropsTable
+  data={[
+    {
+      name: 'data',
+      description: '需要虚拟化渲染的数据列表',
+      type: 'item[]',
+      required: true
+    },
+    {
+      name: 'columns',
+      description: '总列数',
+      type: 'number',
+      required: true
+    },
+    {
+      name: 'rowHeight',
+      description: '行高预估值或函数',
+      type: 'number | (rowIndex: number) => number',
+      required: true
+    },
+    {
+      name: 'columnWidth',
+      description: '列宽预估值或函数',
+      type: 'number | (colIndex: number) => number',
+      required: true
+    },
+    {
+      name: 'renderCell',
+      description: '单元格渲染函数',
+      type: '(item, rowIndex: number, colIndex: number) => ReactNode',
+      required: true
+    },
+    {
+      name: 'height',
+      description: '滚动容器高度',
+      type: 'number | string'
+    },
+    {
+      name: 'width',
+      description: '滚动容器宽度',
+      type: 'number | string'
+    },
+    {
+      name: 'columnProps',
+      description: '传递给列 virtualizer 的额外配置',
+      type: 'VirtualizerBaseOptions'
+    },
+    {
+      name: 'keyExtractor',
+      description: '从数据项中提取稳定 key',
+      type: 'property key | (item, index) => string'
+    },
+    {
+      name: 'onScroll',
+      description: '纵向滚动偏移变化时触发',
+      type: '(offset: number) => void'
+    },
+    {
+      name: 'className',
+      description: '滚动容器自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / inner）',
+      type: 'VirtualizerClassNames'
+    },
+    {
+      name: 'ref',
+      description: '虚拟网格实例引用',
+      type: 'VirtualizerGrid'
+    }
+  ]}
+/>
+
+### Hooks
+
+`useVirtualizer` 和 `useWindowVirtualizer` 直接从 `@tanstack/react-virtual` re-export，适合完全自定义 DOM 结构或窗口级虚拟滚动场景。
+
+```tsx
+const rowVirtualizer = useVirtualizer({
+  count: rows.length,
+  estimateSize: () => 40,
+  getScrollElement: () => parentRef.current
+});
+```
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'VirtualizerClassNames',
+      description: 'Virtualizer 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '滚动容器 class。' },
+        { name: 'inner', type: 'ClassValue', description: '内部占位层 class。' }
+      ]
+    },
+    {
+      name: 'VirtualListItem',
+      description: 'VirtualList renderItem 函数接收的参数。',
+      fields: [
+        { name: 'index', type: 'number', description: '数据项索引。' },
+        { name: 'item', type: 'item data', description: '当前数据项。' },
+        { name: 'virtualItem', type: 'virtual item object', description: 'TanStack Virtual 当前虚拟项信息。' },
+        { name: 'virtualizer', type: 'virtualizer instance', description: '当前列表 virtualizer 实例。' }
+      ]
+    },
+    {
+      name: 'VirtualizerBaseOptions',
+      description: '传递给 TanStack Virtual 的基础配置类型。',
+      fields: [
+        { name: 'overscan', type: 'number', description: '可视区域外额外渲染的项目数量。' },
+        { name: 'horizontal', type: 'boolean', description: '是否横向虚拟滚动。' },
+        { name: 'paddingStart', type: 'number', description: '开始位置内边距。' },
+        { name: 'paddingEnd', type: 'number', description: '结束位置内边距。' },
+        { name: 'gap', type: 'number', description: '项目间距。' },
+        { name: 'onChange', type: '(instance, sync) => void', description: 'virtualizer 状态变化回调。' }
+      ]
+    },
+    {
+      name: 'VirtualizerProps',
+      description: 'VirtualList 和 VirtualGrid 共享的基础属性。',
+      fields: [
+        { name: 'data', type: 'item[]', description: '数据列表。' },
+        { name: 'height', type: 'number | string', description: '滚动容器高度。' },
+        { name: 'width', type: 'number | string', description: '滚动容器宽度。' },
+        { name: 'keyExtractor', type: 'property key | (item, index) => string', description: '稳定 key 提取函数。' },
+        { name: 'onScroll', type: '(offset: number) => void', description: '滚动偏移变化回调。' },
+        { name: 'className', type: 'ClassValue', description: '滚动容器 class。' },
+        { name: 'classNames', type: 'VirtualizerClassNames', description: '各 slot 的自定义 class。' }
+      ]
+    },
+    {
+      name: 'VirtualListProps',
+      description: 'VirtualList 组件属性。',
+      fields: [
+        { name: 'data', type: 'item[]', description: '数据列表。' },
+        { name: 'itemSize', type: 'number | (index: number) => number', description: '项目预估尺寸。' },
+        { name: 'renderItem', type: '(props: VirtualListItem) => ReactNode', description: '项目渲染函数。' },
+        { name: 'dynamic', type: 'boolean', description: '是否启用动态测量。' },
+        { name: 'horizontal', type: 'boolean', description: '是否横向滚动。' },
+        { name: 'ref', type: 'VirtualizerList', description: '实例引用。' },
+        { name: '...baseProps', type: 'VirtualizerProps', description: '共享基础属性。' }
+      ]
+    },
+    {
+      name: 'VirtualGridProps',
+      description: 'VirtualGrid 组件属性。',
+      fields: [
+        { name: 'data', type: 'item[]', description: '数据列表。' },
+        { name: 'columns', type: 'number', description: '总列数。' },
+        { name: 'rowHeight', type: 'number | (rowIndex: number) => number', description: '行高预估。' },
+        { name: 'columnWidth', type: 'number | (colIndex: number) => number', description: '列宽预估。' },
+        {
+          name: 'renderCell',
+          type: '(item, rowIndex: number, colIndex: number) => ReactNode',
+          description: '单元格渲染函数。'
+        },
+        { name: 'columnProps', type: 'VirtualizerBaseOptions', description: '列 virtualizer 配置。' },
+        { name: 'ref', type: 'VirtualizerGrid', description: '实例引用。' },
+        { name: '...baseProps', type: 'VirtualizerProps', description: '共享基础属性。' }
+      ]
+    },
+    {
+      name: 'VirtualizerList',
+      description: 'VirtualList 暴露的实例引用。',
+      fields: [
+        { name: 'containerRef', type: 'div element', description: '滚动容器元素。' },
+        { name: 'scrollToIndex', type: '(index: number, options?) => void', description: '滚动到指定索引。' },
+        { name: 'scrollToOffset', type: '(offset: number, options?) => void', description: '滚动到指定偏移。' },
+        { name: 'getVirtualItems', type: '() => virtual item object[]', description: '获取当前虚拟项列表。' },
+        { name: 'getTotalSize', type: '() => number', description: '获取总占位尺寸。' }
+      ]
+    },
+    {
+      name: 'VirtualizerGrid',
+      description: 'VirtualGrid 暴露的实例引用。',
+      fields: [
+        { name: 'containerRef', type: 'div element', description: '滚动容器元素。' },
+        { name: 'rowVirtualizer', type: 'VirtualizerList', description: '行 virtualizer 实例。' },
+        { name: 'columnVirtualizer', type: 'VirtualizerList', description: '列 virtualizer 实例。' },
+        { name: 'scrollToIndex', type: '(index: number, options?) => void', description: '滚动到指定行索引。' },
+        { name: 'getVirtualItems', type: '() => virtual item object[]', description: '获取当前虚拟行列表。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

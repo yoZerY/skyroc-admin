@@ -1,0 +1,200 @@
+---
+title: KeyboardKey
+description: 用于展示键盘按键和快捷键组合的视觉组件
+---
+
+KeyboardKey 用于在界面中展示键盘按键、快捷键或组合键。组件会把常见按键转换为符号，例如 `command` 显示为 `⌘`，`enter` 显示为 `↵`，也支持自定义按键文本。
+
+```tsx
+import { Kbd, KeyboardKey } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在菜单、命令面板、提示文本中展示快捷键。
+- 需要展示单个键位，例如 `Enter`、`Esc`、`Tab`。
+- 需要展示组合键，例如 `CtrlAltDelete` 或 `CtrlShiftA`。
+- 需要描述完整快捷键帮助时，可搭配 Command、DropdownMenu、Tooltip 等组件使用。
+
+## 基础用法
+
+通过 `value` 传入按键名称。传入数组时会按顺序拼接成组合键，并启用组合键字距样式。
+
+<Demo src="@playground/keyboard-key/modules/KeyboardKeyBase" />
+
+## 尺寸
+
+通过 `size` 调整按键高度、最小宽度、字号和组合键字距。
+
+<Demo src="@playground/keyboard-key/modules/KeyboardKeySize" />
+
+## 变体
+
+通过 `variant` 控制按键的视觉样式。默认是 `outline`。
+
+<Demo src="@playground/keyboard-key/modules/KeyboardKeyVariants" />
+
+## 符号映射
+
+默认 `symbolize` 为 `true`，常见按键会转换为符号。`meta`、`alt`、`ctrl` 会根据当前系统环境显示不同文本或符号；自定义字符串会转换为大写。
+
+| value        | 显示内容                         |
+| ------------ | -------------------------------- |
+| `command`    | `⌘`                              |
+| `option`     | `⌥`                              |
+| `shift`      | `⇧`                              |
+| `enter`      | `↵`                              |
+| `escape`     | `⎋`                              |
+| `backspace`  | `⌫`                              |
+| `delete`     | `⌦`                              |
+| `arrowup`    | `↑`                              |
+| `arrowdown`  | `↓`                              |
+| `arrowleft`  | `←`                              |
+| `arrowright` | `→`                              |
+| `meta`       | macOS 为 `⌘`，其他系统为 `⊞`     |
+| `alt`        | macOS 为 `⌥`，其他系统为 `alt`   |
+| `ctrl`       | macOS 为 `⌃`，其他系统为 `ctrl`  |
+| 自定义字符串 | 调用 `toUpperCase()` 后展示      |
+
+如果需要原样展示传入值，可以设置 `symbolize={false}`。如果传入 `children`，会优先展示 `children`，不再使用 `value` 生成内容。
+
+## API
+
+### Kbd / KeyboardKey
+
+`Kbd` 是带配置能力的预设导出，`KeyboardKey` 是底层组件导出。常规业务代码优先使用 `Kbd`。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '要展示的按键，传数组时展示为组合键',
+      type: 'KbdValue | KbdValue[]'
+    },
+    {
+      name: 'children',
+      description: '自定义展示内容；传入后优先级高于 value',
+      type: 'ReactNode'
+    },
+    {
+      name: 'symbolize',
+      description: '是否将内置按键转换为符号',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'variant',
+      description: '视觉样式',
+      type: "'solid' | 'outline' | 'ghost'",
+      default: "'outline'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响高度、最小宽度、字号和组合键字距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'title',
+      description: '原生 kbd 元素 title 属性',
+      type: 'string'
+    },
+    {
+      name: 'aria-label',
+      description: '当符号不易理解时提供可访问名称',
+      type: 'string'
+    }
+  ]}
+/>
+
+### 工具导出
+
+组件同时导出按键映射和格式化 hook，适合需要复用同一套按键显示规则的场景。
+
+<PropsTable
+  data={[
+    {
+      name: 'builtinKeyboardKeyMap',
+      description: '内置按键到符号的映射表',
+      type: 'Record<KbdKey, string>'
+    },
+    {
+      name: 'useKeyboardKey',
+      description: '返回 getKeyboardKey 和 isMacOS，用于按当前系统格式化按键值',
+      type: 'UseKeyboardKey'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'KeyboardKeyProps',
+      description: 'KeyboardKey 组件属性。继承 kbd 元素属性，并增加按键值、符号化、尺寸和变体。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义展示内容。传入后优先级高于 value。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。默认值为 md。' },
+        { name: 'symbolize', type: 'boolean', description: '是否将内置按键转换为符号。默认值为 true。' },
+        { name: 'value', type: 'KbdValue | KbdValue[]', description: '要展示的按键或组合键。' },
+        { name: 'variant', type: "'solid' | 'outline' | 'ghost'", description: '视觉样式。默认值为 outline。' },
+        { name: '...kbdProps', type: 'kbd element props', description: '其他原生 kbd 元素属性。' }
+      ]
+    },
+    {
+      name: 'KeyboardKeyGroupProps',
+      description: '键盘组合键类型。当前仅导出类型，没有对应组件实现。',
+      fields: [
+        { name: 'separator', type: 'ReactNode', description: '按键之间的分隔内容。' },
+        { name: 'values', type: 'KbdValue[]', required: true, description: '组合键按键列表。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'variant', type: "'solid' | 'outline' | 'ghost'", description: '视觉样式。' }
+      ]
+    },
+    {
+      name: 'UseKeyboardKey',
+      description: 'useKeyboardKey 返回值。',
+      fields: [
+        { name: 'getKeyboardKey', type: '(value?: KbdValue) => string', description: '按当前系统环境格式化按键值。' },
+        { name: 'isMacOS', type: 'boolean', description: '当前环境是否识别为 macOS。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="KbdKey"
+  description="内置支持符号化的按键名称"
+  type="'alt' | 'arrowdown' | 'arrowleft' | 'arrowright' | 'arrowup' | 'backspace' | 'capslock' | 'command' | 'ctrl' | 'delete' | 'end' | 'enter' | 'escape' | 'home' | 'meta' | 'option' | 'pagedown' | 'pageup' | 'shift' | 'tab' | 'win'"
+/>
+
+<UnionType
+  name="KbdValue"
+  description="可展示的按键值"
+  type="KbdKey | string"
+/>
+
+<UnionType
+  name="KbdSize"
+  description="KeyboardKey 尺寸"
+  type="'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+/>
+
+<UnionType
+  name="KbdVariant"
+  description="KeyboardKey 视觉样式"
+  type="'solid' | 'outline' | 'ghost'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

@@ -1,0 +1,18 @@
+{
+  "title": "输入",
+  "pages": [
+    "input",
+    "textarea",
+    "number-input",
+    "password",
+    "input-otp",
+    "select",
+    "combobox",
+    "checkbox",
+    "radio",
+    "switch",
+    "slider",
+    "form",
+    "label"
+  ]
+}

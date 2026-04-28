@@ -1,0 +1,13 @@
+{
+  "title": "组件",
+  "pages": [
+    "(general)",
+    "(input)",
+    "(data-display)",
+    "(overlay)",
+    "(navigation)",
+    "(layout)",
+    "(feedback)",
+    "(primitive)"
+  ]
+}

@@ -1,0 +1,268 @@
+---
+title: Drawer
+description: 从屏幕边缘滑入的侧边面板组件
+---
+
+抽屉（Drawer）从屏幕边缘滑入，用于在不离开当前页面的情况下展示辅助内容或操作面板。基于 Dialog 封装，继承标题、描述、页脚、关闭按钮等完整能力，并新增方向控制和内容滚动功能。
+
+```tsx
+import { Drawer, DrawerContent } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在不离开当前页面的情况下查看详情、编辑表单或执行操作。
+- 侧边导航面板、设置面板、筛选面板等场景。
+- 与 Dialog 的区分：Dialog 居中弹出适合确认/提示，Drawer 从侧边滑入适合承载更多内容或持续性操作。
+- 与 BottomSheet 的区分：BottomSheet 从底部弹出更适合移动端交互，Drawer 从任意方向滑入适合桌面端。
+
+## 方向
+
+通过 `contentProps.side` 控制 Drawer 的滑入方向，默认为 `right`：
+
+| 方向     | 说明         | 适用场景             |
+| -------- | ------------ | -------------------- |
+| `right`  | 从右侧滑入   | 详情面板、属性编辑   |
+| `left`   | 从左侧滑入   | 导航菜单、侧边栏     |
+| `top`    | 从顶部滑入   | 通知面板、搜索面板   |
+| `bottom` | 从底部滑入   | 操作面板、快捷菜单   |
+
+左右方向的 Drawer 默认宽度为 `w-3/4`，在 `sm` 断点以上限制为 `max-w-sm`；上下方向的 Drawer 占满水平宽度。
+
+## 滚动
+
+`scrollable` 控制内容区是否可滚动，默认为 `true`。当内容超出面板高度时自动出现滚动条。设为 `false` 则内容区不滚动，适合内容高度固定的场景。
+
+## 标题与描述
+
+Drawer 继承 Dialog 的 `title` 和 `description`，在面板顶部显示标题栏和描述文本。通过 `titleProps` 和 `descriptionProps` 可进一步定制子组件属性。
+
+## 页脚
+
+通过 `footer` 控制页脚内容：
+
+- **默认**：显示 OK 按钮，文本可通过 `okText` 自定义，点击回调为 `onOk`。
+- **自定义**：传入 ReactNode 完全替换页脚内容。
+- **隐藏**：传入 `null` 或 `false` 隐藏页脚。
+
+## API
+
+### Drawer
+
+基于 Dialog 封装，继承 Dialog 的所有属性。以下列出 Drawer 特有属性及常用的 Dialog 继承属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'scrollable',
+      description: '内容区是否可滚动',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'trigger',
+      description: '触发打开的元素',
+      type: 'ReactNode'
+    },
+    {
+      name: 'title',
+      description: '标题文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'description',
+      description: '描述文本，显示在标题下方',
+      type: 'ReactNode'
+    },
+    {
+      name: 'footer',
+      description: '页脚内容；默认渲染 OK 按钮，传入 null 或 false 隐藏页脚',
+      type: 'ReactNode | null | false'
+    },
+    {
+      name: 'open',
+      description: '受控模式下的打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '打开/关闭状态变化回调',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下的初始打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'modal',
+      description: '是否以模态模式打开（显示遮罩层）',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响内容面板及标题、描述、页脚等子组件的字号与间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'DrawerClassNames'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 DrawerContent 的额外属性，可通过 side 控制滑入方向',
+      type: 'DrawerContentProps'
+    },
+    {
+      name: 'onOk',
+      description: 'OK 按钮点击回调',
+      type: '(e: React.MouseEvent<HTMLButtonElement>) => void'
+    },
+    {
+      name: 'okText',
+      description: 'OK 按钮文本',
+      type: 'ReactNode',
+      default: "'OK'"
+    },
+    {
+      name: 'okButtonProps',
+      description: 'OK 按钮的额外属性',
+      type: 'ButtonProps'
+    },
+    {
+      name: 'overlayProps',
+      description: '传递给遮罩层的额外属性',
+      type: 'DialogOverlayProps'
+    },
+    {
+      name: 'closeProps',
+      description: '传递给关闭按钮的额外属性',
+      type: 'DialogCloseProps'
+    },
+    {
+      name: 'headerProps',
+      description: '传递给头部容器的额外属性',
+      type: 'DialogHeaderProps'
+    },
+    {
+      name: 'footerProps',
+      description: '传递给页脚容器的额外属性',
+      type: 'DialogFooterProps'
+    },
+    {
+      name: 'titleProps',
+      description: '传递给标题组件的额外属性',
+      type: 'DialogTitleProps'
+    },
+    {
+      name: 'descriptionProps',
+      description: '传递给描述组件的额外属性',
+      type: 'DialogDescriptionProps'
+    }
+  ]}
+/>
+
+### DrawerContent
+
+通过 `contentProps` 传递给内容容器的属性，控制滑入方向和样式。继承 Radix Dialog Content 的所有属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'side',
+      description: '滑入方向',
+      type: "'top' | 'right' | 'bottom' | 'left'",
+      default: "'right'"
+    },
+    {
+      name: 'className',
+      description: '内容容器的 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'DrawerClassNames',
+      description: '各 slot 的自定义 class，复用 Dialog 的 slot 结构。',
+      fields: [
+        { name: 'overlay', type: 'ClassValue', description: '遮罩层的 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容容器的 class。' },
+        { name: 'header', type: 'ClassValue', description: '头部的 class。' },
+        { name: 'title', type: 'ClassValue', description: '标题的 class。' },
+        { name: 'description', type: 'ClassValue', description: '描述文本的 class。' },
+        { name: 'footer', type: 'ClassValue', description: '页脚的 class。' },
+        { name: 'close', type: 'ClassValue', description: '关闭按钮的 class。' }
+      ]
+    },
+    {
+      name: 'DrawerContentProps',
+      description: '内容容器属性，继承 Radix Dialog Content 的定位、焦点管理等属性。',
+      fields: [
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '滑入方向。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'onOpenAutoFocus', type: '(event: Event) => void', description: '打开时自动聚焦的回调。' },
+        { name: 'onCloseAutoFocus', type: '(event: Event) => void', description: '关闭时自动聚焦的回调。' },
+        { name: 'onEscapeKeyDown', type: '(event: KeyboardEvent) => void', description: '按下 Escape 键的回调。' },
+        { name: 'onPointerDownOutside', type: '(event: PointerDownOutsideEvent) => void', description: '在内容区外点击的回调。' },
+        { name: 'onInteractOutside', type: '(event: Event) => void', description: '在内容区外交互的回调。' }
+      ]
+    },
+    {
+      name: 'DialogOverlayProps',
+      description: '遮罩层属性，继承 Radix Dialog Overlay 的所有属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'forceMount', type: 'boolean', description: '强制挂载（即使关闭状态也渲染 DOM）。' }
+      ]
+    },
+    {
+      name: 'DialogCloseProps',
+      description: '关闭按钮属性，继承 Radix Dialog Close 的所有属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' }
+      ]
+    },
+    {
+      name: 'DialogHeaderProps',
+      description: '头部容器属性，继承原生 header 元素的所有属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' }
+      ]
+    },
+    {
+      name: 'DialogFooterProps',
+      description: '页脚容器属性，继承原生 footer 元素的所有属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' }
+      ]
+    },
+    {
+      name: 'DialogTitleProps',
+      description: '标题组件属性，继承 Radix Dialog Title 的所有属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' }
+      ]
+    },
+    {
+      name: 'DialogDescriptionProps',
+      description: '描述组件属性，继承 Radix Dialog Description 的所有属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

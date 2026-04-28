@@ -1,0 +1,671 @@
+---
+title: Form
+description: 类型安全的表单状态管理与验证系统
+---
+
+表单（Form）提供完整的表单状态管理、字段验证、动态数组和计算字段能力。基于 `@skyroc/form` 核心库封装，通过 `FormField` 组件将表单字段与 UI 布局（标签、描述、错误提示）整合，同时提供丰富的 Hooks 用于程序化控制表单。
+
+```tsx
+import {
+  Form,
+  FormField,
+  FormComputedField,
+  FormList,
+  useForm,
+  useWatch,
+  useSelector,
+  useFieldState,
+  useFieldError,
+  useArrayField,
+  useEffectField,
+  useUndoRedo
+} from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Form 系统分为三层：
+
+- **核心层**（`@skyroc/form`）：纯逻辑的表单状态管理，包含 `Form`、`Field`、`ComputedField`、`List` 四个原语组件以及完整的 Hooks 体系。
+- **UI 层**（`FormField`、`FormComputedField`）：将核心层的 `Field` / `ComputedField` 与布局组件（Label、Description、Message）组合，提供开箱即用的表单字段 UI。
+- **配置层**（ConfigProvider）：通过全局配置为 `FormField` 提供默认 `size`、`classNames` 等属性。
+
+用户可直接使用 UI 层的 `FormField` 获得完整的表单字段体验，也可使用核心层的 `Field` 自定义布局。
+
+## 何时使用
+
+- 需要收集和验证用户输入时（登录、注册、设置等表单）。
+- 表单字段之间存在联动关系（计算字段、条件显隐）。
+- 需要动态增删表单项（动态列表、可编辑表格）。
+- 需要程序化控制表单（外部按钮提交、跨组件读写表单值）。
+- 需要撤销/重做能力的编辑场景。
+
+## 基础用法
+
+`Form` 包裹表单内容，`FormField` 渲染带标签和验证的字段。通过 `name` 绑定字段路径，`rules` 定义验证规则。
+
+<Demo src="@playground/form/modules/FormBasic" />
+
+```tsx
+<Form
+  initialValues={{ email: '', password: '' }}
+  onFinish={(values) => console.log('提交:', values)}
+  onFinishFailed={(error) => console.log('验证失败:', error)}
+>
+  <FormField
+    name="email"
+    label="邮箱"
+    rules={[{ required: true, message: '请输入邮箱' }, { type: 'email', message: '邮箱格式不正确' }]}
+    component={Input}
+  />
+  <FormField
+    name="password"
+    label="密码"
+    rules={[{ required: true }, { minLength: 6, message: '至少 6 个字符' }]}
+    component={Input}
+  />
+  <button type="submit">提交</button>
+</Form>
+```
+
+## 默认值表单
+
+通过 `initialValues` 设置表单默认值，`description` 为字段添加描述文本。
+
+<Demo src="@playground/form/modules/Default" />
+
+## 受控表单（useForm）
+
+通过 `useForm` 创建表单实例，实现程序化读写、填充和重置。
+
+<Demo src="@playground/form/modules/UseForm" />
+
+```tsx
+const [form] = useForm();
+
+form.setFieldsValue({ name: 'John', email: 'john@example.com' });
+form.setFieldValue('name', 'Updated Name');
+form.getFieldsValue();       // 获取全部值
+form.getFieldValue('name');  // 获取单个字段值
+form.resetFields();          // 重置全部
+form.resetFields(['name']);  // 重置指定字段
+```
+
+## 字段验证
+
+支持 `required`、`type`、`minLength`、`maxLength`、`pattern` 等内置规则，也支持 `validateField` / `validateFields` 局部验证。
+
+<Demo src="@playground/form/modules/validate" />
+
+## 警告验证（warningOnly）
+
+`warningOnly` 规则验证失败仅显示警告，不阻止表单提交。
+
+<Demo src="@playground/form/modules/validateWaring" />
+
+## 自定义验证消息
+
+通过 `validateMessages` 自定义验证错误消息模板，支持 `${label}`、`${min}` 等占位符。
+
+<Demo src="@playground/form/modules/CustomValidateMessages" />
+
+## Schema 验证（Zod）
+
+支持 Standard Schema（如 Zod、Valibot 等）进行声明式验证，无需在每个字段上单独设置 `rules`。
+
+<Demo src="@playground/form/modules/ZodResolver" />
+
+```tsx
+import { z } from 'zod';
+
+const schema = z.object({
+  username: z.string().min(3, '至少 3 个字符'),
+  age: z.number().min(18, '须年满 18 岁')
+});
+
+<Form schema={schema} onFinish={(values) => console.log(values)}>
+  <FormField name="username" label="用户名" component={Input} />
+  <FormField name="age" label="年龄" component={Input} />
+  <button type="submit">提交</button>
+</Form>
+```
+
+## 异步验证
+
+自定义异步验证器，模拟服务端唯一性检查等场景。
+
+<Demo src="@playground/form/modules/AsyncValidatorResolver" />
+
+## 计算字段
+
+`FormComputedField` 根据其他字段自动计算值，渲染为只读字段。
+
+<Demo src="@playground/form/modules/ComputedDemo" />
+
+```tsx
+<Form initialValues={{ price: 0, quantity: 1, total: 0 }}>
+  <FormField name="price" label="单价" component={Input} />
+  <FormField name="quantity" label="数量" component={Input} />
+  <FormComputedField
+    name="total"
+    label="总价"
+    deps={['price', 'quantity']}
+    compute={(get) => (get('price') || 0) * (get('quantity') || 0)}
+    component={Input}
+  />
+</Form>
+```
+
+## 动态列表
+
+`FormList` 管理动态数组字段，提供 insert、remove、move、swap、replace 操作。
+
+<Demo src="@playground/form/modules/List" />
+
+```tsx
+<Form initialValues={{ users: [{ name: '', email: '' }] }}>
+  <FormList name="users">
+    {(fields, { insert, remove }) => (
+      <>
+        {fields.map((field) => (
+          <div key={field.key}>
+            <FormField name={`${field.name}.name`} label="姓名" component={Input} />
+            <FormField name={`${field.name}.email`} label="邮箱" component={Input} />
+            <button type="button" onClick={() => remove(field.name)}>删除</button>
+          </div>
+        ))}
+        <button type="button" onClick={() => insert(fields.length, { name: '', email: '' })}>
+          添加用户
+        </button>
+      </>
+    )}
+  </FormList>
+</Form>
+```
+
+## 字段变更监听（useEffectField）
+
+`useEffectField` 创建响应式副作用，当指定字段变化时触发。不写回表单值，仅用于副作用。
+
+<Demo src="@playground/form/modules/FieldChange" />
+
+```tsx
+useEffectField(['country'], (get) => {
+  const country = get('country');
+  console.log('国家变更为:', country);
+});
+```
+
+## useWatch
+
+监听表单字段值变化，支持单个字段、多个字段或全部字段。
+
+<Demo src="@playground/form/modules/UseWatch" />
+
+```tsx
+const username = useWatch('username', { form });
+const { name, email } = useWatch(['name', 'email'], { form });
+const allValues = useWatch(form);
+const allValues = useWatch(); // 使用 context 中的 form
+```
+
+## useSelector
+
+从表单状态中派生计算值，仅在计算结果变化时触发重渲染。
+
+<Demo src="@playground/form/modules/UseSelector" />
+
+```tsx
+const total = useSelector(
+  (get) => (get('price') || 0) * (get('quantity') || 0),
+  { deps: ['price', 'quantity'] }
+);
+```
+
+## 重置表单
+
+`resetFields` 支持全部重置或按字段名局部重置。
+
+<Demo src="@playground/form/modules/Reset" />
+
+## 销毁时清除（clearOnDestroy）
+
+`clearOnDestroy` 控制表单销毁时是否清除数据。
+
+<Demo src="@playground/form/modules/ClearDestroy" />
+
+## 字段保留（preserve）
+
+`preserve` 控制字段卸载后是否保留值。设为 `true` 时，隐藏的字段值仍保留在表单中。
+
+<Demo src="@playground/form/modules/Preserve" />
+
+## 中间件
+
+通过 `form.use()` 注册中间件，拦截表单 action 实现日志、权限检查等自定义逻辑。
+
+<Demo src="@playground/form/modules/Middleware" />
+
+```tsx
+const loggingMiddleware = ({ getState }) => (next) => (action) => {
+  console.log('Before:', action.type, getState());
+  const result = next(action);
+  console.log('After:', getState());
+  return result;
+};
+
+form.use(loggingMiddleware);
+```
+
+## 撤销/重做（useUndoRedo）
+
+`useUndoRedo` 为表单添加撤销/重做能力，追踪字段值变更和数组操作。
+
+<Demo src="@playground/form/modules/UndoRedo" />
+
+```tsx
+const { canUndo, canRedo, undo, redo } = useUndoRedo(form);
+```
+
+## API
+
+### Form
+
+表单容器，提供表单状态管理上下文。支持多态渲染：默认渲染为 `<form>` 元素，可通过 `component` 自定义或设为 `false` 实现无包裹渲染。
+
+<PropsTable
+  data={[
+    {
+      name: 'initialValues',
+      description: '表单初始值',
+      type: 'DeepPartial<Values>'
+    },
+    {
+      name: 'form',
+      description: '外部表单实例，通过 useForm 创建',
+      type: 'FormInstance'
+    },
+    {
+      name: 'schema',
+      description: '表单验证 Schema（支持 Zod、Valibot 等 Standard Schema）',
+      type: 'FormSchema'
+    },
+    {
+      name: 'component',
+      description: '渲染的容器元素，设为 false 则不渲染包裹元素',
+      type: "ElementType | false",
+      default: "'form'"
+    },
+    {
+      name: 'validateTrigger',
+      description: '字段验证的默认触发时机',
+      type: 'string | string[]',
+      default: "'onChange'"
+    },
+    {
+      name: 'validateMessages',
+      description: '自定义验证错误消息模板',
+      type: 'ValidateMessages'
+    },
+    {
+      name: 'preserve',
+      description: '卸载时是否保留字段值',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'clearOnDestroy',
+      description: '销毁时是否清除表单数据',
+      type: 'boolean'
+    },
+    {
+      name: 'onFinish',
+      description: '表单提交且验证通过后的回调',
+      type: '(values: Values) => void'
+    },
+    {
+      name: 'onFinishFailed',
+      description: '表单提交但验证失败时的回调',
+      type: '(errorInfo: ValidateErrorEntity) => void'
+    },
+    {
+      name: 'onValuesChange',
+      description: '表单值变化时的回调',
+      type: '(changedValues: Partial<Values>, values: Values) => void'
+    },
+    {
+      name: 'onFieldsChange',
+      description: '字段元数据变化时的回调',
+      type: '(changedFields: Meta[], allFields: Meta[]) => void'
+    }
+  ]}
+/>
+
+### FormField
+
+带完整 UI 布局的表单字段组件，自动渲染标签、描述文本和错误提示。
+
+<PropsTable
+  data={[
+    {
+      name: 'name',
+      description: '字段路径，支持嵌套路径如 "user.name"',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'label',
+      description: '字段标签',
+      type: 'ReactNode'
+    },
+    {
+      name: 'description',
+      description: '字段描述文本，显示在输入框下方',
+      type: 'string'
+    },
+    {
+      name: 'component',
+      description: '渲染为表单输入的组件（如 Input、Select、Textarea）',
+      type: 'ElementType',
+      default: 'Field'
+    },
+    {
+      name: 'rules',
+      description: '字段验证规则数组',
+      type: 'Rule[]'
+    },
+    {
+      name: 'initialValue',
+      description: '字段初始值',
+      type: 'any'
+    },
+    {
+      name: 'trigger',
+      description: '触发值变更的事件名',
+      type: 'string',
+      default: "'onChange'"
+    },
+    {
+      name: 'validateTrigger',
+      description: '触发验证的事件名',
+      type: 'string | string[] | false'
+    },
+    {
+      name: 'valuePropName',
+      description: '传递字段值的 prop 名称',
+      type: 'string',
+      default: "'value'"
+    },
+    {
+      name: 'getValueFromEvent',
+      description: '从事件参数中提取值的函数',
+      type: '(...args: any[]) => any'
+    },
+    {
+      name: 'normalize',
+      description: '值变更后的标准化函数',
+      type: '(value: any, prevValue: any, allValues: Values) => any'
+    },
+    {
+      name: 'preserve',
+      description: '卸载时是否保留字段值',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响字段布局的字号与间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'FormClassNames'
+    },
+    {
+      name: 'className',
+      description: '字段容器的 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+### FormComputedField
+
+计算字段，根据其他字段自动计算值并以只读状态渲染。
+
+<PropsTable
+  data={[
+    {
+      name: 'name',
+      description: '字段路径',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'deps',
+      description: '依赖的字段路径数组，这些字段变化时会触发重新计算',
+      type: 'string[]',
+      required: true
+    },
+    {
+      name: 'compute',
+      description: '计算函数，接收 get 函数和所有表单值，返回计算结果',
+      type: '(get: (name: string) => any, all: Values) => any',
+      required: true
+    },
+    {
+      name: 'label',
+      description: '字段标签',
+      type: 'ReactNode'
+    },
+    {
+      name: 'description',
+      description: '字段描述文本',
+      type: 'string'
+    },
+    {
+      name: 'rules',
+      description: '验证规则（计算字段也可验证）',
+      type: 'Rule[]'
+    },
+    {
+      name: 'size',
+      description: '尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'FormClassNames'
+    }
+  ]}
+/>
+
+### FormList
+
+动态数组字段，通过 render prop 渲染数组项并提供数组操作方法。
+
+<PropsTable
+  data={[
+    {
+      name: 'name',
+      description: '数组字段路径',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'children',
+      description: '渲染函数，接收 fields 数组和操作方法对象',
+      type: '(fields: ListRenderItem[], ops: ListOperations) => ReactNode',
+      required: true
+    },
+    {
+      name: 'initialValue',
+      description: '数组初始值',
+      type: 'any[]'
+    },
+    {
+      name: 'preserve',
+      description: '卸载时是否保留字段值',
+      type: 'boolean',
+      default: 'true'
+    }
+  ]}
+/>
+
+### FormInstance
+
+通过 `useForm()` 创建的表单实例，提供以下方法：
+
+**值操作**
+
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| `getFieldValue` | `(name) => value` | 获取指定字段的值 |
+| `getFieldsValue` | `(names?) => values` | 获取多个字段值，不传参时返回全部 |
+| `setFieldValue` | `(name, value) => void` | 设置指定字段的值 |
+| `setFieldsValue` | `(values) => void` | 批量设置多个字段的值 |
+| `setDisabled` | `(name, disabled) => void` | 设置字段禁用状态 |
+| `setHidden` | `(name, hidden) => void` | 设置字段隐藏状态 |
+
+**状态查询**
+
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| `getField` | `(name) => Meta` | 获取字段完整元数据 |
+| `getFields` | `(names?) => MetaShape` | 获取多个字段的元数据 |
+| `getFieldError` | `(name) => string[]` | 获取字段错误信息 |
+| `getFieldsError` | `(names?) => Record` | 获取多个字段的错误信息 |
+| `getFieldTouched` | `(name) => boolean` | 字段是否被触碰过 |
+| `getFieldValidating` | `(name) => boolean` | 字段是否正在验证 |
+| `getFormState` | `() => FormState` | 获取完整表单状态快照 |
+| `isDisabled` | `(name) => boolean` | 字段是否禁用 |
+| `isHidden` | `(name) => boolean` | 字段是否隐藏 |
+
+**操作**
+
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| `validateField` | `(name, opts?) => Promise<boolean>` | 验证指定字段 |
+| `validateFields` | `(names?, opts?) => Promise<boolean>` | 验证多个字段 |
+| `resetFields` | `(names?) => void` | 重置字段到初始值 |
+| `submit` | `() => void` | 触发表单提交 |
+| `use` | `(middleware) => void` | 添加中间件 |
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'FormClassNames',
+      description: '表单字段各 slot 的自定义 class。',
+      fields: [
+        { name: 'item', type: 'ClassValue', description: '字段容器的 class。' },
+        { name: 'label', type: 'ClassValue', description: '标签的 class。' },
+        { name: 'description', type: 'ClassValue', description: '描述文本的 class。' },
+        { name: 'message', type: 'ClassValue', description: '错误消息的 class。' }
+      ]
+    },
+    {
+      name: 'Rule',
+      description: '验证规则配置。支持内置类型验证、自定义验证器和异步验证。',
+      fields: [
+        { name: 'required', type: 'boolean', description: '是否必填。' },
+        { name: 'type', type: 'RuleType', description: '内置类型验证器。' },
+        { name: 'message', type: 'string', description: '自定义错误消息。' },
+        { name: 'min', type: 'number | Date | string', description: '最小值（数值类型）或最早日期。' },
+        { name: 'max', type: 'number | Date | string', description: '最大值（数值类型）或最晚日期。' },
+        { name: 'minLength', type: 'number', description: '字符串最小长度。' },
+        { name: 'maxLength', type: 'number', description: '字符串最大长度。' },
+        { name: 'len', type: 'number', description: '精确长度或精确数值。' },
+        { name: 'pattern', type: 'RegExp', description: '正则表达式匹配。' },
+        { name: 'enum', type: 'any[]', description: 'type 为 enum 时的允许值列表。' },
+        { name: 'whitespace', type: 'boolean', description: '是否禁止纯空白字符串。' },
+        { name: 'validator', type: '(rule: Rule, value: any, values: any) => Promise<string | any> | string | undefined', description: '自定义验证函数，返回字符串表示错误。' },
+        { name: 'warningOnly', type: 'boolean', description: '为 true 时验证失败仅产生警告，不阻止提交。' },
+        { name: 'validateTrigger', type: 'string | string[]', description: '指定触发此规则的事件。' },
+        { name: 'transform', type: '(value: any) => any', description: '验证前转换值的函数。' },
+        { name: 'skipIfEmpty', type: 'boolean', description: '非必填字段为空时是否跳过检查（默认 true）。' },
+        { name: 'debounceMs', type: 'number', description: '异步验证器的防抖时间（毫秒）。' }
+      ]
+    },
+    {
+      name: 'Meta',
+      description: '字段元数据，包含字段的完整状态信息。',
+      fields: [
+        { name: 'value', type: 'any', description: '当前字段值。' },
+        { name: 'errors', type: 'string[]', description: '验证错误消息数组。' },
+        { name: 'warnings', type: 'string[]', description: '验证警告消息数组。' },
+        { name: 'touched', type: 'boolean', description: '字段是否被用户交互过。' },
+        { name: 'validated', type: 'boolean', description: '字段是否已完成验证。' },
+        { name: 'validating', type: 'boolean', description: '字段是否正在验证中。' },
+        { name: 'name', type: 'string', description: '字段路径。' }
+      ]
+    },
+    {
+      name: 'ValidateErrorEntity',
+      description: '表单提交验证失败时的错误信息。',
+      fields: [
+        { name: 'errorCount', type: 'number', description: '存在错误的字段数量。' },
+        { name: 'errorFields', type: 'Meta[]', description: '存在错误的字段元数据数组。' },
+        { name: 'errorMap', type: 'Record<string, string[]>', description: '字段名到错误消息的映射。' },
+        { name: 'firstErrorName', type: 'string', description: '第一个错误字段的名称（用于自动聚焦）。' },
+        { name: 'values', type: 'Values', description: '验证失败时的表单值。' },
+        { name: 'warningMap', type: 'Record<string, string[]>', description: '字段名到警告消息的映射。' },
+        { name: 'submittedAt', type: 'number', description: '验证失败的时间戳。' }
+      ]
+    },
+    {
+      name: 'ListRenderItem',
+      description: 'FormList render prop 中的数组项数据。',
+      fields: [
+        { name: 'key', type: 'string', description: '稳定的 React key，用于列表渲染优化。' },
+        { name: 'name', type: 'string', description: '数组项的字段路径（如 "users.0"）。' }
+      ]
+    },
+    {
+      name: 'ListOperations',
+      description: 'FormList 提供的数组操作方法。',
+      fields: [
+        { name: 'insert', type: '(index: number, item: any) => void', description: '在指定位置插入项。' },
+        { name: 'remove', type: '(index: number) => void', description: '删除指定位置的项。' },
+        { name: 'move', type: '(from: number, to: number) => void', description: '将项从一个位置移动到另一个位置。' },
+        { name: 'swap', type: '(i: number, j: number) => void', description: '交换两个位置的项。' },
+        { name: 'replace', type: '(index: number, item: any) => void', description: '替换指定位置的项。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="RuleType"
+  description="内置验证类型"
+  type="'string' | 'number' | 'integer' | 'float' | 'boolean' | 'date' | 'email' | 'url' | 'hex' | 'regexp' | 'enum'"
+/>
+
+<UnionType
+  name="FormSchema"
+  description="表单验证 Schema 类型，支持 Standard Schema V1（如 Zod、Valibot）或自定义验证函数"
+  type="StandardSchema | ((state: values, name?: string | string[]) => Promise<{ message: string; path: string[] }[]>)"
+/>
+
+<UnionType
+  name="ValidateMessages"
+  description="自定义验证消息模板，支持占位符 ${min}、${max}、${len}、${label}、${value}。各验证类型均可自定义消息。"
+  type="{ required?: string; whitespace?: string; default?: string; string?: { min?: string; max?: string; len?: string; pattern?: string }; number?: { min?: string; max?: string; len?: string }; ... }"
+/>
+
+<UnionType
+  name="FormInstance"
+  description="表单实例，由 useForm() 创建，提供完整的值操作、状态查询和操作方法。详见上方 FormInstance 章节。"
+  type="{ getFieldValue, getFieldsValue, setFieldValue, setFieldsValue, getField, getFieldError, validateField, validateFields, resetFields, submit, use, ... }"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

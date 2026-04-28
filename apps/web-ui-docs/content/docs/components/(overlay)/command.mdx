@@ -1,0 +1,433 @@
+---
+title: Command
+description: 用于搜索、筛选并执行命令的命令面板组件
+---
+
+命令面板（Command）基于 cmdk 封装，用于构建可搜索的操作入口、快捷跳转、全局命令菜单或局部筛选列表。
+
+```tsx
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandLoading,
+  CommandRoot,
+  CommandSeparator,
+  CommandShortcut
+} from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Command 提供两种使用方式：主组件通过 `items` 数据驱动渲染完整命令面板；基础子组件可用于更细粒度的自定义组合。
+
+- `Command`：数据驱动主组件，自动组合输入框、列表、空状态和选项。
+- `CommandDialog`：用 Dialog 包裹的命令面板，适合全局快捷命令入口。
+- `CommandRoot`：cmdk 根容器。
+- `CommandInput`：搜索输入框，默认带搜索图标，支持前后插槽。
+- `CommandList`：命令列表滚动容器。
+- `CommandGroup`：分组容器，支持分组标题。
+- `CommandItem`：单个命令项，支持前置图标、后置内容和快捷键。
+- `CommandSeparator`：分隔线。
+- `CommandEmpty`：无匹配结果时显示。
+- `CommandShortcut`：快捷键展示。
+- `CommandLoading`：直接从 cmdk 透出，用于加载状态。
+
+## 何时使用
+
+- 需要通过输入快速筛选并执行操作时。
+- 需要构建全局命令菜单、快捷跳转或应用内搜索入口时。
+- 命令项需要分组、图标、快捷键和空状态时。
+- 如果只是普通下拉选择，优先使用 Select；如果只是简单菜单，优先使用 DropdownMenu 或 Menu。
+
+## 基础用法
+
+通过 `items` 传入命令数据。每个 option 可以是分组、分隔线或单个命令项。
+
+<Demo src="@playground/command/modules/CommandBasic" />
+
+## 弹窗命令面板
+
+`CommandDialog` 提供 Dialog 容器，适合全局命令面板。打开状态通过 `open` 和 `onOpenChange` 控制。
+
+<Demo src="@playground/command/modules/CommandDialog" />
+
+## 数据结构
+
+`items` 支持三种节点：
+
+| 类型      | 识别方式                            | 说明         |
+| --------- | ----------------------------------- | ------------ |
+| item      | 默认，或 `type: 'item'`             | 可选择命令项 |
+| group     | 包含 `children`，或 `type: 'group'` | 分组选项     |
+| separator | `type: 'separator'`                 | 分隔线       |
+
+## API
+
+### Command
+
+通用属性参考：根容器支持 cmdk `Command` Root 的属性；主组件使用 `items` 数据驱动渲染，不接收自定义 children。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '命令选项数据，支持 item / group / separator',
+      type: 'CommandOptionData[]',
+      required: true
+    },
+    {
+      name: 'empty',
+      description: '无匹配结果时显示的内容',
+      type: 'ReactNode',
+      default: "'No results.'"
+    },
+    {
+      name: 'inputProps',
+      description: '传递给 CommandInput 的属性',
+      type: 'CommandInputProps'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响输入框、列表、选项和快捷键间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class；存在时优先于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'CommandClassNames'
+    },
+    {
+      name: 'value',
+      description: 'cmdk 受控搜索值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: 'cmdk 搜索值变化回调',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'filter',
+      description: 'cmdk 自定义筛选函数',
+      type: '(value: string, search: string, keywords?: string[]) => number'
+    },
+    {
+      name: 'shouldFilter',
+      description: '是否启用 cmdk 内置筛选',
+      type: 'boolean'
+    }
+  ]}
+/>
+
+### CommandDialog
+
+`CommandDialog` 负责 Dialog 外壳，命令内容通常放入其 children 中。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '弹窗内容，通常是 Command',
+      type: 'ReactNode'
+    },
+    {
+      name: 'open',
+      description: '受控打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控默认打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '打开状态变化回调',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'title',
+      description: '弹窗标题',
+      type: 'ReactNode'
+    },
+    {
+      name: 'description',
+      description: '弹窗描述',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '内容容器 class；存在时优先于 classNames.content',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: 'Dialog 相关 slot class',
+      type: 'CommandDialogClassNames'
+    },
+    {
+      name: 'size',
+      description: '内容容器尺寸，透传给 DialogContent',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    }
+  ]}
+/>
+
+### 子组件
+
+<PropsTable
+  data={[
+    { name: 'CommandRoot', description: 'cmdk 根容器', type: 'CommandRootProps' },
+    { name: 'CommandInput', description: '搜索输入框', type: 'CommandInputProps' },
+    { name: 'CommandList', description: '命令列表容器', type: 'CommandListProps' },
+    { name: 'CommandEmpty', description: '空状态内容', type: 'CommandEmptyProps' },
+    { name: 'CommandGroup', description: '命令分组容器', type: 'CommandGroupProps' },
+    { name: 'CommandItem', description: '单个命令项', type: 'CommandItemProps' },
+    { name: 'CommandSeparator', description: '分隔线', type: 'CommandSeparatorProps' },
+    { name: 'CommandShortcut', description: '快捷键展示', type: 'CommandShortcutProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'CommandProps',
+      description: '主组件属性。继承 CommandRootProps，但使用 items 数据驱动渲染命令列表。',
+      fields: [
+        { name: 'items', type: 'CommandOptionData[]', required: true, description: '命令选项数据。' },
+        { name: 'empty', type: 'ReactNode', description: '空状态内容。' },
+        { name: 'inputProps', type: 'CommandInputProps', description: '输入框属性。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'CommandClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' },
+        { name: 'value', type: 'string', description: 'cmdk 搜索值。来自 CommandRootProps。' },
+        {
+          name: 'onValueChange',
+          type: '(value: string) => void',
+          description: '搜索值变化回调。来自 CommandRootProps。'
+        },
+        {
+          name: 'filter',
+          type: '(value: string, search: string, keywords?: string[]) => number',
+          description: '自定义筛选函数。来自 CommandRootProps。'
+        },
+        { name: 'shouldFilter', type: 'boolean', description: '是否启用内置筛选。来自 CommandRootProps。' }
+      ]
+    },
+    {
+      name: 'CommandClassNames',
+      description: 'Command 全部 slot 的 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'inputWrapper', type: 'ClassValue', description: '输入框外层容器 class。' },
+        { name: 'inputIcon', type: 'ClassValue', description: '默认搜索图标 class。' },
+        { name: 'input', type: 'ClassValue', description: '输入框 class。' },
+        { name: 'list', type: 'ClassValue', description: '列表容器 class。' },
+        { name: 'empty', type: 'ClassValue', description: '空状态 class。' },
+        { name: 'group', type: 'ClassValue', description: '分组容器 class。' },
+        { name: 'groupLabel', type: 'ClassValue', description: '分组标题 class。' },
+        { name: 'item', type: 'ClassValue', description: '命令项 class。' },
+        { name: 'itemIcon', type: 'ClassValue', description: '命令项前置图标 class。' },
+        { name: 'separator', type: 'ClassValue', description: '分隔线 class。' },
+        { name: 'shortcut', type: 'ClassValue', description: '快捷键区域 class。' },
+        { name: 'dialog', type: 'ClassValue', description: 'Dialog 场景预留 slot。' }
+      ]
+    },
+    {
+      name: 'CommandGroupOptionProps',
+      description: '分组选项数据。',
+      fields: [
+        { name: 'type', type: "'group'", description: '显式声明为分组选项；包含 children 时可省略。' },
+        { name: 'label', type: 'ReactNode', description: '分组标题。' },
+        { name: 'children', type: 'CommandOptionData[]', required: true, description: '分组内选项。' },
+        { name: 'className', type: 'ClassValue', description: '分组容器 class。' },
+        {
+          name: 'classNames',
+          type: "Pick<CommandClassNames, 'group' | 'groupLabel'>",
+          description: '分组相关 slot class。'
+        }
+      ]
+    },
+    {
+      name: 'CommandItemOptionProps',
+      description: '单个命令项数据。',
+      fields: [
+        { name: 'type', type: "'item'", description: '显式声明为命令项；默认可省略。' },
+        { name: 'label', type: 'ReactNode', description: '命令项显示内容。' },
+        { name: 'value', type: 'string', description: 'cmdk 命令值。' },
+        { name: 'keywords', type: 'string[]', description: 'cmdk 搜索关键词。' },
+        { name: 'disabled', type: 'boolean', description: '禁用命令项。' },
+        { name: 'onSelect', type: '(value: string) => void', description: '命令项被选择时触发。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容，常用于图标。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'shortcut', type: 'string | string[]', description: '快捷键展示。' },
+        { name: 'className', type: 'ClassValue', description: '命令项 class。' }
+      ]
+    },
+    {
+      name: 'CommandSeparatorOptionProps',
+      description: '分隔线选项数据。',
+      fields: [
+        { name: 'type', type: "'separator'", required: true, description: '声明为分隔线。' },
+        { name: 'alwaysRender', type: 'boolean', description: 'cmdk 分隔线是否始终渲染。' },
+        { name: 'className', type: 'ClassValue', description: '分隔线 class。' }
+      ]
+    },
+    {
+      name: 'CommandInputProps',
+      description: '搜索输入框属性。继承 cmdk CommandInput 属性，并增加前后插槽和 slot class。',
+      fields: [
+        { name: 'placeholder', type: 'string', description: '占位文本。' },
+        { name: 'value', type: 'string', description: '受控输入值。' },
+        { name: 'onValueChange', type: '(search: string) => void', description: '输入值变化回调。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容；默认显示搜索图标。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'className', type: 'ClassValue', description: '输入框 class。' },
+        {
+          name: 'classNames',
+          type: "Pick<CommandClassNames, 'input' | 'inputIcon' | 'inputWrapper'>",
+          description: '输入框相关 slot class。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandItemProps',
+      description: '命令项组件属性。继承 cmdk CommandItem 属性，并增加插槽和快捷键。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '命令项内容。' },
+        { name: 'value', type: 'string', description: 'cmdk 命令值。' },
+        { name: 'keywords', type: 'string[]', description: 'cmdk 搜索关键词。' },
+        { name: 'disabled', type: 'boolean', description: '禁用命令项。' },
+        { name: 'onSelect', type: '(value: string) => void', description: '选择回调。' },
+        { name: 'leading', type: 'ReactNode', description: '前置内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置内容。' },
+        { name: 'shortcut', type: 'string | string[]', description: '快捷键。' },
+        { name: 'className', type: 'ClassValue', description: '命令项 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandDialogProps',
+      description: '弹窗命令面板属性。打开状态来自 Dialog Root，内容属性透传给 DialogContent。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '弹窗内容。' },
+        { name: 'open', type: 'boolean', description: '受控打开状态。' },
+        { name: 'defaultOpen', type: 'boolean', description: '非受控默认打开状态。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化回调。' },
+        { name: 'title', type: 'ReactNode', description: '弹窗标题。' },
+        { name: 'description', type: 'ReactNode', description: '弹窗描述。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'classNames', type: 'CommandDialogClassNames', description: 'Dialog 相关 slot class。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载内容容器。来自 DialogContent。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '内容容器尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandDialogClassNames',
+      description: 'CommandDialog 可配置的 Dialog slot class。',
+      fields: [
+        { name: 'overlay', type: 'ClassValue', description: '遮罩层 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'close', type: 'ClassValue', description: '关闭按钮 class。' },
+        { name: 'header', type: 'ClassValue', description: '头部 class。' },
+        { name: 'title', type: 'ClassValue', description: '标题 class。' },
+        { name: 'description', type: 'ClassValue', description: '描述 class。' }
+      ]
+    },
+    {
+      name: 'CommandRootProps',
+      description: 'cmdk 根容器属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'value', type: 'string', description: '受控搜索值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '搜索值变化回调。' },
+        {
+          name: 'filter',
+          type: '(value: string, search: string, keywords?: string[]) => number',
+          description: '自定义筛选函数。'
+        },
+        { name: 'shouldFilter', type: 'boolean', description: '是否启用内置筛选。' },
+        { name: 'loop', type: 'boolean', description: '键盘导航是否循环。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandListProps',
+      description: '命令列表容器属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '列表内容。' },
+        { name: 'className', type: 'ClassValue', description: '列表 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandEmptyProps',
+      description: '空状态属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '空状态内容。' },
+        { name: 'className', type: 'ClassValue', description: '空状态 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandGroupProps',
+      description: '分组组件属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '分组内容。' },
+        { name: 'heading', type: 'ReactNode', description: '分组标题。' },
+        { name: 'className', type: 'ClassValue', description: '分组容器 class。' },
+        {
+          name: 'classNames',
+          type: "Pick<CommandClassNames, 'group' | 'groupLabel'>",
+          description: '分组相关 slot class。'
+        },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandSeparatorProps',
+      description: '分隔线组件属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '分隔线 class。' },
+        { name: 'alwaysRender', type: 'boolean', description: '是否始终渲染。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'CommandShortcutProps',
+      description: '快捷键展示组件属性。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '自定义快捷键内容。' },
+        { name: 'value', type: 'string | string[]', description: '快捷键值。' },
+        { name: 'className', type: 'ClassValue', description: '快捷键容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="CommandOptionData"
+  description="命令选项数据类型"
+  type="CommandGroupOptionProps | CommandSeparatorOptionProps | CommandItemOptionProps"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

@@ -1,0 +1,303 @@
+---
+title: Card
+description: 用于承载相关内容与操作的卡片容器组件
+---
+
+卡片（Card）用于把标题、内容、操作区组合成一个独立的信息容器，适合展示模块、表单区块、数据概览或设置面板。
+
+```tsx
+import { Card, CardContent, CardFooter, CardHeader, CardRoot, CardTitle, CardTitleRoot } from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+Card 由一组可独立使用的子组件组成，主组件负责把这些区域按常见卡片结构组合起来。
+
+- `CardRoot`：根容器，提供边框、圆角、背景、阴影和分隔布局。
+- `CardHeader`：头部区域，承载标题、标题插槽和右侧额外内容。
+- `CardTitleRoot`：标题行容器，负责标题前后插槽的排列。
+- `CardTitle`：标题文本节点，只在 `title` 是字符串或数字时由主组件自动包裹。
+- `CardContent`：主体内容区域，默认可滚动。
+- `CardFooter`：底部区域，用于放置操作或补充信息。
+
+## 何时使用
+
+- 需要把一组相关信息组织成独立区块时。
+- 页面中存在多个平级模块，需要通过容器边界提升可扫描性时。
+- 内容需要标题、右侧操作、底部操作区等固定结构时。
+- 如果只是简单的文本提示，优先考虑 Alert；如果需要覆盖页面交互，优先考虑 Dialog 或 Drawer。
+
+## 基础用法
+
+通过 `title` 提供卡片标题，子节点会渲染到内容区。
+
+<Demo src="@playground/card/modules/CardBasic" />
+
+## 仅内容
+
+不传 `title`、`header` 或 `extra` 时，Card 不会渲染头部，只保留内容区。
+
+<Demo src="@playground/card/modules/CardOnlyContent" />
+
+## 额外操作
+
+通过 `extra` 在标题行右侧放置操作按钮、状态标签或菜单入口。设置 `header` 后会完全替换默认头部内容，此时 `title`、`extra`、`titleLeading` 和 `titleTrailing` 不再参与渲染。
+
+<Demo src="@playground/card/modules/CardWithExtra" />
+
+## 标题插槽
+
+通过 `titleLeading` 和 `titleTrailing` 在标题前后添加图标、标签或状态信息。需要完全自定义标题行时，可以使用 `titleRoot` 替换默认标题行结构。
+
+<Demo src="@playground/card/modules/CardTitleSlot" />
+
+## 底部区域
+
+`footer` 传入字符串或数字时，主组件会自动使用 `CardFooter` 包裹；传入 React 元素时会直接渲染该元素，适合完全自定义底部结构。
+
+<Demo src="@playground/card/modules/CardWithFooter" />
+
+## 分隔
+
+设置 `split` 后，卡片根容器会在头部、内容和底部区域之间添加分隔线。
+
+<Demo src="@playground/card/modules/CardSplit" />
+
+## 尺寸
+
+通过 `size` 调整卡片整体字号、标题字号、区域内间距和标题插槽间距，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 内容内间距  | 标题字号  | 适用场景           |
+| ----- | ----------- | --------- | ------------------ |
+| `xs`  | px-2 py-1.5 | text-xs   | 紧凑列表、嵌套面板 |
+| `sm`  | px-3 py-2   | text-sm   | 侧栏模块、轻量面板 |
+| `md`  | px-4 py-3   | text-base | 常规场景（默认）   |
+| `lg`  | px-5 py-4   | text-lg   | 重点内容区块       |
+| `xl`  | px-6 py-5   | text-lg   | 宽松展示、设置面板 |
+| `2xl` | px-7 py-6   | text-xl   | 大幅展示、首屏模块 |
+
+<Demo src="@playground/card/modules/CardSize" />
+
+## API
+
+### Card
+
+通用属性参考：支持原生 `div` 元素的所有属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '卡片主体内容，渲染到 CardContent 内',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '根容器 class；存在时优先于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / header / titleRoot / title / content / footer）',
+      type: 'CardUi'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 CardContent 的额外 props',
+      type: 'CardContentProps'
+    },
+    {
+      name: 'extra',
+      description: '头部右侧额外内容，通常放置操作按钮或状态标签',
+      type: 'ReactNode'
+    },
+    {
+      name: 'footer',
+      description: '底部内容；字符串或数字会自动包裹为 CardFooter，React 元素会直接渲染',
+      type: 'ReactNode'
+    },
+    {
+      name: 'footerProps',
+      description: '传递给自动生成的 CardFooter 的额外 props',
+      type: 'CardFooterProps'
+    },
+    {
+      name: 'header',
+      description: '自定义头部内容；设置后替换默认标题与 extra 结构',
+      type: 'ReactNode'
+    },
+    {
+      name: 'headerProps',
+      description: '传递给 CardHeader 的额外 props',
+      type: 'CardHeaderProps'
+    },
+    {
+      name: 'scrollable',
+      description: '内容区是否添加滚动能力',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响字号、内间距和标题插槽间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'split',
+      description: '是否在卡片区域之间显示分隔线',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'title',
+      description: '标题内容；字符串或数字会自动包裹为 CardTitle',
+      type: 'ReactNode'
+    },
+    {
+      name: 'titleLeading',
+      description: '标题前置内容，常用于图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'titleProps',
+      description: '传递给自动生成的 CardTitle 的额外 props',
+      type: 'CardTitleProps'
+    },
+    {
+      name: 'titleRoot',
+      description: '自定义标题行内容；设置后替换默认 CardTitleRoot 结构',
+      type: 'ReactNode'
+    },
+    {
+      name: 'titleRootProps',
+      description: '传递给 CardTitleRoot 的额外 props',
+      type: 'CardTitleRootProps'
+    },
+    {
+      name: 'titleTrailing',
+      description: '标题后置内容，常用于标签或状态',
+      type: 'ReactNode'
+    }
+  ]}
+/>
+
+### 子组件
+
+<PropsTable
+  data={[
+    { name: 'CardRoot', description: '根容器，支持原生 div 属性', type: 'CardRootProps' },
+    { name: 'CardHeader', description: '头部容器，支持原生 div 属性', type: 'CardHeaderProps' },
+    { name: 'CardTitleRoot', description: '标题行容器，支持标题前后插槽', type: 'CardTitleRootProps' },
+    { name: 'CardTitle', description: '标题文本节点，支持原生 div 属性', type: 'CardTitleProps' },
+    { name: 'CardContent', description: '内容区容器，支持滚动控制', type: 'CardContentProps' },
+    { name: 'CardFooter', description: '底部容器，支持原生 div 属性', type: 'CardFooterProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'CardProps',
+      description: '主组件属性。继承 CardRootProps，并增加头部、标题、内容区、底部和 slot class 配置。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '卡片主体内容。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class；存在时优先于 classNames.root。' },
+        { name: 'classNames', type: 'CardUi', description: '各 slot 的自定义 class。' },
+        { name: 'contentProps', type: 'CardContentProps', description: '内容区组件属性。' },
+        { name: 'extra', type: 'ReactNode', description: '头部右侧额外内容。' },
+        { name: 'footer', type: 'ReactNode', description: '底部内容。' },
+        { name: 'footerProps', type: 'CardFooterProps', description: '底部组件属性。' },
+        { name: 'header', type: 'ReactNode', description: '自定义头部内容。' },
+        { name: 'headerProps', type: 'CardHeaderProps', description: '头部组件属性。' },
+        { name: 'scrollable', type: 'boolean', description: '内容区是否添加滚动能力。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。来自 CardRootProps。' },
+        { name: 'split', type: 'boolean', description: '是否显示区域分隔线。来自 CardRootProps。' },
+        { name: 'title', type: 'ReactNode', description: '标题内容。' },
+        { name: 'titleLeading', type: 'ReactNode', description: '标题前置内容。' },
+        { name: 'titleProps', type: 'CardTitleProps', description: '标题文本组件属性。' },
+        { name: 'titleRoot', type: 'ReactNode', description: '自定义标题行内容。' },
+        { name: 'titleRootProps', type: 'CardTitleRootProps', description: '标题行组件属性。' },
+        { name: 'titleTrailing', type: 'ReactNode', description: '标题后置内容。' }
+      ]
+    },
+    {
+      name: 'CardUi',
+      description: 'Card 全部 slot 的 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'header', type: 'ClassValue', description: '头部容器 class。' },
+        { name: 'titleRoot', type: 'ClassValue', description: '标题行容器 class。' },
+        { name: 'title', type: 'ClassValue', description: '标题文本 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容区 class。' },
+        { name: 'footer', type: 'ClassValue', description: '底部容器 class。' }
+      ]
+    },
+    {
+      name: 'CardRootProps',
+      description: '根容器属性。支持原生 div 属性，并增加尺寸和分隔控制。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '子节点。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响根容器字号。' },
+        { name: 'split', type: 'boolean', description: '是否显示区域分隔线。' }
+      ]
+    },
+    {
+      name: 'CardHeaderProps',
+      description: '头部容器属性。支持原生 div 属性，并增加尺寸控制。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '头部内容。' },
+        { name: 'className', type: 'ClassValue', description: '头部容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响头部内间距。' }
+      ]
+    },
+    {
+      name: 'CardTitleRootProps',
+      description: '标题行容器属性。支持原生 div 属性、标题前置内容和标题后置内容。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '标题行主体内容。' },
+        { name: 'className', type: 'ClassValue', description: '标题行容器 class。' },
+        { name: 'leading', type: 'ReactNode', description: '标题行前置内容。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响标题行间距。' },
+        { name: 'trailing', type: 'ReactNode', description: '标题行后置内容。' }
+      ]
+    },
+    {
+      name: 'CardTitleProps',
+      description: '标题文本属性。支持原生 div 属性，并增加尺寸控制。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '标题内容。' },
+        { name: 'className', type: 'ClassValue', description: '标题文本 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响标题字号。' }
+      ]
+    },
+    {
+      name: 'CardContentProps',
+      description: '内容区属性。支持原生 div 属性，并增加滚动和尺寸控制。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '内容区内容。' },
+        { name: 'className', type: 'ClassValue', description: '内容区 class。' },
+        { name: 'scrollable', type: 'boolean', description: '是否添加滚动能力。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响内容区内间距。' }
+      ]
+    },
+    {
+      name: 'CardFooterProps',
+      description: '底部容器属性。支持原生 div 属性，并增加尺寸控制。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '底部内容。' },
+        { name: 'className', type: 'ClassValue', description: '底部容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸，影响底部内间距。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

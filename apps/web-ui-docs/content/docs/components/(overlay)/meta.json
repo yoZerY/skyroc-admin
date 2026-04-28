@@ -1,0 +1,16 @@
+{
+  "title": "弹层覆盖",
+  "pages": [
+    "dialog",
+    "alert-dialog",
+    "drawer",
+    "bottom-sheet",
+    "popover",
+    "tooltip",
+    "hover-card",
+    "dropdown-menu",
+    "context-menu",
+    "command",
+    "sonner"
+  ]
+}

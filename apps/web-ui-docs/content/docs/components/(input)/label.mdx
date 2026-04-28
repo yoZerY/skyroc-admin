@@ -1,0 +1,112 @@
+---
+title: Label
+description: 用于关联表单控件和说明文本的可访问标签组件
+---
+
+Label 用于为表单控件提供可访问名称。组件基于 Radix Label 封装，支持 `htmlFor` 关联控件，并提供项目统一的字号尺寸。
+
+```tsx
+import { Label } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要为 Input、Checkbox、Radio、Select 等表单控件提供标题或说明。
+- 点击标签文本时需要聚焦或触发对应控件。
+- 表单项需要统一的字号和字重。
+- 复杂表单布局可以搭配 Form 组件；单独控件说明可以直接使用 Label。
+
+## 基础用法
+
+通过 `htmlFor` 关联对应表单控件的 `id`。
+
+<Demo src="@playground/label/modules/LabelBasic" />
+
+## 尺寸
+
+通过 `size` 调整 Label 字号，从 `xs` 到 `2xl` 共 6 个尺寸。通常应和对应控件使用相同尺寸。
+
+<Demo src="@playground/label/modules/LabelSize" />
+
+## 必填标记
+
+Label 本身不内置必填星号，可以在 children 中组合自定义标记。
+
+<Demo src="@playground/label/modules/LabelRequired" />
+
+## 禁用状态
+
+Label 样式包含 `peer-disabled` 规则。如果需要标签跟随控件禁用态变化，需要在控件结构中配合 `peer` class；单独设置控件 `disabled` 不会自动改变相邻 Label。
+
+<Demo src="@playground/label/modules/LabelDisabled" />
+
+## API
+
+### Label
+
+通用属性参考：继承 Radix Label Root 属性，并通过项目尺寸控制字号。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '标签内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'htmlFor',
+      description: '关联表单控件的 id',
+      type: 'string'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响标签字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'asChild',
+      description: '使用子元素替代默认 label 元素',
+      type: 'boolean'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'LabelProps',
+      description: 'Label 组件属性。继承 Radix Label Root props，并通过 StyledComponentProps 增加 className 和 size。',
+      fields: [
+        { name: 'asChild', type: 'boolean', description: '使用子元素替代默认 label 元素。' },
+        { name: 'children', type: 'ReactNode', description: '标签内容。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'htmlFor', type: 'string', description: '关联表单控件的 id。' },
+        { name: 'id', type: 'string', description: 'DOM id。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        { name: '...sourceProps', type: 'inherited props without className', description: '继承原始组件属性，但重新定义 className。' },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

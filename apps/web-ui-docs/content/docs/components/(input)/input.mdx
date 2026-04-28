@@ -1,0 +1,231 @@
+---
+title: Input
+description: 支持插槽、清空按钮和尺寸变体的文本输入框
+---
+
+Input 用于收集单行文本、邮箱、搜索、文件等原生 input 输入。组件在原生 `<input>` 外包了一层可聚焦样式容器，并提供前置插槽、后置插槽、清空按钮和统一尺寸。
+
+```tsx
+import { Input } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要收集单行文本、邮箱、搜索关键字、文件等原生 input 数据。
+- 输入框需要前后图标或自定义操作区。
+- 需要和项目主题尺寸、边框、聚焦态保持一致。
+- 需要数字步进交互时使用 NumberInput；需要验证码分段输入时使用 InputOTP。
+
+## 基础用法
+
+Input 支持受控和非受控用法，常见原生 input 属性会透传到底层 `<input>`。
+
+<Demo src="@playground/input/modules/InputBasic" />
+
+## 禁用
+
+通过 `disabled` 禁用输入框。`readOnly` 也会让底层 input 进入不可编辑状态。
+
+<Demo src="@playground/input/modules/InputDisabled" />
+
+## 插槽
+
+通过 `leading` 和 `trailing` 放置前置、后置内容，常用于搜索图标、单位、快捷操作等。
+
+<Demo src="@playground/input/modules/InputSlot" />
+
+## 可清空
+
+通过 `clearable` 显示清空按钮。清空按钮会在 hover 输入框容器时显示，并在点击后清空当前 DOM value。
+
+<Demo src="@playground/input/modules/InputClearable" />
+
+## 尺寸
+
+通过 `size` 调整输入框高度、字号、横向内边距和插槽间距，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 高度 | 字号 | 适用场景           |
+| ----- | ---- | ---- | ------------------ |
+| `xs`  | 24px | 10px | 紧凑筛选、表格内嵌 |
+| `sm`  | 28px | 12px | 辅助表单、侧边栏   |
+| `md`  | 32px | 14px | 常规场景（默认）   |
+| `lg`  | 36px | 16px | 重点表单项         |
+| `xl`  | 40px | 18px | 大号输入区域       |
+| `2xl` | 48px | 20px | 大幅表单或首屏输入 |
+
+## 自定义样式
+
+通过 `classNames` 控制不同 slot：`root`、`control`、`clearable` 和 `visible`。如果只需要调整整体容器，优先使用 `classNames.root`；当前实现中 `className` 会作为多个 slot 的兜底 class 使用，不适合做精细化样式控制。
+
+## API
+
+### Input
+
+通用属性参考：继承原生 input 属性，但移除了原生 `size` 属性，改用项目统一尺寸。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '受控输入值',
+      type: 'string | number | readonly string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下的默认值',
+      type: 'string | number | readonly string[]'
+    },
+    {
+      name: 'onChange',
+      description: '输入值变化时触发',
+      type: '(event) => void'
+    },
+    {
+      name: 'placeholder',
+      description: '占位文本',
+      type: 'string'
+    },
+    {
+      name: 'type',
+      description: '原生 input 类型',
+      type: 'string',
+      default: "'text'"
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用输入框',
+      type: 'boolean'
+    },
+    {
+      name: 'readOnly',
+      description: '是否只读；当前实现会同时禁用底层 input 的编辑能力',
+      type: 'boolean'
+    },
+    {
+      name: 'clearable',
+      description: '是否显示清空按钮',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'leading',
+      description: '前置插槽，显示在输入框左侧',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '后置插槽，显示在输入框右侧',
+      type: 'ReactNode'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响高度、字号、内边距和插槽间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '自定义 class；当前会作为多个 slot 的兜底 class 使用',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / control / clearable / visible）',
+      type: 'InputClassNames'
+    },
+    {
+      name: 'name',
+      description: '表单字段名称',
+      type: 'string'
+    },
+    {
+      name: 'required',
+      description: '是否必填',
+      type: 'boolean'
+    },
+    {
+      name: 'autoComplete',
+      description: '浏览器自动完成策略',
+      type: 'string'
+    },
+    {
+      name: 'autoFocus',
+      description: '是否自动聚焦',
+      type: 'boolean'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'InputProps',
+      description: 'Input 组件属性。继承原生 input 属性，移除原生 size，并增加项目尺寸、插槽、清空按钮和 slot class 配置。',
+      fields: [
+        { name: 'autoComplete', type: 'string', description: '浏览器自动完成策略。' },
+        { name: 'autoFocus', type: 'boolean', description: '是否自动聚焦。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。当前会作为多个 slot 的兜底 class 使用。' },
+        { name: 'classNames', type: 'InputClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'clearable', type: 'boolean', description: '是否显示清空按钮。' },
+        { name: 'defaultValue', type: 'string | number | readonly string[]', description: '非受控默认值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽内容。' },
+        { name: 'name', type: 'string', description: '表单字段名称。' },
+        { name: 'onChange', type: '(event) => void', description: '输入值变化回调。' },
+        { name: 'placeholder', type: 'string', description: '占位文本。' },
+        { name: 'readOnly', type: 'boolean', description: '是否只读。' },
+        { name: 'required', type: 'boolean', description: '是否必填。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。来自 StyledComponentProps。'
+        },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽内容。' },
+        { name: 'type', type: 'string', description: '原生 input 类型。' },
+        { name: 'value', type: 'string | number | readonly string[]', description: '受控输入值。' },
+        { name: '...inputProps', type: 'input element props without native size', description: '其他原生 input 属性。' }
+      ]
+    },
+    {
+      name: 'InputClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 Input 各部分的样式。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '外层容器的 class。' },
+        { name: 'control', type: 'ClassValue', description: '底层 input 的 class。' },
+        { name: 'clearable', type: 'ClassValue', description: '清空按钮图标的 class。' },
+        { name: 'visible', type: 'ClassValue', description: '变体中预留的可见状态 slot，当前主组件没有直接使用。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        { name: '...sourceProps', type: 'inherited props without className', description: '继承原始组件属性，但重新定义 className。' },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    },
+    {
+      name: 'SlotProps',
+      description: '前后插槽属性。',
+      fields: [
+        { name: 'leading', type: 'ReactNode', description: '前置插槽内容。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽内容。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="InputSlots"
+  description="Input 可配置 classNames 的内置 slot"
+  type="'root' | 'control' | 'clearable' | 'visible'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

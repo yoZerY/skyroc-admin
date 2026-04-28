@@ -1,0 +1,384 @@
+---
+title: ToggleGroup
+description: 用于在一组选项中进行单选或多选切换的按钮组组件
+---
+
+ToggleGroup 用于把多个 Toggle 组织成一组，支持单选和多选两种模式。组件基于 Radix Toggle Group 封装，并提供 `items` 数据驱动渲染、统一尺寸、视觉变体和 item 自定义渲染能力。
+
+```tsx
+import { ToggleGroup, ToggleGroupItem, ToggleGroupRoot } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在一组选项中选择一个或多个状态，如文本对齐、编辑器格式、视图模式。
+- 每个选项都可以用短文本、图标或自定义内容表达。
+- 需要单选互斥时使用 `type="single"`；需要多项同时开启时使用 `type="multiple"`。
+- 如果选项代表表单字段且需要明确的表单语义，可优先考虑 Radio 或 Checkbox。
+
+## 单选
+
+通过 `type="single"` 启用单选模式。`defaultValue` 和 `value` 使用单个字符串值。
+
+<Demo src="@playground/toggle-group/modules/ToggleGroupSingle" />
+
+```tsx
+<ToggleGroup
+  type="single"
+  defaultValue="center"
+  items={[
+    { label: 'Left', value: 'left' },
+    { label: 'Center', value: 'center' },
+    { label: 'Right', value: 'right' }
+  ]}
+/>
+```
+
+## 多选
+
+通过 `type="multiple"` 启用多选模式。`defaultValue` 和 `value` 使用字符串数组。
+
+<Demo src="@playground/toggle-group/modules/ToggleGroupMulti" />
+
+```tsx
+<ToggleGroup
+  type="multiple"
+  defaultValue={['bold', 'underline']}
+  items={[
+    { label: 'Bold', value: 'bold' },
+    { label: 'Italic', value: 'italic' },
+    { label: 'Underline', value: 'underline' }
+  ]}
+/>
+```
+
+## 变体
+
+通过 `variant` 设置整组 item 的视觉样式。当前实现支持 `ghost` 和 `outline`，单个 item 也可以在 `items` 中传入自己的 `variant` 覆盖组级设置。
+
+<Demo src="@playground/toggle-group/modules/ToggleGroupVariant" />
+
+```tsx
+<ToggleGroup type="single" variant="outline" items={items} />
+```
+
+## 尺寸
+
+通过 `size` 调整组间距以及每个 item 的高度、字号和横向内边距。默认尺寸为 `md`。
+
+| 尺寸  | Item 高度 | 字号 | 适用场景           |
+| ----- | --------- | ---- | ------------------ |
+| `xs`  | 24px      | 10px | 紧凑工具栏         |
+| `sm`  | 28px      | 12px | 表格内操作、辅助项 |
+| `md`  | 32px      | 14px | 常规场景（默认）   |
+| `lg`  | 36px      | 16px | 强调操作           |
+| `xl`  | 40px      | 18px | 大号操作区         |
+| `2xl` | 48px      | 20px | 大尺寸展示         |
+
+<Demo src="@playground/toggle-group/modules/ToggleGroupSize" />
+
+## 禁用项
+
+可以在 item 数据上设置 `disabled` 禁用单个选项，也可以在根组件上设置 `disabled` 禁用整组。
+
+<Demo src="@playground/toggle-group/modules/ToggleGroupDisabled" />
+
+```tsx
+<ToggleGroup
+  type="multiple"
+  items={[
+    { label: 'Top', value: 'top' },
+    { disabled: true, label: 'Right', value: 'right' }
+  ]}
+/>
+```
+
+## 自定义渲染
+
+通过 `itemRender` 自定义每个 item 的内容。`classNames.groupRoot` 控制根节点，`classNames.toggle` 会合并到每个 item。
+
+<Demo src="@playground/toggle-group/modules/ToggleGroupCustom" />
+
+```tsx
+<ToggleGroup
+  type="multiple"
+  items={items}
+  classNames={{ groupRoot: 'justify-start', toggle: 'gap-2' }}
+  itemRender={item => (
+    <>
+      <span>{item.label}</span>
+      <kbd>{item.shortcut}</kbd>
+    </>
+  )}
+/>
+```
+
+## API
+
+### ToggleGroup
+
+数据驱动的切换组组件。继承 Radix Toggle Group Root 属性，并增加 `items`、`itemRender`、`variant` 和 slot class 配置。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: '切换项数据列表，每一项至少需要 value 和 label',
+      type: 'ToggleGroupItemData[]',
+      required: true
+    },
+    {
+      name: 'type',
+      description: '选择模式',
+      type: "'single' | 'multiple'",
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控选中值；single 为字符串，multiple 为字符串数组',
+      type: 'string | string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下的默认选中值',
+      type: 'string | string[]'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化时触发',
+      type: '(value: string | string[]) => void'
+    },
+    {
+      name: 'variant',
+      description: '组内 item 的默认视觉样式',
+      type: "'ghost' | 'outline'",
+      default: "'ghost'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响组间距和 item 样式',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'itemRender',
+      description: '自定义 item 内容渲染函数；未提供时使用 item.label',
+      type: '(item) => ReactNode'
+    },
+    {
+      name: 'className',
+      description: '根节点自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（groupRoot / toggle）',
+      type: 'ToggleGroupClassNames'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用整组',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'orientation',
+      description: '键盘导航方向',
+      type: "'horizontal' | 'vertical'"
+    },
+    {
+      name: 'dir',
+      description: '文本方向',
+      type: "'ltr' | 'rtl'"
+    },
+    {
+      name: 'loop',
+      description: '键盘导航是否循环',
+      type: 'boolean'
+    },
+    {
+      name: 'rovingFocus',
+      description: '是否启用 roving focus 键盘焦点管理',
+      type: 'boolean'
+    }
+  ]}
+/>
+
+### ToggleGroupRoot
+
+底层根组件，继承 Radix Toggle Group Root 属性，不提供 `items` 数据渲染。
+
+<PropsTable
+  data={[
+    {
+      name: 'type',
+      description: '选择模式',
+      type: "'single' | 'multiple'",
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控选中值',
+      type: 'string | string[]'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控默认选中值',
+      type: 'string | string[]'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化回调',
+      type: '(value: string | string[]) => void'
+    },
+    {
+      name: 'className',
+      description: '根节点自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响组间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    }
+  ]}
+/>
+
+### ToggleGroupItem
+
+底层 item 组件，继承 Radix Toggle Group Item 属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'value',
+      description: '选项唯一值',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用当前选项',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'variant',
+      description: '当前 item 的视觉样式；会覆盖组级 variant',
+      type: "'ghost' | 'outline'"
+    },
+    {
+      name: 'size',
+      description: '当前 item 的尺寸；会覆盖组级 size',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'children',
+      description: '选项内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '当前 item 自定义 class',
+      type: 'ClassValue'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ToggleGroupProps',
+      description:
+        'ToggleGroup 主组件属性。继承 ToggleGroupRootProps，并增加数据驱动渲染、item 默认变体和 slot class 配置。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根节点自定义 class。' },
+        { name: 'classNames', type: 'ToggleGroupClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'defaultValue', type: 'string | string[]', description: '非受控默认选中值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用整组。' },
+        { name: 'items', type: 'ToggleGroupItemData[]', description: '切换项数据列表。' },
+        { name: 'itemRender', type: '(item) => ReactNode', description: '自定义 item 内容渲染函数。' },
+        { name: 'onValueChange', type: '(value: string | string[]) => void', description: '选中值变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '键盘导航方向。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'type', type: "'single' | 'multiple'", description: '选择模式。' },
+        { name: 'value', type: 'string | string[]', description: '受控选中值。' },
+        { name: 'variant', type: "'ghost' | 'outline'", description: '组内 item 的默认视觉样式。' }
+      ]
+    },
+    {
+      name: 'ToggleGroupItemData',
+      description: 'ToggleGroup 的数据项类型。继承 ToggleGroupItemProps，但用 label 描述默认展示内容。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '默认展示内容。' },
+        { name: 'value', type: 'string', description: '选项唯一值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前选项。' },
+        { name: 'className', type: 'ClassValue', description: '当前 item 自定义 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '当前 item 尺寸。' },
+        { name: 'variant', type: "'ghost' | 'outline'", description: '当前 item 视觉样式。' },
+        {
+          name: '...itemProps',
+          type: 'toggle group item props without children',
+          description: '其他 Radix ToggleGroup Item 属性。'
+        }
+      ]
+    },
+    {
+      name: 'ToggleGroupClassNames',
+      description: '各 slot 的自定义 class，用于精细化控制 ToggleGroup 样式。',
+      fields: [
+        { name: 'groupRoot', type: 'ClassValue', description: '根节点的 class。' },
+        { name: 'toggle', type: 'ClassValue', description: '每个 item 的 class。' }
+      ]
+    },
+    {
+      name: 'ToggleGroupRootProps',
+      description: '底层根组件属性。继承 Radix ToggleGroup Root 属性并支持项目尺寸。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根节点自定义 class。' },
+        { name: 'defaultValue', type: 'string | string[]', description: '非受控默认选中值。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用整组。' },
+        { name: 'onValueChange', type: '(value: string | string[]) => void', description: '选中值变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '键盘导航方向。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'type', type: "'single' | 'multiple'", description: '选择模式。' },
+        { name: 'value', type: 'string | string[]', description: '受控选中值。' }
+      ]
+    },
+    {
+      name: 'ToggleGroupItemProps',
+      description: '底层 item 组件属性。继承 Radix ToggleGroup Item 属性并支持项目尺寸和 Toggle 变体。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '选项内容。' },
+        { name: 'className', type: 'ClassValue', description: '当前 item 自定义 class。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前选项。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'value', type: 'string', description: '选项唯一值。' },
+        { name: 'variant', type: "'ghost' | 'outline'", description: '视觉样式。' }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        {
+          name: '...sourceProps',
+          type: 'inherited props without className',
+          description: '继承原始组件属性，但重新定义 className。'
+        },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

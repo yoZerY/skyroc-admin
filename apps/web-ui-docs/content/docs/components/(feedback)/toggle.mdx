@@ -1,0 +1,196 @@
+---
+title: Toggle
+description: 用于在按下与未按下状态之间切换的双态按钮组件
+---
+
+Toggle 用于表示一个可独立开关的双态操作，例如加粗、静音、收藏、开启某个工具状态。组件基于 Radix Toggle 封装，保留 `pressed`、`defaultPressed`、`onPressedChange` 等状态属性，并接入项目统一的尺寸和视觉变体。
+
+```tsx
+import { Toggle } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要让用户切换某个独立的开关状态，如文本加粗、筛选模式、工具启用。
+- 状态本身可以通过按钮的按下态表达，不需要额外的表单提交。
+- 多个选项可以独立开关时，可组合多个 Toggle；互斥单选场景更适合使用 Radio 或 Segment。
+- 需要普通点击触发动作但不保留按下状态时，使用 Button。
+
+## 基础用法
+
+Toggle 会根据 Radix 的 `data-state="on"` 显示按下态。仅使用图标时应提供 `aria-label`。
+
+<Demo src="@playground/toggle/modules/ToggleBasic" />
+
+```tsx
+<Toggle aria-label="Toggle bold">
+  <Bold className="size-4" />
+</Toggle>
+```
+
+## 变体
+
+通过 `variant` 控制 Toggle 的基础视觉样式。当前实现提供 `ghost` 和 `outline` 两种变体，按下态都会使用 accent 背景。
+
+| 变体      | 视觉强度 | 适用场景                   |
+| --------- | -------- | -------------------------- |
+| `ghost`   | 低       | 工具栏、图标按钮、轻量切换 |
+| `outline` | 中       | 需要边框边界的独立切换项   |
+
+<Demo src="@playground/toggle/modules/ToggleDemo" />
+
+```tsx
+<Toggle variant="outline">Outline</Toggle>
+```
+
+## 受控状态
+
+通过 `pressed` 和 `onPressedChange` 控制 Toggle 状态。非受控场景可以使用 `defaultPressed` 设置初始按下态。
+
+<Demo src="@playground/toggle/modules/ToggleControlled" />
+
+```tsx
+const [pressed, setPressed] = useState(false);
+
+<Toggle pressed={pressed} onPressedChange={setPressed} />;
+```
+
+## 尺寸
+
+通过 `size` 调整 Toggle 的高度、横向内边距和字号。默认尺寸为 `md`。
+
+| 尺寸  | 高度 | 字号 | 适用场景           |
+| ----- | ---- | ---- | ------------------ |
+| `xs`  | 24px | 10px | 紧凑工具栏         |
+| `sm`  | 28px | 12px | 表格内操作、辅助项 |
+| `md`  | 32px | 14px | 常规场景（默认）   |
+| `lg`  | 36px | 16px | 强调操作           |
+| `xl`  | 40px | 18px | 大号操作区         |
+| `2xl` | 48px | 20px | 大尺寸展示         |
+
+<Demo src="@playground/toggle/modules/ToggleSize" />
+
+## 禁用
+
+设置 `disabled` 后，Toggle 不可交互，并降低透明度。
+
+<Demo src="@playground/toggle/modules/ToggleDisabled" />
+
+```tsx
+<Toggle disabled>Disabled</Toggle>
+```
+
+## API
+
+### Toggle
+
+通用属性参考：继承 Radix Toggle Root 属性，并增加项目尺寸和视觉变体。
+
+<PropsTable
+  data={[
+    {
+      name: 'pressed',
+      description: '受控按下状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultPressed',
+      description: '非受控模式下的默认按下状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onPressedChange',
+      description: '按下状态变化时触发',
+      type: '(pressed: boolean) => void'
+    },
+    {
+      name: 'variant',
+      description: '视觉样式',
+      type: "'ghost' | 'outline'",
+      default: "'ghost'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响高度、横向内边距和字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'children',
+      description: 'Toggle 内容，通常是图标或短文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '自定义 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'asChild',
+      description: '将渲染委托给子元素，合并 props 和行为',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'aria-label',
+      description: '无文本内容时提供可访问名称',
+      type: 'string'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ToggleProps',
+      description: 'Toggle 组件属性。继承 Radix Toggle Root 属性，并增加项目尺寸和视觉变体。',
+      fields: [
+        { name: 'asChild', type: 'boolean', description: '将渲染委托给子元素。' },
+        { name: 'children', type: 'ReactNode', description: 'Toggle 内容。' },
+        { name: 'className', type: 'ClassValue', description: '自定义 class。' },
+        { name: 'defaultPressed', type: 'boolean', description: '非受控默认按下状态。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'onPressedChange', type: '(pressed: boolean) => void', description: '按下状态变化回调。' },
+        { name: 'pressed', type: 'boolean', description: '受控按下状态。' },
+        {
+          name: 'size',
+          type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+          description: '组件尺寸。来自 StyledComponentProps。'
+        },
+        { name: 'variant', type: "'ghost' | 'outline'", description: '视觉样式。' },
+        {
+          name: '...buttonProps',
+          type: 'button element props without native className',
+          description: '其他原生 button 属性。'
+        }
+      ]
+    },
+    {
+      name: 'StyledComponentProps<T>',
+      description: '项目内用于包装组件 props 的通用类型。',
+      fields: [
+        {
+          name: '...sourceProps',
+          type: 'inherited props without className',
+          description: '继承原始组件属性，但重新定义 className。'
+        },
+        { name: 'className', type: 'ClassValue', description: '组件 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '项目统一尺寸类型。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

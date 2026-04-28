@@ -1,0 +1,345 @@
+---
+title: Popover
+description: 点击触发的轻量浮层容器，用于承载表单、操作和补充内容
+---
+
+Popover 用于在触发元素附近展示可交互浮层。组件基于 Radix Popover 封装，提供触发器、内容容器、Portal、箭头、关闭按钮、受控状态和定位能力。
+
+```tsx
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverArrow,
+  PopoverContent,
+  PopoverRoot,
+  PopoverTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要点击按钮、图标或文本后展示一块可交互内容。
+- 浮层里需要放置表单、筛选项、快捷设置或简短操作。
+- 内容和触发元素关系明确，但不需要阻断页面流程。
+- 只展示悬停信息时使用 HoverCard 或 Tooltip；需要强确认或复杂流程时使用 Dialog。
+
+## 基础用法
+
+通过 `trigger` 提供触发元素，`children` 作为浮层内容。默认内容会通过 Portal 渲染，并带有边框、阴影和进入/退出动画。
+
+<Demo src="@playground/popover/modules/PopoverBasic" />
+
+```tsx
+<Popover trigger={<Button>Open Popover</Button>}>
+  <div>Popover content</div>
+</Popover>
+```
+
+## 位置与箭头
+
+通过 `side` 控制浮层位置，通过 `showArrow` 显示指向触发元素的箭头。`side`、`align`、`sideOffset` 等定位属性会传递给内容容器。
+
+<Demo src="@playground/popover/modules/PopoverPlacement" />
+
+```tsx
+<Popover
+  showArrow
+  side="right"
+  sideOffset={8}
+  trigger={<Button>Open</Button>}
+>
+  <div>Content</div>
+</Popover>
+```
+
+## 受控状态
+
+通过 `open` 和 `onOpenChange` 控制打开状态；非受控模式使用 `defaultOpen`。
+
+<Demo src="@playground/popover/modules/PopoverControlled" />
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Popover open={open} onOpenChange={setOpen} trigger={<Button>Open</Button>} />
+```
+
+## 关闭按钮
+
+通过 `closeIcon` 放置自定义关闭元素。该元素会通过 Radix `Close asChild` 绑定关闭行为。
+
+<Demo src="@playground/popover/modules/PopoverClose" />
+
+```tsx
+<Popover
+  closeIcon={<Button variant="ghost">Close</Button>}
+  trigger={<Button>Open</Button>}
+>
+  <div>Closable content</div>
+</Popover>
+```
+
+## 尺寸
+
+通过 `size` 调整内容区 padding、字号和箭头尺寸，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/popover/modules/PopoverSize" />
+
+| 尺寸  | 内容间距 | 字号 | 适用场景           |
+| ----- | -------- | ---- | ------------------ |
+| `xs`  | p-3      | 10px | 紧凑说明、表格内嵌 |
+| `sm`  | p-3.5    | 12px | 小型提示、工具设置 |
+| `md`  | p-4      | 14px | 常规场景（默认）   |
+| `lg`  | p-4.5    | 16px | 操作表单、设置面板 |
+| `xl`  | p-5      | 18px | 强调内容           |
+| `2xl` | p-5.5    | 20px | 大号浮层内容       |
+
+## API
+
+### Popover
+
+通用属性参考：组合 Radix Popover Root、Portal 和 Content，并提供高层 `trigger`、`closeIcon`、`showArrow` 封装。
+
+<PropsTable
+  data={[
+    {
+      name: 'trigger',
+      description: '触发 Popover 打开的元素，主组件用法中必须提供',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'children',
+      description: '浮层内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'open',
+      description: '受控模式下的打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultOpen',
+      description: '非受控模式下的默认打开状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '打开状态变化时触发',
+      type: '(open: boolean) => void'
+    },
+    {
+      name: 'modal',
+      description: '是否使用模态交互模式',
+      type: 'boolean'
+    },
+    {
+      name: 'side',
+      description: '浮层相对触发元素的位置',
+      type: "'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      name: 'align',
+      description: '浮层相对触发元素的对齐方式',
+      type: "'start' | 'center' | 'end'"
+    },
+    {
+      name: 'sideOffset',
+      description: '浮层和触发元素之间的距离',
+      type: 'number',
+      default: '5'
+    },
+    {
+      name: 'alignOffset',
+      description: '沿对齐轴偏移的距离',
+      type: 'number'
+    },
+    {
+      name: 'avoidCollisions',
+      description: '是否启用碰撞检测以避免浮层超出视口',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'showArrow',
+      description: '是否显示指向触发元素的箭头',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'arrowWidth',
+      description: '箭头宽度，透传给 PopoverArrow',
+      type: 'number'
+    },
+    {
+      name: 'arrowHeight',
+      description: '箭头高度，透传给 PopoverArrow',
+      type: 'number'
+    },
+    {
+      name: 'arrowProps',
+      description: '传递给 PopoverArrow 的额外 props，仅 showArrow 为 true 时生效',
+      type: 'PopoverArrowProps'
+    },
+    {
+      name: 'closeIcon',
+      description: '自定义关闭元素，会通过 Radix Close asChild 绑定关闭行为',
+      type: 'ReactNode'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给 PopoverContent 的额外 props',
+      type: 'PopoverContentProps'
+    },
+    {
+      name: 'anchorProps',
+      description: '传递给 PopoverAnchor 的额外 props',
+      type: 'PopoverAnchorProps'
+    },
+    {
+      name: 'container',
+      description: 'Portal 挂载容器',
+      type: 'HTMLElement'
+    },
+    {
+      name: 'disabledPortal',
+      description: '是否禁用 Portal，直接在当前位置渲染内容',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'forceMount',
+      description: '强制挂载 Portal',
+      type: 'true'
+    },
+    {
+      name: 'forceMountPortal',
+      description: '强制挂载 Portal 的别名字段',
+      type: 'true'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响内容区 padding、字号和箭头尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '内容容器 class；优先级高于 classNames.content 和 contentProps.className',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（anchor / content / arrow）',
+      type: 'PopoverClassNames'
+    }
+  ]}
+/>
+
+### 结构组件
+
+Popover 同时导出 Radix 风格结构组件，适合需要完全手动组织 Root、Trigger、Content 和 Portal 时使用。
+
+<PropsTable
+  data={[
+    { name: 'PopoverRoot', description: 'Radix Popover Root 原语', type: 'radix primitive' },
+    { name: 'PopoverTrigger', description: 'Radix Popover Trigger 原语', type: 'radix primitive' },
+    { name: 'PopoverPortal', description: 'Radix Popover Portal 原语', type: 'radix primitive' },
+    { name: 'PopoverAnchor', description: '锚点元素，用于定位但不触发打开行为', type: 'PopoverAnchorProps' },
+    { name: 'PopoverContent', description: '浮层内容容器', type: 'PopoverContentProps' },
+    { name: 'PopoverArrow', description: '浮层箭头', type: 'PopoverArrowProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'PopoverProps',
+      description: '主组件属性。组合 Radix Root、Portal、Content props，并增加 trigger、箭头和关闭元素等高层封装。',
+      fields: [
+        { name: 'trigger', type: 'ReactNode', required: true, description: '触发打开的元素。' },
+        { name: 'children', type: 'ReactNode', description: '浮层内容。' },
+        { name: 'open', type: 'boolean', description: '受控打开状态。' },
+        { name: 'defaultOpen', type: 'boolean', description: '默认打开状态。' },
+        { name: 'onOpenChange', type: '(open: boolean) => void', description: '打开状态变化回调。' },
+        { name: 'modal', type: 'boolean', description: '是否使用模态交互模式。' },
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '浮层位置。' },
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '浮层对齐方式。' },
+        { name: 'sideOffset', type: 'number', description: '浮层和触发元素之间的距离。' },
+        { name: 'alignOffset', type: 'number', description: '沿对齐轴偏移的距离。' },
+        { name: 'avoidCollisions', type: 'boolean', description: '是否启用碰撞检测。' },
+        { name: 'showArrow', type: 'boolean', description: '是否显示箭头。' },
+        { name: 'arrowWidth', type: 'number', description: '箭头宽度。' },
+        { name: 'arrowHeight', type: 'number', description: '箭头高度。' },
+        { name: 'arrowProps', type: 'PopoverArrowProps', description: '箭头组件属性。' },
+        { name: 'closeIcon', type: 'ReactNode', description: '关闭元素。' },
+        { name: 'contentProps', type: 'PopoverContentProps', description: '内容容器属性。' },
+        { name: 'anchorProps', type: 'PopoverAnchorProps', description: '锚点属性。' },
+        { name: 'container', type: 'HTMLElement', description: 'Portal 挂载容器。' },
+        { name: 'disabledPortal', type: 'boolean', description: '是否禁用 Portal。' },
+        { name: 'forceMount', type: 'true', description: '强制挂载 Portal。' },
+        { name: 'forceMountPortal', type: 'true', description: '强制挂载 Portal 的别名字段。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'classNames', type: 'PopoverClassNames', description: 'slot class 配置。' }
+      ]
+    },
+    {
+      name: 'PopoverClassNames',
+      description: 'Popover 各 slot 的自定义 class。',
+      fields: [
+        { name: 'anchor', type: 'ClassValue', description: '锚点容器 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'arrow', type: 'ClassValue', description: '箭头 class。' }
+      ]
+    },
+    {
+      name: 'PopoverContentProps',
+      description: '浮层内容容器属性，继承 Radix Popover Content props，并增加项目尺寸和 className 类型。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '内容节点。' },
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '浮层位置。' },
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '浮层对齐方式。' },
+        { name: 'sideOffset', type: 'number', description: '浮层和触发元素之间的距离。默认 5。' },
+        { name: 'alignOffset', type: 'number', description: '沿对齐轴偏移的距离。' },
+        { name: 'avoidCollisions', type: 'boolean', description: '是否启用碰撞检测。默认 true。' },
+        { name: 'collisionPadding', type: 'number | side padding object', description: '碰撞检测时和边界之间保留的距离。' },
+        { name: 'onEscapeKeyDown', type: '(event) => void', description: '按 Escape 时触发。' },
+        { name: 'onPointerDownOutside', type: '(event) => void', description: '在浮层外按下指针时触发。' },
+        { name: 'onFocusOutside', type: '(event) => void', description: '焦点移出浮层时触发。' },
+        { name: 'onInteractOutside', type: '(event) => void', description: '浮层外发生交互时触发。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '内容尺寸。' }
+      ]
+    },
+    {
+      name: 'PopoverArrowProps',
+      description: '箭头属性，继承 Radix Popover Arrow props，并增加项目尺寸和 className 类型。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '箭头 class。' },
+        { name: 'width', type: 'number', description: '箭头宽度。' },
+        { name: 'height', type: 'number', description: '箭头高度。' },
+        { name: 'asChild', type: 'boolean', description: '使用子元素替代默认箭头元素。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '箭头尺寸。' }
+      ]
+    },
+    {
+      name: 'PopoverAnchorProps',
+      description: '锚点属性，继承 Radix Popover Anchor props，并增加项目尺寸和 className 类型。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '锚点内容。' },
+        { name: 'className', type: 'ClassValue', description: '锚点 class。' },
+        { name: 'asChild', type: 'boolean', description: '使用子元素作为锚点。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '类型继承字段，当前锚点样式不直接使用。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

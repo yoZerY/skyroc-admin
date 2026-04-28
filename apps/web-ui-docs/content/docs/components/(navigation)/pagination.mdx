@@ -1,0 +1,415 @@
+---
+title: Pagination
+description: 分页导航组件，用于在多页内容中切换
+---
+
+分页（Pagination）用于将大量数据拆分为多页展示，提供页码按钮、前后翻页、首尾跳转和省略号导航。支持多种样式变体、形状和尺寸。
+
+```tsx
+import { Pagination } from '@skyroc/web-ui';
+import type {
+  PaginationClassNames,
+  PaginationProps,
+  PaginationPages,
+  PaginationPageItem
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 数据量较大需要分页展示时（表格、列表、搜索结果等）。
+- 需要用户在页码之间快速导航时。
+- 如果数据量不确定或需要无限滚动，优先使用虚拟列表。
+
+## 基础用法
+
+传入 `total`（总条数）和 `itemsPerPage`（每页条数），即可自动计算页数并渲染分页。
+
+<Demo src="@playground/pagination/modules/Default" />
+
+```tsx
+<Pagination
+  showEdges
+  total={200}
+  itemsPerPage={10}
+  siblingCount={1}
+/>
+```
+
+## 变体
+
+通过 `variant` 切换选中页码的样式风格。
+
+<Demo src="@playground/pagination/modules/Variant" />
+
+| 变体 | 说明 |
+| --- | --- |
+| `pure` | 默认，选中时带边框和背景 |
+| `solid` | 选中时使用主色填充 |
+| `outline` | 选中时使用主色边框 |
+| `soft` | 选中时使用主色半透明背景 |
+
+## 尺寸
+
+通过 `size` 控制分页整体大小。
+
+<Demo src="@playground/pagination/modules/Size" />
+
+## 形状
+
+通过 `shape` 切换按钮形状。
+
+<Demo src="@playground/pagination/modules/Shape" />
+
+| 形状 | 说明 |
+| --- | --- |
+| `square` | 默认，圆角矩形 |
+| `rounded` | 圆形按钮 |
+
+## 显示边缘页码
+
+`showEdges` 控制是否始终显示首页、尾页和省略号，避免用户迷失当前位置。
+
+<Demo src="@playground/pagination/modules/ShowEdges" />
+
+## 首尾按钮
+
+`showFirstLast` 控制是否显示"跳到首页"和"跳到尾页"按钮，默认显示。
+
+<Demo src="@playground/pagination/modules/ShowFirstLast" />
+
+## 导航按钮选中态
+
+`actionAsSelected` 为 `true` 时，前后翻页和首尾按钮也使用 `variant` 对应的选中样式。
+
+<Demo src="@playground/pagination/modules/ActionAsSelected" />
+
+## 受控模式
+
+通过 `page` + `onPageChange` 实现受控分页。
+
+<Demo src="@playground/pagination/modules/Controlled" />
+
+```tsx
+const [page, setPage] = useState(1);
+
+<Pagination
+  total={200}
+  itemsPerPage={10}
+  page={page}
+  onPageChange={setPage}
+/>
+```
+
+## API
+
+### Pagination
+
+<PropsTable
+  data={[
+    {
+      name: 'total',
+      description: '数据总条数',
+      type: 'number',
+      required: true
+    },
+    {
+      name: 'itemsPerPage',
+      description: '每页条数',
+      type: 'number',
+      default: '10'
+    },
+    {
+      name: 'page',
+      description: '受控模式的当前页码',
+      type: 'number'
+    },
+    {
+      name: 'defaultPage',
+      description: '非受控模式的默认页码',
+      type: 'number',
+      default: '1'
+    },
+    {
+      name: 'onPageChange',
+      description: '页码变化时的回调',
+      type: '(page: number) => void'
+    },
+    {
+      name: 'siblingCount',
+      description: '当前页两侧显示的兄弟页码数量',
+      type: 'number',
+      default: '1'
+    },
+    {
+      name: 'showEdges',
+      description: '是否始终显示首页、尾页和省略号',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'showFirstLast',
+      description: '是否显示"跳到首页/尾页"按钮',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'variant',
+      description: '选中页码的样式变体',
+      type: "'pure' | 'solid' | 'outline' | 'soft'",
+      default: "'pure'"
+    },
+    {
+      name: 'shape',
+      description: '按钮形状',
+      type: "'square' | 'rounded'",
+      default: "'square'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响按钮大小和字号',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '禁用所有交互',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'actionAsSelected',
+      description: '导航按钮是否使用 variant 对应的选中样式',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'previousLabel',
+      description: '"上一页"按钮的文字标签，传 true 显示默认文字',
+      type: 'ReactNode | true'
+    },
+    {
+      name: 'previousIcon',
+      description: '自定义"上一页"按钮图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'nextLabel',
+      description: '"下一页"按钮的文字标签，传 true 显示默认文字',
+      type: 'ReactNode | true'
+    },
+    {
+      name: 'nextIcon',
+      description: '自定义"下一页"按钮图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'firstLabel',
+      description: '"首页"按钮的文字标签，传 true 显示默认文字',
+      type: 'ReactNode | true'
+    },
+    {
+      name: 'firstIcon',
+      description: '自定义"首页"按钮图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'lastLabel',
+      description: '"尾页"按钮的文字标签，传 true 显示默认文字',
+      type: 'ReactNode | true'
+    },
+    {
+      name: 'lastIcon',
+      description: '自定义"尾页"按钮图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'ellipsisIcon',
+      description: '自定义省略号图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'PaginationClassNames'
+    },
+    {
+      name: 'contentProps',
+      description: '透传给内容容器的属性',
+      type: 'PaginationContentProps'
+    },
+    {
+      name: 'itemProps',
+      description: '透传给页码按钮的属性',
+      type: 'PaginationItemProps'
+    },
+    {
+      name: 'previousProps',
+      description: '透传给"上一页"按钮的属性',
+      type: 'PaginationPreviousProps'
+    },
+    {
+      name: 'nextProps',
+      description: '透传给"下一页"按钮的属性',
+      type: 'PaginationNextProps'
+    },
+    {
+      name: 'firstProps',
+      description: '透传给"首页"按钮的属性',
+      type: 'PaginationFirstProps'
+    },
+    {
+      name: 'lastProps',
+      description: '透传给"尾页"按钮的属性',
+      type: 'PaginationLastProps'
+    },
+    {
+      name: 'ellipsisProps',
+      description: '透传给省略号组件的属性',
+      type: 'PaginationEllipsisProps'
+    }
+  ]}
+/>
+
+### 子组件
+
+基础子组件可用于更细粒度的自定义组合：
+
+<PropsTable
+  data={[
+    { name: 'PaginationRoot', description: '导航根容器（nav 元素）', type: 'PaginationRootProps' },
+    { name: 'PaginationContent', description: '内容容器，包裹所有按钮', type: 'PaginationContentProps' },
+    { name: 'PaginationItem', description: '页码按钮', type: 'PaginationItemProps' },
+    { name: 'PaginationPrevious', description: '"上一页"按钮', type: 'PaginationPreviousProps' },
+    { name: 'PaginationNext', description: '"下一页"按钮', type: 'PaginationNextProps' },
+    { name: 'PaginationFirst', description: '"首页"按钮', type: 'PaginationFirstProps' },
+    { name: 'PaginationLast', description: '"尾页"按钮', type: 'PaginationLastProps' },
+    { name: 'PaginationEllipsis', description: '省略号占位', type: 'PaginationEllipsisProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'PaginationClassNames',
+      description: 'Pagination 各 slot 的自定义 class 配置。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'list', type: 'ClassValue', description: '内容列表容器 class。' },
+        { name: 'button', type: 'ClassValue', description: '页码按钮 class。' },
+        { name: 'navigationButton', type: 'ClassValue', description: '导航按钮（前后翻页、首尾）class。' },
+        { name: 'ellipsis', type: 'ClassValue', description: '省略号 class。' }
+      ]
+    },
+    {
+      name: 'PaginationContentProps',
+      description: '内容容器属性。继承 div 元素属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationItemProps',
+      description: '页码按钮属性。继承 button 元素属性。',
+      fields: [
+        { name: 'value', type: 'number', required: true, description: '页码值。' },
+        { name: 'isActive', type: 'boolean', description: '是否为当前选中页。' },
+        { name: 'variant', type: "'pure' | 'solid' | 'outline' | 'soft'", description: '样式变体。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '按钮形状。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationPreviousProps',
+      description: '"上一页"按钮属性。继承 PaginationNavigationButtonProps。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '按钮文字标签。' },
+        { name: 'icon', type: 'ReactNode', description: '自定义图标。' },
+        { name: 'actionAsSelected', type: 'boolean', description: '是否使用选中样式。' },
+        { name: 'variant', type: "'pure' | 'solid' | 'outline' | 'soft'", description: '样式变体。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '按钮形状。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationNextProps',
+      description: '"下一页"按钮属性。继承 PaginationNavigationButtonProps。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '按钮文字标签。' },
+        { name: 'icon', type: 'ReactNode', description: '自定义图标。' },
+        { name: 'actionAsSelected', type: 'boolean', description: '是否使用选中样式。' },
+        { name: 'variant', type: "'pure' | 'solid' | 'outline' | 'soft'", description: '样式变体。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '按钮形状。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationFirstProps',
+      description: '"首页"按钮属性。继承 PaginationNavigationButtonProps。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '按钮文字标签。' },
+        { name: 'icon', type: 'ReactNode', description: '自定义图标。' },
+        { name: 'actionAsSelected', type: 'boolean', description: '是否使用选中样式。' },
+        { name: 'variant', type: "'pure' | 'solid' | 'outline' | 'soft'", description: '样式变体。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '按钮形状。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationLastProps',
+      description: '"尾页"按钮属性。继承 PaginationNavigationButtonProps。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '按钮文字标签。' },
+        { name: 'icon', type: 'ReactNode', description: '自定义图标。' },
+        { name: 'actionAsSelected', type: 'boolean', description: '是否使用选中样式。' },
+        { name: 'variant', type: "'pure' | 'solid' | 'outline' | 'soft'", description: '样式变体。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '按钮形状。' },
+        { name: 'className', type: 'ClassValue', description: '按钮 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationEllipsisProps',
+      description: '省略号组件属性。',
+      fields: [
+        { name: 'icon', type: 'ReactNode', description: '自定义省略号图标。' },
+        { name: 'className', type: 'ClassValue', description: '省略号 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationRootProps',
+      description: '根容器属性。继承 nav 元素属性。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' }
+      ]
+    },
+    {
+      name: 'PaginationPageItem',
+      description: '分页项数据，页码或省略号。',
+      fields: [
+        { name: 'type', type: "'page' | 'ellipsis'", required: true, description: '项的类型。' },
+        { name: 'value', type: 'number', description: '页码值（仅 type 为 page 时存在）。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

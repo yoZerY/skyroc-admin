@@ -1,0 +1,476 @@
+---
+title: ContextMenu
+description: 右键触发的上下文菜单，支持嵌套子菜单、复选框组和单选组
+---
+
+上下文菜单（ContextMenu）在用户右键点击触发区域时弹出，提供与当前上下文相关的操作列表。组件基于 Radix ContextMenu 封装，通过 `items` 数组数据驱动渲染，支持普通选项、子菜单、标签、分隔线、复选框组和单选组。
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuCheckbox,
+  ContextMenuRadio
+} from '@skyroc/web-ui';
+```
+
+## 架构说明
+
+ContextMenu 提供三个主入口组件，适应不同场景：
+
+- `ContextMenu`：通用上下文菜单，`items` 支持混合使用普通选项、子菜单、复选框组和单选组。
+- `ContextMenuCheckbox`：专用复选框菜单，当菜单仅包含复选项时使用，API 更简洁。
+- `ContextMenuRadio`：专用单选菜单，当菜单仅包含单选项时使用。
+
+三者均为数据驱动：传入 `items` 数组，组件自动渲染对应的菜单结构。
+
+内部子组件基于共享的 `menu/` 基础层，注入 Radix ContextMenu 原语（`Item`、`CheckboxItem`、`RadioItem`、`Sub` 等），确保样式和交互与其他菜单类组件（如 DropdownMenu）保持一致。
+
+## 何时使用
+
+- 需要在右键点击时提供操作列表（如文件管理器、编辑器、表格行操作）。
+- 操作项较多且需要分组、嵌套时。
+- 需要在菜单中提供状态切换（复选、单选）。
+- 与 DropdownMenu 的区分：ContextMenu 由右键触发，DropdownMenu 由按钮点击触发。
+
+## 基础用法
+
+在触发区域右键点击弹出菜单。`items` 支持普通选项、标签、分隔线和嵌套子菜单，通过 `type` 字段区分。
+
+<Demo src="@playground/context-menu/modules/ContextMenuBasic" />
+
+## 复选框组
+
+通过 `type: 'checkbox'` 在菜单中嵌入复选框组，`checks` 和 `onChecksChange` 控制勾选状态。
+
+<Demo src="@playground/context-menu/modules/ContextMenuCheckbox" />
+
+## 单选组
+
+通过 `type: 'radio'` 在菜单中嵌入单选组，`value` 和 `onValueChange` 控制选中状态。
+
+<Demo src="@playground/context-menu/modules/ContextMenuRadio" />
+
+## 混合模式
+
+普通选项、子菜单、复选框组和单选组可以在同一个 `items` 数组中混合使用。
+
+<Demo src="@playground/context-menu/modules/ContextMenuMix" />
+
+## API
+
+### ContextMenu
+
+通用属性参考：支持 Radix ContextMenu Root 的 `dir`、`modal`、`onOpenChange` 属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '右键触发区域的内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'items',
+      description: '菜单项数据数组，支持普通选项、子菜单、复选框组、单选组、标签和分隔线',
+      type: 'ContextMenuOption[]',
+      required: true
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'MenuClassNames'
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响所有子组件的字号与间距',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'contentProps',
+      description: '传递给菜单内容容器的额外属性',
+      type: 'ContextMenuContentProps'
+    },
+    {
+      name: 'dir',
+      description: '文本方向',
+      type: "'ltr' | 'rtl'"
+    },
+    {
+      name: 'modal',
+      description: '是否以模态模式打开',
+      type: 'boolean'
+    },
+    {
+      name: 'onOpenChange',
+      description: '菜单打开/关闭状态变化回调',
+      type: '(open: boolean) => void'
+    }
+  ]}
+/>
+
+### 选项数据结构
+
+`items` 数组中的每个元素通过 `type` 字段区分类型：
+
+| 类型        | 说明                                 | 必填字段                 |
+| ----------- | ------------------------------------ | ----------------------- |
+| `item`      | 可选择的菜单项（默认类型，可省略）   | `label`                 |
+| `label`     | 不可交互的分组标签                   | `type`、`label`         |
+| `separator` | 分隔线                               | `type`                  |
+| `sub`       | 子菜单，展开后显示嵌套选项           | `type`、`children`      |
+| `checkbox`  | 复选框组，支持多选                   | `type`、`children`      |
+| `radio`     | 单选组，支持互斥选择                 | `type`、`children`      |
+
+**普通选项（item）**
+
+<PropsTable
+  data={[
+    {
+      name: 'label',
+      description: '选项显示文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'type',
+      description: '标识为普通选项，可省略',
+      type: "'item'"
+    },
+    {
+      name: 'onSelect',
+      description: '选中时触发的回调',
+      type: '(event: Event) => void'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用',
+      type: 'boolean'
+    },
+    {
+      name: 'leading',
+      description: '前置插槽，通常放图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '后置插槽',
+      type: 'ReactNode'
+    },
+    {
+      name: 'shortcut',
+      description: '关联的键盘快捷键',
+      type: 'string | string[]'
+    },
+    {
+      name: 'className',
+      description: '选项的 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '选项内各 slot 的 class（item / shortcut）',
+      type: "Pick<MenuClassNames, 'item' | 'shortcut'>"
+    }
+  ]}
+/>
+
+**子菜单（sub）**
+
+<PropsTable
+  data={[
+    {
+      name: 'type',
+      description: '标识为子菜单',
+      type: "'sub'",
+      required: true
+    },
+    {
+      name: 'label',
+      description: '子菜单触发项的显示文本',
+      type: 'ReactNode'
+    },
+    {
+      name: 'children',
+      description: '子菜单内的选项数组，支持嵌套',
+      type: 'MenuOptionData[]',
+      required: true
+    },
+    {
+      name: 'leading',
+      description: '前置插槽',
+      type: 'ReactNode'
+    },
+    {
+      name: 'trailing',
+      description: '后置插槽',
+      type: 'ReactNode'
+    },
+    {
+      name: 'triggerIcon',
+      description: '子菜单展开指示图标',
+      type: 'ReactNode'
+    },
+    {
+      name: 'className',
+      description: '触发项的 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '触发项图标 slot 的 class',
+      type: "Pick<MenuClassNames, 'subTriggerIcon'>"
+    }
+  ]}
+/>
+
+**复选框组（checkbox）**
+
+<PropsTable
+  data={[
+    {
+      name: 'type',
+      description: '标识为复选框组',
+      type: "'checkbox'",
+      required: true
+    },
+    {
+      name: 'children',
+      description: '复选项数组，每项包含 label 和 value',
+      type: 'MenuCheckboxGroupItemProps[]',
+      required: true
+    },
+    {
+      name: 'checks',
+      description: '当前已勾选的值数组',
+      type: 'string[]'
+    },
+    {
+      name: 'onChecksChange',
+      description: '勾选状态变化回调',
+      type: '(checks: string[]) => void'
+    }
+  ]}
+/>
+
+**单选组（radio）**
+
+<PropsTable
+  data={[
+    {
+      name: 'type',
+      description: '标识为单选组',
+      type: "'radio'",
+      required: true
+    },
+    {
+      name: 'children',
+      description: '单选项数组，每项包含 label 和 value',
+      type: 'MenuRadioItemOptionProps[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '当前选中的值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化回调',
+      type: '(value: string) => void'
+    }
+  ]}
+/>
+
+### ContextMenuCheckbox
+
+纯复选框菜单的便捷组件。当菜单仅包含复选项时，可直接使用此组件代替 `ContextMenu`。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '右键触发区域的内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'items',
+      description: '复选项数组',
+      type: 'MenuCheckboxGroupItemProps[]',
+      required: true
+    },
+    {
+      name: 'checks',
+      description: '当前已勾选的值数组',
+      type: 'string[]'
+    },
+    {
+      name: 'onChecksChange',
+      description: '勾选状态变化回调',
+      type: '(checks: string[]) => void'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'MenuClassNames'
+    },
+    {
+      name: 'size',
+      description: '尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'contentProps',
+      description: '传递给菜单内容容器的额外属性',
+      type: 'ContextMenuContentProps'
+    }
+  ]}
+/>
+
+### ContextMenuRadio
+
+纯单选菜单的便捷组件。当菜单仅包含单选项时，可直接使用此组件代替 `ContextMenu`。
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '右键触发区域的内容',
+      type: 'ReactNode'
+    },
+    {
+      name: 'items',
+      description: '单选项数组',
+      type: 'MenuRadioItemOptionProps[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '当前选中的值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中值变化回调',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'MenuClassNames'
+    },
+    {
+      name: 'size',
+      description: '尺寸',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'contentProps',
+      description: '传递给菜单内容容器的额外属性',
+      type: 'ContextMenuContentProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'MenuClassNames',
+      description: '菜单各 slot 的自定义 class 配置。ContextMenu、DropdownMenu 等菜单类组件共享此类型。',
+      fields: [
+        { name: 'arrow', type: 'ClassValue', description: '箭头。' },
+        { name: 'content', type: 'ClassValue', description: '菜单内容容器。' },
+        { name: 'item', type: 'ClassValue', description: '菜单项。' },
+        { name: 'itemIcon', type: 'ClassValue', description: '菜单项图标。' },
+        { name: 'itemIndicator', type: 'ClassValue', description: '复选/单选指示器。' },
+        { name: 'checkboxItem', type: 'ClassValue', description: '复选菜单项。' },
+        { name: 'radioItem', type: 'ClassValue', description: '单选菜单项。' },
+        { name: 'radioIndicatorIcon', type: 'ClassValue', description: '单选指示器图标。' },
+        { name: 'label', type: 'ClassValue', description: '分组标签。' },
+        { name: 'group', type: 'ClassValue', description: '分组容器。' },
+        { name: 'separator', type: 'ClassValue', description: '分隔线。' },
+        { name: 'shortcut', type: 'ClassValue', description: '快捷键展示区。' },
+        { name: 'subTrigger', type: 'ClassValue', description: '子菜单触发项。' },
+        { name: 'subTriggerIcon', type: 'ClassValue', description: '子菜单展开指示图标。' },
+        { name: 'subContent', type: 'ClassValue', description: '子菜单内容容器。' },
+        { name: 'itemLink', type: 'ClassValue', description: '链接菜单项。' },
+        { name: 'itemLinkIcon', type: 'ClassValue', description: '链接菜单项图标。' }
+      ]
+    },
+    {
+      name: 'ContextMenuContentProps',
+      description: '菜单内容容器属性。继承 Radix ContextMenu Content 的定位属性（side、sideOffset、align、alignOffset 等）。',
+      fields: [
+        { name: 'className', type: 'ClassValue', description: '内容容器 class。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '尺寸。' },
+        { name: 'showArrow', type: 'boolean', description: '是否显示箭头。' },
+        { name: 'arrowClass', type: 'ClassValue', description: '箭头 class。' },
+        { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", description: '弹出方向。' },
+        { name: 'sideOffset', type: 'number', description: '弹出方向偏移量（px）。' },
+        { name: 'align', type: "'start' | 'center' | 'end'", description: '对齐方式。' },
+        { name: 'alignOffset', type: 'number', description: '对齐方向偏移量（px）。' }
+      ]
+    },
+    {
+      name: 'MenuCheckboxGroupItemProps',
+      description: '复选框组子项数据。每一项可以是复选项、标签或分隔线。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '复选项显示文本（复选项时使用）。' },
+        { name: 'value', type: 'string', description: '复选项值（复选项时使用）。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽。' },
+        { name: 'shortcut', type: 'string | string[]', description: '关联键盘快捷键。' },
+        { name: 'indicatorIcon', type: 'ReactNode', description: '自定义勾选指示器图标。' },
+        { name: 'type', type: "'label' | 'separator'", description: '如果为 label 或 separator，则渲染为标签或分隔线而非复选项。' }
+      ]
+    },
+    {
+      name: 'MenuRadioItemOptionProps',
+      description: '单选组子项数据。每一项可以是单选项、标签或分隔线。',
+      fields: [
+        { name: 'label', type: 'ReactNode', description: '单选项显示文本（单选项时使用）。' },
+        { name: 'value', type: 'string', description: '单选项值（单选项时使用）。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'leading', type: 'ReactNode', description: '前置插槽。' },
+        { name: 'trailing', type: 'ReactNode', description: '后置插槽。' },
+        { name: 'shortcut', type: 'string | string[]', description: '关联键盘快捷键。' },
+        { name: 'indicatorIcon', type: 'ReactNode', description: '自定义选中指示器图标。' },
+        { name: 'type', type: "'label' | 'separator'", description: '如果为 label 或 separator，则渲染为标签或分隔线而非单选项。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="MenuOptionData"
+  description="普通菜单选项数据联合类型，用于 items 和子菜单 children。通过 type 字段区分：'item'（可省略）为普通选项，'label' 为标签，'separator' 为分隔线，'sub' 为子菜单。详见上方「选项数据结构」。"
+  type="{ type?: 'item' } | { type: 'label' } | { type: 'separator' } | { type: 'sub'; children: MenuOptionData[] }"
+/>
+
+<UnionType
+  name="ContextMenuOption"
+  description="ContextMenu items 数组的元素类型。普通菜单项通过 MenuOptionData 表达（含 item / label / separator / sub 四种），复选和单选通过专用选项类型表达。"
+  type="MenuOptionData | ContextMenuCheckboxOption | ContextMenuRadioOption"
+/>
+
+<UnionType
+  name="ContextMenuCheckboxOption"
+  description="复选框组选项，嵌入在 ContextMenu items 中使用"
+  type="{ type: 'checkbox'; checks?: string[]; onChecksChange?: (checks: string[]) => void; children: MenuCheckboxGroupItemProps[] }"
+/>
+
+<UnionType
+  name="ContextMenuRadioOption"
+  description="单选组选项，嵌入在 ContextMenu items 中使用"
+  type="{ type: 'radio'; value?: string; onValueChange?: (value: string) => void; children: MenuRadioItemOptionProps[] }"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

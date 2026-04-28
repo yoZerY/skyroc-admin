@@ -1,0 +1,235 @@
+---
+title: Switch
+description: 用于在开/关两种状态之间切换的开关组件
+---
+
+开关（Switch）用于在两种互斥状态之间切换，常见于设置面板中的功能启停。基于 Radix UI Switch 封装，支持主题颜色、多种尺寸和无障碍键盘操作。
+
+```tsx
+import { Switch } from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 需要在"开"和"关"两种状态之间切换时。
+- 设置面板、偏好配置等需要即时生效的布尔选项。
+- 如果选项需要提交后才生效，考虑使用 Checkbox。
+
+## 基础用法
+
+Switch 默认为非受控组件。通过 `checked` 和 `onCheckedChange` 可以转为受控模式。
+
+```tsx
+import { Switch } from '@skyroc/web-ui';
+
+// 非受控
+<Switch aria-label="开启通知" />
+
+// 受控
+const [checked, setChecked] = useState(false);
+<Switch checked={checked} onCheckedChange={setChecked} aria-label="开启通知" />
+```
+
+## 颜色
+
+通过 `color` 控制开关打开时的颜色，支持全部 8 种语义色。
+
+```tsx
+<Switch color="primary" defaultChecked />
+<Switch color="success" defaultChecked />
+<Switch color="warning" defaultChecked />
+<Switch color="info" defaultChecked />
+<Switch color="destructive" defaultChecked />
+<Switch color="carbon" defaultChecked />
+<Switch color="secondary" defaultChecked />
+<Switch color="accent" defaultChecked />
+```
+
+## 尺寸
+
+通过 `size` 调整开关大小，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+| 尺寸  | 轨道尺寸   | 滑块尺寸 | 适用场景           |
+| ----- | ---------- | -------- | ------------------ |
+| `xs`  | 28×16px    | 12px     | 紧凑列表、表格内嵌 |
+| `sm`  | 32×18px    | 14px     | 侧边栏设置项       |
+| `md`  | 36×20px    | 16px     | 常规场景（默认）   |
+| `lg`  | 40×22px    | 18px     | 强调设置项         |
+| `xl`  | 44×24px    | 20px     | 大号设置面板       |
+| `2xl` | 52×28px    | 24px     | 首屏重要开关       |
+
+```tsx
+<Switch size="xs" defaultChecked />
+<Switch size="sm" defaultChecked />
+<Switch size="md" defaultChecked />
+<Switch size="lg" defaultChecked />
+<Switch size="xl" defaultChecked />
+<Switch size="2xl" defaultChecked />
+```
+
+## 禁用
+
+设置 `disabled` 后，开关变为不可交互状态。
+
+```tsx
+<Switch disabled />
+<Switch disabled defaultChecked />
+```
+
+## 自定义样式
+
+通过 `classNames` 分别控制 `root`（轨道）和 `thumb`（滑块）的样式。
+
+```tsx
+<Switch
+  classNames={{
+    root: 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-pink-500 data-[state=checked]:to-violet-500',
+    thumb: 'bg-white'
+  }}
+/>
+```
+
+## API
+
+### Switch
+
+通用属性参考：基于 Radix UI Switch，支持原生 `button` 元素的所有属性。
+
+<PropsTable
+  data={[
+    {
+      name: 'checked',
+      description: '受控模式下的开关状态',
+      type: 'boolean'
+    },
+    {
+      name: 'defaultChecked',
+      description: '非受控模式下的默认开关状态',
+      type: 'boolean'
+    },
+    {
+      name: 'onCheckedChange',
+      description: '开关状态变化时触发',
+      type: '(checked: boolean) => void'
+    },
+    {
+      name: 'color',
+      description: '打开状态的主题颜色',
+      type: "'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'",
+      default: "'primary'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响轨道和滑块大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用开关',
+      type: 'boolean',
+      default: 'false'
+    },
+    {
+      name: 'required',
+      description: '是否必填（表单场景）',
+      type: 'boolean'
+    },
+    {
+      name: 'name',
+      description: '表单字段名称',
+      type: 'string'
+    },
+    {
+      name: 'value',
+      description: '表单提交时的值',
+      type: 'string',
+      default: "'on'"
+    },
+    {
+      name: 'className',
+      description: '轨道的自定义 class；存在时优先于 classNames.root',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class（root / thumb）',
+      type: 'SwitchClassNames'
+    },
+    {
+      name: 'asChild',
+      description: '将渲染委托给子元素',
+      type: 'boolean',
+      default: 'false'
+    }
+  ]}
+/>
+
+### 子组件
+
+Switch 也导出基础结构组件，适合需要在滑块内放置图标等自定义内容时使用。
+
+<PropsTable
+  data={[
+    {
+      name: 'SwitchRoot',
+      description: '轨道容器，基于 Radix Switch Root，支持 color 和 size',
+      type: 'SwitchRootProps'
+    },
+    {
+      name: 'SwitchThumb',
+      description: '滑块元素，基于 Radix Switch Thumb，支持 size',
+      type: 'SwitchThumbProps'
+    }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'SwitchProps',
+      description: '主组件属性。继承 SwitchRootProps，并增加 classNames 配置。',
+      fields: [
+        { name: 'checked', type: 'boolean', description: '受控开关状态。' },
+        { name: 'className', type: 'ClassValue', description: '轨道 class。来自 StyledComponentProps。' },
+        { name: 'classNames', type: 'SwitchClassNames', description: '各 slot 的自定义 class。' },
+        { name: 'color', type: 'ThemeColor', description: '主题颜色。' },
+        { name: 'defaultChecked', type: 'boolean', description: '非受控默认状态。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用。' },
+        { name: 'name', type: 'string', description: '表单字段名称。' },
+        { name: 'onCheckedChange', type: '(checked: boolean) => void', description: '状态变化回调。' },
+        { name: 'required', type: 'boolean', description: '是否必填。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'value', type: 'string', description: '表单提交时的值。' }
+      ]
+    },
+    {
+      name: 'SwitchClassNames',
+      description: 'Switch 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '轨道容器的 class。' },
+        { name: 'thumb', type: 'ClassValue', description: '滑块的 class。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="SwitchSlots"
+  description="Switch 可配置 classNames 的内置 slot"
+  type="'root' | 'thumb'"
+/>
+
+<UnionType
+  name="ThemeColor"
+  description="主题颜色类型"
+  type="'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'"
+/>
+
+<UnionType
+  name="ClassValue"
+  description="CSS 类名类型"
+  type="string | null | undefined | Record<string, boolean> | ClassValue[]"
+/>

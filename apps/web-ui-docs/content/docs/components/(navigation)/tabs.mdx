@@ -1,0 +1,377 @@
+---
+title: Tabs
+description: 用于在同一区域内切换多组内容面板
+---
+
+Tabs 用于在同一上下文中切换不同内容面板。组件基于 Radix Tabs 封装，提供数据驱动的 `Tabs` 主组件，也导出 Root、List、Trigger、Content 等结构组件用于手动组合。
+
+```tsx
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger
+} from '@skyroc/web-ui';
+```
+
+## 何时使用
+
+- 多组内容属于同一层级，需要在同一空间内切换展示。
+- 选项数量较少，用户需要快速切换内容面板。
+- 需要横向或纵向组织内容导航。
+- 只需要切换一个轻量选项、不展示内容面板时使用 Segment。
+
+## 基础用法
+
+通过 `items` 定义 tab 触发项和内容。每个 item 需要唯一 `value`，`label` 会渲染为触发项，`children` 会渲染为内容面板。
+
+<Demo src="@playground/tabs/modules/Horizontal" />
+
+```tsx
+<Tabs
+  defaultValue="tab-1"
+  items={[
+    { value: 'tab-1', label: 'Tab 1', children: 'Content 1' },
+    { value: 'tab-2', label: 'Tab 2', children: 'Content 2' }
+  ]}
+/>
+```
+
+## 纵向布局
+
+通过 `orientation="vertical"` 切换为纵向布局。纵向布局会让列表和内容横向排列，列表内部触发项垂直排列。
+
+<Demo src="@playground/tabs/modules/Vertical" />
+
+```tsx
+<Tabs
+  items={items}
+  orientation="vertical"
+/>
+```
+
+## 填充方式
+
+通过 `fill` 控制根容器的布局伸展方式。`auto` 让列表按内容宽度展示，`full` 让根容器按可用空间伸展。
+
+<Demo src="@playground/tabs/modules/Fill" />
+
+```tsx
+<Tabs
+  fill="auto"
+  items={items}
+/>
+```
+
+## 形状
+
+通过 `shape` 控制列表和激活指示器的圆角。
+
+<Demo src="@playground/tabs/modules/Shape" />
+
+| 形状      | 说明                 |
+| --------- | -------------------- |
+| `square`  | 中等圆角，默认样式   |
+| `rounded` | 胶囊圆角，适合工具栏 |
+
+## 尺寸
+
+通过 `size` 调整字号、间距和触发项尺寸，从 `xs` 到 `2xl` 共 6 个尺寸。
+
+<Demo src="@playground/tabs/modules/Size" />
+
+| 尺寸  | 适用场景         |
+| ----- | ---------------- |
+| `xs`  | 紧凑面板、表格内 |
+| `sm`  | 小型卡片         |
+| `md`  | 常规场景（默认） |
+| `lg`  | 设置页           |
+| `xl`  | 大号内容区       |
+| `2xl` | 大屏或触控场景   |
+
+## 样式类型
+
+通过 `type="line"` 使用线性 tab 样式。默认 `pill` 类型使用背景块和滑动指示器。
+
+<Demo src="@playground/tabs/modules/Custom" />
+
+```tsx
+<Tabs
+  items={items}
+  type="line"
+/>
+```
+
+## 自定义渲染
+
+使用 `renderTrigger` 和 `renderContent` 可以自定义触发项和内容。回调会收到 `active` 和当前 `item`。
+
+<Demo src="@playground/tabs/modules/Render" />
+
+```tsx
+<Tabs
+  items={items}
+  renderTrigger={({ active, item }) => (
+    <span>{item.label}{active ? ' *' : ''}</span>
+  )}
+  renderContent={({ item }) => item.children}
+/>
+```
+
+## API
+
+### Tabs
+
+主组件基于 Radix Tabs Root，使用 `items` 自动渲染 TabsList、TabsTrigger 和 TabsContent。
+
+<PropsTable
+  data={[
+    {
+      name: 'items',
+      description: 'Tabs 数据项',
+      type: 'TabsOptionData[]',
+      required: true
+    },
+    {
+      name: 'value',
+      description: '受控模式下当前选中的 tab 值',
+      type: 'string'
+    },
+    {
+      name: 'defaultValue',
+      description: '非受控模式下默认选中的 tab 值',
+      type: 'string'
+    },
+    {
+      name: 'onValueChange',
+      description: '选中 tab 变化时触发',
+      type: '(value: string) => void'
+    },
+    {
+      name: 'orientation',
+      description: '布局方向',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'"
+    },
+    {
+      name: 'fill',
+      description: '根容器填充方式',
+      type: "'auto' | 'full'",
+      default: "'auto'"
+    },
+    {
+      name: 'shape',
+      description: '列表和指示器形状',
+      type: "'square' | 'rounded'",
+      default: "'square'"
+    },
+    {
+      name: 'type',
+      description: '样式类型',
+      type: "'pill' | 'line'",
+      default: "'pill'"
+    },
+    {
+      name: 'size',
+      description: '尺寸，影响字号、间距和触发项大小',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'enableIndicator',
+      description: '是否显示滑动指示器',
+      type: 'boolean',
+      default: 'true'
+    },
+    {
+      name: 'disabled',
+      description: '是否禁用全部触发项',
+      type: 'boolean'
+    },
+    {
+      name: 'forceMountContent',
+      description: '是否强制挂载所有内容面板',
+      type: 'true'
+    },
+    {
+      name: 'loop',
+      description: '键盘导航是否循环',
+      type: 'boolean'
+    },
+    {
+      name: 'dir',
+      description: '文本方向',
+      type: "'ltr' | 'rtl'"
+    },
+    {
+      name: 'className',
+      description: '根容器 class',
+      type: 'ClassValue'
+    },
+    {
+      name: 'classNames',
+      description: '各 slot 的自定义 class',
+      type: 'TabsUi'
+    },
+    {
+      name: 'listProps',
+      description: '传递给 TabsList 的额外 props',
+      type: 'TabsListProps'
+    },
+    {
+      name: 'triggerProps',
+      description: '传递给每个 TabsTrigger 的额外 props',
+      type: 'Partial<TabsTriggerProps>'
+    },
+    {
+      name: 'contentProps',
+      description: '传递给每个 TabsContent 的额外 props',
+      type: 'TabsContentProps'
+    },
+    {
+      name: 'renderTrigger',
+      description: '自定义触发项渲染',
+      type: '(props: { active: boolean; item: TabsOptionData }) => ReactNode'
+    },
+    {
+      name: 'renderContent',
+      description: '自定义内容面板渲染',
+      type: '(props: { active: boolean; item: TabsOptionData }) => ReactNode'
+    }
+  ]}
+/>
+
+### 结构组件
+
+需要完全控制 DOM 结构时，可以使用结构组件手动组合。
+
+<PropsTable
+  data={[
+    { name: 'TabsRoot', description: '根容器，基于 Radix Tabs Root', type: 'TabsRootProps' },
+    { name: 'TabsList', description: '触发项列表，负责滑动指示器定位', type: 'TabsListProps' },
+    { name: 'TabsTrigger', description: '单个触发项', type: 'TabsTriggerProps' },
+    { name: 'TabsContent', description: '单个内容面板', type: 'TabsContentProps' }
+  ]}
+/>
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'TabsProps',
+      description: 'Tabs 主组件属性。组合 Root、List、Trigger 和 Content，并支持数据驱动渲染。',
+      fields: [
+        { name: 'items', type: 'TabsOptionData[]', description: 'Tab 数据项。' },
+        { name: 'value', type: 'string', description: '受控选中值。' },
+        { name: 'defaultValue', type: 'string', description: '默认选中值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '布局方向。' },
+        { name: 'fill', type: "'auto' | 'full'", description: '根容器填充方式。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '列表和指示器形状。' },
+        { name: 'type', type: "'pill' | 'line'", description: '样式类型。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '组件尺寸。' },
+        { name: 'enableIndicator', type: 'boolean', description: '是否显示滑动指示器。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用全部触发项。' },
+        { name: 'forceMountContent', type: 'true', description: '是否强制挂载内容面板。' },
+        { name: 'loop', type: 'boolean', description: '键盘导航是否循环。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'classNames', type: 'TabsUi', description: 'slot class 配置。' },
+        { name: 'listProps', type: 'TabsListProps', description: '列表属性。' },
+        { name: 'triggerProps', type: 'Partial<TabsTriggerProps>', description: '触发项属性。' },
+        { name: 'contentProps', type: 'TabsContentProps', description: '内容面板属性。' },
+        { name: 'renderTrigger', type: '(props: { active: boolean; item: TabsOptionData }) => ReactNode', description: '触发项渲染函数。' },
+        { name: 'renderContent', type: '(props: { active: boolean; item: TabsOptionData }) => ReactNode', description: '内容渲染函数。' }
+      ]
+    },
+    {
+      name: 'TabsOptionData',
+      description: '单个 tab 数据项。',
+      fields: [
+        { name: 'value', type: 'string', description: 'tab 唯一值。' },
+        { name: 'label', type: 'ReactNode', description: '触发项显示内容。' },
+        { name: 'children', type: 'ReactNode', description: '内容面板内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用当前触发项。' }
+      ]
+    },
+    {
+      name: 'TabsUi',
+      description: 'Tabs 各 slot 的自定义 class。',
+      fields: [
+        { name: 'root', type: 'ClassValue', description: '根容器 class。' },
+        { name: 'list', type: 'ClassValue', description: '触发项列表 class。' },
+        { name: 'trigger', type: 'ClassValue', description: '触发项 class。' },
+        { name: 'content', type: 'ClassValue', description: '内容面板 class。' },
+        { name: 'indicatorRoot', type: 'ClassValue', description: '指示器定位容器 class。' },
+        { name: 'indicator', type: 'ClassValue', description: '指示器元素 class。' }
+      ]
+    },
+    {
+      name: 'TabsRootProps',
+      description: '根容器属性，基于 Radix Tabs Root，并增加项目 fill 样式变体。',
+      fields: [
+        { name: 'value', type: 'string', description: '受控选中值。' },
+        { name: 'defaultValue', type: 'string', description: '默认选中值。' },
+        { name: 'onValueChange', type: '(value: string) => void', description: '选中值变化回调。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '布局方向。' },
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '文本方向。' },
+        { name: 'activationMode', type: "'automatic' | 'manual'", description: '键盘聚焦时的激活模式。' },
+        { name: 'fill', type: "'auto' | 'full'", description: '根容器填充方式。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '根容器尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '根容器 class。' }
+      ]
+    },
+    {
+      name: 'TabsListProps',
+      description: '触发项列表属性，基于 Radix Tabs List，并增加指示器和样式变体。',
+      fields: [
+        { name: 'children', type: 'ReactNode', description: '触发项。' },
+        { name: 'value', type: 'string', description: '当前选中值，用于定位指示器。' },
+        { name: 'loop', type: 'boolean', description: '键盘导航是否循环。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '布局方向。' },
+        { name: 'shape', type: "'square' | 'rounded'", description: '列表形状。' },
+        { name: 'type', type: "'pill' | 'line'", description: '样式类型。' },
+        { name: 'enableIndicator', type: 'boolean', description: '是否显示滑动指示器。' },
+        { name: 'className', type: 'ClassValue', description: '列表 class。' },
+        { name: 'classNames', type: "Pick<TabsUi, 'indicator' | 'indicatorRoot'>", description: '指示器相关 slot class。' }
+      ]
+    },
+    {
+      name: 'TabsTriggerProps',
+      description: '触发项属性，基于 Radix Tabs Trigger，并增加样式变体。',
+      fields: [
+        { name: 'value', type: 'string', description: '触发项对应值。' },
+        { name: 'children', type: 'ReactNode', description: '触发项内容。' },
+        { name: 'disabled', type: 'boolean', description: '是否禁用触发项。' },
+        { name: 'enableIndicator', type: 'boolean', description: '是否配合滑动指示器渲染。' },
+        { name: 'type', type: "'pill' | 'line'", description: '样式类型。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '触发项尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '触发项 class。' }
+      ]
+    },
+    {
+      name: 'TabsContentProps',
+      description: '内容面板属性，基于 Radix Tabs Content，并增加方向和尺寸样式。',
+      fields: [
+        { name: 'value', type: 'string', description: '内容面板对应值。' },
+        { name: 'children', type: 'ReactNode', description: '内容。' },
+        { name: 'forceMount', type: 'true', description: '是否强制挂载。' },
+        { name: 'orientation', type: "'horizontal' | 'vertical'", description: '布局方向。' },
+        { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'", description: '内容面板尺寸。' },
+        { name: 'className', type: 'ClassValue', description: '内容面板 class。' }
+      ]
+    },
+    {
+      name: 'IndicatorStyle',
+      description: 'TabsList 内部用于计算滑动指示器位置和尺寸的状态。',
+      fields: [
+        { name: 'position', type: 'number | null', description: '指示器起始位置。' },
+        { name: 'size', type: 'number | null', description: '指示器尺寸。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType name="ClassValue" description="CSS 类名类型" type="string | null | undefined | Record<string, boolean> | ClassValue[]" />
