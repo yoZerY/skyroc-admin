@@ -3,6 +3,8 @@ import { Card } from '@skyroc/web-ui';
 import { generateComponentMetadata } from '../components-meta';
 import CustomSize from './modules/CustomSize';
 import DefaultDemo from './modules/DefaultDemo';
+import SkeletonAnimation from './modules/SkeletonAnimation';
+import SkeletonControl from './modules/SkeletonControl';
 
 export async function generateMetadata(): Promise<Metadata> {
   return await generateComponentMetadata('skeleton');
@@ -23,6 +25,20 @@ const SkeletonPage = () => {
         title="Skeleton Container"
       >
         <CustomSize />
+      </Card>
+
+      <Card
+        split
+        title="Animation"
+      >
+        <SkeletonAnimation />
+      </Card>
+
+      <Card
+        split
+        title="Control"
+      >
+        <SkeletonControl />
       </Card>
     </div>
   );
