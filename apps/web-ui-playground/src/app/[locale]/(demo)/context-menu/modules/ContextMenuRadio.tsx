@@ -19,7 +19,7 @@ const placements = [
   { label: 'Left End', value: 'left-end' }
 ];
 
-const ContextMenuRadio = () => {
+const ContextMenuRadioDemo = () => {
   const [placement, setPlacement] = useState('top-start');
 
   return (
@@ -40,4 +40,4 @@ const ContextMenuRadio = () => {
   );
 };
 
-export default ContextMenuRadio;
+export default ContextMenuRadioDemo;

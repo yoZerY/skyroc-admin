@@ -13,7 +13,7 @@ const checkboxItems = [
   { label: 'Preact', value: 'preact' }
 ];
 
-const ContextMenuCheckbox = () => {
+const ContextMenuCheckboxDemo = () => {
   const [checks, setChecks] = useState<string[]>(['vue', 'solid']);
 
   return (
@@ -34,4 +34,4 @@ const ContextMenuCheckbox = () => {
   );
 };
 
-export default ContextMenuCheckbox;
+export default ContextMenuCheckboxDemo;
