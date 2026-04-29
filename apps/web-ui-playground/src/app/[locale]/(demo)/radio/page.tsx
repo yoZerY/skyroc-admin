@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import { Card } from '@skyroc/web-ui';
 import { generateComponentMetadata } from '../components-meta';
 // import RadioCardDemo from './modules/RadioCardDemo';
+import RadioBasic from './modules/RadioBasic';
 import RadioCardGroupDemo from './modules/RadioCardGroupDemo';
 import RadioColor from './modules/RadioColor';
 import RadioDisabledAll from './modules/RadioDisabledAll';
 import RadioDisabledItem from './modules/RadioDisabledItem';
+import RadioSize from './modules/RadioSize';
 import RadioVariant from './modules/RadioVariant';
 import RadioVertical from './modules/RadioVertical';
 
@@ -18,6 +20,13 @@ const RadioPage = () => {
     <div className="flex-c gap-4">
       <Card
         split
+        title="Basic"
+      >
+        <RadioBasic />
+      </Card>
+
+      <Card
+        split
         title="Color"
       >
         <RadioColor />
@@ -28,6 +37,13 @@ const RadioPage = () => {
         title="Orientation: Vertical"
       >
         <RadioVertical />
+      </Card>
+
+      <Card
+        split
+        title="Size"
+      >
+        <RadioSize />
       </Card>
 
       <Card
