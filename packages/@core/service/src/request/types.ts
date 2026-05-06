@@ -6,6 +6,9 @@ import type { CreateAxiosDefaults } from '@skyroc/axios';
  * 不同平台（antd / RN / Next.js）实现此接口， 使请求基础设施的错误处理、token 刷新、导航等逻辑可跨端复用。
  */
 export interface RequestAdapter {
+  /** 使用 refresh token 换取新 token */
+  fetchRefreshToken(refreshToken: string): Promise<{ refreshToken: string; token: string }>;
+
   /** 获取当前路由路径 */
   getCurrentPath(): string;
 
@@ -32,9 +35,6 @@ export interface RequestAdapter {
 
   /** 国际化翻译 */
   t(key: string): string;
-
-  /** 使用 refresh token 换取新 token */
-  fetchRefreshToken(refreshToken: string): Promise<{ refreshToken: string; token: string }>;
 }
 
 /**
