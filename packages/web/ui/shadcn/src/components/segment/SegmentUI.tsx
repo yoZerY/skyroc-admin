@@ -22,6 +22,7 @@ const Segment = forwardRef<ComponentRef<typeof Root>, SegmentProps<SegmentOption
     shape = 'square',
     size,
     triggerProps,
+    type,
     value,
     ...rest
   } = props;
@@ -31,6 +32,7 @@ const Segment = forwardRef<ComponentRef<typeof Root>, SegmentProps<SegmentOption
       className={[className, classNames?.root]}
       data-slot="segment-root"
       dir={dir}
+      orientation={orientation}
       ref={ref}
       size={size}
       value={value}
@@ -45,6 +47,7 @@ const Segment = forwardRef<ComponentRef<typeof Root>, SegmentProps<SegmentOption
         orientation={orientation}
         shape={shape}
         size={size}
+        type={type}
         value={value}
         classNames={{
           indicator: classNames?.indicator,
