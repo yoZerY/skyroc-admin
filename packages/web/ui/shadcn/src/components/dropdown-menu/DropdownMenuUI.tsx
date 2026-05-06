@@ -16,7 +16,7 @@ const isRadioMenu = (item: DropdownMenuOptionType | any): item is Extract<Dropdo
 };
 
 const DropdownMenuUI = (props: DropdownMenuProps) => {
-  const { children, classNames, contentProps, defaultOpen, dir, items, modal, onOpenChange, open, size } = props;
+  const { children, className, classNames, contentProps, defaultOpen, dir, items, modal, onOpenChange, open, size } = props;
 
   return (
     <Root
@@ -28,7 +28,12 @@ const DropdownMenuUI = (props: DropdownMenuProps) => {
     >
       <Trigger asChild>{children}</Trigger>
 
-      <DropdownMenuContent {...contentProps}>
+      <DropdownMenuContent
+        arrowClass={classNames?.arrow}
+        className={className || classNames?.content}
+        size={size}
+        {...contentProps}
+      >
         {items.map((item, index) => {
           // Checkbox menu
           if (isCheckboxMenu(item)) {
