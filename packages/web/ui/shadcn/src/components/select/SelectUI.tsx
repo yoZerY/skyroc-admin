@@ -10,18 +10,36 @@ import type { SelectProps } from './types';
 
 const SelectUI = forwardRef<ComponentRef<typeof SelectContent>, SelectProps>((props, ref) => {
   const { classNames, contentProps, indicatorIcon, items, size, triggerProps, ...rest } = props;
+  const { classNames: contentClassNames, size: contentSize, ...restContentProps } = contentProps ?? {};
+  const { classNames: triggerClassNames, size: triggerSize, ...restTriggerProps } = triggerProps ?? {};
 
   return (
     <Root
       data-slot="select-root"
       {...rest}
     >
-      <SelectTrigger {...triggerProps} />
+      <SelectTrigger
+        classNames={{
+          selectedValue: classNames?.selectedValue,
+          trigger: classNames?.trigger,
+          triggerIcon: classNames?.triggerIcon,
+          ...triggerClassNames
+        }}
+        size={triggerSize || size}
+        {...restTriggerProps}
+      />
 
       <SelectContent
-        classNames={classNames}
+        classNames={{
+          content: classNames?.content,
+          scrollDownButton: classNames?.scrollDownButton,
+          scrollUpButton: classNames?.scrollUpButton,
+          viewport: classNames?.viewport,
+          ...contentClassNames
+        }}
         ref={ref}
-        {...contentProps}
+        size={contentSize || size}
+        {...restContentProps}
       >
         {items.map((item, index) => (
           <SelectOption

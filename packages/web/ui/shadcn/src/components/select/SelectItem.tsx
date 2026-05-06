@@ -9,11 +9,12 @@ import type { SelectItemProps } from './types';
 const SelectItem = forwardRef<ComponentRef<typeof Item>, SelectItemProps>((props, ref) => {
   const { children, className, classNames, indicatorIcon, leading, size, trailing, ...rest } = props;
 
-  const { item, itemIndicator } = selectVariants({ size });
+  const { item, itemIndicator, itemText } = selectVariants({ size });
 
   const mergedCls = {
     itemCls: cn(item(), className || classNames?.item),
-    itemIndicatorCls: cn(itemIndicator(), classNames?.itemIndicator)
+    itemIndicatorCls: cn(itemIndicator(), classNames?.itemIndicator),
+    itemTextCls: cn(itemText(), classNames?.itemText)
   };
 
   return (
@@ -24,7 +25,7 @@ const SelectItem = forwardRef<ComponentRef<typeof Item>, SelectItemProps>((props
       ref={ref}
     >
       {leading}
-      <ItemText data-slot="select-item-text">{children}</ItemText>
+      <ItemText className={mergedCls.itemTextCls} data-slot="select-item-text">{children}</ItemText>
       {trailing}
 
       <ItemIndicator

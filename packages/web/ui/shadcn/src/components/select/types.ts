@@ -53,7 +53,7 @@ export interface SelectItemProps extends StyledComponentProps<_SelectItemProps>,
   /**
    * Class names for customizing the item and its indicator.
    */
-  classNames?: Pick<SelectClassNames, 'item' | 'itemIndicator'>;
+  classNames?: Pick<SelectClassNames, 'item' | 'itemIndicator' | 'itemText'>;
   /**
    * Custom icon to display when the item is selected.
    * Typically a checkmark or similar indicator.

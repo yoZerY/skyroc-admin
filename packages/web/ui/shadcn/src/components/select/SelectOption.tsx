@@ -1,4 +1,5 @@
 import { Group } from '@radix-ui/react-select';
+import { cn } from '@skyroc/utils';
 import SelectItem from './SelectItem';
 import SelectLabel from './SelectLabel';
 import SelectSeparator from './SelectSeparator';
@@ -21,7 +22,7 @@ const SelectOption = (props: SelectOptionProps) => {
   if (isGroup(item)) {
     const { children, label, ...rest } = item;
     return (
-      <Group>
+      <Group className={cn(classNames?.group)} data-slot="select-group">
         <SelectLabel
           {...rest}
           className={classNames?.groupLabel}
