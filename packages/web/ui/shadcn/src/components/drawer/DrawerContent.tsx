@@ -4,9 +4,9 @@ import { drawerVariants } from './drawer-variants';
 import type { DrawerContentProps } from './types';
 
 const DrawerContent = (props: DrawerContentProps) => {
-  const { className, side, ...rest } = props;
+  const { className, side, size, ...rest } = props;
 
-  const { content } = drawerVariants({ side });
+  const { content } = drawerVariants({ side, size });
 
   const mergedCls = cn(content(), className);
 
