@@ -1,7 +1,7 @@
 'use client';
 
-import { forwardRef, useId } from 'react';
 import { Check, Minus } from 'lucide-react';
+import { forwardRef, useId } from 'react';
 import CheckboxLabel from '../label/LabelUI';
 import CheckboxControl from './CheckboxControl';
 import CheckboxIndicator from './CheckboxIndicator';
@@ -15,6 +15,7 @@ const CheckboxUI = forwardRef<HTMLDivElement, CheckboxProps>((props, ref) => {
     className,
     classNames,
     forceMountIndicator,
+    id: propId,
     indeterminateIcon = <Minus className="size-full" />,
     indicatorProps,
     rootProps,
@@ -24,43 +25,23 @@ const CheckboxUI = forwardRef<HTMLDivElement, CheckboxProps>((props, ref) => {
 
   const isIndeterminate = rest.checked === 'indeterminate';
 
-  const id = useId();
+  const generatedId = useId();
 
-  const controlId = `${id}-control`;
+  const controlId = propId || `${generatedId}-control`;
 
   return (
-    <CheckboxRoot
-      className={className || classNames?.root}
-      ref={ref}
-      {...rootProps}
-    >
-      <CheckboxControl
-        className={classNames?.control}
-        id={controlId}
-        size={size}
-        {...rest}
-      >
-        <CheckboxIndicator
-          className={classNames?.indicator}
-          forceMount={forceMountIndicator}
-          {...indicatorProps}
-        >
-          {isIndeterminate
-            ? indeterminateIcon
-            : checkedIcon}
+    <CheckboxRoot className={className || classNames?.root} ref={ref} {...rootProps}>
+      <CheckboxControl className={classNames?.control} id={controlId} size={size} {...rest}>
+        <CheckboxIndicator className={classNames?.indicator} forceMount={forceMountIndicator} {...indicatorProps}>
+          {isIndeterminate ? indeterminateIcon : checkedIcon}
         </CheckboxIndicator>
       </CheckboxControl>
 
-      {children
-        ? (
-          <CheckboxLabel
-            className={classNames?.label}
-            htmlFor={controlId || rest.id}
-          >
-            {children}
-          </CheckboxLabel>
-        )
-        : null}
+      {children ? (
+        <CheckboxLabel className={classNames?.label} htmlFor={controlId}>
+          {children}
+        </CheckboxLabel>
+      ) : null}
     </CheckboxRoot>
   );
 });

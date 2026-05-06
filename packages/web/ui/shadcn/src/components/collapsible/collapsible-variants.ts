@@ -6,27 +6,26 @@ export const collapsibleVariants = tv({
       'overflow-hidden transition will-change-auto',
       'data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down'
     ],
-    root: '',
-    trigger: ''
+    root: ''
   },
   variants: {
     size: {
       '2xl': {
         root: 'text-xl'
       },
-      'lg': {
+      lg: {
         root: 'text-base'
       },
-      'md': {
+      md: {
         root: 'text-sm'
       },
-      'sm': {
+      sm: {
         root: 'text-xs'
       },
-      'xl': {
+      xl: {
         root: 'text-lg'
       },
-      'xs': {
+      xs: {
         root: 'text-2xs'
       }
     }
