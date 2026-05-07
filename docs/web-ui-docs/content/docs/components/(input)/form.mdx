@@ -167,11 +167,11 @@ const schema = z.object({
   <FormList name="users">
     {(fields, { insert, remove }) => (
       <>
-        {fields.map((field) => (
+        {fields.map((field, index) => (
           <div key={field.key}>
             <FormField name={`${field.name}.name`} label="姓名" component={Input} />
             <FormField name={`${field.name}.email`} label="邮箱" component={Input} />
-            <button type="button" onClick={() => remove(field.name)}>删除</button>
+            <button type="button" onClick={() => remove(index)}>删除</button>
           </div>
         ))}
         <button type="button" onClick={() => insert(fields.length, { name: '', email: '' })}>

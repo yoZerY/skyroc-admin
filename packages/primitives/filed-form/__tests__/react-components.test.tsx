@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { createRef } from 'react';
+import { StrictMode, createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { ComputedField, Field, Form, List, useFieldError, useForm } from '../src/react';
 
@@ -79,6 +79,11 @@ interface ListVisibilityValues {
   items: { title: string }[];
 }
 
+interface StrictListValues {
+  /** 用户列表，用于覆盖 StrictMode 下的动态数组订阅 */
+  users: { age: number; name: string }[];
+}
+
 const ListVisibilityExample = () => {
   const [form] = useForm<ListVisibilityValues>();
 
@@ -97,6 +102,44 @@ const ListVisibilityExample = () => {
         Hide list
       </button>
     </Form>
+  );
+};
+
+const StrictListExample = () => {
+  return (
+    <StrictMode>
+      <Form<StrictListValues>
+        initialValues={{
+          users: [
+            { age: 20, name: 'John' },
+            { age: 21, name: 'Jane' }
+          ]
+        }}
+      >
+        <List<StrictListValues> name="users">
+          {(fields, ops) => (
+            <>
+              {fields.map((field, index) => (
+                <div key={field.key}>
+                  <Field<StrictListValues> name={`${field.name}.name` as any}>
+                    <input aria-label={`Name ${index}`} />
+                  </Field>
+                  <Field<StrictListValues> name={`${field.name}.age` as any}>
+                    <input aria-label={`Age ${index}`} />
+                  </Field>
+                  <button type="button" onClick={() => ops.insert(index + 1, { age: 11, name: '' })}>
+                    Insert {index}
+                  </button>
+                  <button type="button" onClick={() => ops.remove(index)}>
+                    Remove {index}
+                  </button>
+                </div>
+              ))}
+            </>
+          )}
+        </List>
+      </Form>
+    </StrictMode>
   );
 };
 
@@ -456,6 +499,28 @@ describe('List component integration', () => {
 
     await waitFor(() => {
       expect(screen.getAllByRole('listitem').map(item => item.textContent)).toEqual(['items.0', 'items.1']);
+    });
+  });
+
+  it('should keep array operations subscribed in StrictMode', async () => {
+    render(<StrictListExample />);
+
+    expect(screen.getByLabelText('Name 0')).toHaveValue('John');
+    expect(screen.getByLabelText('Name 1')).toHaveValue('Jane');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Insert 0' }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Name 1')).toHaveValue('');
+      expect(screen.getByLabelText('Age 1')).toHaveValue('11');
+      expect(screen.getByLabelText('Name 2')).toHaveValue('Jane');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Remove 1' }));
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Name 2')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Name 1')).toHaveValue('Jane');
     });
   });
 

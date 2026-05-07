@@ -3,6 +3,7 @@
 import { ButtonIcon, Form, FormField, FormList, Input, useForm } from '@skyroc/web-ui';
 
 interface FormValues {
+  companies: string[];
   users: {
     age: number;
     name: string;
@@ -50,11 +51,16 @@ const FormListDemo = () => {
                 <div className="mt-6 flex gap-x-2">
                   <ButtonIcon
                     icon="ant-design:plus-outlined"
+                    type="button"
                     variant="ghost"
                     onClick={() => ops.insert(index + 1, { age: 11, name: '' })}
                   />
 
-                  <ButtonIcon icon="ant-design:minus-outlined" />
+                  <ButtonIcon
+                    icon="ant-design:minus-outlined"
+                    type="button"
+                    onClick={() => ops.remove(index)}
+                  />
                 </div>
               </div>
             ))}
@@ -65,6 +71,7 @@ const FormListDemo = () => {
 
                 <ButtonIcon
                   icon="ant-design:swap-outlined"
+                  type="button"
                   variant="ghost"
                   onClick={() => ops.replace(0, { age: 99, name: 'Replaced' })}
                 />
@@ -75,6 +82,7 @@ const FormListDemo = () => {
 
                 <ButtonIcon
                   icon="ant-design:arrow-up-outlined"
+                  type="button"
                   variant="ghost"
                   onClick={() => ops.move(0, 1)}
                 />
@@ -85,6 +93,7 @@ const FormListDemo = () => {
 
                 <ButtonIcon
                   icon="ant-design:retweet-outlined"
+                  type="button"
                   variant="ghost"
                   onClick={() => ops.swap(0, 1)}
                 />
@@ -115,11 +124,16 @@ const FormListDemo = () => {
                 <div className="mt-6 flex gap-x-2">
                   <ButtonIcon
                     icon="ant-design:plus-outlined"
+                    type="button"
                     variant="ghost"
                     onClick={() => ops.insert(index + 1, `company${index + 1}`)}
                   />
 
-                  <ButtonIcon icon="ant-design:minus-outlined" />
+                  <ButtonIcon
+                    icon="ant-design:minus-outlined"
+                    type="button"
+                    onClick={() => ops.remove(index)}
+                  />
                 </div>
               </div>
             ))}

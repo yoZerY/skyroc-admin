@@ -195,8 +195,7 @@ function List<Values = any>(props: ListProps<Values>) {
   // Reference to cleanup function for field registration
   const unregisterRef = useRef<() => void>(null);
 
-  // Register field entity if not already registered
-  if (!unregisterRef.current) {
+  function registerListField() {
     unregisterRef.current = registerField({
       changeValue: () => {
         // Force re-render when array field changes
@@ -208,10 +207,20 @@ function List<Values = any>(props: ListProps<Values>) {
     });
   }
 
+  // Register field entity if not already registered
+  if (!unregisterRef.current) {
+    registerListField();
+  }
+
   // Cleanup field registration when component unmounts
   useEffect(() => {
+    if (!unregisterRef.current) {
+      registerListField();
+    }
+
     return () => {
       unregisterRef.current?.();
+      unregisterRef.current = null;
     };
   }, []);
 
