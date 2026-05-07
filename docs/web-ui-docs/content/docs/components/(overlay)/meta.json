@@ -1,5 +1,7 @@
 {
   "title": "弹层覆盖",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": [
     "dialog",
     "alert-dialog",

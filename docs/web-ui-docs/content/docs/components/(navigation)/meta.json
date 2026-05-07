@@ -1,5 +1,7 @@
 {
   "title": "导航",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": [
     "tabs",
     "segment",

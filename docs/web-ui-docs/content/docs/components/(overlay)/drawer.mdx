@@ -6,50 +6,117 @@ description: 从屏幕边缘滑入的侧边面板组件
 抽屉（Drawer）从屏幕边缘滑入，用于在不离开当前页面的情况下展示辅助内容或操作面板。基于 Dialog 封装，继承标题、描述、页脚、关闭按钮等完整能力，并新增方向控制和内容滚动功能。
 
 ```tsx
-import { Drawer, DrawerContent } from '@skyroc/web-ui';
+import { Drawer, DrawerContent, type DrawerSide } from '@skyroc/web-ui';
 ```
 
 ## 何时使用
 
-- 需要在不离开当前页面的情况下查看详情、编辑表单或执行操作。
-- 侧边导航面板、设置面板、筛选面板等场景。
-- 与 Dialog 的区分：Dialog 居中弹出适合确认/提示，Drawer 从侧边滑入适合承载更多内容或持续性操作。
-- 与 BottomSheet 的区分：BottomSheet 从底部弹出更适合移动端交互，Drawer 从任意方向滑入适合桌面端。
+- 需要在不离开当前页面的情况下查看详情、编辑表单或完成一段辅助流程。
+- 需要从页面边缘展开筛选、目录、购物车、产品配置等面板。
+- 与 Dialog 的区分：Dialog 居中弹出，适合短确认和聚焦任务；Drawer 从边缘进入，更适合保留页面上下文。
+- 与 BottomSheet 的区分：BottomSheet 更偏移动端底部手势；Drawer 支持四个方向，适合响应式页面和桌面侧边面板。
+
+## 基础用法
+
+通过 `trigger` 提供触发元素，通过 `title`、`description` 和 `children` 组织面板内容。默认从右侧滑入，并渲染一个 OK 页脚按钮。
+
+```tsx
+<Drawer
+  title="产品配置"
+  description="调整当前产品的展示参数"
+  trigger={<Button>打开配置</Button>}
+>
+  <div>Drawer Content</div>
+</Drawer>
+```
 
 ## 方向
 
 通过 `contentProps.side` 控制 Drawer 的滑入方向，默认为 `right`：
 
+<Demo src="@playground/drawer/modules/Side" />
+
 | 方向     | 说明         | 适用场景             |
 | -------- | ------------ | -------------------- |
 | `right`  | 从右侧滑入   | 详情面板、属性编辑   |
-| `left`   | 从左侧滑入   | 导航菜单、侧边栏     |
-| `top`    | 从顶部滑入   | 通知面板、搜索面板   |
-| `bottom` | 从底部滑入   | 操作面板、快捷菜单   |
+| `left`   | 从左侧滑入   | 导航目录、筛选面板   |
+| `top`    | 从顶部滑入   | 搜索、通知、全局提示 |
+| `bottom` | 从底部滑入   | 快捷操作、移动端入口 |
 
 左右方向的 Drawer 默认宽度为 `w-3/4`，在 `sm` 断点以上限制为 `max-w-sm`；上下方向的 Drawer 占满水平宽度。
 
-## 滚动
+```tsx
+const sides: DrawerSide[] = ['left', 'right', 'top', 'bottom'];
+
+{sides.map(side => (
+  <Drawer
+    key={side}
+    title="Drawer Title"
+    trigger={<Button>{side}</Button>}
+    contentProps={{ side }}
+  >
+    Drawer Content
+  </Drawer>
+))}
+```
+
+## 可滚动内容
 
 `scrollable` 控制内容区是否可滚动，默认为 `true`。当内容超出面板高度时自动出现滚动条。设为 `false` 则内容区不滚动，适合内容高度固定的场景。
 
-## 标题与描述
+<Demo src="@playground/drawer/modules/ContentScrollable" />
 
-Drawer 继承 Dialog 的 `title` 和 `description`，在面板顶部显示标题栏和描述文本。通过 `titleProps` 和 `descriptionProps` 可进一步定制子组件属性。
+```tsx
+<Drawer
+  title="长内容"
+  trigger={<Button>打开</Button>}
+>
+  {Array.from({ length: 100 }).map((_, index) => (
+    <div key={index}>Drawer Content</div>
+  ))}
+</Drawer>
+```
 
-## 页脚
+## 标题、描述和页脚
 
-通过 `footer` 控制页脚内容：
+Drawer 继承 Dialog 的标题、描述、关闭按钮和页脚能力：
 
-- **默认**：显示 OK 按钮，文本可通过 `okText` 自定义，点击回调为 `onOk`。
-- **自定义**：传入 ReactNode 完全替换页脚内容。
-- **隐藏**：传入 `null` 或 `false` 隐藏页脚。
+- `title` 渲染面板标题，用于说明当前面板目的。
+- `description` 渲染标题下方的补充说明。
+- `footer` 控制底部操作区。
+- `titleProps`、`descriptionProps`、`headerProps`、`footerProps` 可向对应结构传入额外属性。
+
+页脚规则与 Dialog 保持一致：
+
+- 默认显示 OK 按钮，文本可通过 `okText` 自定义，点击回调为 `onOk`。
+- 传入 ReactNode 可完全替换页脚内容。
+- 传入 `null` 或 `false` 隐藏页脚。
+
+## 尺寸和样式
+
+通过 `size` 调整面板标题、描述、页脚和内容区域的字号与间距。通过 `classNames` 可分别控制 `overlay`、`content`、`header`、`title`、`description`、`footer` 和 `close`。
+
+需要改变面板宽度或高度时，优先通过 `className` 或 `contentProps.className` 覆盖内容容器：
+
+```tsx
+<Drawer
+  title="宽面板"
+  trigger={<Button>打开</Button>}
+  className="sm:max-w-xl"
+>
+  Drawer Content
+</Drawer>
+```
+
+## 受控状态
+
+Drawer 透传 Radix Dialog Root 的 `open`、`defaultOpen`、`onOpenChange` 和 `modal`。当打开状态需要和路由、表单流程或异步任务联动时，使用受控模式。
 
 ## API
 
 ### Drawer
 
-基于 Dialog 封装，继承 Dialog 的所有属性。以下列出 Drawer 特有属性及常用的 Dialog 继承属性。
+基于 Dialog 封装，继承 Dialog 的标题、描述、页脚、关闭按钮、受控状态和 slot 样式能力。以下列出 Drawer 特有属性及常用的 Dialog 继承属性。
 
 <PropsTable
   data={[
@@ -62,6 +129,12 @@ Drawer 继承 Dialog 的 `title` 和 `description`，在面板顶部显示标题
     {
       name: 'trigger',
       description: '触发打开的元素',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'children',
+      description: '内容区节点，显示在头部和页脚之间；内容会被可滚动容器包裹',
       type: 'ReactNode'
     },
     {
@@ -105,6 +178,11 @@ Drawer 继承 Dialog 的 `title` 和 `description`，在面板顶部显示标题
       description: '尺寸，影响内容面板及标题、描述、页脚等子组件的字号与间距',
       type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
       default: "'md'"
+    },
+    {
+      name: 'className',
+      description: '传递给内容容器的自定义 class；优先级高于 classNames.content',
+      type: 'ClassValue'
     },
     {
       name: 'classNames',

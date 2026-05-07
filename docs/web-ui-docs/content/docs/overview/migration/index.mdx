@@ -1,0 +1,60 @@
+---
+title: 迁移与约定
+description: 从 shadcn 或自定义 Tailwind 组件迁移到 Skyroc UI 的注意事项
+---
+
+这一页记录使用 Skyroc UI 时最容易出现分歧的约定。它不是完整迁移工具，而是帮助团队在写业务页面时保持一致。
+
+## 从 shadcn 习惯迁移
+
+Skyroc UI 保留了 Radix UI 和 shadcn 风格的可组合能力，但更强调统一主题和组件 props。
+
+- 优先使用 `size`、`color`、`variant`、`shape` 等 props。
+- 不要为每个页面复制一套 `cn()` class 组合。
+- 需要替换底层元素时再使用 `asChild`。
+- 组件 API 文档已经覆盖常用组合，不需要从源码猜测内部结构。
+
+## 从自定义 Tailwind 组件迁移
+
+自定义 Tailwind 组件通常自由度高，但容易在颜色、尺寸和交互状态上分裂。迁移到 Skyroc UI 时，应先统一语义，再处理局部视觉差异。
+
+- 将品牌主色、成功、警告、危险等状态映射到语义色。
+- 将按钮、输入框和弹层尺寸收敛到统一 `size`。
+- 将重复的卡片、订阅表单、内容筛选和 CTA 抽回组件组合。
+- 只有品牌页需要特殊视觉时，再用 `className` 做局部增强。
+
+## `className` 与 `classNames`
+
+`className` 用于组件根节点或主要节点的局部布局调整。`classNames` 用于组件暴露多个结构槽位时的精细覆盖。
+
+建议：
+
+- 布局间距、宽度和页面位置可以使用 `className`。
+- 组件内部视觉风格优先使用 props。
+- 只有组件提供明确槽位时才使用 `classNames`。
+- 不要通过 class 覆盖语义色和尺寸体系。
+
+## `asChild` 与 Slot
+
+`asChild` 用于把组件行为委托给子元素，例如让 `Button` 渲染成 `Link`。
+
+```tsx
+<Button asChild color="primary">
+  <Link href="/overview/introduction">阅读文档</Link>
+</Button>
+```
+
+使用边界：
+
+- 子元素必须能正确接收事件、ref 和无障碍属性。
+- 不要为了少写样式滥用 `asChild`。
+- 链接跳转用 `Link`，命令动作用 `button` 语义。
+
+## 受控与非受控
+
+表单和弹层组件通常同时支持受控与非受控模式。
+
+- 业务状态需要被保存、校验或联动时，使用受控模式。
+- 只需要局部临时交互时，可以使用非受控默认值。
+- 不要在同一个组件实例上混用 `value` 和 `defaultValue`。
+- 弹层打开状态由路由、权限或异步任务控制时，使用受控模式。

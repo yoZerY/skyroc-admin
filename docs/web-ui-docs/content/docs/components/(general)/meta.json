@@ -1,4 +1,6 @@
 {
   "title": "通用",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": ["button", "icon", "keyboard-key", "layout", "divider"]
 }

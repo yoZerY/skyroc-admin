@@ -1,0 +1,14 @@
+{
+  "title": "概览",
+  "defaultOpen": true,
+  "collapsible": false,
+  "pages": [
+    "introduction",
+    "getting-started",
+    "theming",
+    "design-system",
+    "usage-guides",
+    "examples",
+    "migration"
+  ]
+}

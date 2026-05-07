@@ -1,4 +1,6 @@
 {
   "title": "反馈",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": ["alert", "toggle", "toggle-group"]
 }

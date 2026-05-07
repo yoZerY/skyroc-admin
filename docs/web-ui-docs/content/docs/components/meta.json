@@ -1,5 +1,7 @@
 {
   "title": "组件",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": [
     "(general)",
     "(input)",

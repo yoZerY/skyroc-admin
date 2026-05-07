@@ -1,0 +1,6 @@
+{
+  "title": "设计系统",
+  "defaultOpen": true,
+  "collapsible": false,
+  "pages": ["index", "tokens"]
+}

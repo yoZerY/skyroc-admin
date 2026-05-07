@@ -36,6 +36,8 @@ DropdownMenu 提供三个主入口组件，适应不同场景：
 
 `children` 作为触发元素，点击后弹出菜单。`items` 支持普通选项、标签、分隔线和嵌套子菜单，通过 `type` 字段区分。
 
+<Demo src="@playground/dropdown-menu/modules/DropdownMenuBasic" />
+
 ```tsx
 <DropdownMenu
   items={[
@@ -56,9 +58,26 @@ DropdownMenu 提供三个主入口组件，适应不同场景：
 </DropdownMenu>
 ```
 
+## 箭头
+
+通过 `contentProps.showArrow` 显示指向触发元素的箭头。箭头样式可通过 `classNames.arrow` 或内容属性中的箭头 class 配置覆盖。
+
+<Demo src="@playground/dropdown-menu/modules/DropdownMenuWithArrow" />
+
+```tsx
+<DropdownMenu
+  contentProps={{ showArrow: true }}
+  items={items}
+>
+  <Button>操作</Button>
+</DropdownMenu>
+```
+
 ## 复选框组
 
 通过 `type: 'checkbox'` 在菜单中嵌入复选框组，`checks` 和 `onChecksChange` 控制勾选状态。也可直接使用 `DropdownMenuCheckbox` 便捷组件。
+
+<Demo src="@playground/dropdown-menu/modules/DropdownMenuCheckbox" />
 
 ```tsx
 <DropdownMenuCheckbox
@@ -79,6 +98,8 @@ DropdownMenu 提供三个主入口组件，适应不同场景：
 
 通过 `type: 'radio'` 在菜单中嵌入单选组，`value` 和 `onValueChange` 控制选中状态。也可直接使用 `DropdownMenuRadio` 便捷组件。
 
+<Demo src="@playground/dropdown-menu/modules/DropdownMenuRadio" />
+
 ```tsx
 <DropdownMenuRadio
   items={[
@@ -96,6 +117,8 @@ DropdownMenu 提供三个主入口组件，适应不同场景：
 ## 混合模式
 
 普通选项、子菜单、复选框组和单选组可以在同一个 `items` 数组中混合使用。
+
+<Demo src="@playground/dropdown-menu/modules/DropdownMenuMix" />
 
 ```tsx
 <DropdownMenu

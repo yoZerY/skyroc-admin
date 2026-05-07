@@ -1,0 +1,185 @@
+---
+title: 主题系统
+description: 颜色、尺寸、ConfigProvider 全局配置与深色模式
+---
+
+Skyroc UI 的主题系统由两层构成：**Tailwind 插件**负责 CSS 变量（颜色、圆角），**ConfigProvider** 负责组件级默认 props（尺寸、颜色、方向）。
+
+## 语义颜色
+
+所有组件共享 8 种语义颜色，每种颜色通过 CSS 变量定义，同时自动适配亮色/暗色模式。
+
+| 颜色          | CSS 变量         | 语义     | 典型场景               |
+| ------------- | ---------------- | -------- | ---------------------- |
+| `primary`     | `--primary`      | 主操作   | 页面中最重要的行为     |
+| `destructive` | `--destructive`  | 危险操作 | 删除、移除等不可逆操作 |
+| `success`     | `--success`      | 成功确认 | 操作成功、确认完成     |
+| `warning`     | `--warning`      | 警告提示 | 需要注意的操作         |
+| `info`        | `--info`         | 信息提示 | 信息性操作             |
+| `carbon`      | `--carbon`       | 中性深色 | 不带语义倾向的中性操作 |
+| `secondary`   | `--secondary`    | 次级操作 | 辅助性、低优先级操作   |
+| `accent`      | `--accent`       | 强调色   | 需要特殊视觉关注的操作 |
+
+每种颜色都附带对应的 `*-foreground` 变量（如 `--primary-foreground`），用于在该颜色背景上的文字/图标。
+
+## 主题色方案
+
+通过 `@skyroc/tailwind-plugin` 的 `color` 选项可以切换整套主题配色，内置 13 种预设：
+
+`default` · `blue` · `green` · `red` · `orange` · `yellow` · `violet` · `rose` · `slate` · `gray` · `zinc` · `neutral` · `stone`
+
+每种预设包含完整的亮色和暗色 CSS 变量定义。
+
+## 深色模式
+
+默认通过 `.dark` 选择器切换深色模式。当 `<html>` 或父元素带有 `dark` class 时，所有 CSS 变量自动切换到暗色值。
+
+可通过 `darkSelector` 自定义选择器：
+
+```css
+/* 默认 */
+@import '@skyroc/tailwind-plugin';
+
+/* 自定义选择器 */
+@import '@skyroc/tailwind-plugin' with (darkSelector: '[data-theme="dark"]');
+```
+
+## 圆角
+
+通过 `radius` 控制全局圆角大小，默认值为 `0.5`（rem），设为 `false` 可禁用圆角覆盖。
+
+## 统一尺寸
+
+所有组件支持 6 级尺寸，通过 `size` prop 控制：
+
+| 尺寸  | 说明                 |
+| ----- | -------------------- |
+| `xs`  | 紧凑布局、表格内操作 |
+| `sm`  | 辅助操作、工具栏     |
+| `md`  | 常规场景（默认）     |
+| `lg`  | 强调操作、表单提交   |
+| `xl`  | 重要入口、CTA        |
+| `2xl` | 首屏 Hero、大幅 CTA  |
+
+## ConfigProvider
+
+`ConfigProvider` 为所有子组件提供全局默认配置，避免重复传入相同的 props。
+
+### 基本用法
+
+```tsx
+import { ConfigProvider, Button, Input } from '@skyroc/web-ui';
+
+const App = () => {
+  return (
+    <ConfigProvider size="lg" theme={{ color: 'blue' }}>
+      <Button>大号按钮</Button>
+      <Input placeholder="大号输入框" />
+    </ConfigProvider>
+  );
+};
+```
+
+### 文字方向
+
+通过 `direction` 设置 RTL/LTR 布局，影响所有支持方向的组件：
+
+```tsx
+<ConfigProvider direction="rtl">
+  <App />
+</ConfigProvider>
+```
+
+### 按组件粒度覆盖
+
+`ConfigProvider` 支持对单个组件类型设置独立的默认值，优先级高于全局 `size` / `theme`：
+
+```tsx
+<ConfigProvider
+  size="md"
+  button={{ variant: 'outline', color: 'secondary', shape: 'rounded' }}
+  input={{ size: 'lg' }}
+  dialog={{ size: 'lg' }}
+>
+  <App />
+</ConfigProvider>
+```
+
+### API
+
+<PropsTable
+  data={[
+    {
+      name: 'children',
+      description: '子组件，将继承全局配置',
+      type: 'ReactNode',
+      required: true
+    },
+    {
+      name: 'size',
+      description: '全局默认尺寸，可被各组件单独覆盖',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      default: "'md'"
+    },
+    {
+      name: 'theme',
+      description: '主题配置对象，控制颜色方案',
+      type: 'ThemeOptions'
+    },
+    {
+      name: 'direction',
+      description: '文字方向，影响布局和文本对齐',
+      type: "'ltr' | 'rtl'",
+      default: "'ltr'"
+    },
+    {
+      name: '[componentName]',
+      description: '按组件粒度设置默认 props，如 button、input、dialog 等',
+      type: 'ComponentConfig'
+    }
+  ]}
+/>
+
+### 支持配置的组件
+
+以下组件支持通过 `ConfigProvider` 设置全局默认值：
+
+Accordion · Alert · AlertDialog · AspectRatio · Avatar · Badge · BottomSheet · Breadcrumb · Button · Card · Carousel · Checkbox · Collapsible · Command · ContextMenu · Dialog · Divider · Drawer · DropdownMenu · FormField · HoverCard · Icon · Input · InputOtp · KeyboardKey · Label · Layout · List · NumberInput · Pagination · Password · Popover · Progress · Radio · ScrollArea · Segment · Select · Slider · Sonner · Switch · Tabs · Tag · Textarea · Toggle · Tooltip · Tree
+
+每个组件的可配置项是其完整 Props 的子集（通常包含 `size`、`color`、`className`、`classNames` 等样式相关的属性），具体字段请参考各组件文档的 API 部分。
+
+## 类型
+
+<TypeTable
+  data={[
+    {
+      name: 'ThemeOptions',
+      description: '主题配置选项，用于 ConfigProvider 的 theme prop 和 Tailwind 插件。',
+      fields: [
+        { name: 'color', type: "ThemeConfigColor | ThemeCSSVarsVariant | false", description: '主题配色方案，支持预设名称、自定义 CSS 变量或禁用。默认 default。' },
+        { name: 'darkSelector', type: 'string', description: '深色模式选择器。默认 .dark。' },
+        { name: 'radius', type: 'number | false', description: '全局圆角大小（rem）。默认 0.5。' },
+        { name: 'feedbackColor', type: 'FeedbackColorOfThemeCssVarsVariant', description: '自定义反馈色（success / warning / info / carbon）的亮色和暗色值。' },
+        { name: 'sidebar', type: 'SidebarColorOfThemeCssVarsVariant', description: '自定义侧边栏颜色的亮色和暗色值。' }
+      ]
+    }
+  ]}
+/>
+
+<UnionType
+  name="ThemeConfigColor"
+  description="内置主题配色名称"
+  type="'default' | 'blue' | 'green' | 'red' | 'orange' | 'yellow' | 'violet' | 'rose' | 'slate' | 'gray' | 'zinc' | 'neutral' | 'stone'"
+/>
+
+<UnionType
+  name="ThemeSize"
+  description="组件尺寸类型"
+  type="'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+/>
+
+<UnionType
+  name="ThemeColor"
+  description="语义颜色类型"
+  type="'primary' | 'destructive' | 'success' | 'warning' | 'info' | 'carbon' | 'secondary' | 'accent'"
+/>

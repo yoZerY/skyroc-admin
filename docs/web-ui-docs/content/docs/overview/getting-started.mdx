@@ -1,0 +1,88 @@
+---
+title: 快速开始
+description: 安装 Skyroc UI 并在项目中完成基本配置
+---
+
+## 环境要求
+
+- **React** 18 或 19
+- **Tailwind CSS** 4+
+- 包管理器推荐 **pnpm**
+
+## 安装
+
+安装组件库及其 peer 依赖：
+
+```bash
+pnpm add @skyroc/web-ui @skyroc/tailwind-plugin
+```
+
+`@skyroc/tailwind-plugin` 是 Tailwind CSS 插件，负责注入组件库所需的 CSS 变量（颜色、圆角等 design token）。
+
+## 配置 Tailwind CSS
+
+在你的 Tailwind CSS 入口文件中引入插件：
+
+```css
+@import 'tailwindcss';
+@import '@skyroc/tailwind-plugin';
+```
+
+插件会自动注册亮色/暗色主题的 CSS 变量，无需手动定义。
+
+## 引入样式
+
+如果你使用的是发布版本（非 workspace 本地引用），还需要引入组件库的编译样式：
+
+```css
+@import '@skyroc/web-ui/style.css';
+```
+
+> 在 monorepo workspace 内直接引用源码时，样式由 Tailwind 直接扫描源文件生成，无需单独引入 `style.css`。
+
+## 基本使用
+
+安装完成后即可直接使用组件：
+
+```tsx
+import { Button } from '@skyroc/web-ui';
+
+const App = () => {
+  return (
+    <div className="p-8">
+      <Button color="primary">开始使用</Button>
+    </div>
+  );
+};
+```
+
+## 全局配置（可选）
+
+通过 `ConfigProvider` 可以为所有子组件设置默认的尺寸、主题色和文字方向，避免在每个组件上重复传入相同的 props：
+
+```tsx
+import { ConfigProvider, Button, Input, Select } from '@skyroc/web-ui';
+
+const App = () => {
+  return (
+    <ConfigProvider size="lg" theme={{ color: 'blue' }} direction="ltr">
+      <Button color="primary">按钮</Button>
+      <Input placeholder="输入框" />
+      <Select placeholder="选择器" />
+    </ConfigProvider>
+  );
+};
+```
+
+`ConfigProvider` 的完整用法请参考 [主题系统](/overview/theming)。
+
+## TypeScript 支持
+
+`@skyroc/web-ui` 使用 TypeScript 编写，类型声明随包一起分发，无需额外安装 `@types` 包。
+
+## 下一步
+
+<Cards>
+  <Card title="主题系统" description="颜色、尺寸、ConfigProvider 全局配置" href="/overview/theming" />
+  <Card title="Button" description="从最常用的按钮组件开始探索" href="/components/button" />
+</Cards>

@@ -1,0 +1,71 @@
+---
+title: 设计令牌
+description: 颜色、尺寸、圆角、间距和字体在项目中的使用方式
+---
+
+设计令牌用于把视觉规则从组件实现中抽离出来。业务代码应该尽量使用语义 token 和组件 props，而不是直接复制具体色值或尺寸。
+
+## 颜色令牌
+
+颜色分为三类：
+
+| 类型 | 示例 | 使用方式 |
+| --- | --- | --- |
+| 语义色 | `primary`、`success`、`warning` | 通过组件 `color` prop 表达业务语义 |
+| 前景色 | `primary-foreground` | 由组件自动选择，业务代码一般不需要手写 |
+| 背景与边框 | `background`、`border`、`muted` | 用于页面容器、说明区域、分隔层级 |
+
+推荐写法：
+
+```tsx
+<Button color="primary">保存</Button>
+<Alert color="warning">当前配置未发布</Alert>
+```
+
+不推荐写法：
+
+```tsx
+<button className="bg-blue-600 text-white">保存</button>
+```
+
+## 尺寸令牌
+
+组件尺寸通过 `size` 表达密度和重要性。页面内不建议混用过多尺寸；常规业务页面以 `md` 为基准，筛选区和表格行内操作常用 `sm`。
+
+```tsx
+<ConfigProvider size="md">
+  <Input placeholder="项目名称" />
+  <Button color="primary">查询</Button>
+</ConfigProvider>
+```
+
+## 圆角令牌
+
+全局圆角由 `@skyroc/tailwind-plugin` 注入。组件内部会根据自身层级使用合适的圆角，不需要在业务代码里统一追加 `rounded-*`。
+
+```css
+@import '@skyroc/tailwind-plugin' with (radius: 0.5);
+```
+
+当项目需要更硬朗或更柔和的界面风格时，应优先调整主题层的 `radius`，而不是逐个覆盖组件。
+
+## 间距与字体
+
+间距和字体令牌来自 `@skyroc/ui-tokens`，用于保障 Next.js 业务页面和官网页面的阅读节奏。C 端页面可以更强调展示与转化，但表单、导航和内容列表仍应保持稳定、清晰、易扫描。
+
+建议：
+
+- 表单字段之间保持稳定节奏，不按字段重要性随意改变间距。
+- 列表筛选和局部操作优先使用 `sm` 或 `md`，避免占用过多垂直空间。
+- 卡片标题、内容分组和弹窗标题使用内容层级区分，不用过大的 hero 字号。
+
+## 覆盖顺序
+
+样式覆盖建议遵循这个顺序：
+
+1. 优先使用组件 props，例如 `size`、`color`、`variant`。
+2. 跨页面默认值放到 `ConfigProvider`。
+3. 项目级视觉风格放到 `@skyroc/tailwind-plugin`。
+4. 只有局部布局需要时才使用 `className` 或 `classNames`。
+
+这能让组件行为、主题风格和业务布局保持清晰边界。

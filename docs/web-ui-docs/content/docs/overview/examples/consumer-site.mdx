@@ -1,0 +1,100 @@
+---
+title: C 端与官网场景
+description: 官网首页、注册登录、内容筛选、订阅表单和确认流程的组合建议
+---
+
+Next.js 的 C 端业务和官网页面通常同时关注品牌表达、转化效率和基础交互稳定性。下面的示例描述组件组合方式，具体 props 可继续查看组件文档。
+
+## 官网首页
+
+官网首页应把品牌主张、核心转化入口和后续内容层级放在同一个清晰叙事里。
+
+```tsx
+<section>
+  <Tag color="primary">New</Tag>
+  <h1>为你的产品构建稳定体验</h1>
+  <Button color="primary">开始使用</Button>
+  <Button variant="outline">查看案例</Button>
+</section>
+```
+
+建议：
+
+- 主 CTA 使用 `primary`，次级入口使用 `outline` 或 `ghost`。
+- 特性区可以使用 `Card`、`Icon`、`Tag` 表达差异点。
+- 图片、截图和内容卡片应服务于产品理解，不要只做装饰。
+
+## 注册登录
+
+注册登录表单应保持低干扰，只展示必要字段、提交动作和错误反馈。
+
+```tsx
+<Form>
+  <Input placeholder="请输入邮箱" />
+  <Password placeholder="请输入密码" />
+  <Button color="primary" className="w-full">
+    创建账号
+  </Button>
+</Form>
+```
+
+建议：
+
+- 输入字段保持单列。
+- 登录失败使用 `Alert` 或靠近字段的错误信息。
+- 第三方登录、忘记密码和隐私协议作为次级入口。
+
+## 内容筛选
+
+内容列表、商品列表或案例列表常需要搜索、分类、排序和状态反馈。
+
+```tsx
+<div className="flex flex-wrap items-center gap-3">
+  <Input placeholder="搜索内容" size="sm" />
+  <Select placeholder="分类" size="sm" />
+  <Segment items={['最新', '热门']} />
+</div>
+```
+
+建议：
+
+- 高频筛选项直接展示，低频筛选项放入 `Popover` 或折叠区。
+- 视图切换使用 `Segment`，不要用 `Tabs` 伪装筛选器。
+- 没有结果时使用明确空状态，不只显示空白区域。
+
+## 订阅表单
+
+订阅、咨询和预约表单应该轻量、可信，并给出明确结果反馈。
+
+```tsx
+<Form>
+  <Input placeholder="你的邮箱" />
+  <Checkbox>我同意接收产品更新</Checkbox>
+  <Button color="primary">订阅</Button>
+</Form>
+```
+
+建议：
+
+- 字段数量越少越好。
+- 隐私说明应靠近提交区域。
+- 提交成功或失败使用 `Sonner`，不要让用户猜测状态。
+
+## 确认流程
+
+C 端页面中的敏感操作通常不是“删除数据”，也可能是取消订阅、移除收藏、退出活动或放弃订单。
+
+```tsx
+<AlertDialog>
+  <Button color="destructive" variant="outline">
+    取消订阅
+  </Button>
+</AlertDialog>
+```
+
+建议：
+
+- 标题说明动作，例如“取消订阅”。
+- 描述说明影响，例如“你将不再收到产品更新”。
+- 确认按钮使用 `destructive`，取消按钮保持中性。
+- 完成后用 `Sonner` 告知结果。

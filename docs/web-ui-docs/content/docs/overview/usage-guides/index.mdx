@@ -1,0 +1,69 @@
+---
+title: 使用指南
+description: 表单、弹层、导航和反馈组件的组合原则
+---
+
+使用指南关注组件之间的协作方式。单个组件 API 正确不代表页面体验正确；表单、弹层、导航和反馈应该在业务流程中共同工作。
+
+## 表单组织
+
+表单应先表达信息结构，再处理视觉排列。
+
+- 简单表单使用单列结构，减少横向扫描成本。
+- 搜索筛选区可以使用紧凑布局，但字段顺序应和用户查询路径一致。
+- 提交按钮放在流程末端，危险操作不要和主提交并列。
+- 错误信息应靠近字段，不要只依赖全局提示。
+
+推荐组合：
+
+```tsx
+<Form>
+  <Input placeholder="项目名称" />
+  <Select placeholder="状态" />
+  <Button color="primary">保存</Button>
+</Form>
+```
+
+## 弹层使用
+
+弹层应只承载临时任务，不应成为页面主流程的替代品。
+
+| 场景 | 推荐组件 |
+| --- | --- |
+| 确认不可逆操作 | `AlertDialog` |
+| 编辑少量字段 | `Dialog` |
+| 移动端或侧向任务流 | `Drawer` / `BottomSheet` |
+| 补充说明或轻量操作 | `Popover` |
+| 文本解释 | `Tooltip` / `HoverCard` |
+| 全局命令入口 | `Command` |
+
+弹层内创建资源或绑定事件时，必须有清晰关闭路径。多个弹层不要无必要嵌套，避免焦点管理复杂化。
+
+## 导航模式
+
+导航组件应匹配信息层级：
+
+- `Tabs` 用于同一对象下的并列视图。
+- `Segment` 用于轻量模式切换，例如视图密度、展示方式。
+- `Breadcrumb` 用于页面层级回溯。
+- `Pagination` 用于数据分页，不用于步骤流程。
+- `NavigationMenu` 和 `Menubar` 用于更复杂的横向导航或命令分组。
+
+## 反馈提示
+
+反馈要区分“状态展示”和“操作反馈”。
+
+| 类型 | 推荐组件 | 说明 |
+| --- | --- | --- |
+| 页面级提示 | `Alert` | 解释当前页面或流程状态 |
+| 操作结果 | `Sonner` | 成功、失败、异步任务结果 |
+| 加载占位 | `Skeleton` | 数据尚未返回时维持布局 |
+| 进度展示 | `Progress` | 可量化任务进度 |
+| 状态标记 | `Badge` / `Tag` | 展示对象状态或分类 |
+
+## 下一步
+
+<Cards>
+  <Card title="组件选择指南" description="Button、Toggle、Segment、Tabs 等容易混用组件的判断方式" href="/overview/usage-guides/component-decisions" />
+  <Card title="场景示例" description="从登录、筛选、工具栏和确认流程理解组件组合" href="/overview/examples" />
+</Cards>

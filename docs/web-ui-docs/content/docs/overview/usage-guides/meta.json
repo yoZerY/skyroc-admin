@@ -1,0 +1,6 @@
+{
+  "title": "使用指南",
+  "defaultOpen": true,
+  "collapsible": false,
+  "pages": ["index", "component-decisions"]
+}

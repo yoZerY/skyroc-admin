@@ -1,5 +1,7 @@
 {
   "title": "布局容器",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": [
     "accordion",
     "collapsible",

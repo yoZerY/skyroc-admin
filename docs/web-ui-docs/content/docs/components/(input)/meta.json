@@ -1,5 +1,7 @@
 {
   "title": "输入",
+  "defaultOpen": true,
+  "collapsible": false,
   "pages": [
     "input",
     "textarea",

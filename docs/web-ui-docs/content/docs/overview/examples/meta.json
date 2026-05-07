@@ -1,0 +1,6 @@
+{
+  "title": "场景示例",
+  "defaultOpen": true,
+  "collapsible": false,
+  "pages": ["index", "consumer-site"]
+}
