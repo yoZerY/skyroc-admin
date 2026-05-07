@@ -32,7 +32,7 @@ const Portal = (props: PortalProps) => {
     // 支持 ID（#id）
     else if (typeof container === 'string') {
       if (container.startsWith('#')) {
-        element = document.getElementById(container);
+        element = document.getElementById(container.slice(1));
       }
       // 支持 CSS 选择器
       else {
@@ -43,7 +43,7 @@ const Portal = (props: PortalProps) => {
     // 自动创建容器
     if (!element && autoCreate && typeof container === 'string') {
       element = document.createElement(tagName);
-      element.id = container;
+      element.id = container.startsWith('#') ? container.slice(1) : container;
       document.body.appendChild(element);
       createdElementRef.current = element;
     }

@@ -47,6 +47,9 @@
     "clean": "rimraf dist",
     "dev": "tsdown --watch",
     "lint": "oxlint --fix",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
@@ -65,10 +68,14 @@
     "tailwind-variants": "catalog:utils"
   },
   "devDependencies": {
+    "@skyroc/config": "workspace:*",
     "@soybeanjs/eslint-config": "catalog:dev",
+    "@testing-library/jest-dom": "catalog:dev",
+    "@testing-library/react": "catalog:dev",
     "@types/react": "catalog:dev",
     "@types/react-dom": "catalog:dev",
     "oxlint": "catalog:dev",
-    "typescript": "catalog:core"
+    "typescript": "catalog:core",
+    "vitest": "catalog:dev"
   }
 }

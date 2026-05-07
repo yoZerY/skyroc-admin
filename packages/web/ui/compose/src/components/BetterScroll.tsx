@@ -1,7 +1,7 @@
 import type { Options } from '@better-scroll/core';
 import BScroll from '@better-scroll/core';
 import { useMount, useSize, useUpdateEffect } from 'ahooks';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { ComponentPropsWithoutRef, FC, Ref } from 'react';
 import { useImperativeHandle, useRef } from 'react';
 

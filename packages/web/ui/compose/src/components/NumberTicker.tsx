@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { AnimationPlaybackControls } from 'motion/react';
 import { animate, useInView, useMotionValue, useSpring } from 'motion/react';
 import type { ComponentPropsWithoutRef } from 'react';

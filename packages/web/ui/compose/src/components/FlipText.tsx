@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { Variants } from 'motion/react';
 import { AnimatePresence, motion } from 'motion/react';
 

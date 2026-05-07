@@ -1,3 +1,5 @@
 import { domMax } from 'motion/react';
 
-export default domMax;
+const animateFeature = domMax;
+
+export default animateFeature;

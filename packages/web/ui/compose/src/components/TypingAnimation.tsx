@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { MotionProps } from 'motion/react';
 import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
