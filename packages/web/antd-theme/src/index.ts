@@ -1,12 +1,3 @@
-// Default theme algorithm
-export { default as derivative } from './algorithm/default';
-export {
-  generateColorPalettes,
-  generateNeutralColorPalettes,
-  LIGHT_BG_BASE,
-  LIGHT_TEXT_BASE
-} from './algorithm/default/colors';
-
 // Dark theme algorithm
 export { default as derivativeDark } from './algorithm/dark';
 export {
@@ -15,6 +6,15 @@ export {
   generateColorPalettes as generateDarkColorPalettes,
   generateNeutralColorPalettes as generateDarkNeutralColorPalettes
 } from './algorithm/dark/colors';
+
+// Default theme algorithm
+export { default as derivative } from './algorithm/default';
+export {
+  generateColorPalettes,
+  generateNeutralColorPalettes,
+  LIGHT_BG_BASE,
+  LIGHT_TEXT_BASE
+} from './algorithm/default/colors';
 
 // Seed tokens
 export { defaultPresetColors, seedToken } from './seed';
@@ -34,6 +34,12 @@ export {
 } from './shared/genColorMapToken';
 
 export type { SemanticColorConfig } from './shared/genColorMapToken';
+
+// Common map token
+export { default as genCommonMapToken } from './shared/genCommonMapToken';
+
+// Control height
+export { default as genControlHeight } from './shared/genControlHeight';
 
 // Font map token
 export {
@@ -69,12 +75,6 @@ export {
 } from './shared/genSizeMapToken';
 
 export type { SpacingSizeKey } from './shared/genSizeMapToken';
-
-// Common map token
-export { default as genCommonMapToken } from './shared/genCommonMapToken';
-
-// Control height
-export { default as genControlHeight } from './shared/genControlHeight';
 
 // Types
 export type * from './types';

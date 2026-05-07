@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  RADIUS_MULTIPLIERS,
   calcRadius,
   genExtendedRadiusToken,
   genRadiusMapToken,
   genRadiusSizes,
-  genRadiusVars,
-  RADIUS_MULTIPLIERS
+  genRadiusVars
 } from '../src/shared/genRadiusMapToken';
 
 describe('calcRadius', () => {

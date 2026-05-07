@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  FONT_SIZES,
+  LINE_HEIGHTS,
   genFontMapToken,
   genFontSizes,
   getLineHeightRatio,
-  remToPx,
-  FONT_SIZES,
-  LINE_HEIGHTS
+  remToPx
 } from '../src/shared/genFontMapToken';
 
 describe('remToPx', () => {

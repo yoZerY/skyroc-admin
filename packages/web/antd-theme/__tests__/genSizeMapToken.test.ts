@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  SPACING_MULTIPLIERS,
   calcSpacing,
   genSizeMapToken,
   genSpacingSizes,
-  genSpacingVars,
-  SPACING_MULTIPLIERS
+  genSpacingVars
 } from '../src/shared/genSizeMapToken';
 
 describe('calcSpacing', () => {

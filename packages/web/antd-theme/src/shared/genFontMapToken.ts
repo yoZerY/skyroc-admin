@@ -93,43 +93,6 @@ export interface ExtendedFontMapToken extends FontMapToken {
   /** Small font height (px) */
   fontHeightSM: number;
 
-  /** Extra small text size (12px) */
-  TextXs: number;
-  /** Small text size (14px) */
-  TextSm: number;
-  /** Base text size (16px) */
-  TextBase: number;
-  /** Large text size (18px) */
-  TextLg: number;
-  /** Extra large text size (20px) */
-  TextXl: number;
-  /** 2x large text size (24px) */
-  Text2xl: number;
-  /** 3x large text size (30px) */
-  Text3xl: number;
-  /** 4x large text size (36px) */
-  Text4xl: number;
-  /** 5x large text size (48px) */
-  Text5xl: number;
-  /** 6x large text size (60px) */
-  Text6xl: number;
-  /** 7x large text size (72px) */
-  Text7xl: number;
-  /** 8x large text size (96px) */
-  Text8xl: number;
-  /** 9x large text size (128px) */
-  Text9xl: number;
-
-  /** Extra small line height (px) */
-  LineHeightXs: number;
-  /** Small line height (px) */
-  LineHeightSm: number;
-  /** Base line height (px) */
-  LineHeightBase: number;
-  /** Large line height (px) */
-  LineHeightLg: number;
-  /** Extra large line height (px) */
-  LineHeightXl: number;
   /** 2x large line height (px) */
   LineHeight2xl: number;
   /** 3x large line height (px) */
@@ -146,6 +109,43 @@ export interface ExtendedFontMapToken extends FontMapToken {
   LineHeight8xl: number;
   /** 9x large line height (px) */
   LineHeight9xl: number;
+  /** Base line height (px) */
+  LineHeightBase: number;
+  /** Large line height (px) */
+  LineHeightLg: number;
+  /** Small line height (px) */
+  LineHeightSm: number;
+  /** Extra large line height (px) */
+  LineHeightXl: number;
+  /** Extra small line height (px) */
+  LineHeightXs: number;
+
+  /** 2x large text size (24px) */
+  Text2xl: number;
+  /** 3x large text size (30px) */
+  Text3xl: number;
+  /** 4x large text size (36px) */
+  Text4xl: number;
+  /** 5x large text size (48px) */
+  Text5xl: number;
+  /** 6x large text size (60px) */
+  Text6xl: number;
+  /** 7x large text size (72px) */
+  Text7xl: number;
+  /** 8x large text size (96px) */
+  Text8xl: number;
+  /** 9x large text size (128px) */
+  Text9xl: number;
+  /** Base text size (16px) */
+  TextBase: number;
+  /** Large text size (18px) */
+  TextLg: number;
+  /** Small text size (14px) */
+  TextSm: number;
+  /** Extra large text size (20px) */
+  TextXl: number;
+  /** Extra small text size (12px) */
+  TextXs: number;
 }
 
 /**

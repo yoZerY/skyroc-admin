@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   ANTD_INDEXES,
-  TAILWIND_INDEXES,
   FUNCTIONAL_SEMANTIC_CONFIG,
   PRIMARY_SEMANTIC_CONFIG,
+  TAILWIND_INDEXES,
   genPaletteVars,
   genSemanticColors
 } from '../src/shared/genColorMapToken';
