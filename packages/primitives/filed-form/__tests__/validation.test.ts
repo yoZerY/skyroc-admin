@@ -12,6 +12,12 @@ describe('runRulesWithMode', () => {
     });
   });
 
+  it('should report required errors for empty arrays', async () => {
+    const result = await runRulesWithMode([], [{ required: true }], 'parallelAll', {}, defaultValidateMessages);
+
+    expect(result.errors).toEqual(['This field is required']);
+  });
+
   it('should skip optional empty values by default', async () => {
     const result = await runRulesWithMode('', [{ type: 'email' }], 'parallelAll', {}, defaultValidateMessages);
 
@@ -133,6 +139,50 @@ describe('runRulesWithMode', () => {
     expect(max.errors).toEqual(['Date is later than maximum']);
   });
 
+  it('should validate date instances and numeric timestamps', async () => {
+    const invalidDateInstance = await runRulesWithMode(
+      new Date('invalid'),
+      [{ type: 'date' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+    const invalidTimestamp = await runRulesWithMode(
+      Number.POSITIVE_INFINITY,
+      [{ type: 'date' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+    const invalidMinDate = await runRulesWithMode(
+      new Date('2026-05-07'),
+      [{ min: new Date('invalid'), type: 'date' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+    const validDate = await runRulesWithMode(
+      new Date('2026-05-07'),
+      [{ type: 'date' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+    const validTimestamp = await runRulesWithMode(
+      Date.parse('2026-05-07'),
+      [{ type: 'date' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+
+    expect(invalidDateInstance.errors).toEqual([]);
+    expect(invalidTimestamp.errors).toEqual(['Must be a valid Date']);
+    expect(invalidMinDate.errors).toEqual([]);
+    expect(validDate.errors).toEqual([]);
+    expect(validTimestamp.errors).toEqual([]);
+  });
+
   it('should reject unsupported date-like values', async () => {
     const result = await runRulesWithMode({}, [{ type: 'date' }], 'parallelAll', {}, defaultValidateMessages);
 
@@ -161,7 +211,22 @@ describe('runRulesWithMode', () => {
 
   it('should accept empty enum rules and valid boolean and regexp values', async () => {
     const enumResult = await runRulesWithMode('guest', [{ enum: [], type: 'enum' }], 'parallelAll', {}, defaultValidateMessages);
+    const enumMatch = await runRulesWithMode(
+      'admin',
+      [{ enum: ['admin', 'editor'], type: 'enum' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
     const booleanResult = await runRulesWithMode(true, [{ type: 'boolean' }], 'parallelAll', {}, defaultValidateMessages);
+    const emailResult = await runRulesWithMode(
+      'ada@example.com',
+      [{ type: 'email' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+    const hexResult = await runRulesWithMode('#16a34a', [{ type: 'hex' }], 'parallelAll', {}, defaultValidateMessages);
     const emptyRegexp = await runRulesWithMode('', [{ type: 'regexp' }], 'parallelAll', {}, defaultValidateMessages);
     const strictEmptyRegexp = await runRulesWithMode(
       '',
@@ -181,7 +246,10 @@ describe('runRulesWithMode', () => {
     );
 
     expect(enumResult.errors).toEqual([]);
+    expect(enumMatch.errors).toEqual([]);
     expect(booleanResult.errors).toEqual([]);
+    expect(emailResult.errors).toEqual([]);
+    expect(hexResult.errors).toEqual([]);
     expect(emptyRegexp.errors).toEqual([]);
     expect(strictEmptyRegexp.errors).toEqual([]);
     expect(regexpInstance.errors).toEqual([]);
@@ -221,6 +289,28 @@ describe('runRulesWithMode', () => {
       errors: [],
       warns: []
     });
+  });
+
+  it('should use an empty rule fallback in serial mode', async () => {
+    await expect(runRulesWithMode('value', [undefined as any], 'serial', {}, defaultValidateMessages)).resolves.toEqual({
+      errors: [],
+      warns: []
+    });
+  });
+
+  it('should format undefined values as empty strings', async () => {
+    const valuePlaceholder = ['$', '{value}'].join('');
+    const result = await runRulesWithMode(
+      undefined,
+      [{ skipIfEmpty: false, type: 'email' }],
+      'parallelAll',
+      {},
+      {
+        email: `Bad value: ${valuePlaceholder}`
+      }
+    );
+
+    expect(result.errors).toEqual(['Bad value: ']);
   });
 
   it('should stop after the first error in serial mode', async () => {

@@ -88,6 +88,54 @@ const ArrayFieldPanel = (props: ArrayFieldPanelProps) => {
   );
 };
 
+interface ExternalWatchDisplayProps {
+  /** 外部 form 实例，用于覆盖非上下文传入的 hook 分支 */
+  form: FormInstance<HookValues>;
+}
+
+const ExternalWatchDisplay = (props: ExternalWatchDisplayProps) => {
+  const { form } = props;
+  const values = useWatch<HookValues>(form);
+  const state = useFieldState<HookValues, 'name'>('name', { form });
+  const stableName = useSelector<HookValues, string>(get => String(get('name')), {
+    deps: ['name'],
+    eq: () => true,
+    form
+  });
+
+  return (
+    <>
+      <Field name="name">
+        <input aria-label="External name" />
+      </Field>
+      <output aria-label="External watch">{values.name}</output>
+      <output aria-label="External touched">{String(state.touched)}</output>
+      <output aria-label="Stable selected name">{stableName}</output>
+    </>
+  );
+};
+
+const ExternalWatchPanel = () => {
+  const [form] = useForm<HookValues>();
+
+  return (
+    <Form
+      form={form}
+      initialValues={{
+        email: 'ada@example.com',
+        errorEmail: '',
+        errorName: '',
+        items: [],
+        name: 'Ada',
+        quantity: 1,
+        unitPrice: 1
+      }}
+    >
+      <ExternalWatchDisplay form={form} />
+    </Form>
+  );
+};
+
 const NamedErrors = () => {
   const errors = useFieldError<HookValues, 'errorEmail' | 'errorName'>(['errorEmail', 'errorName']);
 
@@ -283,6 +331,12 @@ const ForceUndoRedoExample = () => {
       >
         Unknown op
       </button>
+      <button
+        type="button"
+        onClick={() => hooks.dispatch({ args: { index: 0, item: { title: 'Ghost' }, op: 'insert' }, name: 'missing', type: 'arrayOp' } as any)}
+      >
+        Missing array op
+      </button>
     </Form>
   );
 };
@@ -383,6 +437,22 @@ describe('form hooks', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('Item count')).toHaveTextContent('1');
     });
+  });
+
+  it('should watch an external form instance and keep selector output stable when equality passes', async () => {
+    render(<ExternalWatchPanel />);
+
+    expect(screen.getByLabelText('External watch')).toHaveTextContent('Ada');
+    expect(screen.getByLabelText('External touched')).toHaveTextContent('false');
+    expect(screen.getByLabelText('Stable selected name')).toHaveTextContent('Ada');
+
+    fireEvent.change(screen.getByLabelText('External name'), { target: { value: 'Grace' } });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('External watch')).toHaveTextContent('Grace');
+      expect(screen.getByLabelText('External touched')).toHaveTextContent('true');
+    });
+    expect(screen.getByLabelText('Stable selected name')).toHaveTextContent('Ada');
   });
 
   it('should return named, contextual, and external field errors', async () => {
@@ -566,6 +636,7 @@ describe('form hooks', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Unknown op' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Missing array op' }));
 
     expect(title).toHaveValue('Bulk');
   });

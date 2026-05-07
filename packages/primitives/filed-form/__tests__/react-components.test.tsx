@@ -8,6 +8,11 @@ interface LoginValues {
   email: string;
 }
 
+interface NameValues {
+  /** 用户名，用于字段事件分支 */
+  name: string;
+}
+
 const EmailError = () => {
   const errors = useFieldError<LoginValues, 'email'>('email');
 
@@ -346,6 +351,46 @@ describe('Form and Field integration', () => {
     });
   });
 
+  it('should skip unchanged extracted values and disabled validation triggers', () => {
+    const onValuesChange = vi.fn();
+    const validator = vi.fn(() => 'Name is invalid');
+
+    render(
+      <Form<NameValues> initialValues={{ name: 'Ada' }} onValuesChange={onValuesChange}>
+        <Field
+          getValueFromEvent={() => 'Ada'}
+          name="name"
+          rules={[{ validator }]}
+          trigger="onClick"
+          validateTrigger={false}
+        >
+          <button type="button">Same name</button>
+        </Field>
+      </Form>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Same name' }));
+
+    expect(onValuesChange).not.toHaveBeenCalled();
+    expect(validator).not.toHaveBeenCalled();
+  });
+
+  it('should omit control handlers when field names are empty', () => {
+    const onChange = vi.fn();
+
+    render(
+      <Form>
+        <Field name={'' as any}>
+          <input aria-label="Nameless field" onChange={onChange} />
+        </Field>
+      </Form>
+    );
+
+    fireEvent.change(screen.getByLabelText('Nameless field'), { target: { value: 'Ada' } });
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
   it('should hide fields when the form marks them hidden', async () => {
     render(<VisibilityExample initialName="Ada" />);
 
@@ -428,6 +473,19 @@ describe('List component integration', () => {
 });
 
 describe('ComputedField integration', () => {
+  it('should pass empty values to unresolved computed fields', () => {
+    render(
+      <Form>
+        <ComputedField compute={() => undefined} deps={[]} name={'total' as any}>
+          <input aria-label="Empty total" />
+        </ComputedField>
+      </Form>
+    );
+
+    expect(screen.getByLabelText('Empty total')).toHaveValue('');
+    expect(screen.getByLabelText('Empty total')).toHaveAttribute('readonly');
+  });
+
   it('should recompute read-only values when dependencies change', async () => {
     render(
       <Form initialValues={{ quantity: 2, total: 10, unitPrice: 5 }}>

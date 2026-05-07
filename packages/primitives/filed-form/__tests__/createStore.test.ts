@@ -9,7 +9,7 @@ function createHarness(initialValues: Record<string, any> = {}) {
 
   hooks.setInitialValues(initialValues);
 
-  return { form, hooks };
+  return { form, hooks, store };
 }
 
 function registerField(hooks: any, name: string, initialValue?: any) {
@@ -28,6 +28,8 @@ async function flushNotify() {
   await Promise.resolve();
   await Promise.resolve();
 }
+
+function noopUnregister() {}
 
 afterEach(() => {
   vi.useRealTimers();
@@ -69,6 +71,23 @@ describe('FormStore values and metadata', () => {
         validatingFields: {}
       })
     );
+  });
+
+  it('should use global preserve and tolerate missing callbacks', () => {
+    const { form, hooks } = createHarness({ name: 'Ada' });
+
+    hooks.setCallbacks(null as any);
+    hooks.setPreserve(true);
+
+    const unregister = hooks.registerField({
+      changeValue: vi.fn(),
+      name: 'name'
+    });
+
+    unregister();
+    form.setFieldValue('name', 'Grace');
+
+    expect(form.getFieldValue('name')).toBe('Grace');
   });
 
   it('should register multiple listeners for the same field name', async () => {
@@ -160,6 +179,19 @@ describe('FormStore values and metadata', () => {
     expect(onFieldsChange).toHaveBeenCalled();
   });
 
+  it('should ignore empty batch patches and walk null array items', () => {
+    const onValuesChange = vi.fn();
+    const { form, hooks } = createHarness({ items: [] });
+
+    hooks.setCallbacks({ onValuesChange });
+
+    form.setFieldsValue(undefined as any);
+    form.setFieldsValue({ items: [null] });
+
+    expect(form.getFieldValue('items')).toEqual([null]);
+    expect(onValuesChange).toHaveBeenCalledTimes(1);
+  });
+
   it('should unregister non-preserved fields and clear their values', () => {
     const { form, hooks } = createHarness({ name: 'Ada' });
     const unregister = hooks.registerField({
@@ -193,6 +225,26 @@ describe('FormStore values and metadata', () => {
 
     expect(form.isDisabled('name')).toBe(true);
     expect(form.isHidden('name')).toBe(true);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it('should notify when disabled and hidden states are cleared', async () => {
+    const { form, hooks } = createHarness({ name: 'Ada' });
+    const listener = vi.fn();
+
+    registerField(hooks, 'name');
+    hooks.subscribeField('name', listener, {
+      mask: addTag(0, ChangeTag.Disabled, ChangeTag.Hidden)
+    });
+
+    form.setDisabled('name', true);
+    form.setDisabled('name', false);
+    form.setHidden('name', true);
+    form.setHidden('name', false);
+    await flushNotify();
+
+    expect(form.isDisabled('name')).toBe(false);
+    expect(form.isHidden('name')).toBe(false);
     expect(listener).toHaveBeenCalledTimes(1);
   });
 
@@ -237,6 +289,67 @@ describe('FormStore values and metadata', () => {
 
     unregisterSubtotal();
     unregisterTotal();
+  });
+
+  it('should deduplicate shared computed dependencies in batch updates', () => {
+    const { form, hooks } = createHarness({
+      first: 'Ada',
+      fullName: 'Ada Lovelace',
+      last: 'Lovelace'
+    });
+    const compute = vi.fn((get: (name: string) => any) => `${get('first')} ${get('last')}`);
+
+    const unregister = hooks.registerComputed('fullName', ['first', 'last'], compute);
+
+    form.setFieldsValue({
+      first: 'Grace',
+      last: 'Hopper'
+    });
+
+    expect(form.getFieldValue('fullName')).toBe('Grace Hopper');
+    expect(compute).toHaveBeenCalledTimes(1);
+
+    unregister();
+  });
+
+  it('should tolerate computed targets unregistered during recompute', () => {
+    const { form, hooks } = createHarness({ source: 1 });
+    let unregisterTarget = noopUnregister;
+
+    const unregisterRemover = hooks.registerComputed('remover', ['source'], () => {
+      unregisterTarget();
+
+      return 1;
+    });
+    unregisterTarget = hooks.registerComputed('target', ['source'], () => 2);
+
+    expect(() => form.setFieldValue('source', 2)).not.toThrow();
+    expect(form.getFieldValue('remover')).toBe(1);
+    expect(form.getFieldValue('target')).toBeUndefined();
+
+    unregisterRemover();
+  });
+
+  it('should write manually registered computed target values', () => {
+    const { form, store } = createHarness({ source: 1 });
+
+    (store as any)._computed.set('manualTotal', {
+      compute: () => 2,
+      deps: ['source']
+    });
+    (store as any).recomputeTargets(['manualTotal']);
+
+    expect(form.getFieldValue('manualTotal')).toBe(2);
+  });
+
+  it('should tolerate stale computed dependency targets', () => {
+    const { form, hooks, store } = createHarness({ source: 1 });
+
+    hooks.registerComputed('missing.target', ['source'], () => 1);
+    (form as any).getInternalHooks().registerComputed('stable', ['source'], () => form.getFieldValue('stable'));
+    (store as any)._computed.delete('missing.target');
+
+    expect(() => form.setFieldValue('source', 2)).not.toThrow();
   });
 });
 
@@ -348,6 +461,19 @@ describe('FormStore validation and submit', () => {
     expect(form.getFieldError('email')).toEqual(['Email is required']);
   });
 
+  it('should skip trigger-mismatched validation when no current error exists', async () => {
+    const { form, hooks } = createHarness({ email: 'ada@example.com' });
+
+    registerField(hooks, 'email');
+    hooks.setFieldRules('email', [
+      { debounceMs: 0, message: 'Email is required', required: true, validateTrigger: 'blur' }
+    ]);
+
+    await expect(form.validateField('email', { trigger: 'change' })).resolves.toBe(true);
+
+    expect(form.getFieldError('email')).toEqual([]);
+  });
+
   it('should validate only dirty fields when requested', async () => {
     const { form, hooks } = createHarness({ first: '', second: '' });
 
@@ -442,6 +568,25 @@ describe('FormStore validation and submit', () => {
     expect(first).toEqual(expect.any(Promise));
   });
 
+  it('should use default debounce when no debounce value is configured', async () => {
+    vi.useFakeTimers();
+
+    const { form, hooks } = createHarness({ email: '' });
+
+    registerField(hooks, 'email');
+    hooks.setFieldRules('email', [{ message: 'Email is required', required: true }]);
+
+    const pending = form.validateField('email');
+
+    await vi.advanceTimersByTimeAsync(159);
+    expect(form.getFieldError('email')).toEqual([]);
+
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(pending).resolves.toBe(false);
+
+    expect(form.getFieldError('email')).toEqual(['Email is required']);
+  });
+
   it('should convert thrown validators into field errors through FormStore', async () => {
     const { form, hooks } = createHarness({ name: 'Ada' });
 
@@ -458,6 +603,25 @@ describe('FormStore validation and submit', () => {
     await expect(form.validateField('name')).resolves.toBe(false);
 
     expect(form.getFieldError('name')).toEqual(['Validator crashed']);
+  });
+
+  it('should convert thrown non-error validators into string errors', async () => {
+    const { form, hooks } = createHarness({ name: 'Ada' });
+    const plainCrash = Reflect.get({ value: 'plain crash' }, 'value');
+
+    registerField(hooks, 'name');
+    hooks.setFieldRules('name', [
+      {
+        debounceMs: 0,
+        validator: () => {
+          throw plainCrash;
+        }
+      }
+    ]);
+
+    await expect(form.validateField('name')).resolves.toBe(false);
+
+    expect(form.getFieldError('name')).toEqual(['plain crash']);
   });
 
   it('should fail submit when schema validation returns issues', async () => {
@@ -479,6 +643,19 @@ describe('FormStore validation and submit', () => {
         firstErrorName: 'email'
       })
     );
+  });
+
+  it('should submit when schema validation returns no issues', async () => {
+    const onFinish = vi.fn();
+    const { form, hooks } = createHarness({ email: 'ada@example.com' });
+
+    hooks.setCallbacks({ onFinish });
+    registerField(hooks, 'email');
+    hooks.setSchemaValidator(async () => []);
+
+    await form.submit();
+
+    expect(onFinish).toHaveBeenCalledWith({ email: 'ada@example.com' });
   });
 
   it('should omit disabled and hidden array entries from submitted values', async () => {
@@ -515,6 +692,19 @@ describe('FormStore validation and submit', () => {
     await form.submit(false);
 
     expect(onFinish).toHaveBeenCalledWith({ name: 'Ada', secret: 'token' });
+  });
+
+  it('should prune to an empty object when the root value is hidden', async () => {
+    const onFinish = vi.fn();
+    const { form, hooks } = createHarness({ name: 'Ada' });
+
+    hooks.setCallbacks({ onFinish });
+    registerField(hooks, 'name');
+    form.setHidden('', true);
+
+    await form.submit();
+
+    expect(onFinish).toHaveBeenCalledWith({});
   });
 });
 
@@ -573,6 +763,15 @@ describe('FormStore array operations', () => {
     expect(form.getFieldsTouched()).toBe(false);
     expect(form.getFieldsError()).toEqual({});
     expect(form.getFieldsWarning()).toEqual({});
+  });
+
+  it('should derive array fields from initial values and empty fallback values', () => {
+    const { hooks } = createHarness();
+
+    expect(hooks.getArrayFields('items', [{ name: 'A' }], false)).toEqual([
+      { disabled: false, key: '0', name: 'items.0' }
+    ]);
+    expect(hooks.getArrayFields('empty')).toEqual([]);
   });
 });
 
@@ -645,6 +844,23 @@ describe('FormStore lifecycle and transactions', () => {
     expect(form.getFieldsValue()).toEqual({ name: 'Ada' });
   });
 
+  it('should dispatch reset actions without explicit field names', () => {
+    const { form, hooks } = createHarness({ name: 'Ada' });
+
+    form.setFieldValue('name', 'Grace');
+    hooks.dispatch({ type: 'reset' });
+
+    expect(form.getFieldValue('name')).toBe('Ada');
+  });
+
+  it('should tolerate sparse external error entries', () => {
+    const { form, hooks } = createHarness({ name: 'Ada' });
+    const entries = Array(1) as any;
+
+    expect(() => hooks.dispatch({ entries, type: 'setExternalErrors' })).not.toThrow();
+    expect(form.getFieldError('name')).toEqual([]);
+  });
+
   it('should allow middleware to dispatch follow-up actions', () => {
     const { form, hooks } = createHarness({ name: 'Ada' });
 
@@ -705,6 +921,50 @@ describe('FormStore lifecycle and transactions', () => {
         validatedFields: { email: true }
       })
     );
+  });
+
+  it('should avoid duplicate validating setup for concurrent field validation', async () => {
+    vi.useFakeTimers();
+
+    const { form, hooks } = createHarness({ email: 'ada@example.com' });
+
+    registerField(hooks, 'email');
+    hooks.setFieldRules('email', [
+      {
+        debounceMs: 0,
+        validator: () =>
+          new Promise(resolve => {
+            setTimeout(() => resolve(undefined), 20);
+          })
+      }
+    ]);
+
+    const first = form.validateFields(['email']);
+    const second = form.validateFields(['email']);
+
+    await vi.advanceTimersByTimeAsync(20);
+
+    await expect(first).resolves.toBe(false);
+    await expect(second).resolves.toBe(true);
+  });
+
+  it('should complete validation when validating state was already cleared', async () => {
+    const { form, hooks, store } = createHarness({ email: 'ada@example.com' });
+
+    registerField(hooks, 'email');
+    hooks.setFieldRules('email', [
+      {
+        debounceMs: 0,
+        validator: () => {
+          (store as any)._validating.delete('email');
+
+          return undefined;
+        }
+      }
+    ]);
+
+    await expect(form.validateField('email')).resolves.toBe(true);
+    expect(form.getFieldsValidating(['email'])).toBe(false);
   });
 
   it('should roll back failed transactions', () => {

@@ -208,6 +208,32 @@ describe('standard schema resolver', () => {
     await expect(validator?.({})).resolves.toEqual([{ message: 'Invalid email', path: ['user', 'email'] }]);
   });
 
+  it('should normalize standard schema issues without paths and undefined issue lists', async () => {
+    const noPathSchema = {
+      '~standard': {
+        validate: vi.fn(() => ({
+          issues: [{ message: 'Invalid form' }]
+        })),
+        vendor: 'test',
+        version: 1
+      }
+    } as const;
+    const undefinedIssuesSchema = {
+      '~standard': {
+        validate: vi.fn(() => ({
+          issues: undefined
+        })),
+        vendor: 'test',
+        version: 1
+      }
+    } as const;
+
+    await expect(extractSchemaValidator(noPathSchema)?.({})).resolves.toEqual([
+      { message: 'Invalid form', path: [] }
+    ]);
+    await expect(extractSchemaValidator(undefinedIssuesSchema as any)?.({})).resolves.toEqual([]);
+  });
+
   it('should return no issues for successful standard schema validation', async () => {
     const schema = {
       '~standard': {
@@ -227,7 +253,10 @@ describe('standard schema resolver', () => {
     const schema = {
       '~standard': {
         validate: vi.fn(() => ({
-          issues: [{ message: 'Invalid email', path: ['email'] }]
+          issues: [
+            { message: 'Invalid email', path: [{ key: 'user' }, { key: 'email' }] },
+            { message: 'Invalid segment', path: [{ label: 'field' }] as any }
+          ]
         })),
         vendor: 'test',
         version: 1
@@ -239,10 +268,13 @@ describe('standard schema resolver', () => {
       getState: () => ({ email: 'bad' })
     })(vi.fn());
 
-    await middleware({ name: ['email'], type: 'validateFields' } as any);
+    await middleware({ name: ['user.email', '[object Object]'], type: 'validateFields' } as any);
 
     expect(dispatch).toHaveBeenCalledWith({
-      entries: [['email', ['Invalid email']]],
+      entries: [
+        ['user.email', ['Invalid email']],
+        ['[object Object]', ['Invalid segment']]
+      ],
       type: 'setExternalErrors'
     });
 
@@ -291,6 +323,29 @@ describe('standard schema resolver', () => {
 
     expect(issueDispatch).toHaveBeenCalledWith({
       entries: [['', ['Invalid form']]],
+      type: 'setExternalErrors'
+    });
+
+    const noIssueDispatch = vi.fn();
+    const noIssueSchema = {
+      '~standard': {
+        validate: vi.fn(() => ({
+          issues: undefined
+        })),
+        vendor: 'test',
+        version: 1
+      }
+    } as const;
+
+    const noIssueMiddleware = createStandardResolver(noIssueSchema as any)({
+      dispatch: noIssueDispatch,
+      getState: () => ({})
+    })(vi.fn());
+
+    await noIssueMiddleware({ type: 'validateFields' } as any);
+
+    expect(noIssueDispatch).toHaveBeenCalledWith({
+      entries: [],
       type: 'setExternalErrors'
     });
   });
