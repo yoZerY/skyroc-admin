@@ -1,22 +1,91 @@
 {
   "name": "@skyroc/hooks",
   "version": "1.0.0",
+  "type": "module",
   "description": "React hooks - platform-agnostic core with ./web subpath for browser hooks",
+  "keywords": [
+    "ahooks",
+    "browser",
+    "hooks",
+    "platform-agnostic",
+    "react",
+    "react-hooks",
+    "typescript"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Ohh-889/skyroc-admin/tree/master/packages/hooks",
+  "bugs": {
+    "url": "https://github.com/Ohh-889/skyroc-admin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ohh-889/skyroc-admin.git",
+    "directory": "packages/hooks"
+  },
+  "author": {
+    "name": "Ohh",
+    "email": "1509326266@qq.com",
+    "url": "https://github.com/Ohh-889"
+  },
   "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
-      "*": [
-        "./src/*"
+      "web": [
+        "./dist/web/index.d.ts"
       ]
     }
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./web": "./src/web/index.ts"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./web": {
+      "import": {
+        "types": "./dist/web/index.d.ts",
+        "default": "./dist/web/index.js"
+      }
+    }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      },
+      "./web": {
+        "import": {
+          "types": "./dist/web/index.d.ts",
+          "default": "./dist/web/index.js"
+        }
+      }
+    }
   },
   "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
+    "dev": "tsdown --watch",
+    "lint": "oxlint --fix",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "ahooks": "catalog:utils"
@@ -24,8 +93,14 @@
   "devDependencies": {
     "@skyroc/config": "workspace:*",
     "@skyroc/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "catalog:dev",
+    "@testing-library/react": "catalog:dev",
+    "oxlint": "catalog:dev",
     "react": "catalog:core",
-    "react-dom": "catalog:core"
+    "react-dom": "catalog:core",
+    "rimraf": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "typescript": "catalog:core"
   },
   "peerDependencies": {
     "react": ">=18.0.0"

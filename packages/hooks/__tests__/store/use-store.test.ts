@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { Store } from '../../src/store/store';
 import { useStore } from '../../src/store/use-store';
 import type { Subscribable } from '../../src/store/use-store';

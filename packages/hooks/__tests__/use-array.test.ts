@@ -26,7 +26,7 @@ describe('useArray - hook 桥接层', () => {
   });
 
   it('store 实例在重渲染之间应保持稳定', () => {
-    const { result, rerender } = renderHook(() => useArray(initial, 'id'));
+    const { rerender, result } = renderHook(() => useArray(initial, 'id'));
     const storeRef = result.current[1];
 
     rerender();

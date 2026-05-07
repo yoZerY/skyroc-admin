@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { useSystemTheme } from '../../src/web/use-system-theme';
 
 /**
@@ -85,7 +85,7 @@ describe('useSystemTheme', () => {
   });
 
   it('卸载后应移除事件监听器', () => {
-    const { matchMediaMock, getListenerCount } = createMatchMediaMock(false);
+    const { getListenerCount, matchMediaMock } = createMatchMediaMock(false);
     window.matchMedia = matchMediaMock;
 
     const { unmount } = renderHook(() => useSystemTheme());
