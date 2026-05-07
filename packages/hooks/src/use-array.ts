@@ -93,12 +93,12 @@ class ArrayStore<T, K extends keyof T> extends Store<T[]> {
 
   /** 反转数组 */
   reverse = () => {
-    this.setState(prev => [...prev].reverse());
+    this.setState(prev => [...prev].toReversed());
   };
 
   /** 排序数组 */
   sort = (compareFn?: (a: T, b: T) => number) => {
-    this.setState(prev => [...prev].sort(compareFn));
+    this.setState(prev => [...prev].toSorted(compareFn));
   };
 
   /** 拼接数组 */
