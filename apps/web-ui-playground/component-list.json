@@ -225,6 +225,11 @@
     "value": "sonner"
   },
   {
+    "name": "switch",
+    "label": "Switch",
+    "value": "switch"
+  },
+  {
     "name": "tabs",
     "label": "Tabs",
     "value": "tabs"
