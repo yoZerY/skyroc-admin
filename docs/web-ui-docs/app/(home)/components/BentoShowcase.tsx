@@ -42,6 +42,8 @@ const tabItems: TabsOptionData[] = [
   { children: '', label: '报表', value: 'reports' }
 ];
 
+type TabValue = 'analytics' | 'overview' | 'reports';
+
 const notifications = [
   { name: '张三', message: '提交了新的 Pull Request', time: '2 分钟前', color: 'primary' as const },
   { name: '李四', message: '评论了你的代码审查', time: '15 分钟前', color: 'info' as const },
@@ -67,15 +69,21 @@ const tabMeta = {
     indicatorClassName: 'bg-success',
     label: '报表'
   }
-} satisfies Record<string, { indicatorClassName: string; label: string }>;
+} satisfies Record<TabValue, { indicatorClassName: string; label: string }>;
 
 export const BentoShowcase = () => {
   const [framework, setFramework] = useState('react');
-  const [tabValue, setTabValue] = useState('overview');
+  const [tabValue, setTabValue] = useState<TabValue>('overview');
   const [volume, setVolume] = useState(68);
   const [darkMode, setDarkMode] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const activeTabMeta = tabMeta[tabValue] ?? tabMeta.overview;
+  const activeTabMeta = tabMeta[tabValue];
+
+  function onTabValueChange(value: string) {
+    if (value in tabMeta) {
+      setTabValue(value as TabValue);
+    }
+  }
 
   return (
     <div className="grid gap-4 md:grid-cols-3 auto-rows-auto">
@@ -235,7 +243,7 @@ export const BentoShowcase = () => {
             items={tabItems}
             size="sm"
             value={tabValue}
-            onValueChange={setTabValue}
+            onValueChange={onTabValueChange}
           />
           <div className="rounded-lg border border-border bg-muted/30 p-3">
             <div className="flex items-center gap-2">
