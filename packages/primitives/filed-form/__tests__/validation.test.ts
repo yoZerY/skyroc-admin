@@ -37,6 +37,12 @@ describe('runRulesWithMode', () => {
     expect(password.errors).toEqual(['Min length is 3']);
   });
 
+  it('should fall back to the validation key when message templates are missing', async () => {
+    const result = await runRulesWithMode('bad-email', [{ type: 'email' }], 'parallelAll', {}, {});
+
+    expect(result.errors).toEqual(['email']);
+  });
+
   it('should validate string boundaries and patterns', async () => {
     const maxLength = await runRulesWithMode(
       'abcdef',
@@ -79,6 +85,26 @@ describe('runRulesWithMode', () => {
     expect(float.errors).toEqual(['Must be a float']);
   });
 
+  it('should validate integer min and max boundaries', async () => {
+    const min = await runRulesWithMode(1, [{ min: 2, type: 'integer' }], 'parallelAll', {}, defaultValidateMessages);
+    const max = await runRulesWithMode(3, [{ max: 2, type: 'integer' }], 'parallelAll', {}, defaultValidateMessages);
+
+    expect(min.errors).toEqual(['Min is 2']);
+    expect(max.errors).toEqual(['Max is 2']);
+  });
+
+  it('should accept valid numeric, integer, float, and date values', async () => {
+    const number = await runRulesWithMode(2, [{ max: 3, min: 1, type: 'number' }], 'parallelAll', {}, defaultValidateMessages);
+    const integer = await runRulesWithMode(2, [{ max: 3, min: 1, type: 'integer' }], 'parallelAll', {}, defaultValidateMessages);
+    const float = await runRulesWithMode(1.5, [{ type: 'float' }], 'parallelAll', {}, defaultValidateMessages);
+    const date = await runRulesWithMode('2026-05-07', [{ type: 'date' }], 'parallelAll', {}, defaultValidateMessages);
+
+    expect(number.errors).toEqual([]);
+    expect(integer.errors).toEqual([]);
+    expect(float.errors).toEqual([]);
+    expect(date.errors).toEqual([]);
+  });
+
   it('should validate date boundaries', async () => {
     const invalid = await runRulesWithMode(
       'not-a-date',
@@ -107,6 +133,12 @@ describe('runRulesWithMode', () => {
     expect(max.errors).toEqual(['Date is later than maximum']);
   });
 
+  it('should reject unsupported date-like values', async () => {
+    const result = await runRulesWithMode({}, [{ type: 'date' }], 'parallelAll', {}, defaultValidateMessages);
+
+    expect(result.errors).toEqual(['Must be a valid Date']);
+  });
+
   it('should validate enum, boolean, hex, regexp, and url rules', async () => {
     const enumResult = await runRulesWithMode(
       'guest',
@@ -125,6 +157,36 @@ describe('runRulesWithMode', () => {
     expect(hexResult.errors).toEqual(['Must be a valid hex color']);
     expect(regexpResult.errors).toEqual(['Must be a valid regular expression']);
     expect(urlResult.errors).toEqual(['Must be a valid URL']);
+  });
+
+  it('should accept empty enum rules and valid boolean and regexp values', async () => {
+    const enumResult = await runRulesWithMode('guest', [{ enum: [], type: 'enum' }], 'parallelAll', {}, defaultValidateMessages);
+    const booleanResult = await runRulesWithMode(true, [{ type: 'boolean' }], 'parallelAll', {}, defaultValidateMessages);
+    const emptyRegexp = await runRulesWithMode('', [{ type: 'regexp' }], 'parallelAll', {}, defaultValidateMessages);
+    const strictEmptyRegexp = await runRulesWithMode(
+      '',
+      [{ skipIfEmpty: false, type: 'regexp' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+    const regexpInstance = await runRulesWithMode(/abc/, [{ type: 'regexp' }], 'parallelAll', {}, defaultValidateMessages);
+    const regexpObject = await runRulesWithMode({}, [{ type: 'regexp' }], 'parallelAll', {}, defaultValidateMessages);
+    const urlResult = await runRulesWithMode(
+      'https://soybeanjs.cn',
+      [{ type: 'url' }],
+      'parallelAll',
+      {},
+      defaultValidateMessages
+    );
+
+    expect(enumResult.errors).toEqual([]);
+    expect(booleanResult.errors).toEqual([]);
+    expect(emptyRegexp.errors).toEqual([]);
+    expect(strictEmptyRegexp.errors).toEqual([]);
+    expect(regexpInstance.errors).toEqual([]);
+    expect(regexpObject.errors).toEqual(['Must be a valid regular expression']);
+    expect(urlResult.errors).toEqual([]);
   });
 
   it('should reject whitespace-only required strings', async () => {
@@ -154,6 +216,13 @@ describe('runRulesWithMode', () => {
     });
   });
 
+  it('should return an empty result when no rules are provided', async () => {
+    await expect(runRulesWithMode('value', [], 'parallelAll', {}, defaultValidateMessages)).resolves.toEqual({
+      errors: [],
+      warns: []
+    });
+  });
+
   it('should stop after the first error in serial mode', async () => {
     const secondValidator = vi.fn(() => 'second error');
 
@@ -167,6 +236,21 @@ describe('runRulesWithMode', () => {
 
     expect(result.errors).toEqual(['first error']);
     expect(secondValidator).not.toHaveBeenCalled();
+  });
+
+  it('should collect warning-only results in serial mode', async () => {
+    const result = await runRulesWithMode(
+      'draft',
+      [{ validator: () => 'warning', warningOnly: true }, { validator: () => undefined }],
+      'serial',
+      {},
+      defaultValidateMessages
+    );
+
+    expect(result).toEqual({
+      errors: [],
+      warns: ['warning']
+    });
   });
 
   it('should pass transformed values to custom validators', async () => {

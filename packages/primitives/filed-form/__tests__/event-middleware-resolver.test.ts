@@ -17,8 +17,33 @@ describe('event masks', () => {
 
   it('should convert subscription options into masks', () => {
     expect(toMask({ all: true })).toBe(ChangeTag.All);
-    expect(toMask({ dirty: true, hidden: true, reset: true, value: true })).toBe(
-      addTag(0, ChangeTag.Dirty, ChangeTag.Hidden, ChangeTag.Reset, ChangeTag.Value)
+    expect(
+      toMask({
+        dirty: true,
+        disabled: true,
+        errors: true,
+        hidden: true,
+        reset: true,
+        touched: true,
+        validated: true,
+        validating: true,
+        value: true,
+        warnings: true
+      })
+    ).toBe(
+      addTag(
+        0,
+        ChangeTag.Dirty,
+        ChangeTag.Disabled,
+        ChangeTag.Errors,
+        ChangeTag.Hidden,
+        ChangeTag.Reset,
+        ChangeTag.Touched,
+        ChangeTag.Validated,
+        ChangeTag.Validating,
+        ChangeTag.Value,
+        ChangeTag.Warnings
+      )
     );
     expect(toMask()).toBe(0);
   });
@@ -132,6 +157,24 @@ describe('resolver utilities', () => {
     });
   });
 
+  it('should validate all fields when validateFields omits names', async () => {
+    const validate = vi.fn(async () => [{ message: 'Invalid root', path: [] }]);
+    const dispatch = vi.fn();
+
+    const middleware = createGenericResolver(validate)({
+      dispatch,
+      getState: () => ({})
+    })(vi.fn());
+
+    await middleware({ type: 'validateFields' } as any);
+
+    expect(validate).toHaveBeenCalledWith({}, undefined);
+    expect(dispatch).toHaveBeenCalledWith({
+      entries: [['', ['Invalid root']]],
+      type: 'setExternalErrors'
+    });
+  });
+
   it('should pass unrelated actions to the next middleware', async () => {
     const next = vi.fn();
     const action = { name: 'email', type: 'setFieldValue', value: 'ada@example.com' };
@@ -161,6 +204,7 @@ describe('standard schema resolver', () => {
     const validator = extractSchemaValidator(schema);
 
     expect(isStandardSchema(schema)).toBe(true);
+    expect(isStandardSchema({ '~standard': { validate: 'not-a-function' } })).toBe(false);
     await expect(validator?.({})).resolves.toEqual([{ message: 'Invalid email', path: ['user', 'email'] }]);
   });
 
@@ -199,6 +243,54 @@ describe('standard schema resolver', () => {
 
     expect(dispatch).toHaveBeenCalledWith({
       entries: [['email', ['Invalid email']]],
+      type: 'setExternalErrors'
+    });
+
+    expect(resolveSchema(schema)).toEqual(expect.any(Function));
+  });
+
+  it('should resolve successful and root-level standard schema results', async () => {
+    const successDispatch = vi.fn();
+    const successSchema = {
+      '~standard': {
+        validate: vi.fn(() => ({ value: { email: 'ada@example.com' } })),
+        vendor: 'test',
+        version: 1
+      }
+    } as const;
+
+    const successMiddleware = createStandardResolver(successSchema)({
+      dispatch: successDispatch,
+      getState: () => ({ email: 'ada@example.com' })
+    })(vi.fn());
+
+    await successMiddleware({ type: 'validateFields' } as any);
+
+    expect(successDispatch).toHaveBeenCalledWith({
+      entries: [],
+      type: 'setExternalErrors'
+    });
+
+    const issueDispatch = vi.fn();
+    const rootIssueSchema = {
+      '~standard': {
+        validate: vi.fn(() => ({
+          issues: [{ message: 'Invalid form' }]
+        })),
+        vendor: 'test',
+        version: 1
+      }
+    } as const;
+
+    const issueMiddleware = createStandardResolver(rootIssueSchema)({
+      dispatch: issueDispatch,
+      getState: () => ({})
+    })(vi.fn());
+
+    await issueMiddleware({ type: 'validateFields' } as any);
+
+    expect(issueDispatch).toHaveBeenCalledWith({
+      entries: [['', ['Invalid form']]],
       type: 'setExternalErrors'
     });
   });

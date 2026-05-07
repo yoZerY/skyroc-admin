@@ -2,11 +2,27 @@ import { fireEvent, render, renderHook, screen, waitFor } from '@testing-library
 import { describe, expect, it, vi } from 'vitest';
 import FormStore from '../src/form-core/createStore';
 import type { FormInstance } from '../src/react';
-import { Field, Form, List, useArrayField, useEffectField, useForm, useSelector, useUndoRedo, useWatch } from '../src/react';
+import {
+  Field,
+  Form,
+  List,
+  useArrayField,
+  useEffectField,
+  useFieldError,
+  useFieldState,
+  useForm,
+  useSelector,
+  useUndoRedo,
+  useWatch
+} from '../src/react';
 
 interface HookValues {
   /** 用户邮箱，用于多字段 watch */
   email: string;
+  /** 展示字段错误的邮箱 */
+  errorEmail: string;
+  /** 展示字段错误的用户名 */
+  errorName: string;
   /** 动态列表，用于数组字段 hook */
   items: { title: string }[];
   /** 用户名，用于 watch 和 effect 订阅 */
@@ -72,6 +88,72 @@ const ArrayFieldPanel = (props: ArrayFieldPanelProps) => {
   );
 };
 
+const NamedErrors = () => {
+  const errors = useFieldError<HookValues, 'errorEmail' | 'errorName'>(['errorEmail', 'errorName']);
+
+  return (
+    <output aria-label="Named errors">
+      {errors.errorEmail.join('|')}::{errors.errorName.join('|')}
+    </output>
+  );
+};
+
+const AllErrors = () => {
+  const errors = useFieldError<HookValues>();
+
+  return (
+    <output aria-label="All errors">
+      {errors.errorEmail?.join('|')}::{errors.errorName?.join('|')}
+    </output>
+  );
+};
+
+interface ExternalErrorsProps {
+  /** 外部注入的表单实例，用于覆盖 useFieldError(form) 重载 */
+  form: FormInstance<HookValues>;
+}
+
+const ExternalErrors = (props: ExternalErrorsProps) => {
+  const { form } = props;
+  const errors = useFieldError<HookValues>(form);
+
+  return (
+    <output aria-label="External errors">
+      {errors.errorEmail?.join('|')}::{errors.errorName?.join('|')}
+    </output>
+  );
+};
+
+const ErrorSummaryExample = () => {
+  const [form] = useForm<HookValues>();
+
+  return (
+    <Form
+      form={form}
+      initialValues={{
+        email: 'ada@example.com',
+        errorEmail: '',
+        errorName: '',
+        items: [],
+        name: 'Ada',
+        quantity: 1,
+        unitPrice: 1
+      }}
+    >
+      <Field name="errorEmail" rules={[{ debounceMs: 0, message: 'Email required', required: true }]}>
+        <input aria-label="Error email" />
+      </Field>
+      <Field name="errorName" rules={[{ debounceMs: 0, message: 'Name required', required: true }]}>
+        <input aria-label="Error name" />
+      </Field>
+      <NamedErrors />
+      <AllErrors />
+      <ExternalErrors form={form} />
+      <button type="submit">Submit errors</button>
+    </Form>
+  );
+};
+
 interface UndoControlsProps {
   /** 当前表单实例，用于注册 undo/redo 中间件 */
   form: FormInstance<UndoValues>;
@@ -125,6 +207,82 @@ const UndoExample = (props: UndoExampleProps) => {
         )}
       </List>
       <UndoControls form={form} />
+    </Form>
+  );
+};
+
+interface UndoArraySnapshotProps {
+  /** 输出当前数组标题，用于断言数组撤销结果 */
+  label: string;
+}
+
+const UndoArraySnapshot = (props: UndoArraySnapshotProps) => {
+  const { label } = props;
+  const items = useWatch<UndoValues, 'items'>('items', {} as any);
+
+  return <output aria-label={label}>{items.map(item => item.title).join('|')}</output>;
+};
+
+const UndoArrayExample = () => {
+  const [form] = useForm<UndoValues>();
+
+  return (
+    <Form
+      form={form}
+      initialValues={{
+        items: [{ title: 'A' }, { title: 'B' }, { title: 'C' }],
+        title: 'Draft'
+      }}
+    >
+      <UndoArraySnapshot label="Undo array titles" />
+      <List name="items">
+        {(_, ops) => (
+          <>
+            <button type="button" onClick={() => ops.remove(1)}>
+              Remove middle
+            </button>
+            <button type="button" onClick={() => ops.move(2, 0)}>
+              Move last first
+            </button>
+            <button type="button" onClick={() => ops.swap(0, 2)}>
+              Swap ends
+            </button>
+            <button type="button" onClick={() => ops.replace(1, { title: 'X' })}>
+              Replace middle
+            </button>
+          </>
+        )}
+      </List>
+      <UndoControls form={form} />
+    </Form>
+  );
+};
+
+const ForceUndoRedoExample = () => {
+  const [form] = useForm<UndoValues>();
+  const { redo, undo } = useUndoRedo(form);
+  const hooks = (form as any).getInternalHooks();
+
+  return (
+    <Form form={form} initialValues={{ items: [], title: 'Draft' }}>
+      <Field name="title">
+        <input aria-label="Bulk title" />
+      </Field>
+      <button type="button" onClick={() => form.setFieldsValue({ title: 'Bulk' } as any)}>
+        Bulk title
+      </button>
+      <button type="button" onClick={undo}>
+        Force undo
+      </button>
+      <button type="button" onClick={redo}>
+        Force redo
+      </button>
+      <button
+        type="button"
+        onClick={() => hooks.dispatch({ args: { op: 'unknown' }, name: 'items', type: 'arrayOp' } as any)}
+      >
+        Unknown op
+      </button>
     </Form>
   );
 };
@@ -227,8 +385,32 @@ describe('form hooks', () => {
     });
   });
 
+  it('should return named, contextual, and external field errors', async () => {
+    render(<ErrorSummaryExample />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Submit errors' }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Named errors')).toHaveTextContent('Email required::Name required');
+      expect(screen.getByLabelText('All errors')).toHaveTextContent('Email required::Name required');
+      expect(screen.getByLabelText('External errors')).toHaveTextContent('Email required::Name required');
+    });
+  });
+
   it('should throw when useArrayField is used without a form context', () => {
     expect(() => renderHook(() => useArrayField<HookValues>('items'))).toThrow(
+      'Can not find FormContext. Please make sure you wrap Field under Form or provide a form instance.'
+    );
+  });
+
+  it('should throw context errors from field effect, field state, and selector hooks', () => {
+    expect(() =>
+      renderHook(() => useEffectField<HookValues>(['name'], () => undefined))
+    ).toThrow('Can not find FormContext. Please make sure you wrap Field under Form or provide a form instance.');
+    expect(() => renderHook(() => useFieldState<HookValues, 'name'>('name'))).toThrow(
+      'Can not find FormContext. Please make sure you wrap Field under Form or provide a form instance.'
+    );
+    expect(() => renderHook(() => useSelector<HookValues, string>(get => String(get('name'))))).toThrow(
       'Can not find FormContext. Please make sure you wrap Field under Form or provide a form instance.'
     );
   });
@@ -274,5 +456,117 @@ describe('form hooks', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('Undo item count')).toHaveTextContent('1');
     });
+  });
+
+  it('should throw when useUndoRedo is used without a form context', () => {
+    expect(() => renderHook(() => useUndoRedo<UndoValues>())).toThrow(
+      'Can not find FormContext. Please make sure you wrap Field under Form or provide a form instance.'
+    );
+  });
+
+  it('should undo and redo remove, move, swap, and replace array operations', async () => {
+    render(<UndoArrayExample />);
+
+    const titles = screen.getByLabelText('Undo array titles');
+    const undo = screen.getByRole('button', { name: 'Undo' });
+    const redo = screen.getByRole('button', { name: 'Redo' });
+
+    expect(titles).toHaveTextContent('A|B|C');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Remove middle' }));
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|C');
+    });
+
+    fireEvent.click(undo);
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|B|C');
+      expect(redo).toBeEnabled();
+    });
+
+    fireEvent.click(redo);
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|C');
+    });
+
+    fireEvent.click(undo);
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|B|C');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Move last first' }));
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('C|A|B');
+    });
+
+    fireEvent.click(undo);
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|B|C');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Swap ends' }));
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('C|B|A');
+    });
+
+    fireEvent.click(undo);
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|B|C');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Replace middle' }));
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|X|C');
+    });
+
+    fireEvent.click(undo);
+
+    await waitFor(() => {
+      expect(titles).toHaveTextContent('A|B|C');
+    });
+  });
+
+  it('should handle empty undo/redo calls and setFieldsValue patches', async () => {
+    render(<ForceUndoRedoExample />);
+
+    const title = screen.getByLabelText('Bulk title');
+    const undo = screen.getByRole('button', { name: 'Force undo' });
+    const redo = screen.getByRole('button', { name: 'Force redo' });
+
+    fireEvent.click(undo);
+    fireEvent.click(redo);
+
+    expect(title).toHaveValue('Draft');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Bulk title' }));
+
+    await waitFor(() => {
+      expect(title).toHaveValue('Bulk');
+    });
+
+    fireEvent.click(undo);
+
+    await waitFor(() => {
+      expect(title).toHaveValue('Draft');
+    });
+
+    fireEvent.click(redo);
+
+    await waitFor(() => {
+      expect(title).toHaveValue('Bulk');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Unknown op' }));
+
+    expect(title).toHaveValue('Bulk');
   });
 });

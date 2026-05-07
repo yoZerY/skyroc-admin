@@ -25,7 +25,7 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       ...baseCoverageConfig,
-      exclude: [...COVERAGE_EXCLUDE, '**/react/index.ts']
+      exclude: [...COVERAGE_EXCLUDE, '**/react/index.ts', '**/types.ts']
     }
   }
 });

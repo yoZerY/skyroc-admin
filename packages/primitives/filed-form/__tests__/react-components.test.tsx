@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { ComputedField, Field, Form, List, useFieldError, useForm } from '../src/react';
 
@@ -34,6 +35,61 @@ const VisibilityExample = (props: VisibilityExampleProps) => {
       </Field>
       <button type="button" onClick={() => form.setHidden('name', true)}>
         Hide name
+      </button>
+    </Form>
+  );
+};
+
+interface ComputedVisibilityValues {
+  /** 数量，用于计算合计 */
+  quantity: number;
+  /** 合计字段，用于隐藏 computed field */
+  total: number;
+  /** 单价，用于计算合计 */
+  unitPrice: number;
+}
+
+const ComputedVisibilityExample = () => {
+  const [form] = useForm<ComputedVisibilityValues>();
+
+  return (
+    <Form form={form} initialValues={{ quantity: 2, total: 10, unitPrice: 5 }}>
+      <ComputedField
+        compute={get => Number(get('quantity') || 0) * Number(get('unitPrice') || 0)}
+        deps={['quantity', 'unitPrice']}
+        name="total"
+        rules={[{ message: 'Total required', required: true }]}
+      >
+        <input aria-label="Computed total" />
+      </ComputedField>
+      <button type="button" onClick={() => form.setHidden('total', true)}>
+        Hide total
+      </button>
+    </Form>
+  );
+};
+
+interface ListVisibilityValues {
+  /** 动态列表，用于覆盖 List 隐藏分支 */
+  items: { title: string }[];
+}
+
+const ListVisibilityExample = () => {
+  const [form] = useForm<ListVisibilityValues>();
+
+  return (
+    <Form form={form} initialValues={{ items: [{ title: 'A' }] }}>
+      <List name="items">
+        {fields => (
+          <ul aria-label="Hidden list">
+            {fields.map(field => (
+              <li key={field.key}>{field.name}</li>
+            ))}
+          </ul>
+        )}
+      </List>
+      <button type="button" onClick={() => form.setHidden('items', true)}>
+        Hide list
       </button>
     </Form>
   );
@@ -101,6 +157,54 @@ describe('Form and Field integration', () => {
     });
   });
 
+  it('should validate fields from additional validate triggers', async () => {
+    render(
+      <Form initialValues={{ email: '' }} validateTrigger="onBlur">
+        <Field name="email" rules={[{ debounceMs: 0, message: 'Email is required', required: true }]}>
+          <input aria-label="Blur email" />
+        </Field>
+        <EmailError />
+      </Form>
+    );
+
+    fireEvent.change(screen.getByLabelText('Blur email'), { target: { value: '' } });
+
+    expect(screen.getByLabelText('Email error')).toHaveTextContent('');
+
+    fireEvent.blur(screen.getByLabelText('Blur email'));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Email error')).toHaveTextContent('Email is required');
+    });
+  });
+
+  it('should apply schema validation on submit', async () => {
+    const onFinish = vi.fn();
+    const onFinishFailed = vi.fn();
+    const schema = vi.fn(async () => [{ message: 'Invalid email', path: ['email'] }]);
+
+    render(
+      <Form initialValues={{ email: 'bad' }} onFinish={onFinish} onFinishFailed={onFinishFailed} schema={schema}>
+        <Field name="email">
+          <input aria-label="Schema email" />
+        </Field>
+        <button type="submit">Submit schema</button>
+      </Form>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Submit schema' }));
+
+    await waitFor(() => {
+      expect(onFinishFailed).toHaveBeenCalledWith(
+        expect.objectContaining({
+          errorMap: { email: ['Invalid email'] }
+        })
+      );
+    });
+    expect(onFinish).not.toHaveBeenCalled();
+    expect(schema).toHaveBeenCalledWith({ email: 'bad' });
+  });
+
   it('should render without a wrapper when component is false', () => {
     const { container } = render(
       <Form component={false} initialValues={{ name: 'Ada' }}>
@@ -125,6 +229,34 @@ describe('Form and Field integration', () => {
 
     expect(screen.getByRole('region', { name: 'Custom form shell' })).toBeInTheDocument();
     expect(screen.getByLabelText('Custom name')).toHaveValue('Ada');
+  });
+
+  it('should expose the native form element through refs without initial values', () => {
+    const ref = createRef<any>();
+
+    render(
+      <Form ref={ref}>
+        <button type="submit">Submit empty</button>
+      </Form>
+    );
+
+    expect(ref.current?.tagName).toBe('FORM');
+  });
+
+  it('should ignore unsupported schema objects on mount', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    render(
+      <Form schema={{} as any}>
+        <Field name="name">
+          <input aria-label="Unsupported schema name" />
+        </Field>
+      </Form>
+    );
+
+    expect(screen.getByLabelText('Unsupported schema name')).toHaveValue('');
+
+    warn.mockRestore();
   });
 
   it('should reset fields through native form reset events', async () => {
@@ -178,6 +310,22 @@ describe('Form and Field integration', () => {
     expect(onValuesChange).toHaveBeenCalledWith({ phone: '123' }, { phone: '123' });
   });
 
+  it('should leave normalized values unchanged when normalization is a no-op', async () => {
+    render(
+      <Form initialValues={{ phone: '123' }}>
+        <Field name="phone" normalize={value => value}>
+          <input aria-label="Noop phone" />
+        </Field>
+      </Form>
+    );
+
+    fireEvent.change(screen.getByLabelText('Noop phone'), { target: { value: '456' } });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Noop phone')).toHaveValue('456');
+    });
+  });
+
   it('should support checked value props', async () => {
     render(
       <Form initialValues={{ enabled: true }}>
@@ -207,6 +355,18 @@ describe('Form and Field integration', () => {
 
     await waitFor(() => {
       expect(screen.queryByLabelText('Visible name')).toBeNull();
+    });
+  });
+
+  it('should hide computed fields when the form marks them hidden', async () => {
+    render(<ComputedVisibilityExample />);
+
+    expect(screen.getByLabelText('Computed total')).toHaveValue('10');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Hide total' }));
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Computed total')).toBeNull();
     });
   });
 });
@@ -251,6 +411,18 @@ describe('List component integration', () => {
 
     await waitFor(() => {
       expect(screen.getAllByRole('listitem').map(item => item.textContent)).toEqual(['items.0', 'items.1']);
+    });
+  });
+
+  it('should hide lists when the form marks them hidden', async () => {
+    render(<ListVisibilityExample />);
+
+    expect(screen.getByLabelText('Hidden list')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Hide list' }));
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Hidden list')).toBeNull();
     });
   });
 });

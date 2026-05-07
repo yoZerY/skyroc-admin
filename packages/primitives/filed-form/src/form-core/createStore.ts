@@ -1052,7 +1052,7 @@ class FormStore {
     }
   };
 
-  private async transactionAsync<T>(fn: () => Promise<T>): Promise<T> {
+  private transactionAsync = async <T>(fn: () => Promise<T>): Promise<T> => {
     this.begin();
     try {
       return await fn();
@@ -1062,7 +1062,7 @@ class FormStore {
     } finally {
       this.commit();
     }
-  }
+  };
 
   // ===== Array Operation =====
 
