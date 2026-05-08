@@ -2,8 +2,7 @@
 
 /* eslint-disable react/hook-use-state */
 import type { AllPathsKeys, PathToDeepType } from '@skyroc/type-utils';
-import { isArray, isNil, isObject } from '@skyroc/utils';
-import { get } from '@skyroc/utils/path';
+import { deepGet, isArray, isNil, isObject } from '@skyroc/utils';
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -108,7 +107,7 @@ function useFieldState<Values = any>(
   }
   if (subscribeNames.length === 1) {
     // Single field → return that field's meta directly
-    return get(state, subscribeNames[0]);
+    return deepGet(state, subscribeNames[0]);
   }
   // Multiple fields → return object
   return state;

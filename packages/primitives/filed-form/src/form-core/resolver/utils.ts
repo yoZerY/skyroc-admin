@@ -6,7 +6,7 @@
  */
 
 import type { AllPathsKeys } from '@skyroc/type-utils';
-import { keyOfName } from '@skyroc/utils/path';
+import { keyOfName } from '@skyroc/utils';
 import type { Action, Middleware } from '../middleware';
 import type { StandardSchemaV1NormalizedIssue } from './standard';
 

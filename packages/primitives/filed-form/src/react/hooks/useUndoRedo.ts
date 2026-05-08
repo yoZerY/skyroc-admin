@@ -5,8 +5,7 @@
  */
 import { useEffect, useState } from 'react';
 
-import type { NamePath } from '@skyroc/utils/path';
-import { get as getPath, keyOfName } from '@skyroc/utils/path';
+import { deepGet, keyOfName, type NamePath } from '@skyroc/utils';
 import type { ArrayOpAction, Middleware } from '../../form-core/middleware';
 
 import { type FormInstance, type InternalFormInstance, useFieldContext } from './FieldContext';
@@ -121,7 +120,7 @@ export function useUndoRedo<Values = any>(form?: FormInstance<Values>) {
         case 'setFieldValue': {
           // Track single field value changes
           const k = keyOfName(action.name);
-          const prev = getPath(stateBefore, k);
+          const prev = deepGet(stateBefore, k);
 
           batch.push({ name: k, next: action.value, prev, type: 'set' });
           break;
@@ -129,7 +128,7 @@ export function useUndoRedo<Values = any>(form?: FormInstance<Values>) {
         case 'setFieldsValue': {
           // Track multiple field value changes
           Object.entries(action.values as Record<string, unknown>).forEach(([k1, v]) => {
-            const prev = getPath(stateBefore, k1 as any);
+            const prev = deepGet(stateBefore, k1 as any);
             batch.push({ name: keyOfName(k1), next: v, prev, type: 'set' });
           });
           break;
@@ -138,7 +137,7 @@ export function useUndoRedo<Values = any>(form?: FormInstance<Values>) {
           // Track array operations (insert, remove, move, swap, replace)
           const { args, name } = action;
 
-          const arr = (getPath(stateBefore, name) as any[]) ?? [];
+          const arr = (deepGet(stateBefore, name) as any[]) ?? [];
 
           let inverse: any = null;
 

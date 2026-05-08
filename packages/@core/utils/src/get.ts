@@ -3,7 +3,7 @@ import { type Key, type NamePath, isObjectRecord, toSegments } from './path-util
 /**
  * Safely read a deep value.
  */
-export function get<T, D = undefined>(obj: T, path: NamePath | null, def?: D): unknown | D {
+export function deepGet<T, D = undefined>(obj: T, path: NamePath | null, def?: D): unknown | D {
   if (path === null || path === undefined) return def as D;
 
   const segs = toSegments(path);

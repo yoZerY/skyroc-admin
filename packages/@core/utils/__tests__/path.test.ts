@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { get, keyOfName, set, toSegments, unset } from '../src/path';
+import { deepGet, deepSet, deepUnset, keyOfName, toSegments } from '../src/path';
 
 describe('path utilities', () => {
   it('parses dot and bracket paths', () => {
@@ -15,13 +15,13 @@ describe('path utilities', () => {
   it('gets nested values with default fallback', () => {
     const value = { user: { name: 'Alex' } };
 
-    expect(get(value, 'user.name')).toBe('Alex');
-    expect(get(value, 'user.age', 18)).toBe(18);
+    expect(deepGet(value, 'user.name')).toBe('Alex');
+    expect(deepGet(value, 'user.age', 18)).toBe(18);
   });
 
   it('sets nested values immutably', () => {
     const source = { user: { name: 'Alex' } };
-    const next = set(source, 'user.age', 18);
+    const next = deepSet(source, 'user.age', 18);
 
     expect(next).toEqual({ user: { age: 18, name: 'Alex' } });
     expect(source).toEqual({ user: { name: 'Alex' } });
@@ -31,8 +31,8 @@ describe('path utilities', () => {
   it('unsets object keys and array items immutably', () => {
     const source = { items: ['a', 'b'], user: { age: 18, name: 'Alex' } };
 
-    expect(unset(source, 'user.age')).toEqual({ items: ['a', 'b'], user: { name: 'Alex' } });
-    expect(unset(source, ['items', 0])).toEqual({ items: ['b'], user: { age: 18, name: 'Alex' } });
+    expect(deepUnset(source, 'user.age')).toEqual({ items: ['a', 'b'], user: { name: 'Alex' } });
+    expect(deepUnset(source, ['items', 0])).toEqual({ items: ['b'], user: { age: 18, name: 'Alex' } });
     expect(source).toEqual({ items: ['a', 'b'], user: { age: 18, name: 'Alex' } });
   });
 });

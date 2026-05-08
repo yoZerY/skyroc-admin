@@ -6,38 +6,35 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-bitwise */
 
-import type { NamePath, PathTuple } from '@skyroc/utils/path';
 import {
+  type NamePath,
+  type PathTuple,
   anyOn,
+  assign,
   collectDeepKeys,
-  get,
+  deepGet,
+  deepSet,
+  deepUnset,
+  isArray,
+  isEqual,
+  isNil,
   isOn,
   isUnderPrefix,
   keyOfName,
   microtask,
-  set,
-  unset
-} from '@skyroc/utils/path';
-import {
-  assign,
-  isArray,
-  isEqual,
-  isNil,
   toArray
 } from '@skyroc/utils';
 import { type ChangeMask, ChangeTag } from './event';
 import type { Action, ArrayOpArgs, Middleware, ValidateFieldsOptions } from './middleware';
 import { compose } from './middleware';
+import type { StandardSchemaV1NormalizedIssue } from './resolver/standard';
+import { toEntries } from './resolver/utils';
 import type { Callbacks, FieldEntity, Meta, Store, StoreValue } from './types';
 import { type ValidateMessages, defaultValidateMessages } from './validate';
 import { runRulesWithMode } from './validation';
 import type { Rule, ValidateOptions } from './validation';
-import type { StandardSchemaV1NormalizedIssue } from './resolver/standard';
-import { toEntries } from './resolver/utils';
 
-/**
- * Listener type definition for form state changes
- */
+/** Listener type definition for form state changes */
 type Listener = {
   cb: (value: StoreValue, key: string, all: Store, fired: ChangeMask) => void;
   mask: ChangeMask;
@@ -48,9 +45,7 @@ export type ArrayField = {
   keys: number[];
 };
 
-/**
- * Checks if a validation rule should be triggered based on the provided trigger
- */
+/** Checks if a validation rule should be triggered based on the provided trigger */
 const matchTrigger = (rule: Rule, trig?: string | string[]) => {
   const list = toArray(rule.validateTrigger);
 
@@ -61,18 +56,14 @@ const matchTrigger = (rule: Rule, trig?: string | string[]) => {
   return trigList.some(t => list.includes(t));
 };
 
-/**
- * Extracts values from a Map based on provided field names
- */
+/** Extracts values from a Map based on provided field names */
 function getValueByNames<T>(source: Map<string, T>, names?: NamePath[]): Record<string, T> {
   const keys = names?.length ? names.map(keyOfName) : Array.from(source.keys());
 
   return Object.fromEntries(keys.map(k => [k, source.get(k)!]));
 }
 
-/**
- * Checks if any field in the provided names has a flag set in the bucket
- */
+/** Checks if any field in the provided names has a flag set in the bucket */
 function getFlag(bucket: Set<string>, names?: NamePath[]) {
   if (!names || names.length === 0) {
     return bucket.size > 0;
@@ -81,9 +72,7 @@ function getFlag(bucket: Set<string>, names?: NamePath[]) {
   return anyOn(bucket, names);
 }
 
-/**
- * Moves an array element from one index to another
- */
+/** Moves an array element from one index to another */
 function move<T>(arr: T[], from: number, to: number): T[] {
   const clone = arr.slice();
   const item = clone.splice(from, 1)[0];
@@ -92,8 +81,8 @@ function move<T>(arr: T[], from: number, to: number): T[] {
 }
 
 /**
- * FormStore class - Core form state management implementation
- * Handles form state, validation, field registration, and state subscriptions
+ * FormStore class - Core form state management implementation Handles form state, validation, field registration, and
+ * state subscriptions
  */
 class FormStore {
   // ------------------------------------------------
@@ -197,37 +186,27 @@ class FormStore {
   // ------------------------------------------------
   // Configuration and Callback Management
   // ------------------------------------------------
-  /**
-   * Determines if field values should be preserved based on field and global settings
-   */
+  /** Determines if field values should be preserved based on field and global settings */
   private isMergedPreserve = (fieldPreserve?: boolean) => {
     return fieldPreserve ?? this._preserve;
   };
 
-  /**
-   * Sets form lifecycle callbacks
-   */
+  /** Sets form lifecycle callbacks */
   private setCallbacks = (c: Callbacks) => {
     this._callbacks = c || {};
   };
 
-  /**
-   * Sets validation message templates
-   */
+  /** Sets validation message templates */
   private setValidateMessages = (m: ValidateMessages) => {
     this._validateMessages = assign(defaultValidateMessages, m);
   };
 
-  /**
-   * Sets global preserve flag for field values
-   */
+  /** Sets global preserve flag for field values */
   private setPreserve = (preserve: boolean) => {
     this._preserve = preserve;
   };
 
-  /**
-   * Registers a schema-level validator for use during submit
-   */
+  /** Registers a schema-level validator for use during submit */
   private setSchemaValidator = (
     validator: (state: Store, name?: string | string[]) => Promise<StandardSchemaV1NormalizedIssue[]>
   ) => {
@@ -237,17 +216,15 @@ class FormStore {
   // ------------------------------------------------
   // Middleware and Action Dispatch System
   // ------------------------------------------------
-  /**
-   * Adds a new middleware to the middleware stack
-   */
+  /** Adds a new middleware to the middleware stack */
   private use = (mw: Middleware) => {
     this._middlewares.push(mw);
     this.rebindMiddlewares();
   };
 
   /**
-   * Rebuilds the middleware chain and updates dispatch function
-   * Creates a new dispatch function composed of all middlewares
+   * Rebuilds the middleware chain and updates dispatch function Creates a new dispatch function composed of all
+   * middlewares
    */
   private rebindMiddlewares = () => {
     const api = {
@@ -261,9 +238,7 @@ class FormStore {
   };
 
   // Action Dispatch System
-  /**
-   * Base dispatch function that handles all form actions
-   */
+  /** Base dispatch function that handles all form actions */
   private baseDispatch = (a: Action) => {
     switch (a.type) {
       case 'setFieldValue':
@@ -304,7 +279,6 @@ class FormStore {
             }
           }
         });
-
       }
 
       default:
@@ -313,24 +287,18 @@ class FormStore {
     }
   };
 
-  /**
-   * Enhanced dispatch function that processes actions through middleware chain
-   */
+  /** Enhanced dispatch function that processes actions through middleware chain */
   private dispatch = (a: Action) => this.baseDispatch(a);
 
   // ------------------------------------------------
   // Store and Initial Values Management
   // ------------------------------------------------
-  /**
-   * Updates the main form state store
-   */
+  /** Updates the main form state store */
   private updateStore = (nextStore: Store) => {
     this._store = nextStore;
   };
 
-  /**
-   * Sets initial form values and updates current store
-   */
+  /** Sets initial form values and updates current store */
   private setInitialValues = (values: Store) => {
     this._initial = values;
 
@@ -339,9 +307,7 @@ class FormStore {
     this.updateStore(nextStore);
   };
 
-  /**
-   * Gets current form state including validation status
-   */
+  /** Gets current form state including validation status */
   private getFormState = () => {
     const errors = Object.fromEntries(this._errors);
     const warnings = Object.fromEntries(this._warnings);
@@ -380,16 +346,12 @@ class FormStore {
     };
   };
 
-  /**
-   * Gets initial value for a field
-   */
+  /** Gets initial value for a field */
   private getInitialValue = (name: NamePath) => {
-    return get(this._initial, keyOfName(name));
+    return deepGet(this._initial, keyOfName(name));
   };
 
-  /**
-   * Resets specified fields to their initial values and clears their states
-   */
+  /** Resets specified fields to their initial values and clears their states */
   private resetFields = (names: NonNullable<NamePath>[]) => {
     const masks =
       ChangeTag.Reset | ChangeTag.Value | ChangeTag.Touched | ChangeTag.Dirty | ChangeTag.Errors | ChangeTag.Warnings;
@@ -412,7 +374,7 @@ class FormStore {
 
     for (const n of names) {
       const key = keyOfName(n);
-      const initialValue = get(this._initial, key);
+      const initialValue = deepGet(this._initial, key);
 
       const childKeys = collectDeepKeys(initialValue, key);
 
@@ -431,7 +393,7 @@ class FormStore {
       }
 
       // Update only the requested parent field while keeping unrelated values intact.
-      nextStore = set(nextStore, key, initialValue);
+      nextStore = deepSet(nextStore, key, initialValue);
     }
 
     this.updateStore(nextStore);
@@ -443,9 +405,7 @@ class FormStore {
   // Field Registration and Visibility Control
   // ------------------------------------------------
 
-  /**
-   * Registers a new field entity and sets up its initial state and listeners
-   */
+  /** Registers a new field entity and sets up its initial state and listeners */
   private registerField = (entity: FieldEntity) => {
     const name = keyOfName(entity.name);
 
@@ -462,8 +422,8 @@ class FormStore {
       const initialValue = this.getInitialValue(name);
 
       if (isNil(initialValue)) {
-        this.updateStore(set(this._store, name, entity.initialValue));
-        this._initial = set(this._initial, name, entity.initialValue);
+        this.updateStore(deepSet(this._store, name, entity.initialValue));
+        this._initial = deepSet(this._initial, name, entity.initialValue);
       }
     }
 
@@ -481,8 +441,8 @@ class FormStore {
     return () => {
       if (!preserve) {
         this._fieldEntities = this._fieldEntities.filter(e => e.name !== name);
-        this._initial = unset(this._initial, name);
-        this._store = unset(this._store, name);
+        this._initial = deepUnset(this._initial, name);
+        this._store = deepUnset(this._store, name);
         this.arrayKeyMap.delete(name);
       }
       this._exactListeners.delete(name);
@@ -496,9 +456,7 @@ class FormStore {
     };
   };
 
-  /**
-   * Sets the disabled state of a field
-   */
+  /** Sets the disabled state of a field */
   private setDisabled = (name: NamePath, disabled: boolean) => {
     const k = keyOfName(name);
 
@@ -510,9 +468,7 @@ class FormStore {
     this.enqueueNotify([k], ChangeTag.Disabled);
   };
 
-  /**
-   * Sets the hidden state of a field
-   */
+  /** Sets the hidden state of a field */
   private setHidden = (name: NamePath, hidden: boolean) => {
     const k = keyOfName(name);
 
@@ -524,16 +480,12 @@ class FormStore {
     this.enqueueNotify([k], ChangeTag.Hidden);
   };
 
-  /**
-   * Checks if a field is disabled
-   */
+  /** Checks if a field is disabled */
   private isDisabled = (name: NamePath) => {
     return this._disabledKeys.has(keyOfName(name));
   };
 
-  /**
-   * Checks if a field is hidden
-   */
+  /** Checks if a field is hidden */
   private isHidden = (name: NamePath) => {
     return this._hiddenKeys.has(keyOfName(name));
   };
@@ -541,10 +493,7 @@ class FormStore {
   // ------------------------------------------------
   // Computed Fields Management
   // ------------------------------------------------
-  /**
-   * Internal helper to register a reactive node (computed/effect) with
-   * dependencies and a compute function
-   */
+  /** Internal helper to register a reactive node (computed/effect) with dependencies and a compute function */
   private _registerReactive(id: string, deps: NamePath[], compute: (get: (n: NamePath) => any, all: Store) => any) {
     const depKeys = deps.map(keyOfName);
 
@@ -565,10 +514,9 @@ class FormStore {
   }
 
   /**
-   * Registers a computed field with its dependencies.
-   * - Computes the next value using the provided function.
-   * - Writes the result back into the store.
-   * - Returns an unregister function to remove this computed field and its dependency links.
+   * Registers a computed field with its dependencies. - Computes the next value using the provided function. - Writes
+   * the result back into the store. - Returns an unregister function to remove this computed field and its dependency
+   * links.
    */
   private registerComputed = (
     name: NamePath,
@@ -584,9 +532,8 @@ class FormStore {
   };
 
   /**
-   * Registers a reactive side-effect that runs when dependencies change.
-   * - Does not write to the store.
-   * - Returns an unregister function to remove this effect and its dependency links.
+   * Registers a reactive side-effect that runs when dependencies change. - Does not write to the store. - Returns an
+   * unregister function to remove this effect and its dependency links.
    */
   private registerEffect = (deps: NamePath[], effect: (get: (n: NamePath) => any, all: Store) => void) => {
     const id = `__effect_${Math.random().toString(36).slice(2)}`;
@@ -595,9 +542,7 @@ class FormStore {
     });
   };
 
-  /**
-   * Finds all computed fields affected by changes in source fields
-   */
+  /** Finds all computed fields affected by changes in source fields */
   private collectDependents(changedKeys: string[]): string[] {
     const out = new Set<string>();
     const q = [...changedKeys];
@@ -616,12 +561,10 @@ class FormStore {
     return Array.from(out);
   }
 
-  /**
-   * Recomputes computed fields in dependency order
-   */
+  /** Recomputes computed fields in dependency order */
   private recomputeTargets(targetKeys: string[]) {
     if (!targetKeys.length) return;
-    const getKey = (k: string) => get(this._store, keyOfName(k));
+    const getKey = (k: string) => deepGet(this._store, keyOfName(k));
     const topo: string[] = [];
     // Simple Kahn approach: advance by dependency levels to avoid cycles causing infinite loops (in cycles, run at most N rounds)
     const seen = new Set<string>();
@@ -667,12 +610,12 @@ class FormStore {
   // ------------------------------------------------
   // Form Values Management
   // ------------------------------------------------
-  private getFieldValue = (name: NamePath) => get(this._store, name);
+  private getFieldValue = (name: NamePath) => deepGet(this._store, name);
 
   private getFieldsValue = (names: NamePath[]) => {
     if (!names || names.length === 0) return this._store;
 
-    return Object.fromEntries(names.map(n => [keyOfName(n), get(this._store, keyOfName(n))]));
+    return Object.fromEntries(names.map(n => [keyOfName(n), deepGet(this._store, keyOfName(n))]));
   };
 
   private setFieldsValue = (values: Store, validate = false) => {
@@ -727,14 +670,14 @@ class FormStore {
   private setFieldValue = (name: string, value: StoreValue, validate = false) => {
     const key = keyOfName(name);
 
-    const before = get(this._store, key);
+    const before = deepGet(this._store, key);
 
     if (isEqual(before, value)) return; // no change
 
     const initV = this.getInitialValue(key);
 
     // 1. Update store
-    this.updateStore(set(this._store, name, value));
+    this.updateStore(deepSet(this._store, name, value));
 
     // 2. Update meta state (dirty/touched/validated)
     const mask = this.updateMetaState(key, value, initV);
@@ -743,7 +686,7 @@ class FormStore {
     this.enqueueNotify([name], mask);
 
     // 4. Execute callbacks
-    this._callbacks.onValuesChange?.(set({}, key, value), this._store);
+    this._callbacks.onValuesChange?.(deepSet({}, key, value), this._store);
     this.triggerOnFieldsChange([key]);
 
     // 5. Trigger dependency computation
@@ -792,11 +735,11 @@ class FormStore {
 
     if (names && names.length !== 0) {
       for (const name of names) {
-        acc = set(acc, keyOfName(name), this.getField(name));
+        acc = deepSet(acc, keyOfName(name), this.getField(name));
       }
     } else {
       for (const entity of this._fieldEntities) {
-        acc = set(acc, keyOfName(entity.name), this.getField(entity.name));
+        acc = deepSet(acc, keyOfName(entity.name), this.getField(entity.name));
       }
     }
 
@@ -1066,9 +1009,7 @@ class FormStore {
 
   // ===== Array Operation =====
 
-  /**
-   * Gets or creates an array key manager for tracking array field keys
-   */
+  /** Gets or creates an array key manager for tracking array field keys */
   private getArrayKeyManager = (name: string) => {
     let mgr = this.arrayKeyMap.get(name);
     if (!mgr) {
@@ -1078,9 +1019,7 @@ class FormStore {
     return mgr;
   };
 
-  /**
-   * Performs array operations on form fields (insert, remove, move, swap, replace)
-   */
+  /** Performs array operations on form fields (insert, remove, move, swap, replace) */
   private arrayOp = (name: NamePath, args: ArrayOpArgs): void => {
     const arr = this.getFieldValue(name);
     if (!Array.isArray(arr)) return;
@@ -1099,7 +1038,7 @@ class FormStore {
         const { index, item } = args;
         next.splice(index, 0, item);
         keyMgr.keys.splice(index, 0, (keyMgr.id += 1));
-        this._store = set(this._store, name, next);
+        this._store = deepSet(this._store, name, next);
         this._validated.delete(ak);
         mark();
         break;
@@ -1108,7 +1047,7 @@ class FormStore {
         const { index } = args;
         next.splice(index, 1);
         keyMgr.keys.splice(index, 1);
-        this._store = set(this._store, name, next);
+        this._store = deepSet(this._store, name, next);
         this._validated.delete(ak);
         mark();
         break;
@@ -1118,7 +1057,7 @@ class FormStore {
         const [x] = next.splice(from, 1);
         next.splice(to, 0, x);
         keyMgr.keys = move(keyMgr.keys, from, to);
-        this._store = set(this._store, name, next);
+        this._store = deepSet(this._store, name, next);
         this._validated.delete(ak);
         mark();
         break;
@@ -1129,7 +1068,7 @@ class FormStore {
         next[from] = next[to];
         next[to] = tmp;
         [keyMgr.keys[from], keyMgr.keys[to]] = [keyMgr.keys[to], keyMgr.keys[from]];
-        this._store = set(this._store, name, next);
+        this._store = deepSet(this._store, name, next);
         this._validated.delete(ak);
         mark();
         break;
@@ -1137,7 +1076,7 @@ class FormStore {
       case 'replace': {
         const { index, item } = args;
         next[index] = item;
-        this._store = set(this._store, name, next);
+        this._store = deepSet(this._store, name, next);
         this._validated.delete(ak);
         mark();
         break;
@@ -1169,6 +1108,7 @@ class FormStore {
   // ===== FieldChange =====
   /**
    * Triggers the onFieldsChange callback for specified fields
+   *
    * @param nameList - Array of field names that have changed
    */
   triggerOnFieldsChange = (nameList: NamePath[]) => {
@@ -1185,9 +1125,7 @@ class FormStore {
 
   // ===== Submit =====
 
-  /**
-   * Removes disabled and hidden fields from values before submission
-   */
+  /** Removes disabled and hidden fields from values before submission */
   private _pruneForSubmit(values: Store): Store {
     const disabled = Array.from(this._disabledKeys);
     const hidden = Array.from(this._hiddenKeys);
@@ -1214,6 +1152,7 @@ class FormStore {
 
   /**
    * Builds the payload for failed form submission
+   *
    * @returns Object containing error information and form state
    */
   private buildFailedPayload = () => {
@@ -1245,10 +1184,7 @@ class FormStore {
     };
   };
 
-  /**
-   * Submits the form after validation
-   * Calls onFinish if validation passes, onFinishFailed if it fails
-   */
+  /** Submits the form after validation Calls onFinish if validation passes, onFinishFailed if it fails */
   private submit = async (prune: boolean = true) => {
     this._isSubmitted = true;
     this._isSubmitting = true;
@@ -1281,9 +1217,7 @@ class FormStore {
     }
   };
 
-  /**
-   * Destroys the form and cleans up all state
-   */
+  /** Destroys the form and cleans up all state */
   private destroyForm = (clearOnDestroy?: boolean) => {
     if (clearOnDestroy) {
       // destroy form reset store
@@ -1359,7 +1293,7 @@ class FormStore {
         if (!active) return;
 
         const currentKey = keyOfName(currentName);
-        const currentValue = currentKey === '*' ? this._store : get(this._store, currentKey);
+        const currentValue = currentKey === '*' ? this._store : deepGet(this._store, currentKey);
 
         cb(currentValue, currentKey, this._store, opt.mask ?? ChangeTag.All);
       });

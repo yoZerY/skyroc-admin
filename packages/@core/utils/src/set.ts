@@ -4,7 +4,7 @@ import type { NamePath, SetOptions } from './path-utils';
 import { emptyContainer, isObjectLike, isPlainObject, isUnsafeKey, toSegments } from './path-utils';
 
 /** Immutable deep set. Creates intermediate containers as needed and never mutates the original object. */
-export function set<T, V>(obj: T, path: NamePath, value: V, options: SetOptions = { safeKeys: true }): T {
+export function deepSet<T, V>(obj: T, path: NamePath, value: V, options: SetOptions = { safeKeys: true }): T {
   const segs = toSegments(path);
 
   if (segs.length === 0) return obj;
@@ -55,7 +55,7 @@ export function set<T, V>(obj: T, path: NamePath, value: V, options: SetOptions 
   return setImpl(obj, 0) as T;
 }
 
-export function unset<T>(obj: T, path: NamePath, options: SetOptions = { safeKeys: true }): T {
+export function deepUnset<T>(obj: T, path: NamePath, options: SetOptions = { safeKeys: true }): T {
   const segs = toSegments(path);
 
   if (segs.length === 0) return obj;
@@ -101,13 +101,13 @@ export function unset<T>(obj: T, path: NamePath, options: SetOptions = { safeKey
   return unsetImpl(obj, 0) as T;
 }
 
-export const construct = <T extends Record<string, any>>(obj: T): T => {
+export const unflatten = <T extends Record<string, any>>(obj: T): T => {
   if (!obj) return {} as T;
 
   let acc: Record<string, any> = {};
 
   for (const [path, value] of Object.entries(obj)) {
-    acc = set(acc, path, value);
+    acc = deepSet(acc, path, value);
   }
 
   return acc as T;
