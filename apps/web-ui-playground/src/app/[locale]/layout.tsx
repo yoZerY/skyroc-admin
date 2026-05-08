@@ -1,4 +1,4 @@
-import { setRequestLocale, getMessages } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Card, Sonner, TooltipProvider } from '@skyroc/web-ui';
 import { NextIntlClientProvider } from 'next-intl';
@@ -8,15 +8,20 @@ import { BrandLogo, HeaderActions } from '../_components';
 import type { Locale } from '../../i18n/config';
 
 interface Props {
+  /** Page content rendered inside the locale layout. */
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
+
+  /** Dynamic route params provided by Next.js before locale validation. */
+  params: Promise<{ locale: string }>;
 }
 
 export function generateStaticParams() {
   return routing.locales.map(locale => ({ locale }));
 }
 
-const LocaleLayout = async ({ children, params }: Props) => {
+const LocaleLayout = async (props: Props) => {
+  const { children, params } = props;
+
   const { locale } = await params;
 
   // Ensure that the incoming `locale` is valid
@@ -24,8 +29,10 @@ const LocaleLayout = async ({ children, params }: Props) => {
     notFound();
   }
 
+  const validLocale = locale as Locale;
+
   // Enable static rendering
-  setRequestLocale(locale);
+  setRequestLocale(validLocale);
 
   // Providing all messages to the client side
   const messages = await getMessages();

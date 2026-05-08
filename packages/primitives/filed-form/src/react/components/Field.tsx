@@ -137,7 +137,7 @@ function Field<Values = any>(props: FieldProps<Values>) {
     );
 
   // Get current field value or use initial value as fallback
-  const value = getFieldValue(name) || initialValue;
+  const value = getFieldValue(name) ?? initialValue;
 
   // Prepare value props based on control mode
   // Controlled: use 'value' prop, Uncontrolled: use 'defaultValue' prop

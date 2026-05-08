@@ -6,8 +6,8 @@ const ResizableHorizontal = () => {
   return (
     <ResizablePanelGroup
       className="max-w-md rounded-lg border"
-      direction="horizontal"
       id="demo-horizontal"
+      orientation="horizontal"
     >
       <ResizablePanel
         defaultSize={50}

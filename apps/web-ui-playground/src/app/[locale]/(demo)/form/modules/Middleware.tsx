@@ -1,12 +1,26 @@
 'use client';
 
 import { useEffect } from 'react';
-import type { FormAction } from '@skyroc/web-ui';
+import type { AllPathsKeys, FormAction } from '@skyroc/web-ui';
 import { Button, Form, FormField, Input, useForm } from '@skyroc/web-ui';
 
+// ============ Form field types ============
+interface Inputs {
+  confirmPassword: string;
+  password: string;
+  username: string;
+}
+
+type InputsAction = FormAction<Inputs, AllPathsKeys<Inputs>>;
+
+interface AnalyticsMiddlewareCtx {
+  dispatch: (a: InputsAction) => void;
+  getState: () => Inputs;
+}
+
 // ============ Analytics Middleware (logging/tracking) ============
-function analyticsMiddleware({ getState }: { dispatch: (a: FormAction) => void; getState: () => any }) {
-  return (next: (a: FormAction) => void) => (action: FormAction) => {
+function analyticsMiddleware({ getState }: AnalyticsMiddlewareCtx) {
+  return (next: (a: InputsAction) => void) => (action: InputsAction) => {
     // the action before the middleware
     console.log('[middleware] before', action, 'state:', getState());
 
@@ -23,13 +37,6 @@ function analyticsMiddleware({ getState }: { dispatch: (a: FormAction) => void; 
   };
 }
 
-// ============ Form field types ============
-interface Inputs {
-  confirmPassword: string;
-  password: string;
-  username: string;
-}
-
 const initialValues: Inputs = {
   confirmPassword: '123456',
   password: '123456',
@@ -42,7 +49,7 @@ const UseFormWithMiddleware = () => {
   useEffect(() => {
     // Register middleware: add analytics/tracing for form actions
     form.use(analyticsMiddleware);
-  }, []);
+  }, [form]);
 
   return (
     <Form

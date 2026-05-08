@@ -6,8 +6,8 @@ const ResizableVertical = () => {
   return (
     <ResizablePanelGroup
       className="min-h-[200px] max-w-md rounded-lg border"
-      direction="vertical"
       id="demo-vertical"
+      orientation="vertical"
     >
       <ResizablePanel
         defaultSize={50}

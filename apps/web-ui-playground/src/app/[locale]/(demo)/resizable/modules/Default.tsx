@@ -7,8 +7,8 @@ const Default = () => {
   return (
     <ResizablePanelGroup
       className="max-w-md rounded-lg border"
-      direction="horizontal"
       id="demo-group-1"
+      orientation="horizontal"
     >
       <ResizablePanel
         collapsible
@@ -33,8 +33,8 @@ const Default = () => {
         minSize={20}
       >
         <ResizablePanelGroup
-          direction="vertical"
           id="demo-group-2"
+          orientation="vertical"
         >
           <ResizablePanel
             defaultSize={25}

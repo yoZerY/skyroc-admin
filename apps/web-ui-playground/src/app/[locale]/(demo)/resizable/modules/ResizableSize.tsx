@@ -11,8 +11,8 @@ const ResizableSize = () => {
       {sizes.map(size => (
         <ResizablePanelGroup
           className="h-20 max-w-md rounded-lg border"
-          direction="horizontal"
           key={size}
+          orientation="horizontal"
           size={size}
         >
           <ResizablePanel
