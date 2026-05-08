@@ -23,7 +23,8 @@
   },
   "i18n-ally.displayLanguage": "zh-cn",
   "i18n-ally.enabledParsers": [
-    "ts"
+    "ts",
+    "json"
   ],
   "i18n-ally.enabledFrameworks": [
     "react-i18next"
@@ -35,13 +36,19 @@
   ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.extract.targetPickingStrategy": "most-similar",
-  "i18n-ally.pathMatcher": "{locale}/{namespaces}.ts",
+  "i18n-ally.namespace": true,
+  "i18n-ally.pathMatcher": "{locale}/{namespace}.ts",
+  "i18n-ally.ignoreFiles": [
+    "**/index.ts"
+  ],
   "i18n-ally.localesPaths": [
     "apps/admin/src/locales/langs"
   ],
   "prettier.enable": false,
   "i18n-ally.parsers.typescript.compilerOptions": {
-    "moduleResolution": "node"
+    "ignoreDeprecations": "6.0",
+    "moduleResolution": "node",
+    "target": "ES2020"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "vitest.configSearchPatternExclude": "**/packages/**",
