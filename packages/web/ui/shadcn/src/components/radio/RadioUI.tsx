@@ -1,6 +1,7 @@
 'use client';
 
 import { useId } from 'react';
+import { cn } from '@skyroc/utils';
 import RadioLabel from '../label/LabelUI';
 import RadioGroupItem from './RadioGroupItem';
 import RadioIndicator from './RadioIndicator';
@@ -13,6 +14,7 @@ const Radio = (props: RadioProps) => {
   const internalId = useId();
 
   const controlId = id || internalId;
+  const { className: itemClassName, ...restItemProps } = itemProps || {};
 
   return (
     <RadioRoot
@@ -22,7 +24,8 @@ const Radio = (props: RadioProps) => {
     >
       <RadioGroupItem
         {...rest}
-        {...itemProps}
+        {...restItemProps}
+        className={cn(classNames?.control, itemClassName)}
         color={color}
         id={controlId}
         size={size}
