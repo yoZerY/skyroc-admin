@@ -1,8 +1,8 @@
 /* eslint-disable complexity */
+import { globalStore } from '@skyroc/core-state';
 import { useNavigate } from '@tanstack/react-router';
 import { atom, useAtom } from 'jotai';
 
-import { globalStore } from '@/features/jotai/store';
 import { menuCategory } from '@/features/menus/menu-category';
 import { normalizePath } from '@/features/menus/menu-generator';
 import { useMenus } from '@/features/menus/use-menus';

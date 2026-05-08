@@ -1,8 +1,8 @@
+import { globalStore } from '@skyroc/core-state';
 import { Suspense, lazy } from 'react';
 
 import { queryClient } from '@/service/queryClient';
 
-import { globalStore } from '../jotai/store';
 import { router } from '../router';
 
 // 动态导入所有 Devtools 相关的包
@@ -26,9 +26,7 @@ const JotaiDevTools = lazy(async () => {
 });
 
 const Devtools = () => {
-  if (!import.meta.env.DEV) {
-    return null;
-  }
+
 
   return (
     <Suspense fallback={null}>

@@ -1,14 +1,15 @@
+// jotai-devtools must run before globalStore is created so the store exposes devtool metadata.
+import { useAtomsDevtools } from 'jotai-devtools';
+
+import { JotaiProvider, globalStore } from '@skyroc/core-state';
 import { TooltipProvider } from '@skyroc/web-ui';
 import { LazyAnimate } from '@skyroc/web-ui-compose';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { useAtomsDevtools } from 'jotai-devtools';
-import { Suspense, lazy } from 'react';
+import { lazy } from 'react';
 
 import AntdProvider from './features/antd/AntdProvider';
 import { NotificationProvider } from './features/chat';
 import GlobalEffect from './features/effects/GlobalEffect';
-import JotaiProvider from './features/jotai/JotaiProvider';
-import { globalStore } from './features/jotai/store';
 import RouterProvider from './features/router/RouterProvider';
 import { queryClient } from './service/queryClient';
 
@@ -24,11 +25,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
-        {import.meta.env.DEV && (
-          <Suspense fallback={null}>
-            <Devtools />
-          </Suspense>
-        )}
+        <Devtools />
         {children}
       </JotaiProvider>
     </QueryClientProvider>

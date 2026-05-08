@@ -281,6 +281,9 @@ importers:
       '@skyroc/color':
         specifier: workspace:*
         version: link:../../packages/@core/color
+      '@skyroc/core-state':
+        specifier: workspace:*
+        version: link:../../packages/@core/state
       '@skyroc/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -338,9 +341,6 @@ importers:
       jotai:
         specifier: catalog:core
         version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.1.0)
-      loglayer:
-        specifier: ^8.4.0
-        version: 8.5.0
       motion:
         specifier: catalog:ui-shared
         version: 12.34.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

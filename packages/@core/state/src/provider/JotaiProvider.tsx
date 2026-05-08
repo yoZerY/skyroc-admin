@@ -1,8 +1,12 @@
 import { Provider } from 'jotai';
-import type { PropsWithChildren } from 'react';
+import type { ReactNode } from 'react';
+
 import { globalStore } from '../store/global';
 
-export type JotaiProviderProps = PropsWithChildren;
+export interface JotaiProviderProps {
+  /** 需要绑定到全局 Jotai store 的 React 子树。 */
+  children?: ReactNode;
+}
 
 /**
  * Jotai Provider component bound to the package-level `globalStore`.
@@ -18,6 +22,10 @@ export type JotaiProviderProps = PropsWithChildren;
  *   }
  *   ```
  */
-export function JotaiProvider({ children }: JotaiProviderProps) {
+const JotaiProvider = (props: JotaiProviderProps) => {
+  const { children } = props;
+
   return <Provider store={globalStore}>{children}</Provider>;
-}
+};
+
+export { JotaiProvider };
