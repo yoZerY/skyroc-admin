@@ -34,7 +34,6 @@
     "predev": "tsx scripts/generate-demo-list.ts && oxfmt --write component-list.json",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "start": "next start",
-    "typecheck:e2e": "tsc --project e2e/tsconfig.json --noEmit --pretty false",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
