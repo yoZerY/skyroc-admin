@@ -1,7 +1,7 @@
+import { parseQuery } from '@skyroc/utils/query';
 import { Form } from 'antd';
 import type { TablePaginationConfig } from 'antd';
 
-import { parseQuery } from '@/features/router/query';
 import { useRoute } from '@/features/router/use-route';
 import { useAdminState } from '@/layouts/admin-layout/state/use-admin-state';
 

@@ -1,7 +1,7 @@
 export type LocationQueryValue = string | null;
 
 /**
- * Normalized query object that appears in {@link RouteLocationNormalized}
+ * Normalized query object that appears in route locations.
  *
  * @public
  */
@@ -10,16 +10,7 @@ export type LocationQueryValueRaw = LocationQueryValue | number | undefined;
 
 export type LocationQueryRaw = Record<string | number, LocationQueryValueRaw | LocationQueryValueRaw[]>;
 
-/**
- * Transforms a queryString into a {@link LocationQuery} object. Accept both, a version with the leading `?` and without
- * Should work as URLSearchParams
- *
- * @param search - Search string to parse
- * @returns A query object
- * @internal
- */
-
-export const PLUS_RE = /\+/g; // %2B
+const PLUS_RE = /\+/g; // %2B
 
 const EQUAL_RE = /[=]/g; // %3D
 
@@ -30,36 +21,41 @@ const ENC_BACKTICK_RE = /%60/g; // `
 const ENC_CURLY_OPEN_RE = /%7B/g; // {
 const ENC_PIPE_RE = /%7C/g; // |
 const ENC_CURLY_CLOSE_RE = /%7D/g; // }
-const ENC_SPACE_RE = /%20/g; // }
+const ENC_SPACE_RE = /%20/g; // space
 const HASH_RE = /#/g; // %23
 const AMPERSAND_RE = /&/g; // %26
+
+/**
+ * Transforms a query string into a normalized query object.
+ *
+ * Accepts both forms with or without the leading question mark.
+ */
 export function parseQuery(search: string): LocationQuery {
-  const query: LocationQuery = {};
-  // avoid creating an object with an empty key and empty value
-  // because of split('&')
+  const query = Object.create(null) as LocationQuery;
+
   if (search === '' || search === '?') return query;
-  const hasLeadingIM = search[0] === '?';
-  const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
+  const hasLeadingQuestionMark = search[0] === '?';
+  const searchParams = (hasLeadingQuestionMark ? search.slice(1) : search).split('&');
 
   for (let i = 0; i < searchParams.length; i += 1) {
-    // pre decode the + into space
-    const searchParam = searchParams[i].replace(PLUS_RE, ' ');
-    // allow the = character
-    const eqPos = searchParam.indexOf('=');
-    const key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
-    const value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
+    const rawSearchParam = searchParams[i];
 
-    if (key in query) {
-      // an extra variable for ts types
-      let currentValue = query[key];
-      if (!Array.isArray(currentValue)) {
-        currentValue = [currentValue];
-        query[key] = currentValue;
+    if (rawSearchParam !== '') {
+      const searchParam = rawSearchParam.replace(PLUS_RE, ' ');
+      const eqPos = searchParam.indexOf('=');
+      const key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
+      const value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
+
+      if (Object.hasOwn(query, key)) {
+        let currentValue = query[key];
+        if (!Array.isArray(currentValue)) {
+          currentValue = [currentValue];
+          query[key] = currentValue;
+        }
+        (currentValue as LocationQueryValue[]).push(value);
+      } else {
+        query[key] = value;
       }
-      // we force the modification
-      (currentValue as LocationQueryValue[]).push(value);
-    } else {
-      query[key] = value;
     }
   }
   return query;
@@ -71,24 +67,14 @@ export function stringifyQuery(query: LocationQueryRaw): string {
   for (const [originalKey, value] of Object.entries(query)) {
     const key = encodeQueryKey(originalKey);
     if (value === null) {
-      // only null adds the value
-      if (value !== undefined) {
-        search += (search.length ? '&' : '') + key;
-      }
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-    // keep null values
-    const values: LocationQueryValueRaw[] = Array.isArray(value)
-      ? value.map(v => v && encodeQueryValue(v))
-      : [value && encodeQueryValue(value)];
+      search = appendQueryParam(search, key, null);
+    } else {
+      const values = Array.isArray(value) ? value.map(encodeQueryParamValue) : [encodeQueryParamValue(value)];
 
-    for (const v of values) {
-      // skip undefined values in arrays as if they were not present
-      if (v !== undefined) {
-        // only append & with non-empty search
-        search += (search.length ? '&' : '') + key;
-        if (v !== null) search += `=${v}`;
+      for (const v of values) {
+        if (v !== undefined) {
+          search = appendQueryParam(search, key, v);
+        }
       }
     }
   }
@@ -100,6 +86,7 @@ export function decode(text: string | number): string {
   try {
     return decodeURIComponent(`${text}`);
   } catch {
+    // oxlint-disable-next-line no-console
     console.warn(`Error decoding "${text}". Using original value`);
   }
   return `${text}`;
@@ -122,6 +109,19 @@ export function encodeQueryValue(text: string | number): string {
       .replace(ENC_CURLY_CLOSE_RE, '}')
       .replace(ENC_CARET_RE, '^')
   );
+}
+
+function appendQueryParam(search: string, key: string, value: string | null): string {
+  const prefix = search.length ? '&' : '';
+  const suffix = value === null ? '' : `=${value}`;
+
+  return `${search}${prefix}${key}${suffix}`;
+}
+
+function encodeQueryParamValue(value: LocationQueryValueRaw): string | null | undefined {
+  if (value === undefined || value === null) return value;
+
+  return encodeQueryValue(value);
 }
 
 function commonEncode(text: string | number): string {
