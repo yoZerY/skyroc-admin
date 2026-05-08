@@ -1,9 +1,9 @@
+import { useCaptcha } from '@skyroc/hooks';
 import { ButtonLink } from '@skyroc/web-ui-antd';
 import { REG_PHONE } from '@skyroc/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { useFormRules } from '@/features/form/use-rules';
-import { useCaptcha } from '@/hooks/use-captcha';
 
 interface FormModel {
   code: string;
@@ -15,7 +15,7 @@ interface FormModel {
 const Register = () => {
   const { t } = useTranslation();
 
-  const { getCaptcha, isCounting, label, loading } = useCaptcha();
+  const { getCaptcha, isCounting, label, loading } = useCaptcha(t('page.login.codeLogin.getCode'), getCountingLabel);
 
   const [form] = AForm.useForm<FormModel>();
 
@@ -28,6 +28,10 @@ const Register = () => {
   function handleSubmit(_params: FormModel) {
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
+  }
+
+  function getCountingLabel(count: number) {
+    return t('page.login.codeLogin.reGetCode', { time: count });
   }
 
   function sendCaptcha() {

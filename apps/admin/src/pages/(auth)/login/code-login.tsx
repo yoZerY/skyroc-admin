@@ -1,9 +1,9 @@
+import { useCaptcha } from '@skyroc/hooks';
 import { ButtonLink } from '@skyroc/web-ui-antd';
 import { REG_PHONE } from '@skyroc/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { useFormRules } from '@/features/form/use-rules';
-import { useCaptcha } from '@/hooks/use-captcha';
 
 type FormValues = {
   code: string;
@@ -13,9 +13,9 @@ type FormValues = {
 const CodeLogin = () => {
   const [form] = AForm.useForm<FormValues>();
 
-  const { getCaptcha, isCounting, label, loading } = useCaptcha();
-
   const { t } = useTranslation();
+
+  const { getCaptcha, isCounting, label, loading } = useCaptcha(t('page.login.codeLogin.getCode'), getCountingLabel);
 
   const { formRules } = useFormRules();
 
@@ -26,6 +26,10 @@ const CodeLogin = () => {
   function handleSubmit(_params: FormValues) {
     // request to reset password
     showSuccessMessage(t('page.login.common.validateSuccess'));
+  }
+
+  function getCountingLabel(count: number) {
+    return t('page.login.codeLogin.reGetCode', { time: count });
   }
 
   function sendCaptcha() {
