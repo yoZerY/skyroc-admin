@@ -9,7 +9,7 @@ import { useCarousel } from './context';
 import type { CarouselNextProps } from './types';
 
 const CarouselNext = forwardRef<HTMLButtonElement, CarouselNextProps>((props, ref) => {
-  const { children, className, disabled, shape = 'circle', size, variant = 'pure', ...rest } = props;
+  const { 'aria-label': ariaLabel, children, className, disabled, shape = 'circle', size, variant = 'pure', ...rest } = props;
 
   const { canScrollNext, orientation, scrollNext } = useCarousel();
 
@@ -26,6 +26,7 @@ const CarouselNext = forwardRef<HTMLButtonElement, CarouselNextProps>((props, re
       size={size}
       variant={variant}
       onClick={scrollNext}
+      aria-label={ariaLabel ?? 'Next slide'}
       {...rest}
     >
       {children || <ChevronRight />}
