@@ -1,6 +1,6 @@
 import type { CSSProperties, ComponentPropsWithoutRef, ReactNode, Ref } from 'react';
 import type { PartialKeys, VirtualItem, Virtualizer, VirtualizerOptions } from '@tanstack/react-virtual';
-import type { ClassValue, StyledComponentProps } from '@/types/shared';
+import type { ClassValue, StyledComponentProps } from '../../types/shared';
 import type { VirtualizerSlots } from './virtualizer-variants';
 
 export type VirtualizerClassNames = Partial<Record<VirtualizerSlots, ClassValue>>;
