@@ -2,7 +2,6 @@
 import { useAtomsDevtools } from 'jotai-devtools';
 
 import { JotaiProvider, globalStore } from '@skyroc/core-state';
-import { TooltipProvider } from '@skyroc/web-ui';
 import { LazyAnimate } from '@skyroc/web-ui-compose';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy } from 'react';
@@ -36,12 +35,10 @@ const App = () => (
   <Provider>
     <AntdProvider>
       <NotificationProvider>
-        <TooltipProvider>
-          <LazyAnimate>
-            <RouterProvider />
-            <GlobalEffect />
-          </LazyAnimate>
-        </TooltipProvider>
+        <LazyAnimate>
+          <RouterProvider />
+          <GlobalEffect />
+        </LazyAnimate>
       </NotificationProvider>
     </AntdProvider>
   </Provider>

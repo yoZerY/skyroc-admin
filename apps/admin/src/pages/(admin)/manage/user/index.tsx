@@ -1,6 +1,5 @@
-import { Tooltip } from '@skyroc/web-ui';
 import { createFileRoute } from '@tanstack/react-router';
-import { Card, Space } from 'antd';
+import { Card, Space, Tooltip } from 'antd';
 
 import { useNotificationContext } from '@/features/chat';
 import { useMockNotifications } from '@/features/chat/use-mock-notifications';
@@ -225,7 +224,7 @@ function RouteComponent() {
       <Card className="mb-24px" title="📮 基础通知类型">
         <p className="mb-16px text-$ant-color-text-secondary">通知系统支持 5 种基础类型，每种类型有不同的图标和颜色</p>
         <Space wrap>
-          <Tooltip content="信息通知">
+          <Tooltip title="信息通知">
             <AButton icon={<span className="i-carbon-information-filled" />} type="primary" onClick={handleAddInfo}>
               信息通知
             </AButton>
