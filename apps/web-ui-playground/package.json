@@ -34,6 +34,9 @@
     "predev": "tsx scripts/generate-demo-list.ts && oxfmt --write component-list.json",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "start": "next start",
+    "typecheck:e2e": "tsc --project e2e/tsconfig.json --noEmit --pretty false",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "worker:build": "opennextjs-cloudflare build"
   },
@@ -55,6 +58,7 @@
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "1.13.1",
+    "@playwright/test": "catalog:dev",
     "@skyroc/tailwind-plugin": "workspace:*",
     "@tailwindcss/postcss": "catalog:css",
     "oxlint": "catalog:dev",

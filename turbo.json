@@ -21,6 +21,12 @@
       "inputs": ["src/**", "__tests__/**", "vitest.config.*", "vitest.setup.*"],
       "outputs": ["coverage/**"]
     },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "inputs": ["src/**", "e2e/**", "component-list.json", "playwright.config.*", "package.json"],
+      "outputs": ["playwright-report/**", "test-results/**"]
+    },
     "test:watch": {
       "dependsOn": [],
       "cache": false,
