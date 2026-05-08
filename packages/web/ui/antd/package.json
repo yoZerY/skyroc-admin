@@ -64,21 +64,28 @@
   },
   "dependencies": {
     "@iconify/react": "catalog:ui-shared",
-    "@skyroc/web-ui": "workspace:*",
     "@skyroc/web-ui-compose": "workspace:*",
-    "@skyroc/utils": "workspace:*",
-    "@tanstack/react-router": "catalog:web",
-    "antd": "catalog:web",
-    "clsx": "catalog:utils",
-    "react": "catalog:core",
-    "react-dom": "catalog:core",
-    "react-error-boundary": "catalog:core"
+    "clsx": "catalog:utils"
+  },
+  "peerDependencies": {
+    "@tanstack/react-router": "^1.140.0",
+    "antd": ">=6.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-error-boundary": "^6.0.0"
   },
   "devDependencies": {
     "@soybeanjs/eslint-config": "catalog:dev",
+    "@tanstack/react-router": "catalog:web",
     "@types/react": "catalog:dev",
     "@types/react-dom": "catalog:dev",
+    "antd": "catalog:web",
     "oxlint": "catalog:dev",
+    "react": "catalog:core",
+    "react-dom": "catalog:core",
+    "react-error-boundary": "catalog:core",
+    "rimraf": "catalog:dev",
+    "tsdown": "catalog:dev",
     "typescript": "catalog:core"
   }
 }

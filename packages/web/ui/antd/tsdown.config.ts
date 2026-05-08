@@ -6,8 +6,8 @@ import pkg from './package.json' with { type: 'json' };
 export default defineConfig({
   clean: true,
   dts: true,
-  entry: ['src/index.ts', ...fg.sync('src/components/**/index.{ts,tsx}'), 'src/hooks/index.ts'],
-  external: [...Object.keys(pkg.dependencies || {}), 'react/jsx-runtime'],
+  entry: ['src/index.ts', ...fg.sync('src/components/**/index.{ts,tsx}')],
+  external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {}), 'react/jsx-runtime'],
   hooks: {
     'build:before': () => {
       console.log('📦 Building @skyroc/web-ui-antd with Tsdown...');
