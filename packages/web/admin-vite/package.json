@@ -1,0 +1,101 @@
+{
+  "name": "@skyroc/web-admin-vite",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Configurable Vite build helpers and plugin presets for Skyroc admin applications.",
+  "keywords": [
+    "admin",
+    "build",
+    "skyroc",
+    "vite",
+    "web"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Ohh-889/skyroc-admin/tree/master/packages/web/admin-vite",
+  "bugs": {
+    "url": "https://github.com/Ohh-889/skyroc-admin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ohh-889/skyroc-admin.git",
+    "directory": "packages/web/admin-vite"
+  },
+  "author": {
+    "name": "Ohh",
+    "email": "1509326266@qq.com",
+    "url": "https://github.com/Ohh-889"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./src/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
+    "dev": "tsdown --watch",
+    "lint": "oxlint --fix",
+    "typecheck": "tsc --noEmit --skipLibCheck"
+  },
+  "dependencies": {
+    "@iconify/utils": "catalog:ui-shared",
+    "@tanstack/devtools-vite": "catalog:web",
+    "@tanstack/router-plugin": "catalog:web",
+    "@unocss/preset-icons": "catalog:dev",
+    "@unocss/vite": "catalog:web",
+    "@vitejs/plugin-react": "catalog:web",
+    "babel-plugin-react-compiler": "catalog:dev",
+    "boxen": "catalog:dev",
+    "dayjs": "catalog:utils",
+    "gradient-string": "catalog:dev",
+    "kolorist": "catalog:dev",
+    "unplugin-auto-import": "catalog:dev",
+    "unplugin-icons": "catalog:dev",
+    "vite-plugin-inspect": "catalog:dev",
+    "vite-plugin-remove-console": "catalog:dev",
+    "vite-plugin-svg-icons": "catalog:dev"
+  },
+  "peerDependencies": {
+    "jotai": ">=2.0.0",
+    "vite": ">=7.0.0"
+  },
+  "devDependencies": {
+    "@skyroc/config": "workspace:*",
+    "@skyroc/tsconfig": "workspace:*",
+    "@skyroc/types": "workspace:*",
+    "@types/node": "catalog:dev",
+    "oxlint": "catalog:dev",
+    "rimraf": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "typescript": "catalog:core",
+    "vite": "catalog:core"
+  }
+}
