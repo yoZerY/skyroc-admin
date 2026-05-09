@@ -6,6 +6,7 @@ import { defineConfig, loadEnv } from 'vite';
 import { createViteProxy } from './build/config/proxy';
 import { getBuildTime } from './build/config/time';
 import { setupVitePlugins } from './build/plugins';
+import { createAdminBuildOptions, createAdminScssPreprocessorOptions } from './build/shared/admin-vite';
 
 export default defineConfig(configEnv => {
   const viteEnv = loadEnv(configEnv.mode, process.cwd()) as unknown as Env.ImportMeta;
@@ -16,66 +17,9 @@ export default defineConfig(configEnv => {
 
   return {
     base: viteEnv.VITE_BASE_URL,
-    build: {
-      rollupOptions: {
-        output: {
-          assetFileNames: chunkInfo => {
-            const name = chunkInfo.names[0];
-
-            if (name?.endsWith('.css')) {
-              return 'css/[name]-[hash].css';
-            }
-
-            const imgExts = ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'];
-
-            if (imgExts.some(ext => name?.endsWith(`.${ext}`))) {
-              return 'images/[name]-[hash].[ext]';
-            }
-
-            if (name?.endsWith('.js')) {
-              return 'js/[name]-[hash].js';
-            }
-
-            return 'assets/[name]-[hash].[ext]';
-          },
-          chunkFileNames: chunkInfo => {
-            // 检查文件路径，如果是 pages 目录下的文件，则修改文件名和路径
-            const filePath = chunkInfo.facadeModuleId;
-
-            if (filePath) {
-              // 提取文件的父文件夹作为文件名
-              if (filePath.includes('/src/pages/')) {
-                // 提取文件的父文件夹作为文件名
-                const pageName = filePath.split('/src/pages/')[1];
-                // 替换 [name] 为  name 因为vite不支持
-                const newPath = pageName?.replace(/\[([^\]]+)\]/g, '$1') || '';
-
-                const path = newPath.slice(0, newPath.lastIndexOf('/'));
-
-                return `js/pages/${path}/[name]-[hash].js`;
-              } else if (filePath.includes('/src/components/')) {
-                return `js/components/[name]-[hash].js`;
-              }
-            }
-
-            return 'js/[name]-[hash].js'; // 默认处理方式
-          },
-          manualChunks: {
-            antd: ['antd'],
-            il8n: ['react-i18next', 'i18next'],
-            react: ['react', 'react-dom'],
-            'react-router': ['@tanstack/react-router']
-          }
-        }
-      }
-    },
+    build: createAdminBuildOptions(),
     css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@use "@/styles/scss/global.scss" as *;`,
-          api: 'modern-compiler'
-        }
-      }
+      preprocessorOptions: createAdminScssPreprocessorOptions(`@use "@/styles/scss/global.scss" as *;`)
     },
     define: {
       BUILD_TIME: JSON.stringify(buildTime)
@@ -88,7 +32,8 @@ export default defineConfig(configEnv => {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
         '~': fileURLToPath(new URL('./', import.meta.url))
-      }
+      },
+      dedupe: ['react', 'react-dom', 'react/jsx-dev-runtime', 'react/jsx-runtime']
     },
     server: {
       host: '0.0.0.0',
