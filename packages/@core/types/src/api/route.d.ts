@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/require-module-specifiers
 /**
  * 命名空间 Api.Route
  *
@@ -13,7 +14,7 @@ declare global {
       routes: BackendRoute[];
     }
 
-    interface BackendRoute extends Omit<Router.Meta, 'permissions'> {
+    interface BackendRoute extends Router.Meta {
       children?: BackendRoute[];
 
       id: string;
