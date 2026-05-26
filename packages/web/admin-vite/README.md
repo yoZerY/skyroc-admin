@@ -60,7 +60,7 @@ export default defineConfig(configEnv => {
 
 - `base`: 使用 `application.base`，否则读取 `VITE_BASE_URL`，再否则为 `/`
 - `build`: 统一资源输出目录和基础 manual chunks
-- `define`: 注入 `BUILD_TIME`
+- `define`: 注入 `__DEV__` 和 `BUILD_TIME`
 - `css`: 可配置 SCSS `additionalData`
 - `plugins`: 注入 admin 内置插件组
 - `preview`: 默认端口 `9725`
@@ -358,6 +358,7 @@ export default defineConfig({
 
 ```ts
 define: {
+  __DEV__: JSON.stringify(command === 'serve'),
   BUILD_TIME: JSON.stringify(buildTime)
 }
 ```

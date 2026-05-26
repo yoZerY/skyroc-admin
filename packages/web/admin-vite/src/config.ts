@@ -214,8 +214,13 @@ function createAdminApplicationConfig<E extends AdminViteEnv>(
     config.css = css;
   }
 
+  config.define = {
+    __DEV__: JSON.stringify(context.isServe)
+  };
+
   if (application.buildTimeDefineName !== false) {
     config.define = {
+      ...config.define,
       [application.buildTimeDefineName ?? 'BUILD_TIME']: JSON.stringify(context.buildTime)
     };
   }
