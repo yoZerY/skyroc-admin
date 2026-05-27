@@ -73,10 +73,11 @@ beforeEach(() => {
   themeState.updateWatermarkTimer.mockClear();
   utilityMocks.toggleAuxiliaryColorModes.mockClear();
   utilityMocks.toggleCssDarkMode.mockClear();
-  vi.stubGlobal('__DEV__', true);
+  vi.stubEnv('DEV', true);
 });
 
 afterEach(() => {
+  vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
@@ -127,7 +128,7 @@ describe('ThemeEffect', () => {
   });
 
   it('生产环境 beforeunload 时缓存主题设置', () => {
-    vi.stubGlobal('__DEV__', false);
+    vi.stubEnv('DEV', false);
 
     render(<ThemeEffect />);
     window.dispatchEvent(new Event('beforeunload'));

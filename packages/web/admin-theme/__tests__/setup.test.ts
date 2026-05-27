@@ -20,7 +20,8 @@ beforeEach(() => {
   // 重置 atom.init 避免测试间相互污染
   themeSettingsAtom.init = defaultThemeSettings;
   window.localStorage.clear();
-  vi.stubGlobal('__DEV__', true);
+  vi.stubEnv('DEV', true);
+  vi.stubEnv('PROD', false);
 });
 
 afterEach(() => {
@@ -38,7 +39,7 @@ describe('defineThemeOverrides', () => {
 });
 
 describe('setupTheme - 开发环境', () => {
-  it('isProd=false 时直接使用默认配置且不读 storage', () => {
+  it('默认开发环境直接使用默认配置且不读 storage', () => {
     const storage = createStorageMock();
 
     setupTheme({ storage });
@@ -48,10 +49,11 @@ describe('setupTheme - 开发环境', () => {
     expect(storage.set).not.toHaveBeenCalled();
   });
 
-  it('未传 isProd 时跟随 __DEV__', () => {
+  it('未传 isProd 时跟随 import.meta.env.PROD', () => {
     const storage = createStorageMock();
 
-    vi.stubGlobal('__DEV__', false);
+    vi.stubEnv('DEV', false);
+    vi.stubEnv('PROD', true);
 
     setupTheme({
       buildTime: '2025-01-01',
@@ -78,7 +80,8 @@ describe('setupTheme - 生产环境', () => {
   });
 
   it('未传 storage 时使用外部传入的 storagePrefix 创建默认 localStorage', () => {
-    vi.stubGlobal('__DEV__', false);
+    vi.stubEnv('DEV', false);
+    vi.stubEnv('PROD', true);
 
     setupTheme({
       buildTime: '2025-01-01',
@@ -93,7 +96,8 @@ describe('setupTheme - 生产环境', () => {
   });
 
   it('未传 storagePrefix 时使用默认存储前缀', () => {
-    vi.stubGlobal('__DEV__', false);
+    vi.stubEnv('DEV', false);
+    vi.stubEnv('PROD', true);
 
     setupTheme({
       buildTime: '2025-01-01'

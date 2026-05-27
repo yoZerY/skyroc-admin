@@ -26,7 +26,7 @@ interface SetupThemeOptions {
   /** 当前构建时间，用于检测缓存覆盖（生产环境需要） */
   buildTime?: string;
 
-  /** 是否生产环境（默认 !__DEV__） */
+  /** 是否生产环境（默认 import.meta.env.PROD） */
   isProd?: boolean;
 
   /** 主题配置覆盖项，发布新版本时可强制覆盖用户缓存的某些配置 */
@@ -62,7 +62,7 @@ export function getInternalStorage(): ThemeStorage | null {
 export function setupTheme(options: SetupThemeOptions = {}) {
   const {
     buildTime,
-    isProd = !__DEV__,
+    isProd = import.meta.env.PROD,
     overrides,
     storage,
     storagePrefix = DEFAULT_THEME_STORAGE_PREFIX
