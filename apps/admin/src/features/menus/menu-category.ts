@@ -1,20 +1,14 @@
-export const menuCategory = {
+import type { AdminLayoutMenuCategory } from '@skyroc/web-admin-layouts';
+
+export const menuCategories = {
   admin: {
     key: 'admin',
     layout: '/(admin)'
   }
-} as const;
+} as const satisfies Record<string, AdminLayoutMenuCategory>;
 
-// 通过key找到layout
-export const getMenuCategoryLayout = (key: MenuCategoryKey) => {
-  return menuCategory[key].layout;
-};
+type MenuCategories = typeof menuCategories;
 
-// 通过layout找到key
-export const getMenuCategoryKey = (layout: Router.RouteId) => {
-  return Object.values(menuCategory).find(category => category.layout === layout)?.key;
-};
+export type MenuCategoryKey = keyof MenuCategories;
 
-type MenuCategory = typeof menuCategory;
-
-export type MenuCategoryKey = keyof MenuCategory;
+export const menuCategoryKeys = Object.keys(menuCategories) as MenuCategoryKey[];

@@ -2,7 +2,7 @@ import type { AdminDevtoolsConfig } from '@skyroc/web-admin-devtools';
 import { defaultThemeSettings } from '@skyroc/web-admin-theme';
 import type { NProgress } from 'nprogress';
 
-import { menuCategory } from './features/menus/menu-category';
+import { menuCategoryKeys } from './features/menus/menu-category';
 import { localStg } from './utils/storage';
 
 // ============================================================================
@@ -68,8 +68,8 @@ function createConfig() {
       query: true,
       router: true
     } satisfies AdminDevtoolsConfig,
-    /** - 生成菜单的布局 */
-    genMenuLayouts: [menuCategory.admin.key],
+    /** - 生成菜单的分类 key，来源于 setupAdminLayouts 使用的 menuCategories。 */
+    genMenuLayouts: menuCategoryKeys,
     /** - 默认首页 */
     defaultHome: import.meta.env.VITE_ROUTE_HOME,
 

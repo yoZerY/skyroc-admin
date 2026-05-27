@@ -7,6 +7,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import { globalConfig } from '@/config';
 import { menuExtras } from '@/features/menus/extras';
+import { menuCategories } from '@/features/menus/menu-category';
 import { menuNodeCallback } from '@/features/menus/menu-config';
 import { routeTree } from '@/features/router/routeTree.gen';
 import { queryMenusOptions } from '@/service/api/route/hooks';
@@ -39,12 +40,7 @@ async function setupApp() {
     defaultHome: globalConfig.defaultHome,
     defaultIcon: globalConfig.defaultIcon,
     loadDynamicRoutes: () => queryClient.ensureQueryData(queryMenusOptions()),
-    menuCategories: {
-      admin: {
-        key: 'admin',
-        layout: '/(admin)'
-      }
-    },
+    menuCategories,
     extras: menuExtras,
     menuNodeCallback,
     permissionSuperRole: import.meta.env.VITE_STATIC_SUPER_ROLE,
