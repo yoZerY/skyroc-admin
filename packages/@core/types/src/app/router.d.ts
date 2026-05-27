@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/require-module-specifiers
 /** The router namespace */
 declare global {
   namespace Router {
@@ -7,7 +8,28 @@ declare global {
 
     type RoutePath = string;
 
-    type Extra = string;
+    type Extra = keyof MenuExtraRegistry extends never ? string : Extract<keyof MenuExtraRegistry, string>;
+
+    interface MenuExtraRegistry {}
+
+    type MenuBadgeType = 'dot' | 'normal';
+
+    type MenuBadgeValue = number | string | null;
+
+    type MenuBadgeVariant = 'default' | 'error' | 'info' | 'primary' | 'success' | 'warning';
+
+    interface MenuBadge {
+      /** Whether zero should still be rendered as badge content. */
+      showZero?: boolean;
+      /** Whether to render a dot badge or content badge. */
+      type?: MenuBadgeType;
+      /** Static badge content used when no dynamic value is provided. */
+      value?: MenuBadgeValue;
+      /** Key used to read dynamic badge content from the layout badge value map. */
+      valueKey?: string;
+      /** Visual status variant for the badge. */
+      variant?: MenuBadgeVariant;
+    }
 
     interface Meta {
       /**
@@ -38,9 +60,16 @@ declare global {
         activeMenu?: RoutePath | null;
 
         /**
-         * Extra menu
+         * Standard menu badge.
          *
-         * It can be used to add extra menu to the route
+         * It is used for common menu status like dot, count, new, and hot.
+         */
+        badge?: MenuBadge | null;
+
+        /**
+         * Custom menu extra component key.
+         *
+         * It is used for app-provided menu extra components that do not fit the standard badge model.
          */
         extra?: Extra | null;
         /**
