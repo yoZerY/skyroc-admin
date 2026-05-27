@@ -11,6 +11,13 @@
       "@testing-library/jest-dom"
     ]
   },
-  "include": ["src/**/*", "__tests__/**/*", "vitest.config.ts", "vitest.setup.ts", "tsdown.config.ts"],
+  "include": [
+    "src/**/*",
+    "__tests__/**/*",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "tsdown.config.ts",
+    "../../@core/types/src/**/*.d.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

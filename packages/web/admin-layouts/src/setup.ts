@@ -38,8 +38,8 @@ export interface AdminLayoutsOptions {
   defaultHome: Router.RoutePath;
   /** 默认菜单图标。 */
   defaultIcon: string;
-  /** 菜单额外内容组件映射。 */
-  extras?: Record<string, ComponentType<any>>;
+  /** 自定义菜单额外内容组件映射，用于标准 badge 无法覆盖的业务 UI。 */
+  extras?: Partial<Record<Router.Extra, ComponentType<any>>>;
   /** 动态菜单加载器，仅 routeMode 为 dynamic 时使用。 */
   loadDynamicRoutes?: () => Promise<AdminLayoutsDynamicRoutes>;
   /** 菜单分类配置。 */

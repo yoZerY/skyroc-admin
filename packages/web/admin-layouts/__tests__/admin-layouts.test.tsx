@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { CSSProperties, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -72,6 +72,8 @@ function renderCustomLogo(style: CSSProperties) {
     </div>
   );
 }
+
+const CustomExtra = () => <span>custom extra</span>;
 
 vi.mock('@skyroc/materials', () => ({
   AdminLayout: (props: { children?: ReactNode; Footer?: ReactNode; Header?: ReactNode; Sider?: ReactNode }) => {
@@ -178,6 +180,11 @@ describe('menu generation', () => {
                 options: {
                   staticData: {
                     menu: {
+                      badge: {
+                        type: 'normal',
+                        value: 25,
+                        variant: 'primary'
+                      },
                       icon: 'mdi:home',
                       order: 1
                     },
@@ -202,11 +209,105 @@ describe('menu generation', () => {
 
     expect(result.home).toBe('/home');
     expect(result.allMenus.get('admin')?.[0]).toMatchObject({
+      badge: {
+        type: 'normal',
+        value: 25,
+        variant: 'primary'
+      },
       icon: 'mdi:home',
       key: '/home',
       title: 'Home'
     });
     expect(result.quickReferenceMenus.get('admin')?.get('/home')?.title).toBe('Home');
+  });
+
+  it('generates dynamic menus with badge metadata', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { menuGenerator } = await import('../src/features/menus/menu-generator');
+
+    setupAdminLayouts({
+      ...createBaseOptions(),
+      routeMode: 'dynamic'
+    });
+
+    const result = menuGenerator.generate({
+      backendRoutes: [
+        {
+          id: 'dynamic-home',
+          menu: {
+            badge: {
+              type: 'dot',
+              variant: 'success'
+            },
+            icon: 'mdi:home'
+          },
+          path: '/dynamic',
+          title: 'Dynamic'
+        } as Api.Route.BackendRoute
+      ]
+    });
+
+    expect(result.allMenus.get('admin')?.[0]).toMatchObject({
+      badge: {
+        type: 'dot',
+        variant: 'success'
+      },
+      key: '/dynamic',
+      title: 'Dynamic'
+    });
+  });
+
+  it('generates menuNodeCallback menus with badge metadata', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { menuGenerator } = await import('../src/features/menus/menu-generator');
+
+    setupAdminLayouts({
+      ...createBaseOptions(),
+      menuNodeCallback: routeId => {
+        if (routeId !== '/(admin)') return undefined;
+
+        return [
+          {
+            id: 'extra-menu',
+            menu: {
+              badge: {
+                type: 'normal',
+                value: 'new',
+                variant: 'info'
+              },
+              icon: 'mdi:star',
+              order: 1
+            },
+            path: '/extra' as Router.RoutePath,
+            title: 'Extra'
+          }
+        ];
+      },
+      routeTree: {
+        children: [
+          {
+            children: [],
+            id: '/(admin)'
+          }
+        ]
+      } as any
+    });
+
+    const result = menuGenerator.generate();
+
+    expect(result.allMenus.get('admin')?.[0]).toMatchObject({
+      badge: {
+        type: 'normal',
+        value: 'new',
+        variant: 'info'
+      },
+      key: '/extra',
+      title: 'Extra'
+    });
   });
 });
 
@@ -241,6 +342,127 @@ describe('menu rendering', () => {
       key: '/manage/user',
       title: 'User'
     });
+  });
+
+  it('renders static badges with custom extras', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { renderCommonMenus } = await import('../src/features/menus/menu-renderer');
+
+    setupAdminLayouts({
+      ...createBaseOptions(),
+      extras: {
+        CustomExtra
+      }
+    });
+
+    const [menu] = renderCommonMenus([
+      {
+        badge: {
+          type: 'normal',
+          value: 'new',
+          variant: 'primary'
+        },
+        extra: 'CustomExtra',
+        icon: 'mdi:home',
+        key: '/home',
+        title: 'Home'
+      }
+    ]);
+
+    render(<span>{menu.extra}</span>);
+
+    const badgeRoot = screen.getByText('new').closest('[data-menu-badge="normal"]');
+
+    expect(badgeRoot).toHaveClass('ant-badge');
+    expect(screen.getByText('custom extra')).toBeInTheDocument();
+  });
+
+  it('updates rendered badge value from valueKey', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { renderCommonMenus } = await import('../src/features/menus/menu-renderer');
+    const { useAdminMenuBadges } = await import('../src/state/menus/use-admin-menu-badges');
+
+    setupAdminLayouts(createBaseOptions());
+
+    const BadgeUpdater = () => {
+      const { setMenuBadgeValue } = useAdminMenuBadges();
+
+      function handleUpdate() {
+        setMenuBadgeValue('todo-count', 7);
+      }
+
+      return (
+        <button type="button" onClick={handleUpdate}>
+          update badge
+        </button>
+      );
+    };
+
+    const [menu] = renderCommonMenus([
+      {
+        badge: {
+          type: 'normal',
+          value: 1,
+          valueKey: 'todo-count',
+          variant: 'warning'
+        },
+        icon: 'mdi:home',
+        key: '/home',
+        title: 'Home'
+      }
+    ]);
+
+    render(
+      <>
+        {menu.extra}
+        <BadgeUpdater />
+      </>
+    );
+
+    expect(screen.getByText('1')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('update badge'));
+
+    expect(screen.getByText('7')).toBeInTheDocument();
+  });
+
+  it('respects showZero when rendering badge values', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { renderCommonMenus } = await import('../src/features/menus/menu-renderer');
+
+    setupAdminLayouts(createBaseOptions());
+
+    const menus = renderCommonMenus([
+      {
+        badge: {
+          type: 'normal',
+          value: 0
+        },
+        icon: 'mdi:home',
+        key: '/hidden-zero',
+        title: 'Hidden Zero'
+      },
+      {
+        badge: {
+          showZero: true,
+          type: 'normal',
+          value: 0
+        },
+        icon: 'mdi:home',
+        key: '/visible-zero',
+        title: 'Visible Zero'
+      }
+    ]);
+
+    render(<span>{menus.map(menu => <span key={menu.key}>{menu.extra}</span>)}</span>);
+
+    expect(screen.queryAllByText('0')).toHaveLength(1);
   });
 });
 

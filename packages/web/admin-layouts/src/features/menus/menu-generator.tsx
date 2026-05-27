@@ -4,6 +4,7 @@ import { getAdminLayoutsOptions, getConfiguredCategoryKeys, getMenuCategoryKey }
 import { hasRoutePermission } from './permissions';
 
 export interface GeneratedMenu {
+  badge?: Router.MenuBadge | null;
   children?: GeneratedMenu[];
   extra?: Router.Extra | null;
   i18nKey?: I18n.I18nKey | null;
@@ -219,9 +220,10 @@ class MenuGenerator {
     }
 
     const { defaultIcon } = getAdminLayoutsOptions();
-    const { extra, icon = defaultIcon, localIcon, order = 0, type = 'item' } = staticData.menu ?? {};
+    const { badge, extra, icon = defaultIcon, localIcon, order = 0, type = 'item' } = staticData.menu ?? {};
     const menuType = type ?? 'item';
     const menu: GeneratedMenu = {
+      badge,
       extra,
       i18nKey: staticData.i18nKey,
       icon,
@@ -313,9 +315,10 @@ class MenuGenerator {
       return null;
     }
 
-    const { extra, icon = defaultIcon, localIcon, order = 0, type = 'item' } = route.menu ?? {};
+    const { badge, extra, icon = defaultIcon, localIcon, order = 0, type = 'item' } = route.menu ?? {};
     const menuType = type ?? 'item';
     const menu: GeneratedMenu = {
+      badge,
       extra,
       i18nKey: route.i18nKey,
       icon,
@@ -359,7 +362,7 @@ class MenuGenerator {
   private createExtraMenu(options: ExtraMenuOptions): GeneratedMenu | null {
     const { defaultIcon } = getAdminLayoutsOptions();
     const { config, depth = 0, parentKeys = [], quickReferenceMenuMap } = options;
-    const { icon = defaultIcon, localIcon, order = 0, type = 'item' } = config.menu ?? {};
+    const { badge, icon = defaultIcon, localIcon, order = 0, type = 'item' } = config.menu ?? {};
     const menuType = type ?? 'item';
 
     if (menuType === 'divider') {
@@ -384,6 +387,7 @@ class MenuGenerator {
     quickReferenceMenuMap.set(path, data);
 
     const menu: GeneratedMenu = {
+      badge,
       extra: config.menu?.extra,
       i18nKey: config.i18nKey,
       icon,

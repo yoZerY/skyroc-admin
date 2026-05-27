@@ -20,6 +20,13 @@ export type {
   MenuNodeCallback
 } from './setup';
 export { setupAdminLayouts } from './setup';
+export type { MenuBadgeValues } from './state/menus/use-admin-menu-badges';
+export {
+  clearMenuBadgeValues,
+  setMenuBadgeValue,
+  setMenuBadgeValues,
+  useAdminMenuBadges
+} from './state/menus/use-admin-menu-badges';
 export { useAdminMenus } from './state/menus/use-admin-menus';
 export { cacheTabs, useAdminTab } from './state/tabs/use-admin-tab';
 export { useAdminState } from './state/use-admin-state';

@@ -4,6 +4,7 @@ import type { MenuProps } from 'antd';
 import { createElement } from 'react';
 
 import { getAdminLayoutsOptions } from '../../setup';
+import MenuBadge from './MenuBadge';
 import type { GeneratedMenu } from './menu-generator';
 
 type AntdMenuItems = NonNullable<MenuProps['items']>;
@@ -13,6 +14,22 @@ function createMenuTitle(menu: GeneratedMenu) {
 }
 
 function createMenuExtra(menu: GeneratedMenu) {
+  const badge = menu.badge ? <MenuBadge badge={menu.badge} /> : null;
+  const extra = createCustomMenuExtra(menu);
+
+  if (badge && extra) {
+    return (
+      <span className="inline-flex items-center gap-6px">
+        {badge}
+        {extra}
+      </span>
+    );
+  }
+
+  return badge ?? extra;
+}
+
+function createCustomMenuExtra(menu: GeneratedMenu) {
   if (!menu.extra) return undefined;
 
   const { extras } = getAdminLayoutsOptions();
