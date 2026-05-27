@@ -1,4 +1,4 @@
 {
   "title": "Web Kit Docs",
-  "pages": ["index", "admin-vite", "materials", "tailwind-plugin", "theme"]
+  "pages": ["index", "admin-vite", "admin-layouts", "materials", "tailwind-plugin", "theme"]
 }

@@ -5,10 +5,13 @@ interface HomePageProps extends PageProps<'/'> {}
 
 const packageGroups = [
   {
-    description: '后台页面的布局骨架、路由页签和常见管理端界面材料。',
+    description: '后台应用壳、布局骨架、路由页签和常见管理端界面材料。',
     items: [
+      { href: '/docs/admin-layouts/overview', name: '@skyroc/web-admin-layouts' },
       { href: '/docs/materials', name: '@skyroc/materials' },
-      { href: '/docs/materials', name: 'AdminLayout' },
+      { href: '/docs/admin-layouts/menus', name: '菜单系统' },
+      { href: '/docs/admin-layouts/static-menu-generation', name: '静态菜单生成' },
+      { href: '/docs/admin-layouts/dynamic-menu-generation', name: '动态菜单生成' },
       { href: '/docs/materials', name: 'PageTab' },
     ],
     title: '后台材料',
@@ -26,7 +29,8 @@ const packageGroups = [
     description: '从总览、安装到模块文档，帮助项目按需接入 Web Kit。',
     items: [
       { href: '/docs', name: '文档总览' },
-      { href: '/docs/materials', name: 'Material 文档' },
+      { href: '/docs/admin-layouts/quick-start', name: 'Admin Layouts 接入' },
+      { href: '/docs/materials', name: 'Materials 文档' },
       { href: '/docs/tailwind-plugin', name: 'Tailwind 插件文档' },
     ],
     title: '使用入口',
@@ -44,7 +48,7 @@ const HomePage = (props: HomePageProps) => {
           Web Kit 前端材料文档
         </h1>
         <p className="mt-5 text-lg leading-8 text-fd-muted-foreground">
-          汇总后台产品的布局材料、路由页签与 Tailwind 主题插件，作为 Skyroc 前端工程体系里面向 Web 界面的文档入口。
+          汇总后台产品的应用壳、布局材料、路由页签与 Tailwind 主题插件，作为 Skyroc 前端工程体系里面向 Web 界面的文档入口。
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
@@ -55,10 +59,10 @@ const HomePage = (props: HomePageProps) => {
             <ArrowRight className="size-4" />
           </Link>
           <Link
-            href="/docs/materials"
+            href="/docs/admin-layouts/overview"
             className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
           >
-            浏览材料
+            浏览后台壳
           </Link>
         </div>
       </section>

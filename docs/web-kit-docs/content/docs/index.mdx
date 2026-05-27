@@ -1,15 +1,18 @@
 ---
 title: "Web Kit 总览"
-description: "Skyroc Web Kit 文档入口，覆盖后台布局材料、Tailwind 主题插件、Ant Design 主题适配与应用级主题管理"
+description: "Skyroc Web Kit 文档入口，覆盖后台应用壳、布局材料、Tailwind 主题插件、Ant Design 主题适配与应用级主题管理"
 ---
 
-Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把布局骨架、路由页签、主题变量、Ant Design 主题适配和应用级主题状态沉淀成可复用包。
+Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把应用级后台壳、布局骨架、路由页签、主题变量、Ant Design 主题适配和应用级主题状态沉淀成可复用包。
 
 这组文档适合在搭建后台应用框架、统一主题系统、沉淀页面材料或接入 Skyroc UI 设计语言时阅读。
 
 ## 文档入口
 
 <Cards>
+  <Card title="@skyroc/web-admin-layouts" href="/docs/admin-layouts/overview">
+    管理后台应用壳，组合菜单生成、权限、路由页签、布局状态、主题抽屉、Header 插槽和业务扩展。
+  </Card>
   <Card title="@skyroc/materials" href="/docs/materials">
     后台 UI 材料库，提供插槽式 AdminLayout 与多风格 PageTab，覆盖固定顶栏、侧边栏、页签、内容滚动和移动端适配。
   </Card>
@@ -34,6 +37,7 @@ Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把布局骨架
 
 | 场景 | 优先使用 |
 | --- | --- |
+| 需要完整后台壳、菜单、权限、tabs、主题抽屉和业务插槽 | `@skyroc/web-admin-layouts` |
 | 搭建后台主框架、固定 Header / Tab / Sider / Footer | `@skyroc/materials` |
 | 需要路由标签页，且要支持 Button / Chrome / Slider 风格 | `@skyroc/materials` 的 `PageTab` |
 | 需要统一 Vite 构建、开发代理、路由插件、图标插件和自动导入 | `@skyroc/web-admin-vite` |
@@ -55,6 +59,9 @@ Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把布局骨架
 
 @skyroc/materials
   在主题与基础 UI 之上沉淀后台布局材料和路由页签。
+
+@skyroc/web-admin-layouts
+  在布局材料之上组合菜单、权限、tabs、主题抽屉、布局状态和应用插槽。
 
 @skyroc/web-admin-vite
   收口后台应用的 Vite 配置、插件编排、代理规则和构建产物规则。

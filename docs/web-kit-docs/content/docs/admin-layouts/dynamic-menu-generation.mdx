@@ -1,0 +1,250 @@
+---
+title: "动态路由菜单生成"
+description: "从 loadDynamicRoutes 返回的后端路由树生成 Admin Layouts 菜单树、快速索引和首页"
+---
+
+动态模式适合菜单、首页和路由树由后端或权限中心下发的后台应用。布局包通过 `loadDynamicRoutes` 获取数据，再把后端路由结构转换成统一的 `GeneratedMenu`。
+
+## 启用动态模式
+
+```ts
+setupAdminLayouts({
+  defaultHome: '/home',
+  defaultIcon: 'mdi:menu',
+  loadDynamicRoutes: () => queryClient.ensureQueryData(queryMenusOptions()),
+  menuCategories: {
+    admin: {
+      key: 'admin',
+      layout: '/(admin)'
+    }
+  },
+  routeMode: 'dynamic',
+  routeTree,
+  storage: localStg
+});
+```
+
+动态模式必须配置 `loadDynamicRoutes`。如果缺少这个加载器，`initMenus` 会抛出错误：
+
+```text
+Admin layouts routeMode is dynamic, but loadDynamicRoutes is not configured.
+```
+
+## 返回结构
+
+`loadDynamicRoutes` 需要返回：
+
+```ts
+interface AdminLayoutsDynamicRoutes {
+  home?: Router.RoutePath;
+  routes: Api.Route.BackendRoute[];
+}
+```
+
+`home` 可选。存在时会覆盖 `defaultHome`，不存在时继续使用 `defaultHome`。
+
+`routes` 是后端路由树：
+
+```ts
+interface BackendRoute extends Router.Meta {
+  id: string;
+  path: Router.RoutePath;
+  parentId?: string | null;
+  layout?: string;
+  children?: BackendRoute[];
+}
+```
+
+示例：
+
+```ts
+const routeData: AdminLayoutsDynamicRoutes = {
+  home: '/home',
+  routes: [
+    {
+      id: 'dashboard',
+      layout: 'admin',
+      path: '/home',
+      title: 'home',
+      i18nKey: 'route.home',
+      menu: {
+        badge: {
+          type: 'normal',
+          valueKey: 'home.updates'
+        },
+        icon: 'mdi:monitor-dashboard',
+        order: 1
+      }
+    },
+    {
+      id: 'system',
+      layout: 'admin',
+      path: '/system',
+      title: 'system',
+      menu: {
+        icon: 'ic:round-settings',
+        order: 10
+      },
+      children: [
+        {
+          id: 'system_user',
+          path: '/system/user',
+          title: 'user',
+          menu: {
+            icon: 'ic:round-manage-accounts',
+            order: 1
+          }
+        }
+      ]
+    }
+  ]
+};
+```
+
+## 生成流程
+
+```text
+useMenus().initMenus(userInfo)
+  ├─ loadDynamicRoutes()
+  └─ menuGenerator.generate({ backendRoutes, home, userInfo })
+       └─ generateDynamicMenus()
+            ├─ createEmptyCategoryMaps()
+            ├─ transformBackendRouteToMenu(route)
+            │    ├─ write quickReferenceMenus
+            │    ├─ transform children
+            │    └─ menuNodeCallback(route.id)
+            ├─ sort category menus
+            └─ return { allMenus, quickReferenceMenus, home }
+```
+
+`userInfo` 会传入 `menuGenerator.generate`，但动态菜单转换不会再次调用 `hasRoutePermission`。动态模式默认后端已经按当前用户裁剪了可见路由。
+
+## 分类规则
+
+动态模式通过 `BackendRoute.layout` 决定菜单分类：
+
+```ts
+{
+  id: 'dashboard',
+  layout: 'admin',
+  path: '/home',
+  title: 'home'
+}
+```
+
+如果某条顶层路由没有 `layout`，会落到第一个 `menuCategories` 分类：
+
+```ts
+const defaultCategoryKey = getConfiguredCategoryKeys()[0];
+const categoryKey = route.layout ?? defaultCategoryKey;
+```
+
+因此后端下发多分类菜单时，顶层 route 应明确提供 `layout`。子路由不需要重复提供分类，它会跟随父级菜单树。
+
+## BackendRoute 转换规则
+
+`transformBackendRouteToMenu` 会把 `BackendRoute` 转成 `GeneratedMenu`。
+
+| 输入字段 | 输出到 `GeneratedMenu` |
+| --- | --- |
+| `route.title` | `title` |
+| `route.i18nKey` | `i18nKey` |
+| `route.menu.icon` | `icon` |
+| `route.menu.localIcon` | `localIcon` |
+| `route.menu.order` | `order` |
+| `route.menu.type` | `type`，默认 `item` |
+| `route.menu.badge` | `badge` |
+| `route.menu.extra` | `extra` |
+| `route.path` | `key` 和 `path`，会先经过 `normalizePath` |
+
+`quickReferenceMenus` 会保存更完整的 route 信息，包括 `parentKeys` 和 `depth`。这让布局在当前路由变化时能快速找到菜单链路和 tab 信息。
+
+## 权限边界
+
+动态模式的菜单生成不做前端权限过滤，原因是动态路由通常来自后端权限接口。推荐边界是：
+
+- 后端根据用户角色返回可见 routes。
+- 前端根据返回的 routes 生成菜单。
+- 前端页面守卫仍可基于 route meta 使用 `hasMatchedRoutePermission` 做兜底校验。
+
+如果后端没有裁剪 routes，动态菜单会把返回的可见节点全部渲染出来。
+
+## 隐藏菜单和快速索引
+
+动态模式也支持 `menu.hide`：
+
+```ts
+{
+  id: 'system_user_detail',
+  path: '/system/user/1',
+  title: 'userDetail',
+  menu: {
+    activeMenu: '/system/user',
+    hide: true
+  }
+}
+```
+
+处理顺序和静态模式一致：先写入 `quickReferenceMenus`，再判断是否隐藏菜单。因此隐藏页可以继续参与 tab、父级链路和激活菜单计算。
+
+## children、排序和扩展节点
+
+后端路由可以通过 `children` 表达层级。每一层子菜单都会递归转换，并按 `menu.order` 升序排序。
+
+动态模式也会对每个 route id 调用 `menuNodeCallback`：
+
+```ts
+export const menuNodeCallback: MenuNodeCallback = routeId => {
+  if (routeId === 'system') {
+    return [
+      {
+        id: 'system-divider',
+        menu: {
+          order: 50,
+          type: 'divider'
+        }
+      }
+    ];
+  }
+
+  return undefined;
+};
+```
+
+回调追加的普通节点需要提供 `path`。如果只是分割线，可以只声明 `id` 和 `menu.type: 'divider'`。
+
+## badge 和 extra
+
+动态路由可以直接携带标准 badge：
+
+```ts
+menu: {
+  badge: {
+    type: 'normal',
+    valueKey: 'message.unread'
+  }
+}
+```
+
+`valueKey` 只负责声明动态值的读取 key。数量更新仍由业务侧通过 `useAdminMenuBadges`、`setMenuBadgeValue` 或 `setMenuBadgeValues` 写入。
+
+自定义 `extra` 只能传注册 key：
+
+```ts
+menu: {
+  extra: 'ReleaseChannel'
+}
+```
+
+前端启动时必须在 `setupAdminLayouts({ extras })` 里注册同名组件，否则不会渲染该自定义内容。
+
+## 常见问题
+
+| 问题 | 原因和处理 |
+| --- | --- |
+| 动态模式初始化时报 `loadDynamicRoutes` 错误 | `routeMode` 是 `dynamic`，但没有配置 `loadDynamicRoutes`。 |
+| 路由出现在错误分类 | 顶层 `BackendRoute.layout` 没有写或写错，缺省会落到第一个菜单分类。 |
+| 没权限的菜单仍显示 | 动态生成不做前端权限过滤，需要后端返回前完成裁剪。 |
+| 首页不是后端期望值 | 检查 `loadDynamicRoutes` 是否返回 `home`，否则会使用 `defaultHome`。 |
+| extra 不显示 | 检查 `menu.extra` key 是否已通过 `setupAdminLayouts({ extras })` 注册。 |
+| badge 数字不更新 | 检查 `valueKey` 是否和 `setMenuBadgeValue` 写入的 key 一致。 |
