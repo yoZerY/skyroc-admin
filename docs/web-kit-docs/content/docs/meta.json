@@ -1,4 +1,13 @@
 {
   "title": "Web Kit Docs",
-  "pages": ["index", "admin-vite", "admin-runtime", "admin-layouts", "materials", "tailwind-plugin", "theme"]
+  "pages": [
+    "index",
+    "admin-vite",
+    "admin-runtime",
+    "admin-i18n",
+    "admin-layouts",
+    "materials",
+    "tailwind-plugin",
+    "theme"
+  ]
 }

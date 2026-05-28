@@ -9,7 +9,7 @@ description: 'Skyroc Admin 的运行时启动助手包，统一 Dayjs、Iconify 
 
 它目前覆盖四类运行时能力：
 
-- `Dayjs` 初始化：注册 `localeData` 插件，并把宿主应用当前语言同步给 Dayjs。
+- `Dayjs` 初始化：注册 `localeData` 插件，并支持宿主应用传入一次性的初始语言同步回调。
 - `Iconify offline provider` 初始化：把宿主应用的 Iconify API 地址注册到 `@iconify/react`。
 - `NProgress` 初始化：统一进度条容器、动画速度和实例回传。
 - 应用版本更新检测：定时读取最新 `index.html` 中的 `buildTime` meta，发现新版本后交给宿主应用展示更新提示。
@@ -46,7 +46,7 @@ apps/admin
 
 @skyroc/web-admin-runtime
   ├─ setupAdminRuntimePlugins()    运行时插件聚合入口
-  ├─ setupDayjs()                  Dayjs localeData 与语言同步
+  ├─ setupDayjs()                  Dayjs localeData 与可选初始语言同步
   ├─ setupIconifyOffline()         Iconify API provider 注册
   ├─ setupNProgress()              NProgress 配置与实例回传
   ├─ setupAppVersionNotification() index.html buildTime 更新检测
@@ -72,11 +72,10 @@ import type { SetupDayjsOptions, SetupIconifyOfflineOptions, SetupNProgressOptio
 
 import { initNProgress } from '@/config';
 
-import { setDayjsLocale } from '../locales/dayjs';
 import { createAdminAppVersionNotificationPluginOptions } from './app';
 
 const adminDayjsPluginOptions = {
-  syncLocale: setDayjsLocale
+  withLocaleData: true
 } satisfies SetupDayjsOptions;
 
 const adminIconifyOfflinePluginOptions = {
@@ -125,7 +124,9 @@ async function setupApp() {
 setupApp();
 ```
 
-`setupI18n()` 仍然单独保留。它是异步初始化，并且通常要在 React render 前完成。runtime 包不应该把这个时序吞进一个看似通用的 helper。
+`setupI18n()` 仍然单独保留。它是异步初始化，并且通常要在 React render 前完成。语言切换后的第三方同步由宿主应用的 `LangEffect.onLocaleChange` 承接，runtime 包不应该把这个时序吞进一个看似通用的 helper。
+
+更完整的多语言接入、资源维护和语言副作用说明见 [`@skyroc/web-admin-i18n`](/docs/admin-i18n)。
 
 ## 聚合 API
 
@@ -212,21 +213,18 @@ cleanup();
 import { setupDayjs } from '@skyroc/web-admin-runtime';
 
 setupDayjs({
-  withLocaleData: true,
-  syncLocale() {
-    // set dayjs locale from host app
-  }
+  withLocaleData: true
 });
 ```
 
 配置项：
 
-| 字段             | 默认值      | 说明                                  |
-| ---------------- | ----------- | ------------------------------------- |
-| `withLocaleData` | `true`      | 是否注册 `dayjs/plugin/localeData`。  |
-| `syncLocale`     | `undefined` | 宿主应用同步当前语言到 Dayjs 的回调。 |
+| 字段             | 默认值      | 说明                                                     |
+| ---------------- | ----------- | -------------------------------------------------------- |
+| `withLocaleData` | `true`      | 是否注册 `dayjs/plugin/localeData`。                     |
+| `syncLocale`     | `undefined` | 宿主应用在 runtime 初始化时同步当前语言到 Dayjs 的回调。 |
 
-`setupDayjs` 只注册 Dayjs 插件和调用同步回调。具体支持哪些语言、语言 key 如何映射到 Dayjs locale，仍然由宿主应用控制。
+`setupDayjs` 只注册 Dayjs 插件和调用一次初始化同步回调。`syncLocale` 不接收语言参数，也不处理后续语言切换。具体支持哪些语言、语言 key 如何映射到 Dayjs locale，以及语言切换后的响应式同步，仍然由宿主应用控制。当前 admin 应用把响应式同步集中在 `LangEffect.onLocaleChange`。
 
 示例：
 
@@ -235,7 +233,7 @@ import { locale } from 'dayjs';
 import 'dayjs/locale/en';
 import 'dayjs/locale/zh-cn';
 
-function setDayjsLocale(lang: 'zh-CN' | 'en-US' = 'zh-CN') {
+function syncLocales(lang: 'zh-CN' | 'en-US') {
   const localeMap = {
     'zh-CN': 'zh-cn',
     'en-US': 'en'
@@ -466,8 +464,9 @@ createRoot(container).render(<App />);
 
 - `setupTheme()` 要在任何组件读取主题 atom 前完成。
 - `setupAdminLayouts()` 要在路由、菜单和 layout hooks 读取配置前完成。
-- `setupAdminPlugins()` 中的 Dayjs locale 同步要早于 i18n 初始语言变更。
+- `setupAdminPlugins()` 注册 Dayjs、Iconify、NProgress 和应用更新检测等同步 runtime 能力。
 - `setupI18n()` 是异步初始化，仍然需要在 render 前完成。
+- `GlobalEffect` 中的 `LangEffect.onLocaleChange` 负责在 React 挂载后统一同步 Dayjs、`document.lang` 等第三方语言副作用。
 - 应用更新检测虽然在 `setupAdminPlugins()` 中注册，但真正展示通知发生在后续 interval 中，此时 React Provider 已经挂载。
 
 如果某个宿主应用的通知实现要求 Provider 必须已经初始化，仍然可以把 `setupAdminRuntimePlugins` 拆成应用内部的两个调用点。这个拆分属于应用编排，不需要暴露成 runtime 包的公共 API。
@@ -477,10 +476,25 @@ createRoot(container).render(<App />);
 | 包                          | 责任                                                                            |
 | --------------------------- | ------------------------------------------------------------------------------- |
 | `@skyroc/web-admin-runtime` | 运行时初始化 helper：Dayjs、Iconify provider、NProgress、应用更新检测。         |
+| `@skyroc/web-admin-i18n`    | i18next 初始化、语言状态、语言切换 UI 和语言变化副作用入口。                    |
 | `@skyroc/web-admin-vite`    | 构建和开发配置：注入 `BUILD_TIME`、HTML meta、Vite 插件、代理、别名、产物规则。 |
 | `@skyroc/web-admin-theme`   | 主题状态、Ant Design Provider、暗色模式、主题副作用。                           |
 | `@skyroc/web-admin-layouts` | 后台应用壳、菜单、tabs、权限、布局状态和业务插槽。                              |
 | `apps/admin`                | 宿主应用编排：env、router、通知 UI、i18n、assets、业务配置。                    |
+
+### 与 admin-i18n 的边界
+
+`@skyroc/web-admin-runtime` 和 `@skyroc/web-admin-i18n` 都会出现在启动链路里，但它们处理的是两类不同问题。
+
+| 问题                             | 归属                        | 原因                                          |
+| -------------------------------- | --------------------------- | --------------------------------------------- |
+| 注册 Dayjs `localeData` 插件     | `@skyroc/web-admin-runtime` | 这是同步 runtime 初始化能力，和当前语言无关。 |
+| 解析当前语言、加载翻译资源       | `@skyroc/web-admin-i18n`    | 这是异步 i18next 初始化流程。                 |
+| 语言切换按钮和当前语言状态       | `@skyroc/web-admin-i18n`    | 依赖 React/Jotai/i18next 状态。               |
+| Dayjs 的 `zh-CN` -> `zh-cn` 映射 | `apps/admin`                | 不同第三方库的 locale key 是应用级约定。      |
+| 语言切换后同步 Dayjs             | `LangEffect.onLocaleChange` | 这是 React 挂载后的响应式副作用。             |
+
+因此，`setupAdminPlugins()` 可以在 render 前同步注册 Dayjs 插件，但不要试图在 runtime 包里读取当前语言或监听语言变化。语言状态由 `setupI18n()` 初始化，后续变化由 `LangEffect` 统一同步。
 
 一个常见误区是把 `apps/admin/src/plugins` 整个目录都搬进 runtime 包。这个目录里混合了多种不同边界：
 
@@ -586,7 +600,7 @@ pnpm exec oxfmt --check docs/web-kit-docs/content/docs/admin-runtime.mdx docs/we
 
 ### 为什么 `setupI18n()` 不放进 `setupAdminRuntimePlugins()`？
 
-`setupI18n()` 是异步流程，会加载语言资源、初始化 i18next、写语言状态，并触发第三方语言同步。它属于应用启动编排，不能被一个同步 runtime helper 隐藏。
+`setupI18n()` 是异步流程，会加载语言资源、初始化 i18next，并写入语言状态。第三方语言同步属于 React 挂载后的响应式副作用，应集中放在 `LangEffect.onLocaleChange`。它属于应用启动编排，不能被一个同步 runtime helper 隐藏。
 
 ### 为什么 `assets.ts` 不属于 runtime 包？
 
@@ -602,7 +616,7 @@ import '../styles/css/global.css';
 
 ### 为什么还要保留 app 侧 `plugins/index.ts`？
 
-`@skyroc/web-admin-runtime` 提供通用能力，`apps/admin/src/plugins/index.ts` 负责把本应用的 env、router、通知 UI、语言同步和 NProgress 实例回传组合成具体配置。
+`@skyroc/web-admin-runtime` 提供通用能力，`apps/admin/src/plugins/index.ts` 负责把本应用的 env、router、通知 UI 和 NProgress 实例回传组合成具体配置。
 
 这层适配很薄，但它是必要边界。没有它，runtime 包就会被迫读取 `import.meta.env`、引用应用 router、依赖 Ant Design notification，最终变成另一个 app-local 包。
 

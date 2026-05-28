@@ -1,9 +1,9 @@
 ---
 title: 'Web Kit 总览'
-description: 'Skyroc Web Kit 文档入口，覆盖后台应用壳、布局材料、Tailwind 主题插件、Ant Design 主题适配与应用级主题管理'
+description: 'Skyroc Web Kit 文档入口，覆盖后台应用壳、运行时启动、多语言、布局材料、Tailwind 主题插件、Ant Design 主题适配与应用级主题管理'
 ---
 
-Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把应用级后台壳、布局骨架、路由页签、主题变量、Ant Design 主题适配和应用级主题状态沉淀成可复用包。
+Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把应用级后台壳、运行时启动、多语言、布局骨架、路由页签、主题变量、Ant Design 主题适配和应用级主题状态沉淀成可复用包。
 
 这组文档适合在搭建后台应用框架、统一主题系统、沉淀页面材料或接入 Skyroc UI 设计语言时阅读。
 
@@ -25,6 +25,9 @@ Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把应用级后
   <Card title="@skyroc/web-admin-runtime" href="/docs/admin-runtime">
     管理后台运行时启动助手，统一 Dayjs、Iconify provider、NProgress 和应用版本更新检测。
   </Card>
+  <Card title="@skyroc/web-admin-i18n" href="/docs/admin-i18n">
+    管理后台多语言运行时，统一 i18next 初始化、语言状态、语言切换组件和第三方语言同步入口。
+  </Card>
   <Card title="Theme 系统概述" href="/docs/theme/overview">
     解释 OKLCH 色彩算法、Ant Design token 生成、React 主题状态和应用接入之间的分层关系。
   </Card>
@@ -45,6 +48,7 @@ Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把应用级后
 | 需要路由标签页，且要支持 Button / Chrome / Slider 风格           | `@skyroc/materials` 的 `PageTab` |
 | 需要统一 Vite 构建、开发代理、路由插件、图标插件和自动导入       | `@skyroc/web-admin-vite`         |
 | 需要统一 Dayjs、Iconify provider、NProgress 和应用更新检测初始化 | `@skyroc/web-admin-runtime`      |
+| 需要统一 i18next 初始化、语言状态、语言切换和语言副作用入口      | `@skyroc/web-admin-i18n`         |
 | 需要把 Skyroc 主题变量注入 Tailwind                              | `@skyroc/tailwind-plugin`        |
 | 只需要 Ant Design 色板算法或 token 生成                          | `@skyroc/adapter-antd-theme`     |
 | 需要完整应用级主题状态、暗色模式、副作用和 Ant Design Provider   | `@skyroc/web-admin-theme`        |
@@ -72,4 +76,7 @@ Skyroc Web Kit 面向 Web 后台产品的界面工程层，负责把应用级后
 
 @skyroc/web-admin-runtime
   收口后台应用的运行时启动 helper，保留宿主应用对 env、router、通知 UI 和启动顺序的控制。
+
+@skyroc/web-admin-i18n
+  收口后台应用的 i18next 初始化、语言状态、语言切换 UI 和语言变化副作用入口。
 ```
