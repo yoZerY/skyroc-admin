@@ -1,11 +1,12 @@
-import { AdminLayout as WebAdminLayout, hasMatchedRoutePermission } from '@skyroc/web-admin-layouts';
+import { AdminLayout as WebAdminLayout } from '@skyroc/web-admin-layouts';
 import { NotificationButton } from '@skyroc/web-admin-notification';
 import { DarkModeContainer } from '@skyroc/web-ui-compose';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import SystemLogo from '@/components/SystemLogo';
 import UserAvatar from '@/features/auth/components/UserAvatar';
+import { guardAdminRoute } from '@/features/router/guard';
 
 const AdminFooter = () => {
   return (
@@ -34,14 +35,6 @@ const AdminLayout = () => {
 export const Route = createFileRoute('/(admin)')({
   component: AdminLayout,
   beforeLoad: async ({ context, location, matches }) => {
-    if (!context.isLoggedIn) {
-      throw redirect({ to: '/login', search: { redirect: location.href } });
-    }
-
-    const userInfo = context.isAuthInitialized ? context.userInfo : await context.initAuth();
-
-    if (!hasMatchedRoutePermission(matches, userInfo)) {
-      throw redirect({ to: '/403' });
-    }
+    await guardAdminRoute({ context, location, matches });
   }
 });
