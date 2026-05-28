@@ -1,8 +1,7 @@
-import { Portal } from '@skyroc/web-ui-compose';
-
 import { GLOBAL_HEADER_MENU_SELECTOR } from '../../../constant';
 
 import HorizontalMenu from '../components/HorizontalMenu';
+import MenuPortal from '../components/MenuPortal';
 import { HorizontalMenuMode } from '../enum';
 
 interface Props {
@@ -14,9 +13,9 @@ const Horizontal = (props: Props) => {
   const { mode = HorizontalMenuMode.All } = props;
 
   return (
-    <Portal container={GLOBAL_HEADER_MENU_SELECTOR}>
+    <MenuPortal container={GLOBAL_HEADER_MENU_SELECTOR}>
       <HorizontalMenu mode={mode} />
-    </Portal>
+    </MenuPortal>
   );
 };
 

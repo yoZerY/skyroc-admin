@@ -1,14 +1,13 @@
-import { Portal } from '@skyroc/web-ui-compose';
-
 import { GLOBAL_SIDER_MENU_SELECTOR } from '../../../constant';
 
+import MenuPortal from '../components/MenuPortal';
 import VerticalMenu from '../components/VerticalMenu';
 
 const Vertical = () => {
   return (
-    <Portal container={GLOBAL_SIDER_MENU_SELECTOR}>
+    <MenuPortal container={GLOBAL_SIDER_MENU_SELECTOR}>
       <VerticalMenu />
-    </Portal>
+    </MenuPortal>
   );
 };
 

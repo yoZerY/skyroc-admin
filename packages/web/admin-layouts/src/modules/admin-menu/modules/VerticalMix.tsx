@@ -1,6 +1,6 @@
 import { useSettingsTheme } from '@skyroc/web-admin-theme';
 import { PinToggler } from '@skyroc/web-ui-antd';
-import { DarkModeContainer, Portal } from '@skyroc/web-ui-compose';
+import { DarkModeContainer } from '@skyroc/web-ui-compose';
 import classNames from 'clsx';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import { useAdminMenus } from '../../../state/menus/use-admin-menus';
 import { useAdminState } from '../../../state/use-admin-state';
 import LayoutLogo from '../../shared/logo';
 import FirstLevelMenu from '../components/FirstLevelMenu';
+import MenuPortal from '../components/MenuPortal';
 import VerticalMenu from '../components/VerticalMenu';
 import { FirstLevelMenuMode } from '../enum';
 
@@ -122,9 +123,9 @@ const VerticalMixMenu = (props: VerticalMixProps) => {
   const { mode } = props;
 
   return (
-    <Portal container={GLOBAL_SIDER_MENU_SELECTOR}>
+    <MenuPortal container={GLOBAL_SIDER_MENU_SELECTOR}>
       <VerticalMix mode={mode} />
-    </Portal>
+    </MenuPortal>
   );
 };
 

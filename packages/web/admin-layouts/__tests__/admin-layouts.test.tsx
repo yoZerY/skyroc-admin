@@ -1,4 +1,4 @@
-import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import type { CSSProperties, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -75,6 +75,10 @@ function renderCustomLogo(style: CSSProperties) {
 
 const CustomExtra = () => <span>custom extra</span>;
 
+const adminStateMocks = vi.hoisted(() => ({
+  isMobile: false
+}));
+
 vi.mock('@skyroc/materials', () => ({
   AdminLayout: (props: { children?: ReactNode; Footer?: ReactNode; Header?: ReactNode; Sider?: ReactNode }) => {
     const { children, Footer, Header, Sider } = props;
@@ -106,7 +110,7 @@ vi.mock('../src/state/use-admin-state', () => ({
   useAdminState: () => ({
     contentXScrollable: false,
     fullContent: false,
-    isMobile: false,
+    isMobile: adminStateMocks.isMobile,
     mixSiderFixed: false,
     siderCollapse: false,
     toggleSiderCollapse: vi.fn()
@@ -584,6 +588,52 @@ describe('layout menu target constants', () => {
 });
 
 describe('AdminLayout', () => {
+  it('remounts menu portal content after switching from mobile back to desktop', async () => {
+    adminStateMocks.isMobile = false;
+
+    const { default: MenuPortal } = await import('../src/modules/admin-menu/components/MenuPortal');
+
+    const firstTarget = document.createElement('div');
+    firstTarget.id = GLOBAL_SIDER_MENU_ID;
+    document.body.appendChild(firstTarget);
+
+    const { rerender } = render(
+      <MenuPortal container={GLOBAL_SIDER_MENU_SELECTOR}>
+        <span>menu content</span>
+      </MenuPortal>
+    );
+
+    await waitFor(() => {
+      expect(firstTarget).toHaveTextContent('menu content');
+    });
+
+    firstTarget.remove();
+
+    adminStateMocks.isMobile = true;
+
+    rerender(
+      <MenuPortal container={GLOBAL_SIDER_MENU_SELECTOR}>
+        <span>menu content</span>
+      </MenuPortal>
+    );
+
+    const nextTarget = document.createElement('div');
+    nextTarget.id = GLOBAL_SIDER_MENU_ID;
+    document.body.appendChild(nextTarget);
+
+    adminStateMocks.isMobile = false;
+
+    rerender(
+      <MenuPortal container={GLOBAL_SIDER_MENU_SELECTOR}>
+        <span>menu content</span>
+      </MenuPortal>
+    );
+
+    await waitFor(() => {
+      expect(nextTarget).toHaveTextContent('menu content');
+    });
+  });
+
   it('renders app-provided slots', async () => {
     vi.resetModules();
 
