@@ -14,6 +14,8 @@ interface Account {
   userName: string;
 }
 
+type LoginParams = Pick<Account, 'password' | 'userName'>;
+
 const INITIAL_VALUES = {
   password: '123456',
   userName: 'Soybean'
@@ -22,7 +24,7 @@ const INITIAL_VALUES = {
 const Login = () => {
   const { t } = useTranslation();
 
-  const [form] = AForm.useForm();
+  const [form] = AForm.useForm<LoginParams>();
 
   const { loading, login } = useInitLogin();
 
@@ -50,6 +52,13 @@ const Login = () => {
       userName: 'User'
     }
   ];
+
+  function handleAccountLogin(account: Account) {
+    login({
+      password: account.password,
+      userName: account.userName
+    });
+  }
 
   useKeyPress('enter', () => {
     form.submit();
@@ -89,7 +98,7 @@ const Login = () => {
           <div className="flex-center gap-12px">
             {accounts.map(item => {
               return (
-                <AButton key={item.key} type="primary">
+                <AButton key={item.key} type="primary" onClick={() => handleAccountLogin(item)}>
                   {item.label}
                 </AButton>
               );
