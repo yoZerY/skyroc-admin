@@ -10,7 +10,7 @@ export type {
 } from './features/menus/menu-generator';
 
 export { hasAnyRoutePermission, hasMatchedRoutePermission, hasRoutePermission } from './features/menus/permissions';
-export { useMenus } from './features/menus/use-menus';
+export { getQuickReferenceMenuByPath, hasAuthorizedRoutePath, useMenus } from './features/menus/use-menus';
 export { useRoute } from './features/use-route';
 export type {
   AdminLayoutMenuCategory,

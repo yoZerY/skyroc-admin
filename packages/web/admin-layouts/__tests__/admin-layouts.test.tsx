@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import type { CSSProperties, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -308,6 +308,71 @@ describe('menu generation', () => {
       key: '/extra',
       title: 'Extra'
     });
+  });
+});
+
+describe('route authorization index', () => {
+  it('does not require quick reference route membership in static mode', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { hasAuthorizedRoutePath } = await import('../src/features/menus/use-menus');
+
+    setupAdminLayouts(createBaseOptions());
+
+    expect(hasAuthorizedRoutePath('/missing' as Router.RoutePath)).toBe(true);
+  });
+
+  it('checks dynamic route membership and backend route permissions', async () => {
+    vi.resetModules();
+
+    const { setupAdminLayouts } = await import('../src/setup');
+    const { hasAuthorizedRoutePath, useMenus } = await import('../src/features/menus/use-menus');
+
+    const userInfo: Api.Auth.UserInfo = {
+      buttons: [],
+      roles: ['R_USER'],
+      userId: '1',
+      userName: 'User'
+    };
+
+    setupAdminLayouts({
+      ...createBaseOptions(),
+      permissionSuperRole: 'R_SUPER',
+      routeMode: 'dynamic',
+      loadDynamicRoutes: async () => ({
+        home: '/dynamic' as Router.RoutePath,
+        routes: [
+          {
+            id: 'dynamic-home',
+            path: '/dynamic' as Router.RoutePath,
+            title: 'Dynamic'
+          },
+          {
+            id: 'admin-only',
+            path: '/admin-only' as Router.RoutePath,
+            permissions: ['R_ADMIN'],
+            title: 'Admin Only'
+          }
+        ]
+      })
+    });
+
+    const { result } = renderHook(() => useMenus());
+
+    await act(async () => {
+      await result.current.initMenus(userInfo);
+    });
+
+    expect(hasAuthorizedRoutePath('/dynamic' as Router.RoutePath, userInfo)).toBe(true);
+    expect(hasAuthorizedRoutePath('/missing' as Router.RoutePath, userInfo)).toBe(false);
+    expect(hasAuthorizedRoutePath('/admin-only' as Router.RoutePath, userInfo)).toBe(false);
+    expect(
+      hasAuthorizedRoutePath('/admin-only' as Router.RoutePath, {
+        ...userInfo,
+        roles: ['R_SUPER']
+      })
+    ).toBe(true);
   });
 });
 

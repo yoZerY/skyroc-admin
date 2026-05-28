@@ -3,7 +3,8 @@ import { atom, useAtom } from 'jotai';
 
 import { getAdminLayoutsOptions } from '../../setup';
 import type { GeneratedMenus } from './menu-generator';
-import { menuGenerator } from './menu-generator';
+import { menuGenerator, normalizePath } from './menu-generator';
+import { hasRoutePermission } from './permissions';
 
 interface MenusAtom {
   /** 当前用户首页路由 */
@@ -73,3 +74,30 @@ export const useMenus = () => {
     getHomeRoute
   };
 };
+
+export function getQuickReferenceMenuByPath(path: string) {
+  const normalizedPath = normalizePath(path) as Router.RoutePath;
+  const { quickReferenceMenus } = globalStore.get(menusAtom);
+
+  for (const quickReferenceMenuMap of quickReferenceMenus.values()) {
+    const menu = quickReferenceMenuMap.get(normalizedPath);
+
+    if (menu) {
+      return menu;
+    }
+  }
+
+  return null;
+}
+
+export function hasAuthorizedRoutePath(path: string, userInfo?: Api.Auth.UserInfo | null) {
+  const { routeMode } = getAdminLayoutsOptions();
+
+  if (routeMode !== 'dynamic') {
+    return true;
+  }
+
+  const menu = getQuickReferenceMenuByPath(path);
+
+  return Boolean(menu && hasRoutePermission(menu, userInfo));
+}
