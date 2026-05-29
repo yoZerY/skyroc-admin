@@ -12,6 +12,7 @@ description: 理解 apps/admin 的 TanStack Router 约定式路由、routeTree.g
 | 场景 | 重点位置 |
 | --- | --- |
 | 新增后台业务页面 | `apps/admin/src/pages/(admin)`、`createFileRoute`、`staticData` |
+| 给表单页或编辑页开启页面缓存 | `staticData.keepAlive`、`staticData.tab.multi`、`AdminContent` |
 | 新增登录或认证页面 | `apps/admin/src/pages/(auth)`、登录 layout route |
 | 新增错误页 | `apps/admin/src/pages/(errors)`、`pages/not-found.tsx`、`pages/error.tsx` |
 | 理解路由文件为什么会变成某个 URL | `@skyroc/web-admin-vite` 的 TanStack Router 插件配置、`routeTree.gen.ts` |
@@ -107,7 +108,7 @@ setupAdminLayouts({
 | TanStack Router | 匹配 URL、执行 `beforeLoad`、渲染页面组件、处理 pending/error/notFound。 |
 | `@skyroc/web-admin-layouts` | 在静态模式下从路由 `staticData` 生成菜单；在动态模式下仍用 route tree 识别布局分组和真实页面边界。 |
 
-动态路由模式不是“后端临时注册 React 页面组件”。后台返回的菜单 path 仍然必须能落到前端已经存在的 TanStack Route，否则用户点击后只会进入前端 404 或找不到页面。
+动态路由模式不是“后端临时注册 React 页面组件”。后台返回的菜单 path 仍然必须能落到前端已经存在的 TanStack Route，否则会在适配阶段被过滤，不进入菜单和动态授权索引。
 
 ## `pages` 目录约定
 
@@ -275,6 +276,7 @@ interface BackendRouteResponse {
 | 新增页面访问 404 | 文件是否在 `src/pages` 下，`createFileRoute()` 路径是否和目录约定一致，`routeTree.gen.ts` 是否重新生成。 |
 | 页面能访问但菜单不显示 | `staticData.menu.hide` 是否为 true，静态模式下是否有 `staticData`，动态模式下后端是否返回该 path。 |
 | 菜单显示但点击 404 | 动态菜单返回的 `path` 是否对应前端真实 TanStack Route。 |
+| 切换 tabs 后表单值丢失 | route 是否配置 `keepAlive`，tab 是否仍打开，带查询参数页面是否需要 `tab.multi`。 |
 | 详情页打开后左侧菜单不选中 | 隐藏页是否配置 `menu.activeMenu`，路径是否使用规范化后的可跳转路径，例如 `/manage/user`。 |
 | 登录后跳转到非预期页面 | `.env` 的 `VITE_ROUTE_HOME`、后端动态路由返回的 `home`、`useMenus().home`。 |
 | 进入后台直接 403 | 看 `VITE_AUTH_ROUTE_MODE`，静态模式查 `staticData.permissions`，动态模式查后端路由树和用户角色。 |
@@ -295,6 +297,7 @@ interface BackendRouteResponse {
 | 主题 | 继续查看 |
 | --- | --- |
 | 路由标题、菜单、图标、隐藏页、外链 | [路由元信息](./route-meta) |
+| 页面实例缓存、React Activity 和 tabs 切换验证 | [路由缓存](./route-cache) |
 | 登录拦截、403、静态/动态权限 | [权限守卫](./guards-and-permissions) |
 | 应用启动时如何注入 route tree 和菜单配置 | [启动流程](../architecture/bootstrap) |
 | 目录职责和 app/package 边界 | [项目结构](../getting-started/project-structure) |

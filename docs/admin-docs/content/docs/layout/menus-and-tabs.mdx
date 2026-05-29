@@ -85,7 +85,7 @@ setupAdminLayouts({
 | `menuCategories` | 描述菜单分类和 layout route 的对应关系。 |
 | `menuNodeCallback` | 给指定 route 节点追加非路由声明的菜单节点。 |
 | `extras` | 注册 `menu.extra` 字符串到 React 组件的映射。 |
-| `permissionSuperRole` | 静态权限校验中的超级角色标识。 |
+| `permissionSuperRole` | 静态、动态权限校验中的超级角色标识。 |
 | `storage` | 读写 `globalTabs`、移动端布局备份、mix 菜单固定等布局缓存。 |
 
 ### `menuCategories` 是 layout 到菜单分类的映射
@@ -150,7 +150,7 @@ loadDynamicRoutes: loadAdminDynamicRoutes
 
 `loadAdminDynamicRoutes()` 会先通过 `queryMenusOptions()` 读取真实后端菜单响应，再适配成布局包需要的动态菜单结构。动态菜单返回的 `routes` 会被归一成和静态菜单相同的 `GeneratedMenu` 与 `quickReferenceMenus`。关键点是：动态菜单只改变菜单、首页和授权数据来源，不会在运行时创建新的 React 页面组件。
 
-因此后端返回的 `path` 仍然要对应前端已经存在的 TanStack Router 页面。否则菜单可以出现，但点击后会进入前端 404 或找不到页面。
+因此后端返回的 `path` 仍然要对应前端已经存在的 TanStack Router 页面。适配层会过滤当前 `routeTree` 不存在的路径，避免菜单指向前端没有实现的页面。
 
 ### `menuNodeCallback` 只补充路由树之外的节点
 
