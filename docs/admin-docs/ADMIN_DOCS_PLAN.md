@@ -24,7 +24,7 @@
 - 个人见解文章、推荐页、捐赠页、生态列表、通用 Git/Node/软件安装教程。
 - 共享包 API 长文不搬进 admin 文档，admin 文档只讲这些包在 `apps/admin` 中怎么被使用。
 
-## 4. 后续要做的事
+## 4. 实施清单
 
 1. 建立 `docs/admin-docs/content/docs` 正式信息架构。
 2. 补齐每个章节目录的 `meta.json`，用 Fumadocs 控制侧边栏顺序。
@@ -42,7 +42,9 @@
 | `getting-started/quick-start.mdx` | 快速开始 | 跑起来项目 | Node/pnpm、安装、启动、构建、预览、Mock、scripts | `apps/admin/package.json`, `.env*` |
 | `getting-started/project-structure.mdx` | 项目结构 | 看懂目录职责 | `src` 目录、`packages/web/*` 与 app 边界 | `apps/admin/src`, `packages/web` |
 | `architecture/bootstrap.mdx` | 启动流程 | 理解应用如何初始化 | `main -> bootstrap -> App`、devtools、theme、layout、i18n、render 顺序 | `main.tsx`, `bootstrap.tsx`, `App.tsx` |
+| `architecture/runtime-providers.mdx` | 运行时 Provider | 理解 React Provider 和全局 effect 顺序 | QueryClient、Jotai、Devtools、Antd、通知、路由、GlobalEffect | `App.tsx`, `queryClient.ts`, `GlobalEffect.tsx` |
 | `configuration/env-and-vite.mdx` | 环境变量与 Vite | 修改配置不走偏 | `.env`、代理、`defineConfig`、`application/vite` 边界 | `.env*`, `vite.config.ts`, `@skyroc/web-admin-vite` |
+| `configuration/storage-and-cache.mdx` | 存储与缓存 | 看懂浏览器缓存和运行时缓存 | storage 前缀、token、语言、tabs、主题、React Query 清理 | `utils/storage.ts`, `features/auth`, `admin-theme`, `admin-layouts` |
 | `routing/overview.mdx` | 路由概览 | 创建和理解页面路由 | TanStack Router、`routeTree.gen.ts`、路由组、动态路由 | `features/router`, `pages` |
 | `routing/route-meta.mdx` | 路由元信息 | 配菜单、标题、图标、外链 | `staticData`、`i18nKey`、`menu`、`activeMenu`、隐藏菜单 | `pages/*`, `types/router.d.ts` |
 | `routing/guards-and-permissions.mdx` | 权限守卫 | 理解登录拦截和 403 | `guardAdminRoute`、静态/动态权限、超级角色、用户初始化 | `guard.ts`, `use-auth.ts` |
@@ -54,6 +56,8 @@
 | `theme/overview.mdx` | 主题系统 | 改主题和暗色模式 | `@skyroc/web-admin-theme`、默认主题、本地缓存、Antd Provider | `config.ts`, `features/antd`, web-kit docs |
 | `theme/i18n-and-icons.mdx` | 国际化与图标 | 改语言和图标 | `@skyroc/web-admin-i18n`、语言配置、本地 svg、Iconify、前缀 | `locales`, `assets/svg-icon`, `.env` |
 | `features/table-and-form.mdx` | 表格与表单 | 写管理页列表 | `useTable`、URL 查询同步、分页、列显隐、Antd Form 搜索 | `features/table`, `manage/user` |
+| `features/demo-pages.mdx` | 示例页面边界 | 区分 demo、占位和真实业务入口 | `manage/user` 通知 demo、`manage/menu` 弹窗测试、`manage/role` 主题展示 | `apps/admin/src/pages/(admin)` |
+| `features/charts-and-dashboard.mdx` | 图表与 Dashboard | 写首页图表和 dashboard 模块 | `useEcharts`、首页模块、暗色模式、尺寸监听、菜单 badge | `home/index.tsx`, `home/modules`, `hooks/use-echarts.ts` |
 | `features/auth-login.mdx` | 登录认证 | 理解登录和退出 | 登录页结构、`useLogin/useAuth`、token 持久化、退出登录 | `(auth)/login`, `features/auth` |
 | `features/notification.mdx` | 通知系统 | 使用通知能力 | `@skyroc/web-admin-notification` 在 header 和示例页中的用法 | `(admin)/layout.tsx`, `manage/user` |
 | `deployment/build-and-deploy.mdx` | 构建部署 | 正确部署生产包 | build、preview、history rewrite、Nginx、base url、常见问题 | `package.json`, `.env`, Vite config |
@@ -137,7 +141,9 @@
 - `getting-started/quick-start.mdx`
 - `getting-started/project-structure.mdx`
 - `architecture/bootstrap.mdx`
+- `architecture/runtime-providers.mdx`
 - `configuration/env-and-vite.mdx`
+- `configuration/storage-and-cache.mdx`
 - `routing/overview.mdx`
 - `routing/route-meta.mdx`
 - `routing/guards-and-permissions.mdx`
@@ -154,6 +160,8 @@
 - `theme/overview.mdx`
 - `theme/i18n-and-icons.mdx`
 - `features/table-and-form.mdx`
+- `features/demo-pages.mdx`
+- `features/charts-and-dashboard.mdx`
 - `features/auth-login.mdx`
 - `features/notification.mdx`
 - `deployment/build-and-deploy.mdx`
@@ -239,6 +247,25 @@
 
 所有页面完成后统一执行校验命令，并本地启动站点进行浏览检查。
 
+## 11. 专题页补充说明
+
+第二批专题页写作时，需要同步建立对应目录的侧边栏信息，并特别注意以下当前事实：
+
+| 路径 | 写作重点 | 需要特别说明的当前事实 |
+| --- | --- | --- |
+| `theme/overview.mdx` | `setupTheme`、默认主题、缓存覆盖、Ant Design Provider、`ThemeEffect` | 当前应用只在 `bootstrap.tsx` 调用 `setupTheme({ buildTime: BUILD_TIME })`；默认主题来自共享包，应用专属覆盖不应直接写进页面。 |
+| `theme/i18n-and-icons.mdx` | `setupI18n`、语言缓存、Ant Design locale、Dayjs 同步、本地 svg、Iconify provider | i18n 运行时由共享包提供，`apps/admin` 负责默认语言、storage、第三方 locale 同步和图标前缀配置。 |
+| `architecture/runtime-providers.mdx` | QueryClient、Jotai、Devtools、Antd、通知、路由、GlobalEffect | Provider 顺序要以 `App.tsx` 为准；生产环境更新检测属于插件，不属于 React Provider。 |
+| `configuration/storage-and-cache.mdx` | `VITE_STORAGE_PREFIX`、`localStg`、token、tabs、语言、主题、React Query cache | 当前主题包没有接入 `localStg`，如果修改 `VITE_STORAGE_PREFIX`，主题缓存前缀不会自动同步。 |
+| `features/table-and-form.mdx` | `useTable`、搜索表单、分页、列设置、`useTableOperate` | `features/table` 已有能力层，但当前 `manage/user` 页面没有消费 `useTable()`；它现在主要是通知演示页。 |
+| `features/demo-pages.mdx` | 当前页面清单、demo/占位/真实业务边界、替换为真实业务页的路径 | `manage/menu` 是 message/notification/modal 测试页，`manage/role` 是 UnoCSS 主题展示页，`manage/user` 是通知 demo。 |
+| `features/charts-and-dashboard.mdx` | 首页模块、`useEcharts`、暗色模式、尺寸监听、菜单 badge | 当前 dashboard 是可运行示例，但数据以示例为主；接真实接口时应进入服务模块。 |
+| `features/auth-login.mdx` | 登录页结构、`useInitLogin/useAuth`、token 持久化、用户初始化、退出登录 | 登录成功必须走 `setAuth -> initAuth -> initMenus -> navigate`，不要在页面里绕开认证链路。 |
+| `features/notification.mdx` | `NotificationProvider`、`NotificationButton`、通知 context、声音和浏览器通知 | 通知状态当前是前端内存态，声音资源由 `apps/admin` 注入，不硬编码进共享包。 |
+| `deployment/build-and-deploy.mdx` | 构建脚本、preview、env mode、`VITE_BASE_URL`、Nginx history rewrite | 当前 TanStack Router 使用默认 browser history，线上刷新深层路由必须由服务端 rewrite 到 `index.html`。 |
+
+这些页面写作时仍按第 9 节模板组织，但允许根据页面性质把“最小可用示例”和“常见误区”扩展得更具体。新增内容必须以当前 `apps/admin` 和 `packages/web/*` 源码为准；如果计划表里的事实源和当前源码不一致，正文要显式写出现状，不能按旧预期补假文档。
+
 检查重点：
 
 - 侧边栏是否完整。
@@ -247,7 +274,7 @@
 - 页面是否仍有 Hello World、Next.js、Fumadocs 默认示例内容。
 - 是否误搬 Vue/Redux/`@sa/*` 等过期内容。
 
-## 11. 校验方式
+## 12. 校验方式
 
 - `pnpm --filter admin-docs types:check`
 - `pnpm --filter admin-docs lint`
@@ -255,7 +282,7 @@
 - `git diff --check docs/admin-docs`
 - 本地启动 `pnpm --filter admin-docs dev`，检查首页、侧边栏、搜索、代码块、内部链接和 mobile 布局。
 
-## 12. 验收标准
+## 13. 验收标准
 
 - `ADMIN_DOCS_PLAN.md` 能让后续实现者不再重新判断文档范围。
 - 每个计划页面都有明确写作目标、参考来源、代码事实源。
