@@ -12,11 +12,19 @@ declare global {
 
     interface MenuExtraRegistry {}
 
+    type MenuCategoryKey = keyof MenuCategoryRegistry extends never
+      ? string
+      : Extract<keyof MenuCategoryRegistry, string>;
+
+    interface MenuCategoryRegistry {}
+
     type MenuBadgeType = 'dot' | 'normal';
 
     type MenuBadgeValue = number | string | null;
 
     type MenuBadgeVariant = 'default' | 'error' | 'info' | 'primary' | 'success' | 'warning';
+
+    type MenuType = 'divider' | 'group' | 'item';
 
     interface MenuBadge {
       /** Whether zero should still be rendered as badge content. */
@@ -32,6 +40,9 @@ declare global {
     }
 
     interface Meta {
+      /** External link opened when the route is selected */
+      href?: string | null;
+
       /**
        * I18n key of the route
        *
@@ -41,12 +52,6 @@ declare global {
 
       /** Whether to cache the route */
       keepAlive?: boolean | null;
-
-      /** External link opened when the route is selected */
-      href?: string | null;
-
-      /** External page url rendered inside an iframe route */
-      url?: string | null;
 
       /**
        * Menu configuration of the route
@@ -118,7 +123,7 @@ declare global {
          *
          * @default 'item'
          */
-        type?: 'divider' | 'group';
+        type?: MenuType | null;
       };
 
       /** Required permissions to access the route */
@@ -154,6 +159,9 @@ declare global {
        * It can be used in document title
        */
       title?: string;
+
+      /** External page url rendered inside an iframe route */
+      url?: string | null;
     }
 
     interface RouterContext {

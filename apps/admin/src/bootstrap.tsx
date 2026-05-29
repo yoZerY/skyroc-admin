@@ -6,12 +6,11 @@ import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { globalConfig } from '@/config';
+import { loadAdminDynamicRoutes } from '@/features/menus/dynamic-routes';
 import { menuExtras } from '@/features/menus/extras';
 import { menuCategories } from '@/features/menus/menu-category';
 import { menuNodeCallback } from '@/features/menus/menu-config';
 import { routeTree } from '@/features/router/routeTree.gen';
-import { queryMenusOptions } from '@/service/api/route/hooks';
-import { queryClient } from '@/service/queryClient';
 import { localStg } from '@/utils/storage';
 
 import App from './App';
@@ -36,7 +35,7 @@ async function setupApp() {
   setupAdminLayouts({
     defaultHome: globalConfig.defaultHome,
     defaultIcon: globalConfig.defaultIcon,
-    loadDynamicRoutes: () => queryClient.ensureQueryData(queryMenusOptions()),
+    loadDynamicRoutes: loadAdminDynamicRoutes,
     menuCategories,
     extras: menuExtras,
     menuNodeCallback,
