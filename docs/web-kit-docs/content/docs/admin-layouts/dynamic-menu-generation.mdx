@@ -181,7 +181,7 @@ interface BackendRoute extends Router.Meta {
 
 ## 权限边界
 
-动态模式下，菜单可见性应由后端先裁剪。前端适配层会把 `handle.roles` 映射成 `permissions`，用于直接输入 URL 时的兜底校验：
+动态模式下，菜单可见性应由后端先裁剪，前端也会做同一套兜底过滤。适配层会把 `handle.roles` 映射成 `permissions`，布局包生成动态菜单和 `quickReferenceMenus` 时会结合当前用户角色判断权限：
 
 ```text
 用户直接访问 /manage/user/1
@@ -193,8 +193,8 @@ interface BackendRoute extends Router.Meta {
 因此：
 
 - 后端没返回某个 route pattern，直接访问会进 403。
-- 后端返回了 route pattern，但 `roles` 不匹配，也会进 403。
-- 后端返回了无权限节点，菜单仍可能出现；不要依赖前端在菜单生成时二次过滤。
+- 后端返回了 route pattern，但 `roles` 不匹配，菜单不会出现，直接访问也会进 403。
+- `permissionSuperRole` 对静态、动态两种模式都生效。
 
 ## 隐藏页
 
