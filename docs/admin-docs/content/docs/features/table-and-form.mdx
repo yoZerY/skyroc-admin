@@ -1,0 +1,265 @@
+---
+title: 表格与表单
+description: 使用 features/table、Ant Design Form、分页参数和列设置编写管理页列表
+---
+
+这一页说明 `apps/admin` 里管理页列表的基础写法。重点不是介绍 Ant Design Table，而是理解当前项目已经封装好的 `features/table` 能力：请求分页、搜索表单、表格属性、行选择、列显隐和列拖拽排序应该怎么接到业务页面。
+
+当前事实要先说清楚：`features/table` 已经提供 hook 和操作栏组件，但当前 `apps/admin/src/pages/(admin)/manage/user/index.tsx` 主要承载通知系统演示，并没有实际消费 `useTable()`。所以这一页以 `features/table` 和 `service/api/system-manage` 的用户列表接口为事实源，给出管理页列表应采用的接入方式。
+
+## 适用场景
+
+| 场景 | 重点位置 |
+| --- | --- |
+| 写一个带搜索条件的后台列表页 | `useTable()`、Ant Design `Form`、`Table` |
+| 接分页接口 | `fetchGetUserList()`、`Api.SystemManage.UserSearchParams` |
+| 让表格分页、排序、筛选触发重新请求 | `tableProps.onChange`、`updateSearchParams()` |
+| 做查询和重置 | `run()`、`reset()`、`searchProps` |
+| 做列显隐和列排序 | `TableHeaderOperation`、`DragContent`、`columnChecks` |
+| 做新增、编辑、批量删除抽屉 | `useTableOperate()`、`generalPopupOperation` |
+
+## 当前实现位置
+
+| 文件 | 职责 |
+| --- | --- |
+| `apps/admin/src/features/table/use-table.ts` | 面向业务页面的表格 hook，组合 Ant Design Form、URL 初始查询、分页、列管理和 `tableProps`。 |
+| `apps/admin/src/features/table/hooks.ts` | 核心数据 hook，维护 `data`、`loading`、`searchParams`、分页状态和列状态。 |
+| `apps/admin/src/features/table/TableHeaderOperation.tsx` | 表格右上角操作栏，包含添加、批量删除、刷新和列设置入口。 |
+| `apps/admin/src/features/table/DragContent.tsx` | 列设置弹层内容，基于 DnD Kit 做显示切换和拖拽排序。 |
+| `apps/admin/src/features/table/use-table-operate.ts` | 列表页常见新增、编辑、行选择和抽屉操作状态。 |
+| `apps/admin/src/service/api/system-manage/*` | 系统管理接口模块，包含用户、角色、菜单列表接口和 React Query hooks。 |
+| `apps/admin/src/pages/(admin)/manage/user/index.tsx` | 当前菜单位置和通知演示页；如果要落真实用户列表，应替换或拆分这里的演示内容。 |
+
+## 核心概念
+
+### `useTable` 是页面接入层
+
+`useTable()` 面向页面使用。它接收接口函数、默认参数、列工厂和可选配置，返回三类东西：
+
+| 返回值 | 用途 |
+| --- | --- |
+| `form`、`run()`、`reset()`、`searchProps` | 搜索表单使用。 |
+| `tableProps`、`pagination`、`loading`、`data` | 直接传给 Ant Design `Table`。 |
+| `columnChecks`、`setColumnChecks`、`getData()` | 表头操作栏和列设置使用。 |
+
+内部链路可以简化为：
+
+```text
+页面搜索表单
+  -> run()
+  -> updateSearchParams({ current: 1, ...fields })
+  -> useHookTable effect
+  -> apiFn(params)
+  -> transformer()
+  -> tableProps.dataSource / pagination
+```
+
+`useTable()` 默认会把分页响应转换成 Ant Design Table 能消费的数据。它假设接口响应符合 `Common.PaginatingQueryRecord<T>` 结构，也就是包含 `records`、`current`、`size`、`total`。
+
+### URL 查询参数的当前边界
+
+`useTable()` 当前会读取路由 search：
+
+```ts
+const query = parseQuery(route.searchStr) as unknown as Parameters<A>[0];
+```
+
+并把它合并进初始 `apiParams`：
+
+```ts
+apiParams: { ...apiParams, ...query }
+```
+
+这表示页面首次进入时可以从 URL query 恢复搜索条件。但当前 `useHookTable()` 只更新内部 `searchParams`，没有把新的搜索条件写回 router search；`isChangeURL` 已暴露在配置中，但核心 hook 里尚未消费。需要完整的双向 URL 同步时，应扩展 `features/table` 的统一实现，而不是在每个列表页各自 `navigate()`。
+
+## 最小列表页示例
+
+下面示例展示一个用户列表的最小形态。真实页面应放在 `apps/admin/src/pages/(admin)/manage/user/index.tsx` 或新的后台路由文件中，并根据产品需要补新增、编辑、详情和删除能力。
+
+```tsx
+import { Button, Form, Input, Table } from 'antd';
+
+import { TableHeaderOperation, useTable } from '@/features/table';
+import { fetchGetUserList } from '@/service/api';
+
+function getUserColumns() {
+  return [
+    {
+      dataIndex: 'index',
+      key: 'index',
+      title: '序号',
+      width: 80
+    },
+    {
+      dataIndex: 'userName',
+      key: 'userName',
+      title: '用户名'
+    },
+    {
+      dataIndex: 'nickName',
+      key: 'nickName',
+      title: '昵称'
+    },
+    {
+      dataIndex: 'userPhone',
+      key: 'userPhone',
+      title: '手机号'
+    }
+  ];
+}
+
+const UserListPage = () => {
+  const { columnChecks, form, getData, loading, reset, run, setColumnChecks, tableProps } = useTable({
+    apiFn: fetchGetUserList,
+    apiParams: {
+      current: 1,
+      size: 10
+    },
+    columns: getUserColumns
+  });
+
+  function handleSearch() {
+    run();
+  }
+
+  function handleReset() {
+    reset();
+  }
+
+  return (
+    <div className="p-24px">
+      <Form form={form} layout="inline" onFinish={handleSearch}>
+        <Form.Item name="userName">
+          <Input allowClear placeholder="用户名" />
+        </Form.Item>
+        <Form.Item name="nickName">
+          <Input allowClear placeholder="昵称" />
+        </Form.Item>
+        <Button htmlType="submit" type="primary">
+          查询
+        </Button>
+        <Button onClick={handleReset}>重置</Button>
+      </Form>
+
+      <div className="mt-16px flex justify-end">
+        <TableHeaderOperation
+          columns={columnChecks}
+          loading={loading}
+          refresh={getData}
+          setColumnChecks={setColumnChecks}
+        />
+      </div>
+
+      <Table className="mt-16px" {...tableProps} />
+    </div>
+  );
+};
+```
+
+这个示例里，搜索按钮调用 `run()`，重置按钮调用 `reset()`，表格分页变化由 `tableProps.onChange` 处理。页面不需要自己维护 `loading`、`current`、`pageSize`、`total` 和 `dataSource`。
+
+## 搜索表单
+
+`useTable()` 内部创建了 Ant Design Form 实例：
+
+```ts
+const [form] = Form.useForm<Parameters<A>[0]>();
+```
+
+搜索提交时，`run()` 会先校验表单，再更新搜索参数：
+
+```ts
+const res = await form.validateFields();
+updateSearchParams({ current: 1, ...other });
+```
+
+默认行为是搜索后回到第一页。分页切换或刷新当前页时，可以调用：
+
+```ts
+run(false);
+```
+
+重置时，`reset()` 会把表单值恢复到 `apiParams`，并把分页恢复到 `current: 1`、`size: 10`。
+
+## 分页和表格变化
+
+`tableProps.onChange` 已经接好分页变化：
+
+```ts
+function handleChange(...args: TableOnChange) {
+  const [paginationContext, ...otherParams] = args;
+
+  let other = {
+    current: paginationContext.current,
+    size: paginationContext.pageSize
+  };
+
+  updateSearchParams(other);
+}
+```
+
+如果接口需要处理排序或筛选，可以传入 `onChange` 自定义参数转换：
+
+```tsx
+useTable({
+  apiFn: fetchGetUserList,
+  columns: getUserColumns,
+  onChange(pagination, filters, sorter) {
+    return {
+      current: pagination.current,
+      size: pagination.pageSize,
+      sorter,
+      filters
+    };
+  }
+});
+```
+
+不要在页面里再写一套分页 `useState`。分页状态已经由 `useTable()` 根据接口响应维护。
+
+## 列设置
+
+列设置由三层组成：
+
+| 层 | 作用 |
+| --- | --- |
+| `columns` 工厂 | 定义完整列。 |
+| `columnChecks` | 记录哪些列显示，以及当前列顺序。 |
+| `TableHeaderOperation` | 提供列设置按钮，弹出 `DragContent`。 |
+
+`useTable()` 会根据列的 `key` 生成 `columnChecks`。因此每个可配置列必须提供稳定的 `key`。没有 `key` 的列不会出现在列设置中。
+
+## 新增、编辑和行选择
+
+需要抽屉或弹窗编辑时，用 `useTableOperate()` 管理常见状态：
+
+```tsx
+const {
+  checkedRowKeys,
+  generalPopupOperation,
+  handleAdd,
+  handleEdit,
+  onBatchDeleted,
+  onDeleted,
+  rowSelection
+} = useTableOperate(data, getData, executeResActions);
+```
+
+`rowSelection` 可以直接传给 `Table`，`generalPopupOperation` 可以传给新增/编辑弹窗组件。业务接口调用仍然放在页面或服务模块中，`useTableOperate()` 只负责通用 UI 状态和提交后的刷新动作。
+
+## 常见误区
+
+| 误区 | 正确做法 |
+| --- | --- |
+| 在页面里同时维护 `current`、`pageSize`、`loading` 和 `dataSource` | 交给 `useTable()`，页面只处理搜索条件和业务按钮。 |
+| 列配置没有 `key` | 给每个可显示列补稳定 `key`，否则列设置无法识别。 |
+| 把 URL 写回逻辑散落在每个页面 | 当前 hook 只读取 URL 初始值；完整同步应在 `features/table` 统一扩展。 |
+| 把接口 URL 写在页面里 | 新增或扩展 `service/api/{module}`，页面只调用 `apiFn` 或 React Query hook。 |
+| 直接照 `manage/user` 找表格示例 | 当前 `manage/user` 是通知演示页，不是用户列表实现。 |
+
+## 相关链接
+
+- 路由页面写法：[路由概览](../routing/overview)
+- 路由元信息和菜单：[路由元信息](../routing/route-meta)
+- 请求模块分层：[服务模块](../request/service-modules)
+- 通知演示页：[通知系统](./notification)
