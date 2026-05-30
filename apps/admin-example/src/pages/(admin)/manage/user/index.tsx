@@ -17,6 +17,8 @@ import UserSearch from './modules/UserSearch';
 
 const UserOperateDrawer = lazy(() => import('./modules/UserOperateDrawer'));
 
+const USER_TABLE_SCROLL_X = 1132;
+
 type UserTableRecord = TableDataWithIndex<Api.SystemManage.User>;
 
 const UserManage = () => {
@@ -24,7 +26,7 @@ const UserManage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isMobile } = useAdminState();
-  const { scrollConfig, tableWrapperRef } = useTableScroll();
+  const { scrollConfig, tableWrapperRef } = useTableScroll(USER_TABLE_SCROLL_X);
 
   const {
     columnChecks,
@@ -68,9 +70,7 @@ const UserManage = () => {
 
   function syncSearchParams(params: Partial<Api.SystemManage.UserSearchParams>) {
     navigate({
-      replace: true,
-      search: params,
-      to: '/manage/user'
+      search: _previous => params
     });
   }
 
@@ -81,6 +81,7 @@ const UserManage = () => {
         dataIndex: 'index',
         fixed: 'left',
         key: 'index',
+        minWidth: 64,
         title: t('common.index'),
         width: 64
       },
@@ -95,6 +96,7 @@ const UserManage = () => {
         align: 'center',
         dataIndex: 'userGender',
         key: 'userGender',
+        minWidth: 100,
         render: (_, record) => {
           if (!record.userGender) return null;
 
@@ -114,6 +116,7 @@ const UserManage = () => {
         align: 'center',
         dataIndex: 'userPhone',
         key: 'userPhone',
+        minWidth: 140,
         title: t('page.manage.user.userPhone'),
         width: 140
       },
@@ -128,6 +131,7 @@ const UserManage = () => {
         align: 'center',
         dataIndex: 'status',
         key: 'status',
+        minWidth: 100,
         render: (_, record) => {
           if (!record.status) return null;
 
@@ -140,6 +144,7 @@ const UserManage = () => {
         align: 'center',
         fixed: 'right',
         key: 'operate',
+        minWidth: 220,
         render: (_, record) => (
           <div className="flex-center gap-8px">
             <Button ghost size="small" type="primary" onClick={() => edit(record.id)}>
