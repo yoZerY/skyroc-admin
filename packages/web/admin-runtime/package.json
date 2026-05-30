@@ -2,14 +2,13 @@
   "name": "@skyroc/web-admin-runtime",
   "version": "1.0.0",
   "type": "module",
-  "description": "Reusable web admin runtime helpers for bootstrap and request adapters.",
+  "description": "Reusable web admin runtime helpers for bootstrap plugins.",
   "keywords": [
     "admin",
     "bootstrap",
     "dayjs",
     "iconify",
     "nprogress",
-    "request",
     "runtime",
     "skyroc",
     "web"
@@ -69,9 +68,6 @@
     "lint": "oxlint --fix",
     "test": "vitest run",
     "typecheck": "tsc --noEmit --skipLibCheck"
-  },
-  "dependencies": {
-    "@skyroc/service": "workspace:*"
   },
   "devDependencies": {
     "@iconify/react": "catalog:ui-shared",

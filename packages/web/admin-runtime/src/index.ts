@@ -8,12 +8,3 @@ export { setupNProgress } from './nprogress';
 export type { SetupNProgressOptions } from './nprogress';
 export { setupAdminRuntimePlugins } from './plugins';
 export type { AdminRuntimePluginCleanup, AdminRuntimePluginConfig, SetupAdminRuntimePluginsOptions } from './plugins';
-export { createAdminQueryClient, createAdminRequest, createAdminRequestAdapter } from './request-runtime';
-export type {
-  AdminRequestAuthStorage,
-  AdminRequestAuthStorageKey,
-  AdminRequestInstance,
-  CreateAdminQueryClientOptions,
-  CreateAdminRequestAdapterOptions,
-  CreateAdminRequestOptions
-} from './request-runtime';

@@ -2524,10 +2524,6 @@ importers:
         version: 6.0.3
 
   packages/web/admin-runtime:
-    dependencies:
-      '@skyroc/service':
-        specifier: workspace:*
-        version: link:../../@core/service
     devDependencies:
       '@iconify/react':
         specifier: catalog:ui-shared
