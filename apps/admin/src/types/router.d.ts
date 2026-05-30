@@ -1,16 +1,19 @@
-declare namespace Router {
-  type QueryClient = import('@tanstack/react-query').QueryClient;
+// oxlint-disable unicorn/require-module-specifiers
+declare global {
+  namespace Router {
+    interface RouteIdRegistry extends Record<keyof import('@/features/router/routeTree.gen').FileRoutesById, true> {}
 
-  type RouteId = keyof import('@/features/router/routeTree.gen').FileRoutesById;
+    interface RoutePathRegistry extends Record<keyof import('@/features/router/routeTree.gen').FileRoutesByTo, true> {}
 
-  type RoutePath = keyof import('@/features/router/routeTree.gen').FileRoutesByTo;
+    interface MenuExtraRegistry extends Record<import('@/features/menus/extras').ExtraKey, true> {}
 
-  interface MenuExtraRegistry extends Record<import('@/features/menus/extras').ExtraKey, true> {}
+    interface MenuCategoryRegistry extends Record<import('@/features/menus/menu-category').MenuCategoryKey, true> {}
 
-  interface MenuCategoryRegistry extends Record<import('@/features/menus/menu-category').MenuCategoryKey, true> {}
-
-  interface RouterContext {
-    getHomeRoute: () => RoutePath;
-    homeRoute: RoutePath;
+    interface RouterContext {
+      getHomeRoute: () => RoutePath;
+      homeRoute: RoutePath;
+    }
   }
 }
+
+export {};

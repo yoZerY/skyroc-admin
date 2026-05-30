@@ -7,8 +7,7 @@ declare namespace Env {
   /** The router history mode */
   type RouterHistoryMode = 'hash' | 'history' | 'memory';
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  interface ImportMeta extends ImportMetaEnv {
+  interface AppImportMetaEnv {
     /** The description of the application */
     readonly VITE_APP_DESC: string;
     /** The title of the application */
@@ -21,7 +20,7 @@ declare namespace Env {
      */
     readonly VITE_AUTH_ROUTE_MODE: 'dynamic' | 'static';
     /** Whether to automatically detect updates after configuring application packaging */
-    readonly VITE_AUTOMATICALLY_DETECT_UPDATE?: CommonType.YesOrNo;
+    readonly VITE_AUTOMATICALLY_DETECT_UPDATE?: Common.YesOrNo;
     /** The base url of the application */
     readonly VITE_BASE_URL: string;
 
@@ -30,7 +29,7 @@ declare namespace Env {
      *
      * Only valid in the development environment
      */
-    readonly VITE_HTTP_PROXY?: CommonType.YesOrNo;
+    readonly VITE_HTTP_PROXY?: Common.YesOrNo;
     /**
      * The prefix of the local icon
      *
@@ -60,7 +59,7 @@ declare namespace Env {
      */
     readonly VITE_OTHER_SERVICE_BASE_URL: string;
     /** Show proxy url log in terminal */
-    readonly VITE_PROXY_LOG?: CommonType.YesOrNo;
+    readonly VITE_PROXY_LOG?: Common.YesOrNo;
     /**
      * The home route key
      *
@@ -103,16 +102,16 @@ declare namespace Env {
      */
     readonly VITE_SERVICE_SUCCESS_CODE: string;
     /** Whether to build with sourcemap */
-    readonly VITE_SOURCE_MAP?: CommonType.YesOrNo;
+    readonly VITE_SOURCE_MAP?: Common.YesOrNo;
     /** When the route mode is static, the defined super role */
     readonly VITE_STATIC_SUPER_ROLE: string;
     /** Used to differentiate storage across different domains */
     readonly VITE_STORAGE_PREFIX?: string;
   }
+
+  type ImportMeta = AppImportMetaEnv;
 }
 
-interface ImportMeta {
-  readonly env: Env.ImportMeta;
-}
+interface ImportMetaEnv extends Env.AppImportMetaEnv {}
 
 declare module 'virtual:svg-icons-register';
