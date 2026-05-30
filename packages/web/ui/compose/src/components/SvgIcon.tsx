@@ -4,16 +4,16 @@ import type { CSSProperties } from 'react';
 interface Props {
   readonly className?: string;
   /** Iconify icon name */
-  readonly icon?: string;
+  readonly icon?: string | null;
   /** Local svg icon name */
-  readonly localIcon?: string;
+  readonly localIcon?: string | null;
   /** Local icon prefix (default: 'icon-local') */
   readonly localIconPrefix?: string;
   readonly style?: CSSProperties;
 }
 
 const defaultLocalIcon = 'no-icon';
-const symbolId = (localIconPrefix: string, localIcon: string = defaultLocalIcon) => {
+const symbolId = (localIconPrefix: string, localIcon: string | null = defaultLocalIcon) => {
   const iconName = localIcon || defaultLocalIcon;
 
   return `#${localIconPrefix}-${iconName}`;
