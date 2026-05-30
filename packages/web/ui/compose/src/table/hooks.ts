@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type {
   GetTableData,
@@ -61,8 +61,17 @@ export function useHookTable<
   // 是否是首次加载
   const isFirstLoad = useRef(true);
 
-  /** 获取表格数据 */
-  const getData = useCallback(async () => {
+  function createInitialSearchParams() {
+    return {
+      ...apiParams,
+      current: 1,
+      size: 10
+    } as Partial<Parameters<A>[0]>;
+  }
+
+  const getDataRef = useRef<() => Promise<void>>(async () => {});
+
+  getDataRef.current = async function getDataImpl() {
     setLoading(true);
 
     try {
@@ -95,28 +104,29 @@ export function useHookTable<
     } finally {
       setLoading(false);
     }
-  }, [apiFn, searchParams, transformer, transformParams]);
+  };
 
   /** 更新搜索参数 */
-  const updateSearchParams = useCallback((params: Partial<Parameters<A>[0]>) => {
+  function updateSearchParams(params: Partial<Parameters<A>[0]>) {
     setSearchParams(prev => ({ ...prev, ...params }));
-  }, []);
+  }
 
   /** 重置搜索参数 */
-  const resetSearchParams = useCallback(() => {
-    setSearchParams({
-      ...apiParams,
-      current: 1,
-      size: 10
-    } as Partial<Parameters<A>[0]>);
-  }, [apiParams]);
+  function resetSearchParams() {
+    setSearchParams(createInitialSearchParams());
+  }
 
   /** 重新加载列 */
-  const reloadColumns = useCallback(() => {
+  function reloadColumns() {
     const newColumns = columnsFactory();
     const newChecks = getColumnChecks(newColumns);
     setColumnChecks(newChecks);
-  }, [columnsFactory, getColumnChecks]);
+  }
+
+  /** 获取表格数据 */
+  async function getData() {
+    await getDataRef.current();
+  }
 
   // 监听搜索参数变化，自动获取数据
   useEffect(() => {
@@ -125,8 +135,8 @@ export function useHookTable<
       return;
     }
 
-    getData();
-  }, [searchParams, getData, immediate]);
+    getDataRef.current();
+  }, [apiFn, immediate, searchParams, transformParams, transformer]);
 
   return {
     columnChecks,

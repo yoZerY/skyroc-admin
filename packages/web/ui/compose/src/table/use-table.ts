@@ -1,9 +1,6 @@
 import { parseQuery } from '@skyroc/utils';
-import { useAdminState } from '@skyroc/web-admin-layouts';
 import { Form } from 'antd';
 import type { TablePaginationConfig } from 'antd';
-
-import { useRoute } from '@/features/router/use-route';
 
 import { useHookTable } from './hooks';
 import type {
@@ -23,18 +20,17 @@ import type {
  * 提供完整的表格功能，包括： - 数据获取和分页 - 搜索参数管理 - URL参数同步 - 移动端适配 - 列管理
  */
 export function useTable<A extends TableApiFn>(config: TableConfig<A>) {
-  const { isMobile } = useAdminState();
-  const route = useRoute();
-
   const {
     apiFn,
     apiParams,
     columns: columnsFactory,
     immediate = true,
+    isMobile = false,
     isChangeURL = true,
     onChange: onChangeCallback,
     pagination: paginationConfig,
     rowKey = 'id',
+    routeSearch = '',
     transformParams,
     ...rest
   } = config;
@@ -42,7 +38,7 @@ export function useTable<A extends TableApiFn>(config: TableConfig<A>) {
   const [form] = Form.useForm<Parameters<A>[0]>();
 
   // 从URL中解析查询参数
-  const query = parseQuery(route.searchStr) as unknown as Parameters<A>[0];
+  const query = isChangeURL ? (parseQuery(routeSearch) as unknown as Parameters<A>[0]) : {};
 
   // 使用核心Hook处理表格逻辑
   const {

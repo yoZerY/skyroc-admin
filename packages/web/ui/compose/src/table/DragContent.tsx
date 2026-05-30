@@ -3,30 +3,39 @@ import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Checkbox } from 'antd';
-import type { FC } from 'react';
+import type { CSSProperties } from 'react';
+
+import { SvgIcon } from '../components';
 
 import type { TableColumnCheck } from './types';
 
 interface DragContentProps {
+  /** 可配置显隐和排序的表格列。 */
   columns: TableColumnCheck[];
+  /** 更新列显隐和排序后的回调。 */
   setColumnChecks: (checks: TableColumnCheck[]) => void;
 }
 
 interface SortableItemProps {
+  /** 当前列项在列表中的位置。 */
   index: number;
+  /** 当前列配置项。 */
   item: TableColumnCheck;
+  /** 切换列显示状态时触发。 */
   onCheckChange: (checked: boolean, index: number) => void;
 }
 
 /** 单个可拖拽列项组件 */
-const SortableItem: FC<SortableItemProps> = ({ index, item, onCheckChange }) => {
+const SortableItem = (props: SortableItemProps) => {
+  const { index, item, onCheckChange } = props;
+
   // 使用 useSortable 获取拖拽属性
   const { attributes, isDragging, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.key // 每个可拖拽对象的唯一标识
   });
 
   // 拖拽时的样式
-  const style: React.CSSProperties = {
+  const style: CSSProperties = {
     opacity: isDragging ? 0.5 : 1,
     transform: CSS.Transform.toString(transform),
     transition
@@ -41,7 +50,7 @@ const SortableItem: FC<SortableItemProps> = ({ index, item, onCheckChange }) => 
     >
       {/* 拖拽手柄 - 使用项目的图标系统 */}
       <span className="text-icon mr-8px flex cursor-move items-center" {...listeners}>
-        <IconMdiDrag />
+        <SvgIcon icon="mdi:drag" />
       </span>
 
       {/* 复选框 */}
@@ -57,7 +66,9 @@ const SortableItem: FC<SortableItemProps> = ({ index, item, onCheckChange }) => 
  *
  * 支持： - 列的显示/隐藏切换 - 拖拽排序 - 流畅的交互动画
  */
-const DragContent: FC<DragContentProps> = ({ columns, setColumnChecks }) => {
+const DragContent = (props: DragContentProps) => {
+  const { columns, setColumnChecks } = props;
+
   // 配置传感器，优化拖拽体验
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -68,7 +79,7 @@ const DragContent: FC<DragContentProps> = ({ columns, setColumnChecks }) => {
   );
 
   /** 拖拽结束时的回调 */
-  const handleDragEnd = (event: DragEndEvent) => {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
     if (!over) return;
@@ -84,14 +95,14 @@ const DragContent: FC<DragContentProps> = ({ columns, setColumnChecks }) => {
         setColumnChecks(newColumns);
       }
     }
-  };
+  }
 
   /** 点击复选框时更改"checked"状态 */
-  const handleCheckChange = (checked: boolean, index: number) => {
+  function handleCheckChange(checked: boolean, index: number) {
     const newColumns = [...columns];
     newColumns[index] = { ...newColumns[index], checked };
     setColumnChecks(newColumns);
-  };
+  }
 
   return (
     <div className="max-h-400px w-200px overflow-y-auto">

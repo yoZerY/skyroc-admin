@@ -1,7 +1,10 @@
 import { Button, Popconfirm, Popover, Space } from 'antd';
 import type { SpaceProps } from 'antd';
 import classNames from 'clsx';
-import type { FC, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { SvgIcon } from '../components';
 
 import DragContent from './DragContent';
 import type { TableColumnCheck } from './types';
@@ -49,19 +52,21 @@ interface TableHeaderOperationProps {
  *   />;
  *   ```
  */
-const TableHeaderOperation: FC<TableHeaderOperationProps> = ({
-  add,
-  children,
-  columns,
-  disabledDelete = false,
-  itemAlign,
-  loading = false,
-  onDelete,
-  prefix,
-  refresh,
-  setColumnChecks,
-  suffix
-}) => {
+const TableHeaderOperation = (props: TableHeaderOperationProps) => {
+  const {
+    add,
+    children,
+    columns,
+    disabledDelete = false,
+    itemAlign,
+    loading = false,
+    onDelete,
+    prefix,
+    refresh,
+    setColumnChecks,
+    suffix
+  } = props;
+
   const { t } = useTranslation();
 
   return (
@@ -74,7 +79,13 @@ const TableHeaderOperation: FC<TableHeaderOperationProps> = ({
         <>
           {/* 添加按钮 */}
           {add && (
-            <Button ghost icon={<IconIcRoundPlus className="text-icon" />} size="small" type="primary" onClick={add}>
+            <Button
+              ghost
+              icon={<SvgIcon className="text-icon" icon="ic:round-plus" />}
+              size="small"
+              type="primary"
+              onClick={add}
+            >
               {t('common.add')}
             </Button>
           )}
@@ -86,7 +97,7 @@ const TableHeaderOperation: FC<TableHeaderOperationProps> = ({
                 danger
                 ghost
                 disabled={disabledDelete}
-                icon={<IconIcRoundDelete className="text-icon" />}
+                icon={<SvgIcon className="text-icon" icon="ic:round-delete" />}
                 size="small"
               >
                 {t('common.batchDelete')}
@@ -100,10 +111,11 @@ const TableHeaderOperation: FC<TableHeaderOperationProps> = ({
       <Button
         size="small"
         icon={
-          <IconMdiRefresh
+          <SvgIcon
             className={classNames('text-icon', {
               'animate-spin': loading
             })}
+            icon="mdi:refresh"
           />
         }
         onClick={refresh}
@@ -117,7 +129,7 @@ const TableHeaderOperation: FC<TableHeaderOperationProps> = ({
         trigger="click"
         content={<DragContent columns={columns} setColumnChecks={setColumnChecks} />}
       >
-        <Button icon={<IconAntDesignSettingOutlined />} size="small">
+        <Button icon={<SvgIcon icon="ant-design:setting-outlined" />} size="small">
           {t('common.columnSetting')}
         </Button>
       </Popover>

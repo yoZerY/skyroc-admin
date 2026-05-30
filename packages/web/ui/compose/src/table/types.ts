@@ -57,7 +57,9 @@ export interface TableConfig<A extends TableApiFn> {
   columns: () => TableColumn<TableDataWithIndex<GetTableData<A>>>[];
   /** 是否立即请求数据 */
   immediate?: boolean;
-  /** 是否改变URL参数 */
+  /** 是否使用移动端分页展示 */
+  isMobile?: boolean;
+  /** 是否读取 URL 查询参数初始化表格参数 */
   isChangeURL?: boolean;
   /** 表格变化回调 */
   onChange?: (...args: TableOnChange) => Partial<Parameters<A>[0]> | void;
@@ -65,6 +67,8 @@ export interface TableConfig<A extends TableApiFn> {
   pagination?: TablePaginationConfig;
   /** 行key */
   rowKey?: string | ((record: TableDataWithIndex<GetTableData<A>>) => string);
+  /** 用于初始化表格查询参数的 URL 查询字符串 */
+  routeSearch?: string;
   /** 参数转换函数 */
   transformParams?: (params: Parameters<A>[0]) => any;
 }

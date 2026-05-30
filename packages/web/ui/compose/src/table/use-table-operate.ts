@@ -1,5 +1,9 @@
-import { Form } from 'antd';
+import { useBoolean } from 'ahooks';
+import { Form, message } from 'antd';
 import type { TableProps } from 'antd';
+import { useState } from 'react';
+import type { Key } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { TableData, TableOperateType } from './types';
 
@@ -55,10 +59,10 @@ export function useTableOperate<T extends TableData = TableData>(
   }
 
   /** 选中的行keys */
-  const [checkedRowKeys, setCheckedRowKeys] = useState<React.Key[]>([]);
+  const [checkedRowKeys, setCheckedRowKeys] = useState<Key[]>([]);
 
   /** 行选择变化处理 */
-  function onSelectChange(keys: React.Key[]) {
+  function onSelectChange(keys: Key[]) {
     setCheckedRowKeys(keys);
   }
 
@@ -79,14 +83,14 @@ export function useTableOperate<T extends TableData = TableData>(
 
   /** 批量删除完成后的回调 */
   async function onBatchDeleted() {
-    window.$message?.success(t('common.deleteSuccess'));
+    message.success(t('common.deleteSuccess'));
     setCheckedRowKeys([]);
     await getData(false);
   }
 
   /** 单个删除完成后的回调 */
   async function onDeleted() {
-    window.$message?.success(t('common.deleteSuccess'));
+    message.success(t('common.deleteSuccess'));
     await getData(false);
   }
 
@@ -97,7 +101,7 @@ export function useTableOperate<T extends TableData = TableData>(
     // 执行业务逻辑
     await executeResActions(res, operateType);
 
-    window.$message?.success(t('common.updateSuccess'));
+    message.success(t('common.updateSuccess'));
 
     onClose();
     getData();
