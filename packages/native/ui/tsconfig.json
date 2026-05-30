@@ -1,8 +1,0 @@
-{
-  "extends": "@skyroc/tsconfig/react-native.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src", "nativewind-env.d.ts"],
-  "exclude": ["node_modules"]
-}
