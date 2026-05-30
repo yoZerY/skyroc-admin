@@ -19,7 +19,7 @@ export interface AdminLayoutMenuCategory {
 
 export interface AdminLayoutsDynamicRoutes {
   /** 动态菜单接口返回的首页。 */
-  home?: Router.RoutePath;
+  home?: Router.RoutePath | null;
   /** 动态菜单接口返回的路由树。 */
   routes: Api.Route.BackendRoute[];
 }

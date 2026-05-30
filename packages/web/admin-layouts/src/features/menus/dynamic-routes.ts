@@ -36,6 +36,23 @@ export function collectAvailableRoutePaths(route: AnyRoute) {
   return paths;
 }
 
+function toParentId(parentId?: number | string | null) {
+  if (parentId === null || parentId === undefined) return null;
+
+  return String(parentId);
+}
+
+function toRouteTab(handle: Api.Route.BackendRouteHandle) {
+  return {
+    fixedIndex: handle.fixedIndexInTab ,
+    multi: handle.multiTab
+  };
+}
+
+function isBackendRoute(route: Api.Route.BackendRoute | null): route is Api.Route.BackendRoute {
+  return route !== null;
+}
+
 export function createBackendRouteNormalizer(routeTree: AnyRoute) {
   const availableRoutePaths = collectAvailableRoutePaths(routeTree);
 
@@ -48,55 +65,29 @@ export function createBackendRouteNormalizer(routeTree: AnyRoute) {
   }
 
   function toAvailableRoutePath(path?: string | null) {
-    if (!path) return undefined;
+    if (!path) return null;
 
     const routePath = toRoutePath(path);
 
-    return availableRoutePaths.has(routePath) ? routePath : undefined;
-  }
-
-  function toMenuCategoryKey(layout?: string | null) {
-    return (layout || undefined) as Router.MenuCategoryKey | undefined;
-  }
-
-  function toMenuExtraKey(extra?: string | null) {
-    return (extra || undefined) as Router.Extra | undefined;
-  }
-
-  function toI18nKey(i18nKey?: string | null) {
-    return (i18nKey || undefined) as I18n.I18nKey | undefined;
-  }
-
-  function toParentId(parentId?: number | string | null) {
-    if (parentId === null) return null;
-    if (parentId === undefined) return undefined;
-
-    return String(parentId);
+    return availableRoutePaths.has(routePath) ? routePath : null;
   }
 
   function toBackendRouteChildren(route: Api.Route.BackendRoutePayload) {
-    const children = route.children?.map(toBackendRoute).filter(Boolean) as Api.Route.BackendRoute[] | undefined;
+    const children = route.children?.map(toBackendRoute).filter(isBackendRoute) ?? [];
 
-    return children?.length ? children : undefined;
+    return children.length ? children : [];
   }
 
   function toRouteMenu(handle: Api.Route.BackendRouteHandle) {
     return {
       activeMenu: toAvailableRoutePath(handle.activeMenu),
-      badge: handle.badge ?? undefined,
-      extra: toMenuExtraKey(handle.extra),
-      hide: handle.hideInMenu ?? undefined,
-      icon: handle.icon ?? undefined,
-      localIcon: handle.localIcon ?? undefined,
-      order: handle.order ?? undefined,
-      type: handle.type ?? undefined
-    };
-  }
-
-  function toRouteTab(handle: Api.Route.BackendRouteHandle) {
-    return {
-      fixedIndex: handle.fixedIndexInTab ?? undefined,
-      multi: handle.multiTab ?? undefined
+      badge: handle.badge ,
+      extra: handle.extra ,
+      hide: handle.hideInMenu ,
+      icon: handle.icon ,
+      localIcon: handle.localIcon ,
+      order: handle.order ,
+      type: handle.type
     };
   }
 
@@ -112,26 +103,24 @@ export function createBackendRouteNormalizer(routeTree: AnyRoute) {
     return {
       id: String(route.id ?? route.name ?? path),
       children: toBackendRouteChildren(route),
-      href: handle.href ?? undefined,
-      i18nKey: toI18nKey(handle.i18nKey),
-      keepAlive: handle.keepAlive ?? undefined,
-      layout: toMenuCategoryKey(route.layout),
+      href: handle.href ,
+      i18nKey: handle.i18nKey ,
+      keepAlive: handle.keepAlive ,
+      layout: route.layout ,
       menu: toRouteMenu(handle),
       parentId: toParentId(route.parentId),
       path,
-      permissions: handle.roles ?? undefined,
+      permissions: handle.roles ,
       tab: toRouteTab(handle),
-      title: handle.title ?? route.name ?? undefined,
-      url: handle.url ?? undefined
+      title: handle.title ?? route.name,
+      url: handle.url
     };
   }
 
-  return function normalizeBackendRouteResponse(
-    routeData: Api.Route.BackendRouteResponse
-  ): AdminLayoutsDynamicRoutes {
+  return function normalizeRouteResponse(routeData: Api.Route.BackendRouteResponse): AdminLayoutsDynamicRoutes {
     return {
       home: toAvailableRoutePath(routeData.home),
-      routes: routeData.routes.map(toBackendRoute).filter(Boolean) as Api.Route.BackendRoute[]
+      routes: routeData.routes.map(toBackendRoute).filter(isBackendRoute)
     };
   };
 }

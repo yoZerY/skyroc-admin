@@ -4,7 +4,7 @@ interface PermissionRouteMatch {
   staticData?: Router.Meta;
 }
 
-export function hasAnyRoutePermission(permissions: string[] | undefined, userInfo?: Api.Auth.UserInfo | null) {
+export function hasAnyRoutePermission(permissions: string[] | null | undefined, userInfo?: Api.Auth.UserInfo | null) {
   if (!permissions?.length) {
     return true;
   }

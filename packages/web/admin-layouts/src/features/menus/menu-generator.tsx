@@ -9,12 +9,12 @@ export interface GeneratedMenu {
   extra?: Router.Extra | null;
   href?: string | null;
   i18nKey?: I18n.I18nKey | null;
-  icon?: string;
+  icon?: string | null;
   key: string;
-  localIcon?: string;
-  order?: number;
+  localIcon?: string | null;
+  order?: number | null;
   path?: Router.RoutePath;
-  title?: string;
+  title?: string | null;
   type?: string;
   url?: string | null;
 }
@@ -23,7 +23,7 @@ export type GeneratedMenus = Map<string, GeneratedMenu[]>;
 
 export interface GenerateMenuOptions {
   backendRoutes?: Api.Route.BackendRoute[];
-  home?: Router.RoutePath;
+  home?: Router.RoutePath | null;
   userInfo?: Api.Auth.UserInfo | null;
 }
 
@@ -240,7 +240,7 @@ class MenuGenerator {
       icon,
       key: normalizedPath,
       localIcon,
-      order: order ?? undefined,
+      order,
       path: normalizedPath,
       title: staticData.title,
       type: menuType,
@@ -341,7 +341,7 @@ class MenuGenerator {
       icon,
       key: path,
       localIcon,
-      order: order ?? undefined,
+      order,
       path,
       title: route.title,
       type: menuType,
@@ -388,7 +388,7 @@ class MenuGenerator {
     if (menuType === 'divider') {
       return {
         key: config.id ?? `divider-${parentKeys.join('-')}-${order ?? 0}`,
-        order: order ?? undefined,
+        order,
         type: 'divider'
       };
     }
@@ -414,7 +414,7 @@ class MenuGenerator {
       icon,
       key: path,
       localIcon,
-      order: order ?? undefined,
+      order,
       path,
       title: config.title,
       type: menuType,
