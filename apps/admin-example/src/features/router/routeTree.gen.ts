@@ -87,6 +87,7 @@ import { Route as adminPluginChartsIndexRouteImport } from './../../pages/(admin
 import { Route as adminMultiMenuSecondIndexRouteImport } from './../../pages/(admin)/multi-menu/second/index'
 import { Route as adminMultiMenuFirstIndexRouteImport } from './../../pages/(admin)/multi-menu/first/index'
 import { Route as adminManageUserIndexRouteImport } from './../../pages/(admin)/manage/user/index'
+import { Route as adminManageRoleIndexRouteImport } from './../../pages/(admin)/manage/role/index'
 import { Route as adminInteractionThemeIndexRouteImport } from './../../pages/(admin)/interaction/theme/index'
 import { Route as adminInteractionNotificationIndexRouteImport } from './../../pages/(admin)/interaction/notification/index'
 import { Route as adminInteractionFeedbackIndexRouteImport } from './../../pages/(admin)/interaction/feedback/index'
@@ -98,6 +99,7 @@ import { Route as adminPluginEditorMarkdownRouteImport } from './../../pages/(ad
 import { Route as adminPluginChartsEchartsRouteImport } from './../../pages/(admin)/plugin/charts/echarts'
 import { Route as adminMultiMenuFirstChildRouteImport } from './../../pages/(admin)/multi-menu/first/child'
 import { Route as adminManageUserIdRouteImport } from './../../pages/(admin)/manage/user/$id'
+import { Route as adminManageRoleIdRouteImport } from './../../pages/(admin)/manage/role/$id'
 import { Route as adminFunctionHideChildTwoRouteImport } from './../../pages/(admin)/function/hide-child/two'
 import { Route as adminFunctionHideChildThreeRouteImport } from './../../pages/(admin)/function/hide-child/three'
 import { Route as adminFunctionHideChildOneRouteImport } from './../../pages/(admin)/function/hide-child/one'
@@ -504,6 +506,11 @@ const adminManageUserIndexRoute = adminManageUserIndexRouteImport.update({
   path: '/user/',
   getParentRoute: () => adminManageLayoutRoute,
 } as any)
+const adminManageRoleIndexRoute = adminManageRoleIndexRouteImport.update({
+  id: '/role/',
+  path: '/role/',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
 const adminInteractionThemeIndexRoute =
   adminInteractionThemeIndexRouteImport.update({
     id: '/theme/',
@@ -564,6 +571,11 @@ const adminMultiMenuFirstChildRoute =
 const adminManageUserIdRoute = adminManageUserIdRouteImport.update({
   id: '/user/$id',
   path: '/user/$id',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
+const adminManageRoleIdRoute = adminManageRoleIdRouteImport.update({
+  id: '/role/$id',
+  path: '/role/$id',
   getParentRoute: () => adminManageLayoutRoute,
 } as any)
 const adminFunctionHideChildTwoRoute =
@@ -695,6 +707,7 @@ export interface FileRoutesByFullPath {
   '/function/hide-child/one': typeof adminFunctionHideChildOneRoute
   '/function/hide-child/three': typeof adminFunctionHideChildThreeRoute
   '/function/hide-child/two': typeof adminFunctionHideChildTwoRoute
+  '/manage/role/$id': typeof adminManageRoleIdRoute
   '/manage/user/$id': typeof adminManageUserIdRoute
   '/multi-menu/first/child': typeof adminMultiMenuFirstChildRoute
   '/plugin/charts/echarts': typeof adminPluginChartsEchartsRoute
@@ -706,6 +719,7 @@ export interface FileRoutesByFullPath {
   '/interaction/feedback/': typeof adminInteractionFeedbackIndexRoute
   '/interaction/notification/': typeof adminInteractionNotificationIndexRoute
   '/interaction/theme/': typeof adminInteractionThemeIndexRoute
+  '/manage/role/': typeof adminManageRoleIndexRoute
   '/manage/user/': typeof adminManageUserIndexRoute
   '/multi-menu/first/': typeof adminMultiMenuFirstIndexRoute
   '/multi-menu/second/': typeof adminMultiMenuSecondIndexRoute
@@ -777,6 +791,7 @@ export interface FileRoutesByTo {
   '/function/hide-child/one': typeof adminFunctionHideChildOneRoute
   '/function/hide-child/three': typeof adminFunctionHideChildThreeRoute
   '/function/hide-child/two': typeof adminFunctionHideChildTwoRoute
+  '/manage/role/$id': typeof adminManageRoleIdRoute
   '/manage/user/$id': typeof adminManageUserIdRoute
   '/multi-menu/first/child': typeof adminMultiMenuFirstChildRoute
   '/plugin/charts/echarts': typeof adminPluginChartsEchartsRoute
@@ -788,6 +803,7 @@ export interface FileRoutesByTo {
   '/interaction/feedback': typeof adminInteractionFeedbackIndexRoute
   '/interaction/notification': typeof adminInteractionNotificationIndexRoute
   '/interaction/theme': typeof adminInteractionThemeIndexRoute
+  '/manage/role': typeof adminManageRoleIndexRoute
   '/manage/user': typeof adminManageUserIndexRoute
   '/multi-menu/first': typeof adminMultiMenuFirstIndexRoute
   '/multi-menu/second': typeof adminMultiMenuSecondIndexRoute
@@ -878,6 +894,7 @@ export interface FileRoutesById {
   '/(admin)/function/hide-child/one': typeof adminFunctionHideChildOneRoute
   '/(admin)/function/hide-child/three': typeof adminFunctionHideChildThreeRoute
   '/(admin)/function/hide-child/two': typeof adminFunctionHideChildTwoRoute
+  '/(admin)/manage/role/$id': typeof adminManageRoleIdRoute
   '/(admin)/manage/user/$id': typeof adminManageUserIdRoute
   '/(admin)/multi-menu/first/child': typeof adminMultiMenuFirstChildRoute
   '/(admin)/plugin/charts/echarts': typeof adminPluginChartsEchartsRoute
@@ -889,6 +906,7 @@ export interface FileRoutesById {
   '/(admin)/interaction/feedback/': typeof adminInteractionFeedbackIndexRoute
   '/(admin)/interaction/notification/': typeof adminInteractionNotificationIndexRoute
   '/(admin)/interaction/theme/': typeof adminInteractionThemeIndexRoute
+  '/(admin)/manage/role/': typeof adminManageRoleIndexRoute
   '/(admin)/manage/user/': typeof adminManageUserIndexRoute
   '/(admin)/multi-menu/first/': typeof adminMultiMenuFirstIndexRoute
   '/(admin)/multi-menu/second/': typeof adminMultiMenuSecondIndexRoute
@@ -979,6 +997,7 @@ export interface FileRouteTypes {
     | '/function/hide-child/one'
     | '/function/hide-child/three'
     | '/function/hide-child/two'
+    | '/manage/role/$id'
     | '/manage/user/$id'
     | '/multi-menu/first/child'
     | '/plugin/charts/echarts'
@@ -990,6 +1009,7 @@ export interface FileRouteTypes {
     | '/interaction/feedback/'
     | '/interaction/notification/'
     | '/interaction/theme/'
+    | '/manage/role/'
     | '/manage/user/'
     | '/multi-menu/first/'
     | '/multi-menu/second/'
@@ -1061,6 +1081,7 @@ export interface FileRouteTypes {
     | '/function/hide-child/one'
     | '/function/hide-child/three'
     | '/function/hide-child/two'
+    | '/manage/role/$id'
     | '/manage/user/$id'
     | '/multi-menu/first/child'
     | '/plugin/charts/echarts'
@@ -1072,6 +1093,7 @@ export interface FileRouteTypes {
     | '/interaction/feedback'
     | '/interaction/notification'
     | '/interaction/theme'
+    | '/manage/role'
     | '/manage/user'
     | '/multi-menu/first'
     | '/multi-menu/second'
@@ -1161,6 +1183,7 @@ export interface FileRouteTypes {
     | '/(admin)/function/hide-child/one'
     | '/(admin)/function/hide-child/three'
     | '/(admin)/function/hide-child/two'
+    | '/(admin)/manage/role/$id'
     | '/(admin)/manage/user/$id'
     | '/(admin)/multi-menu/first/child'
     | '/(admin)/plugin/charts/echarts'
@@ -1172,6 +1195,7 @@ export interface FileRouteTypes {
     | '/(admin)/interaction/feedback/'
     | '/(admin)/interaction/notification/'
     | '/(admin)/interaction/theme/'
+    | '/(admin)/manage/role/'
     | '/(admin)/manage/user/'
     | '/(admin)/multi-menu/first/'
     | '/(admin)/multi-menu/second/'
@@ -1744,6 +1768,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof adminManageUserIndexRouteImport
       parentRoute: typeof adminManageLayoutRoute
     }
+    '/(admin)/manage/role/': {
+      id: '/(admin)/manage/role/'
+      path: '/role'
+      fullPath: '/manage/role/'
+      preLoaderRoute: typeof adminManageRoleIndexRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
     '/(admin)/interaction/theme/': {
       id: '/(admin)/interaction/theme/'
       path: '/theme'
@@ -1819,6 +1850,13 @@ declare module '@tanstack/react-router' {
       path: '/user/$id'
       fullPath: '/manage/user/$id'
       preLoaderRoute: typeof adminManageUserIdRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
+    '/(admin)/manage/role/$id': {
+      id: '/(admin)/manage/role/$id'
+      path: '/role/$id'
+      fullPath: '/manage/role/$id'
+      preLoaderRoute: typeof adminManageRoleIdRouteImport
       parentRoute: typeof adminManageLayoutRoute
     }
     '/(admin)/function/hide-child/two': {
@@ -2008,13 +2046,17 @@ const adminInteractionLayoutRouteWithChildren =
 
 interface adminManageLayoutRouteChildren {
   adminManageIndexRoute: typeof adminManageIndexRoute
+  adminManageRoleIdRoute: typeof adminManageRoleIdRoute
   adminManageUserIdRoute: typeof adminManageUserIdRoute
+  adminManageRoleIndexRoute: typeof adminManageRoleIndexRoute
   adminManageUserIndexRoute: typeof adminManageUserIndexRoute
 }
 
 const adminManageLayoutRouteChildren: adminManageLayoutRouteChildren = {
   adminManageIndexRoute: adminManageIndexRoute,
+  adminManageRoleIdRoute: adminManageRoleIdRoute,
   adminManageUserIdRoute: adminManageUserIdRoute,
+  adminManageRoleIndexRoute: adminManageRoleIndexRoute,
   adminManageUserIndexRoute: adminManageUserIndexRoute,
 }
 
