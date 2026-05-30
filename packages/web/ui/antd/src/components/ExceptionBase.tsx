@@ -1,13 +1,20 @@
 import { SvgIcon } from '@skyroc/web-ui-compose';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { Button } from 'antd';
 import { memo } from 'react';
 
 type ExceptionType = '403' | '404' | '500';
 
-interface Props {
+interface HomeRouteContext {
+  getHomeRoute?: () => string;
+  homeRoute?: string;
+}
+
+export interface ExceptionBaseProps {
   /** Button text (default: 'Back to Home') */
   buttonText?: string;
+  /** Home route used by the action button. Defaults to the router context home route. */
+  homePath?: string;
   /**
    * Exception type
    *
@@ -17,18 +24,32 @@ interface Props {
    */
   type: ExceptionType;
 }
+
 const iconMap: Record<ExceptionType, string> = {
   '403': 'no-permission',
   '404': 'not-found',
   '500': 'service-error'
 };
-const ExceptionBase = memo((props: Props) => {
-  const { buttonText = 'Back to Home', type } = props;
+
+function getHomePath(context: unknown) {
+  if (!context || typeof context !== 'object') {
+    return '/';
+  }
+
+  const { getHomeRoute, homeRoute } = context as HomeRouteContext;
+
+  return homeRoute || getHomeRoute?.() || '/';
+}
+
+const ExceptionBase = memo((props: ExceptionBaseProps) => {
+  const { buttonText = 'Back to Home', homePath, type } = props;
 
   const nav = useNavigate();
+  const router = useRouter();
+  const targetHomePath = homePath || getHomePath(router.options.context);
 
   function handleClick() {
-    nav({ to: '/' });
+    nav({ to: targetHomePath });
   }
 
   return (
