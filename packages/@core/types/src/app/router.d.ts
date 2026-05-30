@@ -4,9 +4,13 @@ declare global {
   namespace Router {
     type QueryClient = import('@tanstack/react-query').QueryClient;
 
-    type RouteId = string;
+    interface RouteIdRegistry {}
 
-    type RoutePath = string;
+    type RouteId = keyof RouteIdRegistry extends never ? string : Extract<keyof RouteIdRegistry, string>;
+
+    interface RoutePathRegistry {}
+
+    type RoutePath = keyof RoutePathRegistry extends never ? string : Extract<keyof RoutePathRegistry, string>;
 
     type Extra = keyof MenuExtraRegistry extends never ? string : Extract<keyof MenuExtraRegistry, string>;
 

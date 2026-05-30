@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/require-module-specifiers
 /**
  * 命名空间 Api.Common
  *

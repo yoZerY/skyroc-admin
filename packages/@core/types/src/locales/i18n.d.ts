@@ -1,31 +1,39 @@
-/** I18n type definition This file aggregates all i18n type definitions from separate module files */
+// oxlint-disable unicorn/require-module-specifiers
+/** Shared i18n type primitives and extension points */
 declare global {
   namespace I18n {
-    type LangType = 'en-US' | 'zh-CN';
+    interface LangRegistry {
+      'en-US': true;
+      'zh-CN': true;
+    }
+
+    type LangType = keyof LangRegistry extends never ? string : Extract<keyof LangRegistry, string>;
 
     type LangOption = {
       key: LangType;
       label: string;
     };
 
-    type Schema = {
-      translation: {
-        common: Common;
-        datatable: Datatable;
-        dropdown: Record<App.Global.DropdownKey, string>;
-        form: Form;
-        icon: Icon;
-        page: Page;
-        request: Request;
-        route: Route;
-        system: System;
-        theme: Theme;
-      };
-    };
+    interface LocaleMessages {
+      common: Common;
+      datatable: Datatable;
+      dropdown: Record<App.Global.DropdownKey, string>;
+      form: Form;
+      icon: Icon;
+      page: Page;
+      request: Request;
+      route: Route;
+      system: System;
+      theme: Theme;
+    }
 
-    type GetI18nKey<T extends Record<string, unknown>, K extends keyof T = keyof T> = K extends string
-      ? T[K] extends Record<string, unknown>
-        ? `${K}.${GetI18nKey<T[K]>}`
+    interface Schema {
+      translation: LocaleMessages;
+    }
+
+    type GetI18nKey<T extends object, K extends keyof T = keyof T> = K extends string
+      ? T[K] extends object
+        ? `${K}.${GetI18nKey<Extract<T[K], object>>}`
         : K
       : never;
 
@@ -45,7 +53,7 @@ declare global {
       (key: I18nKey, named: Record<string, unknown>, defaultMsg: string): string;
     }
 
-    type Common = {
+    interface Common {
       action: string;
       add: string;
       addSuccess: string;
@@ -89,9 +97,9 @@ declare global {
         no: string;
         yes: string;
       };
-    };
+    }
 
-    type RouteKey = string;
+    type RouteKey = Router.RoutePath;
 
     type ReplaceSlash<S extends string> = S extends `${infer A}/${infer B}` ? `${A}_${ReplaceSlash<B>}` : S;
 
@@ -101,22 +109,22 @@ declare global {
         ? ReplaceSlash<Rest>
         : never;
 
-    type I18nRouteKey = string;
+    type I18nRouteKey = string extends RouteKey ? string : TransformPath<RouteKey>;
 
     type I18nRouteMap = Record<I18nRouteKey, string>;
 
-    type Route = Record<I18nRouteKey, string> & {
+    interface Route extends I18nRouteMap {
       notFound: string;
       root: string;
-    };
+    }
 
-    type Datatable = Record<string, string>;
-    type Form = Record<string, string>;
-    type Icon = Record<string, string>;
-    type Page = Record<string, string>;
-    type Request = Record<string, string>;
-    type System = Record<string, string>;
-    type Theme = Record<string, string>;
+    interface Datatable {}
+    interface Form {}
+    interface Icon {}
+    interface Page {}
+    interface Request {}
+    interface System {}
+    interface Theme extends Record<string, unknown> {}
   }
 }
 

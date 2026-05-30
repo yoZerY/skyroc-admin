@@ -1,42 +1,9 @@
-/** The storage namespace */
+/** Shared storage extension points */
 declare global {
   namespace StorageType {
-    interface Session {
-      /** The theme color */
-      themeColor: string;
-    }
+    interface Session {}
 
-    interface Local {
-      /** The backup theme setting before is mobile */
-      backupThemeSettingBeforeIsMobile: {
-        layout: UnionKey.ThemeLayoutMode;
-        siderCollapse: boolean;
-      };
-      /** The dark mode */
-      darkMode: boolean;
-      /** The global tabs */
-      globalTabs: App.Global.Tab[];
-      /** The i18n language */
-      lang: I18n.LangType;
-      /** The last login user id */
-      lastLoginUserId: string;
-      /** Fixed sider with mix-menu */
-      mixSiderFixed: CommonType.YesOrNo;
-      /**
-       * The override theme flags
-       *
-       * The value is the build time of the project
-       */
-      overrideThemeFlag: string;
-      /** The refresh token */
-      refreshToken: string;
-      /** The theme color */
-      themeColor: string;
-      /** The theme settings */
-      themeSettings: Theme.ThemeSetting;
-      /** The token */
-      token: string;
-    }
+    interface Local {}
   }
 }
 

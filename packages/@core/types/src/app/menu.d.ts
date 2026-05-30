@@ -50,7 +50,7 @@ declare global {
 
     type QuickReferenceMenus = Map<string, QuickReferenceMenuMap>;
 
-    type Menus = Map<string, CommonMenu[]>;
+    type Menus = Map<Router.MenuCategoryKey, CommonMenu[]>;
   }
 }
 

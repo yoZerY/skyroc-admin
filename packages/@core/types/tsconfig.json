@@ -5,8 +5,9 @@
     "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
-  "include": ["src/**/*", "../../web/admin-theme/src/types/theme.d.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/__tests__"]
 }

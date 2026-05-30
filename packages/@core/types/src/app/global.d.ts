@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/require-module-specifiers
 /** The global namespace */
 declare global {
   namespace App.Global {
