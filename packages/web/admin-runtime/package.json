@@ -2,10 +2,9 @@
   "name": "@skyroc/web-admin-runtime",
   "version": "1.0.0",
   "type": "module",
-  "description": "Reusable web admin runtime helpers for bootstrap, auth, request adapters, and admin API wiring.",
+  "description": "Reusable web admin runtime helpers for bootstrap and request adapters.",
   "keywords": [
     "admin",
-    "auth",
     "bootstrap",
     "dayjs",
     "iconify",
@@ -72,7 +71,6 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@skyroc/core-state": "workspace:*",
     "@skyroc/service": "workspace:*"
   },
   "devDependencies": {
@@ -80,16 +78,12 @@
     "@skyroc/config": "workspace:*",
     "@skyroc/tsconfig": "workspace:*",
     "@skyroc/types": "workspace:*",
-    "@tanstack/react-query": "catalog:core",
     "@types/nprogress": "catalog:dev",
     "@types/react": "catalog:dev",
-    "@types/react-dom": "catalog:dev",
     "dayjs": "catalog:utils",
-    "jotai": "catalog:core",
     "nprogress": "catalog:ui-shared",
     "oxlint": "catalog:dev",
     "react": "catalog:core",
-    "react-dom": "catalog:core",
     "rimraf": "catalog:dev",
     "tsdown": "catalog:dev",
     "typescript": "catalog:core",
@@ -97,11 +91,8 @@
   },
   "peerDependencies": {
     "@iconify/react": ">=6.0.0",
-    "@tanstack/react-query": "^5.0.0",
     "dayjs": ">=1.11.0",
-    "jotai": ">=2.0.0",
     "nprogress": ">=0.2.0",
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react": ">=18.0.0"
   }
 }

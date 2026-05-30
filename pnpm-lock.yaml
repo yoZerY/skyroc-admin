@@ -2525,9 +2525,6 @@ importers:
 
   packages/web/admin-runtime:
     dependencies:
-      '@skyroc/core-state':
-        specifier: workspace:*
-        version: link:../../@core/state
       '@skyroc/service':
         specifier: workspace:*
         version: link:../../@core/service
@@ -2544,24 +2541,15 @@ importers:
       '@skyroc/types':
         specifier: workspace:*
         version: link:../../@core/types
-      '@tanstack/react-query':
-        specifier: catalog:core
-        version: 5.90.21(react@19.1.0)
       '@types/nprogress':
         specifier: catalog:dev
         version: 0.2.3
       '@types/react':
         specifier: catalog:dev
         version: 19.2.14
-      '@types/react-dom':
-        specifier: catalog:dev
-        version: 19.2.3(@types/react@19.2.14)
       dayjs:
         specifier: catalog:utils
         version: 1.11.19
-      jotai:
-        specifier: catalog:core
-        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.1.0)
       nprogress:
         specifier: catalog:ui-shared
         version: 0.2.0
@@ -2571,9 +2559,6 @@ importers:
       react:
         specifier: catalog:core
         version: 19.1.0
-      react-dom:
-        specifier: catalog:core
-        version: 19.1.0(react@19.1.0)
       rimraf:
         specifier: catalog:dev
         version: 6.1.3

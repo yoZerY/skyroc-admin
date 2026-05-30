@@ -3,7 +3,14 @@ import type { CreateRequestOptions, RequestAdapter } from '@skyroc/service';
 import { createQueryClient } from '@skyroc/service/query';
 import type { CreateQueryClientOptions } from '@skyroc/service/query';
 
-import type { AdminAuthStorage } from './auth-runtime';
+export type AdminRequestAuthStorageKey = 'refreshToken' | 'token';
+
+export interface AdminRequestAuthStorage {
+  /** 读取请求链路需要的认证 token。 */
+  get(key: AdminRequestAuthStorageKey): string | null;
+  /** 删除请求链路需要的认证 token。 */
+  remove(key: AdminRequestAuthStorageKey): void;
+}
 
 export interface CreateAdminRequestAdapterOptions {
   /** 使用 refresh token 换取新 token。 */
@@ -19,7 +26,7 @@ export interface CreateAdminRequestAdapterOptions {
   /** 展示错误弹窗。 */
   showErrorModal: RequestAdapter['showErrorModal'];
   /** 认证持久化适配器。 */
-  storage: Pick<AdminAuthStorage, 'get' | 'remove'>;
+  storage: AdminRequestAuthStorage;
   /** 国际化翻译函数。 */
   t: RequestAdapter['t'];
 }
@@ -31,7 +38,7 @@ export interface CreateAdminQueryClientOptions extends CreateQueryClientOptions 
 
 export interface AdminRequestInstance {
   /** 发起 admin 后端请求。 */
-  <T = unknown>(config: { [key: string]: unknown; url: string }): Promise<T>;
+  <T = unknown>(config: { url: string; [key: string]: unknown }): Promise<T>;
   /** 取消当前实例收集到的全部请求。 */
   cancelAllRequest(): void;
   /** 请求实例运行时状态。 */
@@ -96,7 +103,7 @@ export function createAdminQueryClient(options: CreateAdminQueryClientOptions = 
 
   function handleError(error: unknown) {
     if (isDev) {
-      console.error('Query/Mutation error:', error);
+
     }
   }
 
