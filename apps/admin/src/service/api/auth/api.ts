@@ -1,3 +1,5 @@
+import { getToken } from '@/features/auth/use-auth';
+
 import { request } from '../../request';
 
 import { AUTH_URLS } from './urls';
@@ -11,6 +13,10 @@ export function fetchLogin(params: Api.Auth.LoginParams) {
 }
 
 export function fetchGetUserInfo() {
+  if (!getToken()) {
+    return Promise.resolve(null);
+  }
+
   return request<Api.Auth.UserInfo>({ url: AUTH_URLS.GET_USER_INFO });
 }
 

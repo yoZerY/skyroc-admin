@@ -1,9 +1,7 @@
-import { updateAtomValue } from '@skyroc/core-state';
+import { updateAtomValue} from '@skyroc/core-state';
 import { cacheTabs, useMenus } from '@skyroc/web-admin-layouts';
-import type { QueryClient } from '@tanstack/react-query';
-import { atom, useAtom } from 'jotai';
-
-import { AUTH_QUERY_KEYS } from '@/service/api/auth/keys';
+import { atom,useAtom } from 'jotai';
+import {useUserInfoQuery} from '@/service/api';
 import { queryClient } from '@/service/queryClient';
 import { localStg } from '@/utils/storage';
 
@@ -21,13 +19,7 @@ const initState: AuthState = {
   initialized: false
 };
 
-const authAtom = atom(initState);
-
-async function queryCurrentUserInfoOptions() {
-  const { queryUserInfoOptions } = await import('@/service/api/auth/hooks');
-
-  return queryUserInfoOptions();
-}
+const authAtom = atom(initState)
 
 
 export function getToken() {
@@ -50,14 +42,15 @@ export function useAuth() {
   const [state, setState] = useAtom(authAtom);
   const { clearMenus, getHomeRoute, home, initMenus } = useMenus();
   const isLoggedIn = Boolean(state.token);
-  const userInfo = queryClient.getQueryData<Api.Auth.UserInfo>(AUTH_QUERY_KEYS.USER_INFO);
+  const { data: userInfo, refetch } = useUserInfoQuery();
 
-  async function initAuth(): Promise<Api.Auth.UserInfo | null> {
+  async function initAuth() {
     try {
-      const userInfoQueryOptions = await queryCurrentUserInfoOptions();
-      const data = (await queryClient.ensureQueryData(
-        userInfoQueryOptions as Parameters<QueryClient['ensureQueryData']>[0]
-      )) as Api.Auth.UserInfo;
+      const { data } = await refetch();
+
+      if (!data) {
+        return null;
+      }
 
       await initMenus(data);
 
@@ -85,7 +78,7 @@ export function useAuth() {
 
   return {
     token: state.token,
-    userInfo,
+    userInfo: userInfo || undefined,
     isLoggedIn,
     clearAuth,
     getHomeRoute,
