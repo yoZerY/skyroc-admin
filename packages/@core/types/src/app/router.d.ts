@@ -99,14 +99,14 @@ declare global {
          *
          * It can be used in the menu or breadcrumb
          */
-        icon?: string;
+        icon?: string | null;
 
         /**
          * Local icon
          *
          * In "src/assets/svg-icon", if it is set, the icon will be ignored
          */
-        localIcon?: string;
+        localIcon?: string | null;
 
         /**
          * Meta data of the menu
@@ -131,7 +131,7 @@ declare global {
       };
 
       /** Required permissions to access the route */
-      permissions?: string[];
+      permissions?: string[] | null;
 
       /**
        * Whether the route is required
@@ -162,7 +162,7 @@ declare global {
        *
        * It can be used in document title
        */
-      title?: string;
+      title?: string | null;
 
       /** External page url rendered inside an iframe route */
       url?: string | null;

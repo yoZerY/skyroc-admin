@@ -25,7 +25,7 @@ declare global {
       /** 后端菜单 ID。没有时使用 name 或 path 作为运行时 id。 */
       id?: number | string | null;
       /** 顶层菜单分类 key。 */
-      layout?: string | null;
+      layout?: Router.MenuCategoryKey | null;
       /** 兼容常见后端菜单模型中的 meta 字段。 */
       meta?: BackendRouteHandle | null;
       /** 后端路由名。 */
@@ -47,15 +47,15 @@ declare global {
       /** 是否常量路由。 */
       constant?: boolean | null;
       /** 自定义菜单 extra key。 */
-      extra?: string | null;
+      extra?: Router.Extra | null;
       /** 固定页签序号。 */
       fixedIndexInTab?: number | null;
       /** 是否在菜单中隐藏。 */
       hideInMenu?: boolean | null;
       /** 外链地址。 */
       href?: string | null;
-      /** 国际化 key，进入布局前由应用适配成 I18n.I18nKey。 */
-      i18nKey?: string | null;
+      /** 国际化 key。 */
+      i18nKey?: I18n.I18nKey | null;
       /** Iconify 图标名。 */
       icon?: string | null;
       /** 后端图标类型。 */
@@ -74,17 +74,17 @@ declare global {
       title?: string | null;
       /** 菜单类型。 */
       type?: Router.MenuType | null;
-      /** iframe 或外部页面地址。 */
+      /** Iframe 或外部页面地址。 */
       url?: string | null;
     }
 
     /** 布局运行时消费的动态路由节点。 */
     interface BackendRoute extends Router.Meta {
-      children?: BackendRoute[];
+      children?: BackendRoute[] | null;
 
       id: string;
 
-      layout?: Router.MenuCategoryKey;
+      layout?: Router.MenuCategoryKey | null;
 
       parentId?: string | null;
 

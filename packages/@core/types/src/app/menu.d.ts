@@ -24,9 +24,9 @@ declare global {
        *
        * @default 0
        */
-      order?: number;
+      order?: number | null;
       /** The tooltip title */
-      title?: string;
+      title?: string | null;
       /**
        * Menu type
        *

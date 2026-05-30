@@ -29,7 +29,7 @@ declare global {
        *
        * Iconify icon
        */
-      icon?: string;
+      icon?: string | null;
       /** The tab id */
       id: string;
       /** Whether the tab route should keep its page instance alive */
@@ -41,14 +41,14 @@ declare global {
        *
        * Local icon
        */
-      localIcon?: string;
+      localIcon?: string | null;
 
       /**
        * The old tab label
        *
        * When reset the tab label, the tab label will be replaced by this value
        */
-      oldLabel?: string;
+      oldLabel?: string | null;
       /** The tab route path */
       routePath: Router.RoutePath;
     };
