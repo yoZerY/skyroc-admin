@@ -9,6 +9,7 @@ export const Route = createFileRoute('/(admin)/plugin')({
   staticData: {
     i18nKey: 'route.plugin',
     menu: {
+      extra: 'NewFeature',
       icon: 'clarity:plugin-line',
       order: 7
     },
