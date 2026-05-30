@@ -4,13 +4,28 @@ import {
   normalizePath
 } from '@skyroc/web-admin-layouts';
 import { redirect } from '@tanstack/react-router';
-import type { AnyRouteMatch, ParsedLocation } from '@tanstack/react-router';
 
-interface AdminRouteGuardOptions {
+export interface AdminRouteGuardOptions {
   context: AdminRouteGuardContext;
-  location: ParsedLocation;
-  matches: AnyRouteMatch[];
+  location: AdminRouteLocation;
+  matches: AdminRouteMatch[];
   preload?: boolean;
+}
+
+interface AdminRouteLocation {
+  href: string;
+  pathname: string;
+  searchStr: string;
+}
+
+interface AdminRouteMeta {
+  href?: string | null;
+  permissions?: string[];
+}
+
+interface AdminRouteMatch {
+  fullPath: string;
+  staticData?: AdminRouteMeta;
 }
 
 interface AdminRouteGuardContext {
@@ -23,7 +38,10 @@ interface AdminRouteGuardContext {
   userInfo?: Api.Auth.UserInfo;
 }
 
-function getLoginRedirectSearch(location: ParsedLocation, context: AdminRouteGuardContext) {
+export type AdminRouteGuardResult = Promise<void> | void;
+type UserInfoResult = Api.Auth.UserInfo | Promise<Api.Auth.UserInfo | null> | null;
+
+function getLoginRedirectSearch(location: AdminRouteLocation, context: AdminRouteGuardContext) {
   const homeRoute = normalizePath(context.homeRoute || context.getHomeRoute());
   const currentPath = normalizePath(location.pathname);
 
@@ -34,7 +52,7 @@ function getLoginRedirectSearch(location: ParsedLocation, context: AdminRouteGua
   return { redirect: location.href };
 }
 
-function getCurrentRoutePath(matches: AnyRouteMatch[]) {
+function getCurrentRoutePath(matches: AdminRouteMatch[]) {
   const currentMatch = matches.at(-1);
 
   if (!currentMatch) {
@@ -44,7 +62,7 @@ function getCurrentRoutePath(matches: AnyRouteMatch[]) {
   return normalizePath(currentMatch.fullPath);
 }
 
-function getMatchedRouteHref(matches: AnyRouteMatch[]) {
+function getMatchedRouteHref(matches: AdminRouteMatch[]) {
   return matches.findLast(match => match.staticData?.href)?.staticData?.href || null;
 }
 
@@ -58,7 +76,11 @@ function getRouteSwitchFallbackPath(context: AdminRouteGuardContext, currentRout
   return '/404';
 }
 
-async function resolveUserInfo(context: AdminRouteGuardContext) {
+function isPromise<T>(value: T | Promise<T>): value is Promise<T> {
+  return value instanceof Promise;
+}
+
+function resolveUserInfo(context: AdminRouteGuardContext): UserInfoResult {
   if (context.isAuthInitialized && context.userInfo) {
     return context.userInfo;
   }
@@ -66,14 +88,8 @@ async function resolveUserInfo(context: AdminRouteGuardContext) {
   return context.initAuth();
 }
 
-export async function guardAdminRoute(options: AdminRouteGuardOptions) {
+function guardResolvedUserInfo(options: AdminRouteGuardOptions, userInfo: Api.Auth.UserInfo | null) {
   const { context, location, matches, preload } = options;
-
-  if (!context.isLoggedIn) {
-    throw redirect({ to: '/login', search: getLoginRedirectSearch(location, context) });
-  }
-
-  const userInfo = await resolveUserInfo(context);
 
   if (!userInfo) {
     context.clearAuth();
@@ -98,4 +114,20 @@ export async function guardAdminRoute(options: AdminRouteGuardOptions) {
 
     throw redirect({ to: getRouteSwitchFallbackPath(context, currentRoutePath), replace: true });
   }
+}
+
+export function guardAdminRoute(options: AdminRouteGuardOptions): AdminRouteGuardResult {
+  const { context, location } = options;
+
+  if (!context.isLoggedIn) {
+    throw redirect({ to: '/login', search: getLoginRedirectSearch(location, context) });
+  }
+
+  const userInfo = resolveUserInfo(context);
+
+  if (isPromise(userInfo)) {
+    return userInfo.then(data => guardResolvedUserInfo(options, data));
+  }
+
+  return guardResolvedUserInfo(options, userInfo);
 }

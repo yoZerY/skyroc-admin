@@ -6,8 +6,6 @@ import { router } from '@/features/router';
 import { $t } from '@/locales';
 import { localStg } from '@/utils/storage';
 
-import { fetchRefreshToken } from './api';
-
 function showRequestErrorMessage(msg: string, onClose?: () => void) {
   if (onClose) {
     showErrorMessage({ content: msg, onClose });
@@ -33,8 +31,14 @@ function showRequestErrorModal(options: Parameters<RequestAdapter['showErrorModa
   });
 }
 
+async function fetchAdminRefreshToken(refreshToken: string) {
+  const { fetchRefreshToken } = await import('./api/auth/api');
+
+  return fetchRefreshToken(refreshToken);
+}
+
 export const antdAdapter: RequestAdapter = createAdminRequestAdapter({
-  fetchRefreshToken: refreshToken => fetchRefreshToken(refreshToken),
+  fetchRefreshToken: fetchAdminRefreshToken,
   getCurrentPath: () => router.state.location.href,
   redirectToLogin: redirectPath => {
     router.navigate({ search: { redirect: redirectPath }, to: '/login-out' });

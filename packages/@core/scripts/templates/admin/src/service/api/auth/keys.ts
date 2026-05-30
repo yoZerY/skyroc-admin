@@ -1,4 +1,7 @@
-export {
-  ADMIN_AUTH_MUTATION_KEYS as AUTH_MUTATION_KEYS,
-  ADMIN_AUTH_QUERY_KEYS as AUTH_QUERY_KEYS
-} from '@skyroc/web-admin-runtime';
+export const AUTH_QUERY_KEYS = {
+  USER_INFO: ['auth', 'userInfo'] as const
+} as const;
+
+export const AUTH_MUTATION_KEYS = {
+  LOGIN: ['auth', 'login'] as const
+} as const;

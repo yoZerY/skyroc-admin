@@ -1,1 +1,3 @@
-export { ADMIN_ROUTE_QUERY_KEYS as ROUTE_QUERY_KEYS } from '@skyroc/web-admin-runtime';
+export const ROUTE_QUERY_KEYS = {
+  USER_ROUTES: ['route', 'userRoutes'] as const
+} as const;

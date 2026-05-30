@@ -1,14 +1,25 @@
-import { createAdminAuthApi } from '@skyroc/web-admin-runtime';
-
 import { request } from '../../request';
 
 import { AUTH_URLS } from './urls';
 
-export const authApi = createAdminAuthApi(request, {
-  error: AUTH_URLS.ERROR,
-  getUserInfo: AUTH_URLS.GET_USER_INFO,
-  login: AUTH_URLS.LOGIN,
-  refreshToken: AUTH_URLS.REFRESH_TOKEN
-});
+export function fetchLogin(params: Api.Auth.LoginParams) {
+  return request<Api.Auth.LoginResponse>({
+    data: params,
+    method: 'post',
+    url: AUTH_URLS.LOGIN
+  });
+}
 
-export const { fetchCustomBackendError, fetchGetUserInfo, fetchLogin, fetchRefreshToken } = authApi;
+export function fetchGetUserInfo() {
+  return request<Api.Auth.UserInfo>({ url: AUTH_URLS.GET_USER_INFO });
+}
+
+export function fetchRefreshToken(refreshToken: string) {
+  return request<Api.Auth.LoginToken>({
+    data: {
+      refreshToken
+    },
+    method: 'post',
+    url: AUTH_URLS.REFRESH_TOKEN
+  });
+}

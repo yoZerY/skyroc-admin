@@ -1,24 +1,21 @@
-import { createAdminRouteQueries } from '@skyroc/web-admin-runtime';
+import { queryOptions } from '@tanstack/react-query';
 
 import { queryClient } from '@/service/queryClient';
 
 import { AUTH_QUERY_KEYS } from '../auth/keys';
 
-import { routeApi } from './api';
+import { fetchGetBackendRoutes } from './api';
+import { ROUTE_QUERY_KEYS } from './keys';
 
-const routeQueries = createAdminRouteQueries({
-  isDev: import.meta.env.DEV,
-  queryClient,
-  routeApi,
-  userInfoQueryKey: AUTH_QUERY_KEYS.USER_INFO
-});
+export function queryMenusOptions() {
+  const enabled = Boolean(queryClient.getQueryData<Api.Auth.UserInfo>(AUTH_QUERY_KEYS.USER_INFO));
+  const isDev = import.meta.env.DEV;
 
-export const queryMenusOptions = routeQueries.queryMenusOptions;
-
-export function useUserRoutesQuery() {
-  return routeQueries.useUserRoutesQuery();
-}
-
-export function useIsRouteExistQuery(routeName: string, enabled = true) {
-  return routeQueries.useIsRouteExistQuery(routeName, enabled);
+  return queryOptions({
+    enabled,
+    gcTime: isDev ? 1000 * 60 * 5 : Infinity,
+    queryFn: fetchGetBackendRoutes,
+    queryKey: ROUTE_QUERY_KEYS.USER_ROUTES,
+    staleTime: isDev ? 1000 * 10 : Infinity
+  });
 }

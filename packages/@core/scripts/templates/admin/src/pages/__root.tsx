@@ -1,7 +1,6 @@
 import { Outlet, createRootRouteWithContext, useLocation } from '@tanstack/react-router';
 
 import ErrorPage from './error';
-import GlobalLoading from './loading';
 import NotFound from './not-found';
 
 const Root = () => {
@@ -21,15 +20,13 @@ const Root = () => {
 export const Route = createRootRouteWithContext<Router.RouterContext>()({
   component: Root,
   notFoundComponent: NotFound,
-  beforeLoad: async ({ context }) => {
+  beforeLoad: ({ context }) => {
     if (!context.isAuthInitialized && context.isLoggedIn) {
-      await context.initAuth();
+      return context.initAuth().then(() => undefined);
     }
   },
   staticData: {
     title: 'SkyrocAdmin'
   },
-  errorComponent: ErrorPage,
-  pendingMs: 10,
-  pendingComponent: GlobalLoading
+  errorComponent: ErrorPage
 });

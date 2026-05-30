@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import SystemLogo from '@/components/SystemLogo';
 import UserAvatar from '@/features/auth/components/UserAvatar';
 import { guardAdminRoute } from '@/features/router/guard';
+import type { AdminRouteGuardOptions, AdminRouteGuardResult } from '@/features/router/guard';
 
 const AdminFooter = () => {
   return (
@@ -32,9 +33,11 @@ const AdminLayout = () => {
   );
 };
 
+function beforeLoadAdminRoute(options: AdminRouteGuardOptions): AdminRouteGuardResult {
+  return guardAdminRoute(options);
+}
+
 export const Route = createFileRoute('/(admin)')({
   component: AdminLayout,
-  beforeLoad: async ({ context, location, matches, preload }) => {
-    await guardAdminRoute({ context, location, matches, preload });
-  }
+  beforeLoad: beforeLoadAdminRoute as any
 });
