@@ -1,7 +1,7 @@
 import type { RequestAdapter } from '@skyroc/service';
 
 import { setAuth } from '@/features/auth/use-auth';
-import { router } from '@/features/router';
+import { getRouterInstance } from '@/features/router/router-ref';
 import { $t } from '@/locales';
 import { localStg } from '@/utils/storage';
 
@@ -39,6 +39,12 @@ async function fetchAdminRefreshToken(refreshToken: string) {
 export const antdAdapter: RequestAdapter = {
   fetchRefreshToken: fetchAdminRefreshToken,
   getCurrentPath() {
+    const router = getRouterInstance();
+
+    if (!router) {
+      return window.location.href;
+    }
+
     return router.state.location.href;
   },
   getRefreshToken() {
@@ -48,6 +54,14 @@ export const antdAdapter: RequestAdapter = {
     return localStg.get('token') || null;
   },
   redirectToLogin(redirectPath?: string) {
+    const router = getRouterInstance();
+
+    if (!router) {
+      const search = redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}` : '';
+      window.location.assign(`/login-out${search}`);
+      return;
+    }
+
     router.navigate({ search: { redirect: redirectPath }, to: '/login-out' });
   },
   resetAuth() {
