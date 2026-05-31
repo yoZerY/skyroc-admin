@@ -5,7 +5,7 @@
  */
 import { useEffect, useState } from 'react';
 
-import { deepGet, keyOfName, type NamePath } from '@skyroc/utils';
+import { type NamePath, deepGet, keyOfName } from '@skyroc/utils';
 import type { ArrayOpAction, Middleware } from '../../form-core/middleware';
 
 import { type FormInstance, type InternalFormInstance, useFieldContext } from './FieldContext';
