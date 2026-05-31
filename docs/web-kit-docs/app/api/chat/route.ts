@@ -1,14 +1,14 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
-import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from 'ai';
+import { type UIMessage, convertToModelMessages, stepCountIs, streamText, tool } from 'ai';
 import { z } from 'zod';
 import { source } from '@/lib/source';
 import { Document, type DocumentData } from 'flexsearch';
 
 interface CustomDocument extends DocumentData {
-  url: string;
-  title: string;
-  description: string;
   content: string;
+  description: string;
+  title: string;
+  url: string;
 }
 
 export type ChatUIMessage = UIMessage<
@@ -53,12 +53,28 @@ async function createSearchServer() {
 
 async function chunkedAll<O>(promises: Promise<O>[]): Promise<O[]> {
   const SIZE = 50;
-  const out: O[] = [];
+  const chunks: Promise<O[]>[] = [];
+
   for (let i = 0; i < promises.length; i += SIZE) {
-    out.push(...(await Promise.all(promises.slice(i, i + SIZE))));
+    chunks.push(Promise.all(promises.slice(i, i + SIZE)));
   }
-  return out;
+
+  return (await Promise.all(chunks)).flat();
 }
+
+const searchTool = tool({
+  description: 'Search the docs content and return raw JSON results.',
+  inputSchema: z.object({
+    limit: z.number().int().min(1).max(100).default(10),
+    query: z.string(),
+  }),
+  async execute({ limit, query }) {
+    const search = await searchServer;
+    return await search.searchAsync(query, { enrich: true, limit, merge: true });
+  },
+});
+
+export type SearchTool = typeof searchTool;
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -72,7 +88,7 @@ const systemPrompt = [
   'If you cannot find the answer in search results, say you do not know and suggest a better search query.',
 ].join('\n');
 
-export async function POST(req: Request, ctx: RouteContext<"/api/chat">) {
+export async function POST(req: Request) {
   const reqJson = await req.json();
 
   const result = streamText({
@@ -98,17 +114,3 @@ export async function POST(req: Request, ctx: RouteContext<"/api/chat">) {
 
   return result.toUIMessageStreamResponse();
 }
-
-export type SearchTool = typeof searchTool;
-
-const searchTool = tool({
-  description: 'Search the docs content and return raw JSON results.',
-  inputSchema: z.object({
-    query: z.string(),
-    limit: z.number().int().min(1).max(100).default(10),
-  }),
-  async execute({ query, limit }) {
-    const search = await searchServer;
-    return await search.searchAsync(query, { limit, merge: true, enrich: true });
-  },
-});

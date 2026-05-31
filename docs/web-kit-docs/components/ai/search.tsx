@@ -1,9 +1,9 @@
 'use client';
 import {
   type ComponentProps,
-  createContext,
   type ReactNode,
   type SyntheticEvent,
+  createContext,
   use,
   useEffect,
   useEffectEvent,
@@ -14,16 +14,16 @@ import {
 import { Loader2, MessageCircleIcon, RefreshCw, SearchIcon, Send, X } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { buttonVariants } from '../ui/button';
-import { useChat, type UseChatHelpers } from '@ai-sdk/react';
+import { type UseChatHelpers, useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type Tool, type UIToolInvocation } from 'ai';
 import { Markdown } from '../markdown';
 import { Presence } from '@radix-ui/react-presence';
 import type { ChatUIMessage, SearchTool } from '../../app/api/chat/route';
 
 const Context = createContext<{
+  chat: UseChatHelpers<ChatUIMessage>;
   open: boolean;
   setOpen: (open: boolean) => void;
-  chat: UseChatHelpers<ChatUIMessage>;
 } | null>(null);
 
 export function AISearchPanelHeader({ className, ...props }: ComponentProps<'div'>) {
@@ -63,7 +63,7 @@ export function AISearchPanelHeader({ className, ...props }: ComponentProps<'div
 }
 
 export function AISearchInputActions() {
-  const { messages, status, setMessages, regenerate } = useChatContext();
+  const { messages, regenerate, setMessages, status } = useChatContext();
   const isLoading = status === 'streaming';
 
   if (messages.length === 0) return null;
@@ -105,7 +105,7 @@ export function AISearchInputActions() {
 
 const StorageKeyInput = '__ai_search_input';
 export function AISearchInput(props: ComponentProps<'form'>) {
-  const { status, sendMessage, stop } = useChatContext();
+  const { sendMessage, status, stop } = useChatContext();
   const [input, setInput] = useState(() => localStorage.getItem(StorageKeyInput) ?? '');
   const isLoading = status === 'streaming' || status === 'submitted';
   const onStart = (e?: SyntheticEvent) => {
@@ -113,7 +113,7 @@ export function AISearchInput(props: ComponentProps<'form'>) {
     const message = input.trim();
     if (message.length === 0) return;
 
-    void sendMessage({
+    sendMessage({
       role: 'user',
       parts: [
         {
@@ -261,15 +261,13 @@ function Message({ message, ...props }: { message: ChatUIMessage } & ComponentPr
   for (const part of message.parts ?? []) {
     if (part.type === 'text') {
       markdown += part.text;
-      continue;
-    }
-
-    if (part.type.startsWith('tool-')) {
+    } else if (part.type.startsWith('tool-')) {
       const toolName = part.type.slice('tool-'.length);
       const p = part as UIToolInvocation<Tool>;
 
-      if (toolName !== 'search' || !p.toolCallId) continue;
-      searchCalls.push(p);
+      if (toolName === 'search' && p.toolCallId) {
+        searchCalls.push(p);
+      }
     }
   }
 
@@ -321,8 +319,8 @@ export function AISearch({ children }: { children: ReactNode }) {
 }
 
 export function AISearchTrigger({
-  position = 'default',
   className,
+  position = 'default',
   ...props
 }: ComponentProps<'button'> & { position?: 'default' | 'float' }) {
   const { open, setOpen } = useAISearchContext();
