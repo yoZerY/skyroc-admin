@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
+// oxlint-disable-next-line import/no-unassigned-import
 import './global.css';
 
 const inter = Inter({
