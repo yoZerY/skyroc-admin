@@ -235,7 +235,7 @@ function createPaginationConfig(options: {
   showTotal: boolean;
   total: number;
   totalText: (total: number) => string;
-}) {
+}): false | TablePaginationConfig {
   const { isMobile, pageNum, pageSize, paginationConfig, showTotal, total, totalText } = options;
 
   if (paginationConfig === false) {
