@@ -4,21 +4,31 @@ import { Button, Col, Divider, Drawer, Flex, Form, Input, InputNumber, Radio, Ro
 import type { FormRule } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { translateOptions } from '@/utils/common';
 import { getLocalIcons } from '@/utils/icon';
 
-import ButtonListEditor from './ButtonListEditor';
-import QueryListEditor from './QueryListEditor';
-import { createDefaultMenuFormModel, enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from './shared';
+import {
+  badgeTypeOptions,
+  badgeVariantOptions,
+  createDefaultBackendRouteFormModel,
+  createDefaultBackendRouteQuery,
+  routeMenuTypeOptions
+} from './shared';
+import type { BackendRouteFormModel, BackendRouteTableRecord } from './shared';
 
-type MenuTableRecord = TableDataWithIndex<Api.SystemManage.Menu>;
+type MenuTableRecord = TableDataWithIndex<BackendRouteTableRecord>;
 
 interface MenuOperateDrawerProps {
+  /** App-specific menu extra options registered during admin layout setup. */
+  extraOptions: Common.Option<Router.Extra>[];
   /** Ant Design form instance shared with table operate hook. */
   form: GeneralPopupOperationProps<MenuTableRecord>['form'];
   /** Submit add or edit form. */
   handleSubmit: GeneralPopupOperationProps<MenuTableRecord>['handleSubmit'];
-  /** Parent menu options from the current menu tree. */
-  menuOptions: Common.Option<number>[];
+  /** Available app layout category options. */
+  layoutOptions: Common.Option<Router.MenuCategoryKey>[];
+  /** Parent backend route options from the current dynamic route tree. */
+  menuOptions: Common.Option<string>[];
   /** Close drawer and reset form state. */
   onClose: GeneralPopupOperationProps<MenuTableRecord>['onClose'];
   /** Whether the drawer is visible. */
@@ -32,33 +42,22 @@ interface MenuOperateDrawerProps {
 const localIconOptions = getLocalIcons().map(getLocalIconOption);
 
 const MenuOperateDrawer = (props: MenuOperateDrawerProps) => {
-  const { form, handleSubmit, menuOptions, onClose, open, operateType, routePathOptions } = props;
+  const { extraOptions, form, handleSubmit, layoutOptions, menuOptions, onClose, open, operateType, routePathOptions } =
+    props;
 
   const { t } = useTranslation();
   const requiredRule = createRequiredRule(t('form.required'));
   const formValues = Form.useWatch(
-    values => createDefaultMenuFormModel(values as Partial<ReturnType<typeof createDefaultMenuFormModel>>),
+    values => createDefaultBackendRouteFormModel(values as Partial<BackendRouteFormModel>),
     form
   );
-  const menuType = formValues.menuType;
-  const iconType = formValues.iconType;
-  const parentId = formValues.parentId;
   const hideInMenu = formValues.hideInMenu;
   const isEditing = operateType === 'edit';
-  const isRouteMenu = menuType === '2';
-  const isLocalIcon = iconType === '2';
   const drawerTitle = getDrawerTitle();
-  const parentOptions = [
-    {
-      label: t('route.root'),
-      value: 0
-    },
-    ...menuOptions
-  ];
 
   function getDrawerTitle() {
     if (isEditing) return t('page.manage.menu.editMenu');
-    if (parentId) return t('page.manage.menu.addChildMenu');
+    if (formValues.parentId) return t('page.manage.menu.addChildMenu');
 
     return t('page.manage.menu.addMenu');
   }
@@ -79,31 +78,24 @@ const MenuOperateDrawer = (props: MenuOperateDrawerProps) => {
       title={drawerTitle}
       onClose={onClose}
     >
-      <Form form={form} initialValues={createDefaultMenuFormModel()} layout="vertical">
+      <Form form={form} initialValues={createDefaultBackendRouteFormModel()} layout="vertical">
+        <Divider plain titlePlacement="start">
+          {t('page.manage.menu.routePayload')}
+        </Divider>
+
         <Row gutter={16}>
           <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.menuType')} name="menuType" rules={[requiredRule]}>
-              <Radio.Group disabled={isEditing} options={translateRadioOptions(menuTypeOptions, t)} />
-            </Form.Item>
-          </Col>
-
-          <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.menuStatus')} name="status" rules={[requiredRule]}>
-              <Radio.Group options={translateRadioOptions(enableStatusOptions, t)} />
-            </Form.Item>
-          </Col>
-
-          <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.menuName')} name="menuName" rules={[requiredRule]}>
-              <Input allowClear placeholder={t('page.manage.menu.form.menuName')} />
+            <Form.Item label={t('page.manage.menu.id')} name="id">
+              <Input allowClear placeholder={t('page.manage.menu.form.id')} />
             </Form.Item>
           </Col>
 
           <Col md={12} span={24}>
             <Form.Item label={t('page.manage.menu.parent')} name="parentId">
               <Select
+                allowClear
                 showSearch
-                options={parentOptions}
+                options={menuOptions}
                 optionFilterProp="label"
                 placeholder={t('page.manage.menu.form.parent')}
               />
@@ -111,20 +103,38 @@ const MenuOperateDrawer = (props: MenuOperateDrawerProps) => {
           </Col>
 
           <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.routePath')} name="routePath" rules={[requiredRule]}>
+            <Form.Item label={t('page.manage.menu.layout')} name="layout">
+              <Select allowClear options={layoutOptions} placeholder={t('page.manage.menu.form.layout')} />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.routePath')} name="path" rules={[requiredRule]}>
               <Input allowClear placeholder={t('page.manage.menu.form.routePath')} />
             </Form.Item>
           </Col>
 
           <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.routeName')} name="routeName" rules={[requiredRule]}>
+            <Form.Item label={t('page.manage.menu.routeName')} name="name">
               <Input allowClear placeholder={t('page.manage.menu.form.routeName')} />
             </Form.Item>
           </Col>
 
+          <Col span={24}>
+            <Form.Item label={t('page.manage.menu.redirect')} name="redirect">
+              <Input allowClear placeholder={t('page.manage.menu.form.redirect')} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Divider plain titlePlacement="start">
+          {t('page.manage.menu.handle')}
+        </Divider>
+
+        <Row gutter={16}>
           <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.i18nKey')} name="i18nKey">
-              <Input allowClear placeholder={t('page.manage.menu.form.i18nKey')} />
+            <Form.Item label={t('page.manage.menu.menuType')} name="type" rules={[requiredRule]}>
+              <Radio.Group options={translateRadioOptions(routeMenuTypeOptions, t)} />
             </Form.Item>
           </Col>
 
@@ -135,39 +145,65 @@ const MenuOperateDrawer = (props: MenuOperateDrawerProps) => {
           </Col>
 
           <Col md={12} span={24}>
-            <Form.Item label={t('page.manage.menu.iconTypeTitle')} name="iconType">
-              <Radio.Group options={translateRadioOptions(menuIconTypeOptions, t)} />
+            <Form.Item label={t('page.manage.menu.menuName')} name="title">
+              <Input allowClear placeholder={t('page.manage.menu.form.title')} />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.i18nKey')} name="i18nKey">
+              <Input allowClear placeholder={t('page.manage.menu.form.i18nKey')} />
             </Form.Item>
           </Col>
 
           <Col md={12} span={24}>
             <Form.Item label={t('page.manage.menu.icon')} name="icon">
-              {isLocalIcon ? (
-                <Select
-                  allowClear
-                  showSearch
-                  options={localIconOptions}
-                  placeholder={t('page.manage.menu.form.localIcon')}
-                />
-              ) : (
-                <Input
-                  allowClear
-                  placeholder={t('page.manage.menu.form.icon')}
-                  suffix={<SvgIcon className="text-icon" icon={formValues.icon} />}
-                />
-              )}
+              <Input
+                allowClear
+                placeholder={t('page.manage.menu.form.icon')}
+                suffix={formValues.icon ? <SvgIcon className="text-icon" icon={formValues.icon} /> : null}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.localIcon')} name="localIcon">
+              <Select
+                allowClear
+                showSearch
+                options={localIconOptions}
+                placeholder={t('page.manage.menu.form.localIcon')}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.extra')} name="extra">
+              <Select allowClear options={extraOptions} placeholder={t('page.manage.menu.form.extra')} />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item label={t('page.manage.menu.roles')} name="roles">
+              <Select mode="tags" placeholder={t('page.manage.menu.form.roles')} tokenSeparators={[',']} />
             </Form.Item>
           </Col>
         </Row>
 
         <Divider plain titlePlacement="start">
-          {t('page.manage.menu.routePath')}
+          {t('page.manage.menu.navigation')}
         </Divider>
 
         <Row gutter={16}>
           <Col md={12} span={24}>
             <Form.Item label={t('page.manage.menu.href')} name="href">
               <Input allowClear placeholder={t('page.manage.menu.form.href')} />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.url')} name="url">
+              <Input allowClear placeholder={t('page.manage.menu.form.url')} />
             </Form.Item>
           </Col>
 
@@ -202,7 +238,7 @@ const MenuOperateDrawer = (props: MenuOperateDrawerProps) => {
           </Col>
 
           {hideInMenu && (
-            <Col span={24}>
+            <Col md={12} span={24}>
               <Form.Item label={t('page.manage.menu.activeMenu')} name="activeMenu">
                 <Select
                   allowClear
@@ -215,59 +251,96 @@ const MenuOperateDrawer = (props: MenuOperateDrawerProps) => {
           )}
         </Row>
 
-        {isRouteMenu && (
-          <>
-            <Divider plain titlePlacement="start">
-              {t('page.manage.menu.query')}
-            </Divider>
+        <Divider plain titlePlacement="start">
+          {t('page.manage.menu.query')}
+        </Divider>
 
-            <Form.List name="query">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field, index) => (
-                    <QueryListEditor add={add} field={field} index={index} key={field.key} remove={remove} />
-                  ))}
+        <Form.List name="query">
+          {(fields, { add, remove }) => (
+            <div className="flex flex-col gap-8px">
+              {fields.map((field, index) => (
+                <Row gutter={8} key={field.key}>
+                  <Col md={10} span={24}>
+                    <Form.Item name={[field.name, 'key']}>
+                      <Input allowClear placeholder={t('page.manage.menu.form.queryKey')} />
+                    </Form.Item>
+                  </Col>
 
-                  {fields.length === 0 && (
-                    <Button
-                      block
-                      icon={<SvgIcon icon="ic:round-plus" />}
-                      type="dashed"
-                      onClick={() => add({ key: '', value: '' })}
-                    >
-                      {t('common.add')}
-                    </Button>
-                  )}
-                </>
+                  <Col md={10} span={24}>
+                    <Form.Item name={[field.name, 'value']}>
+                      <Input allowClear placeholder={t('page.manage.menu.form.queryValue')} />
+                    </Form.Item>
+                  </Col>
+
+                  <Col md={4} span={24}>
+                    <Flex gap={8}>
+                      <Button
+                        icon={<SvgIcon icon="ic:round-plus" />}
+                        onClick={() => add(createDefaultBackendRouteQuery(), index + 1)}
+                      />
+                      <Button icon={<SvgIcon icon="ic:round-remove" />} onClick={() => remove(index)} />
+                    </Flex>
+                  </Col>
+                </Row>
+              ))}
+
+              {fields.length === 0 && (
+                <Button
+                  block
+                  icon={<SvgIcon icon="ic:round-plus" />}
+                  type="dashed"
+                  onClick={() => add(createDefaultBackendRouteQuery())}
+                >
+                  {t('common.add')}
+                </Button>
               )}
-            </Form.List>
+            </div>
+          )}
+        </Form.List>
 
-            <Divider plain titlePlacement="start">
-              {t('page.manage.menu.button')}
-            </Divider>
+        <Divider plain titlePlacement="start">
+          {t('page.manage.menu.badge')}
+        </Divider>
 
-            <Form.List name="buttons">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field, index) => (
-                    <ButtonListEditor add={add} field={field} index={index} key={field.key} remove={remove} />
-                  ))}
+        <Row gutter={16}>
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.badgeTypeTitle')} name="badgeType">
+              <Select
+                allowClear
+                options={translateOptions(badgeTypeOptions)}
+                placeholder={t('page.manage.menu.form.badgeType')}
+              />
+            </Form.Item>
+          </Col>
 
-                  {fields.length === 0 && (
-                    <Button
-                      block
-                      icon={<SvgIcon icon="ic:round-plus" />}
-                      type="dashed"
-                      onClick={() => add({ code: '', desc: '' })}
-                    >
-                      {t('common.add')}
-                    </Button>
-                  )}
-                </>
-              )}
-            </Form.List>
-          </>
-        )}
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.badgeVariantTitle')} name="badgeVariant">
+              <Select
+                allowClear
+                options={translateOptions(badgeVariantOptions)}
+                placeholder={t('page.manage.menu.form.badgeVariant')}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.badgeValue')} name="badgeValue">
+              <Input allowClear placeholder={t('page.manage.menu.form.badgeValue')} />
+            </Form.Item>
+          </Col>
+
+          <Col md={12} span={24}>
+            <Form.Item label={t('page.manage.menu.badgeValueKey')} name="badgeValueKey">
+              <Input allowClear placeholder={t('page.manage.menu.form.badgeValueKey')} />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item label={t('page.manage.menu.badgeShowZero')} name="badgeShowZero" valuePropName="checked">
+              <Switch checkedChildren={t('common.yesOrNo.yes')} unCheckedChildren={t('common.yesOrNo.no')} />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Drawer>
   );

@@ -1,27 +1,79 @@
+import { z } from 'zod';
+
+import { menuCategoryKeys } from '@/features/menus/menu-category';
 import { transformRecordToOption } from '@/utils/common';
+
+type BackendRouteHandleSource = 'empty' | 'handle' | 'meta';
+
+const menuNullableStringSearchSchema = z
+  .string()
+  .nullish()
+  .catch(null)
+  .transform(value => value || null);
+
+const menuLayoutSearchSchema = z
+  .string()
+  .nullish()
+  .catch(null)
+  .transform(value => {
+    if (!value) return null;
+
+    return menuCategoryKeys.includes(value as Router.MenuCategoryKey) ? (value as Router.MenuCategoryKey) : null;
+  });
+
+const menuTypeSearchSchema = z
+  .string()
+  .nullish()
+  .catch(null)
+  .transform(value => {
+    if (value === 'divider' || value === 'group' || value === 'item') {
+      return value;
+    }
+
+    return null;
+  });
+
+export const MenuSearchSchema = z.object({
+  current: z.coerce.number().positive().catch(1).default(1),
+  layout: menuLayoutSearchSchema,
+  menuName: menuNullableStringSearchSchema,
+  menuType: menuTypeSearchSchema,
+  routePath: menuNullableStringSearchSchema,
+  size: z.coerce.number().positive().catch(10).default(10)
+});
 
 export interface MenuSearchParams {
   /** Current page used by the shared table hook. */
   current?: number | string | null;
-  /** Menu display name keyword. */
+  /** Top-level admin layout category key. */
+  layout?: Router.MenuCategoryKey | string | null;
+  /** Keyword matched against title, name, and i18n key. */
   menuName?: string | null;
-  /** Menu node type filter. */
-  menuType?: Api.SystemManage.MenuType | string | null;
-  /** Route path keyword. */
+  /** Dynamic route menu type. */
+  menuType?: Router.MenuType | string | null;
+  /** Keyword matched against path, name, and redirect. */
   routePath?: string | null;
   /** Page size used by the shared table hook. */
   size?: number | string | null;
-  /** Enable status filter. */
-  status?: Api.Common.EnableStatus | string | null;
 }
 
-export interface MenuFormModel {
+export interface BackendRouteFormModel {
   /** Route path used when a hidden route should highlight another menu. */
   activeMenu: string | null;
-  /** Button permission definitions owned by this route. */
-  buttons: Api.SystemManage.MenuButton[];
+  /** Whether a zero static or dynamic badge value should still render. */
+  badgeShowZero: boolean;
+  /** Standard badge render mode. */
+  badgeType: Router.MenuBadgeType | null;
+  /** Static badge value when the badge does not read a dynamic key. */
+  badgeValue: Router.MenuBadgeValue;
+  /** Dynamic badge value key registered in the layout badge store. */
+  badgeValueKey: string | null;
+  /** Badge visual variant. */
+  badgeVariant: Router.MenuBadgeVariant | null;
   /** Whether this route is always available before permission filtering. */
   constant: boolean;
+  /** App-specific menu extra component key. */
+  extra: Router.Extra | null;
   /** Fixed tab position when the route should stay pinned. */
   fixedIndexInTab: number | null;
   /** Whether the route should be hidden from the visible menu tree. */
@@ -30,225 +82,387 @@ export interface MenuFormModel {
   href: string | null;
   /** Translation key used by the menu renderer. */
   i18nKey: string | null;
-  /** Iconify name or local icon name. */
-  icon: string;
-  /** Icon source type. */
-  iconType: Api.SystemManage.IconType;
-  /** Stable record id when editing an existing menu. */
-  id?: number;
+  /** Iconify icon name. */
+  icon: string | null;
+  /** Stable route id when the backend provides one. */
+  id: string;
   /** Whether the route should be cached by the tab/content runtime. */
   keepAlive: boolean;
-  /** Human-readable menu name used as a fallback label. */
-  menuName: string;
-  /** Directory or leaf route node type. */
-  menuType: Api.SystemManage.MenuType;
+  /** Top-level layout category key. */
+  layout: Router.MenuCategoryKey | null;
+  /** Local SVG icon name. */
+  localIcon: string | null;
   /** Whether the route can open multiple tabs. */
   multiTab: boolean;
+  /** Backend route name. */
+  name: string | null;
   /** Menu ordering weight within the same parent. */
-  order: number;
-  /** Parent menu id, or 0 for a top-level node. */
-  parentId: number;
-  /** Route query parameters appended when opening the route. */
-  query: Api.SystemManage.MenuRouteQuery[];
-  /** Stable route name used by permission and backend route contracts. */
-  routeName: string;
+  order: number | null;
+  /** Parent backend route id. */
+  parentId: string | null;
   /** Browser path exposed by TanStack Router. */
-  routePath: string;
-  /** Whether the menu is enabled. */
-  status: Api.Common.EnableStatus;
+  path: string;
+  /** Default search params carried when opening this route from the menu. */
+  query: Api.Route.BackendRouteQuery[];
+  /** Backend redirect target kept for API round-tripping. */
+  redirect: string | null;
+  /** Roles allowed to access this route. */
+  roles: string[];
+  /** Menu title used when no i18n key is present. */
+  title: string | null;
+  /** Menu tree node type consumed by the layout generator. */
+  type: Router.MenuType;
+  /** Iframe or external page URL rendered by the route runtime. */
+  url: string | null;
 }
 
-export const menuRecord = {
-  iconType: {
-    '1': 'page.manage.menu.iconType.iconify',
-    '2': 'page.manage.menu.iconType.local'
+export interface BackendRouteTableRecord extends BackendRouteFormModel {
+  /** Child backend routes. */
+  children?: BackendRouteTableRecord[];
+  /** Normalized handle value from handle, meta, or an empty fallback. */
+  handle: Api.Route.BackendRouteHandle;
+  /** Original handle field used by the backend payload. */
+  handleSource: BackendRouteHandleSource;
+  /** Original backend route id before string normalization. */
+  rawId: number | string | null;
+  /** Original parent id before string normalization. */
+  rawParentId: number | string | null;
+}
+
+export interface BackendRouteListResponse {
+  /** Current page number. */
+  current: number;
+  /** Backend route records displayed by the table. */
+  records: BackendRouteTableRecord[];
+  /** Page size. */
+  size: number;
+  /** Total route count after filtering. */
+  total: number;
+}
+
+export const routeMenuRecord = {
+  badgeType: {
+    dot: 'page.manage.menu.badgeType.dot',
+    normal: 'page.manage.menu.badgeType.normal'
   },
-  status: {
-    '1': 'page.manage.common.status.enable',
-    '2': 'page.manage.common.status.disable'
+  badgeVariant: {
+    default: 'page.manage.menu.badgeVariant.default',
+    error: 'page.manage.menu.badgeVariant.error',
+    info: 'page.manage.menu.badgeVariant.info',
+    primary: 'page.manage.menu.badgeVariant.primary',
+    success: 'page.manage.menu.badgeVariant.success',
+    warning: 'page.manage.menu.badgeVariant.warning'
   },
   type: {
-    '1': 'page.manage.menu.type.directory',
-    '2': 'page.manage.menu.type.menu'
+    divider: 'page.manage.menu.type.divider',
+    group: 'page.manage.menu.type.group',
+    item: 'page.manage.menu.type.item'
   }
 } as const satisfies {
-  iconType: Record<Api.SystemManage.IconType, I18n.I18nKey>;
-  status: Record<Api.Common.EnableStatus, I18n.I18nKey>;
-  type: Record<Api.SystemManage.MenuType, I18n.I18nKey>;
+  badgeType: Record<Router.MenuBadgeType, I18n.I18nKey>;
+  badgeVariant: Record<Router.MenuBadgeVariant, I18n.I18nKey>;
+  type: Record<Router.MenuType, I18n.I18nKey>;
 };
 
-export const enableStatusOptions = transformRecordToOption(menuRecord.status);
+export const badgeTypeOptions = transformRecordToOption(routeMenuRecord.badgeType);
 
-export const menuIconTypeOptions = transformRecordToOption(menuRecord.iconType);
+export const badgeVariantOptions = transformRecordToOption(routeMenuRecord.badgeVariant);
 
-export const menuTypeOptions = transformRecordToOption(menuRecord.type);
+export const routeMenuTypeOptions = transformRecordToOption(routeMenuRecord.type);
 
-export const enableStatusTagColorRecord: Record<Api.Common.EnableStatus, string> = {
-  '1': 'success',
-  '2': 'error'
+export const routeMenuTypeTagColorRecord: Record<Router.MenuType, string> = {
+  divider: 'warning',
+  group: 'default',
+  item: 'processing'
 };
 
-export const menuTypeTagColorRecord: Record<Api.SystemManage.MenuType, string> = {
-  '1': 'default',
-  '2': 'processing'
+export const routeBadgeVariantTagColorRecord: Record<Router.MenuBadgeVariant, string> = {
+  default: 'default',
+  error: 'error',
+  info: 'blue',
+  primary: 'processing',
+  success: 'success',
+  warning: 'warning'
 };
 
-export function createDefaultMenuFormModel(overrides: Partial<MenuFormModel> = {}): MenuFormModel {
+export function createDefaultBackendRouteQuery(): Api.Route.BackendRouteQuery {
+  return {
+    key: '',
+    value: ''
+  };
+}
+
+export function createDefaultBackendRouteFormModel(
+  overrides: Partial<BackendRouteFormModel> = {}
+): BackendRouteFormModel {
   return {
     activeMenu: null,
-    buttons: [],
+    badgeShowZero: false,
+    badgeType: null,
+    badgeValue: null,
+    badgeValueKey: null,
+    badgeVariant: null,
     constant: false,
+    extra: null,
     fixedIndexInTab: null,
     hideInMenu: false,
     href: null,
+    id: '',
     i18nKey: null,
-    icon: '',
-    iconType: '1',
+    icon: null,
     keepAlive: false,
-    menuName: '',
-    menuType: '1',
+    layout: null,
+    localIcon: null,
     multiTab: false,
-    order: 0,
-    parentId: 0,
+    name: null,
+    order: null,
+    parentId: null,
+    path: '',
     query: [],
-    routeName: '',
-    routePath: '',
-    status: '1',
+    redirect: null,
+    roles: [],
+    title: null,
+    type: 'item',
+    url: null,
     ...overrides
   };
 }
 
-export function createMenuFormModel(menu: Api.SystemManage.Menu): MenuFormModel {
-  return createDefaultMenuFormModel({
-    activeMenu: menu.activeMenu ?? null,
-    buttons: menu.buttons ?? [],
-    constant: Boolean(menu.constant),
-    fixedIndexInTab: menu.fixedIndexInTab ?? null,
-    hideInMenu: Boolean(menu.hideInMenu),
-    href: menu.href ?? null,
-    id: menu.id,
-    i18nKey: menu.i18nKey ?? null,
-    icon: menu.icon,
-    iconType: menu.iconType,
-    keepAlive: Boolean(menu.keepAlive),
-    menuName: menu.menuName,
-    menuType: menu.menuType,
-    multiTab: Boolean(menu.multiTab),
-    order: menu.order ?? 0,
-    parentId: menu.parentId,
-    query: menu.query ?? [],
-    routeName: menu.routeName,
-    routePath: menu.routePath,
-    status: menu.status ?? '1'
+export function createBackendRouteFormModel(route: BackendRouteTableRecord): BackendRouteFormModel {
+  return createDefaultBackendRouteFormModel({
+    activeMenu: route.activeMenu,
+    badgeShowZero: route.badgeShowZero,
+    badgeType: route.badgeType,
+    badgeValue: route.badgeValue,
+    badgeValueKey: route.badgeValueKey,
+    badgeVariant: route.badgeVariant,
+    constant: route.constant,
+    extra: route.extra,
+    fixedIndexInTab: route.fixedIndexInTab,
+    hideInMenu: route.hideInMenu,
+    href: route.href,
+    id: route.id,
+    i18nKey: route.i18nKey,
+    icon: route.icon,
+    keepAlive: route.keepAlive,
+    layout: route.layout,
+    localIcon: route.localIcon,
+    multiTab: route.multiTab,
+    name: route.name,
+    order: route.order,
+    parentId: route.parentId,
+    path: route.path,
+    query: route.query,
+    redirect: route.redirect,
+    roles: route.roles,
+    title: route.title,
+    type: route.type,
+    url: route.url
   });
 }
 
-export function getMenuSearchInitialParams(): MenuSearchParams {
+export function getBackendRouteSearchInitialParams(): MenuSearchParams {
   return {
     current: 1,
+    layout: null,
     menuName: null,
     menuType: null,
     routePath: null,
-    size: 10,
-    status: null
+    size: 10
   };
 }
 
-export function normalizeMenuSearchParams(params: MenuSearchParams): MenuSearchParams {
-  return {
-    ...params,
-    current: normalizePageParam(params.current, 1),
-    menuName: normalizeNullableString(params.menuName),
-    menuType: normalizeMenuType(params.menuType),
-    routePath: normalizeNullableString(params.routePath),
-    size: normalizePageParam(params.size, 10),
-    status: normalizeEnableStatus(params.status)
-  };
+export function normalizeMenuSearchParams(params: Partial<MenuSearchParams>): MenuSearchParams {
+  return MenuSearchSchema.parse(params);
 }
 
-export function filterMenuListResponse(response: Api.SystemManage.MenuList, params: MenuSearchParams) {
+export function filterBackendRouteResponse(
+  response: Api.Route.BackendRouteResponse,
+  params: MenuSearchParams
+): BackendRouteListResponse {
   const normalizedParams = normalizeMenuSearchParams(params);
-  const records = filterMenuTree(response.records, normalizedParams);
+  const routeRecords = toBackendRouteRecords(response);
+  const records = filterRouteTree(routeRecords, normalizedParams);
 
   return {
-    ...response,
     current: normalizePageParam(normalizedParams.current, 1),
     records,
     size: normalizePageParam(normalizedParams.size, 10),
-    total: countMenus(records)
-  } satisfies Api.SystemManage.MenuList;
+    total: countRoutes(records)
+  };
 }
 
-export function flattenMenuOptions(
-  menuList: Api.SystemManage.Menu[],
-  ignoredIds: Set<number> = new Set()
-): Common.Option<number>[] {
-  const result: Common.Option<number>[] = [];
-
-  function flatten(menu: Api.SystemManage.Menu) {
-    if (!ignoredIds.has(menu.id)) {
-      result.push({
-        label: menu.menuName,
-        value: menu.id
-      });
-    }
-
-    menu.children?.forEach(flatten);
-  }
-
-  menuList.forEach(flatten);
-
-  return result;
+export function toBackendRouteRecords(response: Api.Route.BackendRouteResponse): BackendRouteTableRecord[] {
+  return response.routes.map(toBackendRouteRecord);
 }
 
-export function flattenRoutePathOptions(menuList: Api.SystemManage.Menu[]): Common.Option<string>[] {
+export function flattenParentRouteOptions(
+  routes: BackendRouteTableRecord[],
+  ignoredIds: Set<string> = new Set()
+): Common.Option<string>[] {
   const result: Common.Option<string>[] = [];
 
-  function flatten(menu: Api.SystemManage.Menu) {
-    if (menu.routePath) {
+  function flatten(route: BackendRouteTableRecord) {
+    if (!ignoredIds.has(route.id)) {
       result.push({
-        label: menu.routePath,
-        value: menu.routePath
+        label: `${route.title ?? route.path} (${route.path})`,
+        value: route.id
       });
     }
 
-    menu.children?.forEach(flatten);
+    route.children?.forEach(flatten);
   }
 
-  menuList.forEach(flatten);
+  routes.forEach(flatten);
 
   return result;
 }
 
-export function collectMenuBranchIds(menu: Api.SystemManage.Menu) {
-  const result = new Set<number>();
+export function flattenRoutePathOptions(routes: BackendRouteTableRecord[]): Common.Option<string>[] {
+  const result: Common.Option<string>[] = [];
 
-  function collect(item: Api.SystemManage.Menu) {
+  function flatten(route: BackendRouteTableRecord) {
+    if (route.path) {
+      result.push({
+        label: route.path,
+        value: route.path
+      });
+    }
+
+    route.children?.forEach(flatten);
+  }
+
+  routes.forEach(flatten);
+
+  return result;
+}
+
+export function collectRouteBranchIds(route: BackendRouteTableRecord) {
+  const result = new Set<string>();
+
+  function collect(item: BackendRouteTableRecord) {
     result.add(item.id);
     item.children?.forEach(collect);
   }
 
-  collect(menu);
+  collect(route);
 
   return result;
 }
 
-function filterMenuTree(menuList: Api.SystemManage.Menu[], params: MenuSearchParams) {
-  if (!hasSearchParams(params)) return menuList;
+function toBackendRouteRecord(route: Api.Route.BackendRoutePayload): BackendRouteTableRecord {
+  const handle = route.handle ?? route.meta ?? {};
+  const id = String(route.id ?? route.name ?? route.path);
+  const parentId = route.parentId === null || route.parentId === undefined ? null : String(route.parentId);
+  const handleSource = getHandleSource(route);
+  const title = handle.title ?? route.name ?? route.path;
+  const children = route.children?.map(toBackendRouteRecord) ?? [];
+  const formModel = toBackendRouteFormModel(route, handle, { id, parentId, title });
 
-  return menuList.map(menu => filterMenu(menu, params)).filter(Boolean) as Api.SystemManage.Menu[];
+  return {
+    ...formModel,
+    children: children.length ? children : undefined,
+    handle,
+    handleSource,
+    rawId: route.id ?? null,
+    rawParentId: route.parentId ?? null
+  };
 }
 
-function filterMenu(menu: Api.SystemManage.Menu, params: MenuSearchParams): Api.SystemManage.Menu | null {
-  if (matchMenu(menu, params)) return menu;
+function toBackendRouteFormModel(
+  route: Api.Route.BackendRoutePayload,
+  handle: Api.Route.BackendRouteHandle,
+  base: Pick<BackendRouteFormModel, 'id' | 'parentId' | 'title'>
+) {
+  return createDefaultBackendRouteFormModel({
+    ...toBackendRouteBadgeFields(handle),
+    ...toBackendRouteHandleFields(handle),
+    ...toBackendRoutePayloadFields(route, base)
+  });
+}
 
-  const children = menu.children?.map(child => filterMenu(child, params)).filter(Boolean) as
-    | Api.SystemManage.Menu[]
+function toBackendRouteBadgeFields(handle: Api.Route.BackendRouteHandle): Partial<BackendRouteFormModel> {
+  return {
+    badgeShowZero: Boolean(handle.badge?.showZero),
+    badgeType: handle.badge?.type ?? null,
+    badgeValue: handle.badge?.value ?? null,
+    badgeValueKey: handle.badge?.valueKey ?? null,
+    badgeVariant: handle.badge?.variant ?? null
+  };
+}
+
+function toBackendRouteHandleFields(handle: Api.Route.BackendRouteHandle): Partial<BackendRouteFormModel> {
+  return {
+    activeMenu: handle.activeMenu ?? null,
+    constant: Boolean(handle.constant),
+    extra: handle.extra ?? null,
+    fixedIndexInTab: handle.fixedIndexInTab ?? null,
+    hideInMenu: Boolean(handle.hideInMenu),
+    href: handle.href ?? null,
+    i18nKey: handle.i18nKey ?? null,
+    icon: handle.icon ?? null,
+    keepAlive: Boolean(handle.keepAlive),
+    localIcon: handle.localIcon ?? null,
+    multiTab: Boolean(handle.multiTab),
+    order: handle.order ?? null,
+    query: normalizeBackendRouteQuery(handle.query),
+    roles: handle.roles ?? [],
+    type: handle.type ?? 'item',
+    url: handle.url ?? null
+  };
+}
+
+function normalizeBackendRouteQuery(
+  query: Api.Route.BackendRouteQuery[] | null | undefined
+): Api.Route.BackendRouteQuery[] {
+  if (!query?.length) return [];
+
+  return query
+    .filter(item => item.key)
+    .map(item => ({
+      key: item.key,
+      value: item.value ?? ''
+    }));
+}
+
+function toBackendRoutePayloadFields(
+  route: Api.Route.BackendRoutePayload,
+  base: Pick<BackendRouteFormModel, 'id' | 'parentId' | 'title'>
+): Partial<BackendRouteFormModel> {
+  return {
+    id: base.id,
+    layout: route.layout ?? null,
+    name: route.name ?? null,
+    parentId: base.parentId,
+    path: route.path,
+    redirect: route.redirect ?? null,
+    title: base.title
+  };
+}
+
+function getHandleSource(route: Api.Route.BackendRoutePayload): BackendRouteHandleSource {
+  if (route.handle) return 'handle';
+  if (route.meta) return 'meta';
+
+  return 'empty';
+}
+
+function filterRouteTree(routes: BackendRouteTableRecord[], params: MenuSearchParams) {
+  if (!hasSearchParams(params)) return routes;
+
+  return routes.map(route => filterRoute(route, params)).filter(Boolean) as BackendRouteTableRecord[];
+}
+
+function filterRoute(route: BackendRouteTableRecord, params: MenuSearchParams): BackendRouteTableRecord | null {
+  if (matchRoute(route, params)) return route;
+
+  const children = route.children?.map(child => filterRoute(child, params)).filter(Boolean) as
+    | BackendRouteTableRecord[]
     | undefined;
 
   if (children?.length) {
     return {
-      ...menu,
+      ...route,
       children
     };
   }
@@ -256,35 +470,41 @@ function filterMenu(menu: Api.SystemManage.Menu, params: MenuSearchParams): Api.
   return null;
 }
 
-function matchMenu(menu: Api.SystemManage.Menu, params: MenuSearchParams) {
-  const nameMatched = matchKeyword(menu.menuName, params.menuName) || matchKeyword(menu.i18nKey, params.menuName);
-  const pathMatched = matchKeyword(menu.routePath, params.routePath) || matchKeyword(menu.routeName, params.routePath);
-  const typeMatched = !params.menuType || menu.menuType === params.menuType;
-  const statusMatched = !params.status || menu.status === params.status;
+function matchRoute(route: BackendRouteTableRecord, params: MenuSearchParams) {
+  const nameMatched =
+    matchKeyword(route.title, params.menuName) ||
+    matchKeyword(route.name, params.menuName) ||
+    matchKeyword(route.i18nKey, params.menuName);
+  const pathMatched =
+    matchKeyword(route.path, params.routePath) ||
+    matchKeyword(route.name, params.routePath) ||
+    matchKeyword(route.redirect, params.routePath);
+  const typeMatched = !params.menuType || route.type === params.menuType;
+  const layoutMatched = !params.layout || route.layout === params.layout;
 
-  return nameMatched && pathMatched && typeMatched && statusMatched;
+  return nameMatched && pathMatched && typeMatched && layoutMatched;
 }
 
 function hasSearchParams(params: MenuSearchParams) {
-  return Boolean(params.menuName || params.menuType || params.routePath || params.status);
+  return Boolean(params.layout || params.menuName || params.menuType || params.routePath);
 }
 
-function matchKeyword(value: string | null | undefined, keyword: string | null | undefined) {
+function matchKeyword(value: string | number | null | undefined, keyword: string | null | undefined) {
   if (!keyword) return true;
-  if (!value) return false;
+  if (value === null || value === undefined) return false;
 
-  return value.toLowerCase().includes(keyword.toLowerCase());
+  return String(value).toLowerCase().includes(keyword.toLowerCase());
 }
 
-function countMenus(menuList: Api.SystemManage.Menu[]) {
+function countRoutes(routes: BackendRouteTableRecord[]) {
   let count = 0;
 
-  function countItem(menu: Api.SystemManage.Menu) {
+  function countItem(route: BackendRouteTableRecord) {
     count += 1;
-    menu.children?.forEach(countItem);
+    route.children?.forEach(countItem);
   }
 
-  menuList.forEach(countItem);
+  routes.forEach(countItem);
 
   return count;
 }
@@ -297,32 +517,4 @@ function normalizePageParam(value: number | string | null | undefined, fallback:
   }
 
   return nextValue;
-}
-
-function normalizeNullableString(value: string | null | undefined) {
-  if (value === undefined || value === null || value === '') {
-    return null;
-  }
-
-  return value;
-}
-
-function normalizeMenuType(value: Api.SystemManage.MenuType | string | null | undefined) {
-  const normalized = normalizeNullableString(value);
-
-  if (normalized === '1' || normalized === '2') {
-    return normalized;
-  }
-
-  return null;
-}
-
-function normalizeEnableStatus(value: Api.Common.EnableStatus | string | null | undefined) {
-  const normalized = normalizeNullableString(value);
-
-  if (normalized === '1' || normalized === '2') {
-    return normalized;
-  }
-
-  return null;
 }

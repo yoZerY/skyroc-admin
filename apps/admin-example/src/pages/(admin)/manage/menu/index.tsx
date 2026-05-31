@@ -1,32 +1,52 @@
 import { useAdminState } from '@skyroc/web-admin-layouts';
 import { SvgIcon, TableHeaderOperation, useTable, useTableOperate, useTableScroll } from '@skyroc/web-ui-compose';
-import type { TableColumn, TableDataWithIndex, TableOperateType } from '@skyroc/web-ui-compose';
+import type { TableColumn, TableDataWithIndex } from '@skyroc/web-ui-compose';
+import type { QueryKey, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-router';
 import { Button, Card, Collapse, Popconfirm, Table, Tag } from 'antd';
 import { Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { menuExtras } from '@/features/menus/extras';
+import { menuCategoryKeys } from '@/features/menus/menu-category';
+import { fetchGetBackendRoutes } from '@/service/api/route/api';
+
 import MenuSearch from './modules/MenuSearch';
 import {
-  collectMenuBranchIds,
-  createDefaultMenuFormModel,
-  createMenuFormModel,
-  enableStatusTagColorRecord,
-  filterMenuListResponse,
-  flattenMenuOptions,
+  MenuSearchSchema,
+  collectRouteBranchIds,
+  createBackendRouteFormModel,
+  createDefaultBackendRouteFormModel,
+  filterBackendRouteResponse,
+  flattenParentRouteOptions,
   flattenRoutePathOptions,
-  getMenuSearchInitialParams,
-  menuRecord,
-  menuTypeTagColorRecord,
-  normalizeMenuSearchParams
+  getBackendRouteSearchInitialParams,
+  normalizeMenuSearchParams,
+  routeMenuRecord,
+  routeMenuTypeTagColorRecord
 } from './modules/shared';
-import type { MenuSearchParams } from './modules/shared';
+import type {
+  BackendRouteFormModel,
+  BackendRouteListResponse,
+  BackendRouteTableRecord,
+  MenuSearchParams
+} from './modules/shared';
 
 const MenuOperateDrawer = lazy(() => import('./modules/MenuOperateDrawer'));
 
-const MENU_TABLE_SCROLL_X = 1160;
+const DEFAULT_MENU_ICON = import.meta.env.VITE_MENU_ICON || 'mdi:menu';
 
-type MenuTableRecord = TableDataWithIndex<Api.SystemManage.Menu>;
+const MENU_TABLE_SCROLL_X = 1260;
+
+type MenuTableRecord = TableDataWithIndex<BackendRouteTableRecord>;
+type BackendRouteListQueryOptions<Data = BackendRouteListResponse> = Omit<
+  UseQueryOptions<BackendRouteListResponse, Error, Data, QueryKey>,
+  'queryFn' | 'queryKey'
+>;
+
+const layoutOptions = createLayoutOptions();
+const extraOptions = createExtraOptions();
 
 const MenuManage = () => {
   const { t } = useTranslation();
@@ -36,14 +56,13 @@ const MenuManage = () => {
   const { scrollConfig, tableWrapperRef } = useTableScroll(MENU_TABLE_SCROLL_X);
 
   const { columnChecks, data, getData, searchProps, setColumnChecks, tableProps } = useTable({
-    apiFn: fetchMenuList,
-    apiParams: getMenuSearchInitialParams(),
+    apiParams: getBackendRouteSearchInitialParams(),
     columns: createColumns,
     defaultExpandAllRows: true,
     isMobile,
     onSearchParamsChange: syncSearchParams,
     pagination: false,
-    queryKey: menuListQueryKey,
+    queryHook: useBackendRouteListQuery,
     routeSearch: location.searchStr,
     transformParams: normalizeMenuSearchParams
   });
@@ -57,10 +76,10 @@ const MenuManage = () => {
     onBatchDeleted,
     onDeleted,
     rowSelection
-  } = useTableOperate<MenuTableRecord>(data, getData, executeMenuAction);
+  } = useTableOperate<MenuTableRecord>(data, getData);
 
-  const ignoredParentIds = editingData ? collectMenuBranchIds(editingData) : new Set<number>();
-  const menuOptions = flattenMenuOptions(data, ignoredParentIds);
+  const ignoredParentIds = editingData ? collectRouteBranchIds(editingData) : new Set<string>();
+  const menuOptions = flattenParentRouteOptions(data, ignoredParentIds);
   const routePathOptions = flattenRoutePathOptions(data);
 
   async function handleBatchDelete() {
@@ -73,22 +92,29 @@ const MenuManage = () => {
 
   function handleAddMenu() {
     handleAdd();
-    setMenuFormValues(createDefaultMenuFormModel());
+    setMenuFormValues(
+      createDefaultBackendRouteFormModel({
+        layout: layoutOptions[0]?.value ?? null
+      })
+    );
   }
 
   function handleAddChildMenu(record: MenuTableRecord) {
     handleAdd();
     setMenuFormValues(
-      createDefaultMenuFormModel({
-        menuType: '2',
+      createDefaultBackendRouteFormModel({
+        layout: record.layout,
         parentId: record.id,
-        status: record.status ?? '1'
+        type: 'item'
       })
     );
   }
 
   function edit(record: MenuTableRecord) {
-    handleEdit(createMenuFormModel(record) as MenuTableRecord);
+    handleEdit({
+      ...record,
+      ...createBackendRouteFormModel(record)
+    });
   }
 
   function syncSearchParams(params: Partial<MenuSearchParams>) {
@@ -97,7 +123,7 @@ const MenuManage = () => {
     });
   }
 
-  function setMenuFormValues(values: ReturnType<typeof createDefaultMenuFormModel>) {
+  function setMenuFormValues(values: BackendRouteFormModel) {
     generalPopupOperation.form.setFieldsValue(
       values as unknown as Parameters<typeof generalPopupOperation.form.setFieldsValue>[0]
     );
@@ -116,64 +142,46 @@ const MenuManage = () => {
       },
       {
         align: 'center',
-        key: 'menuType',
-        minWidth: 96,
-        render: (_, record) => (
-          <Tag color={menuTypeTagColorRecord[record.menuType]}>{t(menuRecord.type[record.menuType])}</Tag>
-        ),
-        title: t('page.manage.menu.menuType'),
-        width: 96
-      },
-      {
-        key: 'menuName',
-        minWidth: 180,
-        render: (_, record) => {
-          const label = record.i18nKey ? t(record.i18nKey as I18n.I18nKey) : record.menuName;
-
-          return (
-            <div className="flex-y-center gap-8px">
-              {renderMenuIcon(record)}
-              <span>{label}</span>
-            </div>
-          );
-        },
-        title: t('page.manage.menu.menuName')
-      },
-      {
-        dataIndex: 'routePath',
-        key: 'routePath',
-        minWidth: 180,
-        title: t('page.manage.menu.routePath')
-      },
-      {
-        dataIndex: 'routeName',
-        key: 'routeName',
-        minWidth: 150,
-        title: t('page.manage.menu.routeName')
-      },
-      {
-        dataIndex: 'i18nKey',
-        key: 'i18nKey',
-        minWidth: 180,
-        title: t('page.manage.menu.i18nKey')
+        key: 'icon',
+        minWidth: 72,
+        render: (_, record) => renderRouteIcon(record),
+        title: t('page.manage.menu.icon'),
+        width: 72
       },
       {
         align: 'center',
-        key: 'status',
-        minWidth: 96,
-        render: (_, record) => {
-          if (!record.status) return null;
-
-          return <Tag color={enableStatusTagColorRecord[record.status]}>{t(menuRecord.status[record.status])}</Tag>;
-        },
-        title: t('page.manage.menu.menuStatus'),
-        width: 96
+        key: 'menuType',
+        minWidth: 100,
+        render: (_, record) => (
+          <Tag color={routeMenuTypeTagColorRecord[record.type]}>{t(routeMenuRecord.type[record.type])}</Tag>
+        ),
+        title: t('page.manage.menu.menuType'),
+        width: 100
+      },
+      {
+        key: 'menuName',
+        minWidth: 220,
+        render: (_, record) => <span className="font-medium">{getMenuTitle(record, t)}</span>,
+        title: t('page.manage.menu.menuName')
+      },
+      {
+        dataIndex: 'path',
+        key: 'routePath',
+        minWidth: 200,
+        title: t('page.manage.menu.routePath')
+      },
+      {
+        dataIndex: 'layout',
+        key: 'layout',
+        minWidth: 120,
+        title: t('page.manage.menu.layout'),
+        width: 120
       },
       {
         align: 'center',
         key: 'hideInMenu',
         minWidth: 96,
-        render: (_, record) => renderBooleanTag(Boolean(record.hideInMenu)),
+        render: (_, record) => renderBooleanTag(record.hideInMenu),
         title: t('page.manage.menu.hideInMenu'),
         width: 96
       },
@@ -192,7 +200,7 @@ const MenuManage = () => {
         minWidth: 240,
         render: (_, record) => (
           <div className="flex-center justify-end gap-8px">
-            {record.menuType === '1' && (
+            {record.type !== 'divider' && (
               <Button ghost size="small" type="primary" onClick={() => handleAddChildMenu(record)}>
                 {t('page.manage.menu.addChildMenu')}
               </Button>
@@ -229,7 +237,7 @@ const MenuManage = () => {
         defaultActiveKey={isMobile ? undefined : '1'}
         items={[
           {
-            children: <MenuSearch {...searchProps} />,
+            children: <MenuSearch {...searchProps} layoutOptions={layoutOptions} />,
             key: '1',
             label: t('common.search')
           }
@@ -257,6 +265,8 @@ const MenuManage = () => {
           <Suspense fallback={null}>
             <MenuOperateDrawer
               {...generalPopupOperation}
+              extraOptions={extraOptions}
+              layoutOptions={layoutOptions}
               menuOptions={menuOptions}
               routePathOptions={routePathOptions}
             />
@@ -267,37 +277,90 @@ const MenuManage = () => {
   );
 };
 
-async function executeMenuAction(_values: MenuTableRecord, _operateType: TableOperateType) {
-  await Promise.resolve();
+function useBackendRouteListQuery<Data = BackendRouteListResponse>(
+  params: MenuSearchParams,
+  options?: BackendRouteListQueryOptions<Data>
+) {
+  return useQuery({
+    ...options,
+    queryFn: () => fetchBackendRouteList(params),
+    queryKey: backendRouteListQueryKey(params)
+  });
 }
 
-async function fetchMenuList(params: MenuSearchParams) {
-  const { fetchGetMenuList } = await import('@/service/api/system-manage/api');
-  const response = await fetchGetMenuList();
+async function fetchBackendRouteList(params: MenuSearchParams): Promise<BackendRouteListResponse> {
+  const response = await fetchGetBackendRoutes();
 
-  return filterMenuListResponse(response, params);
+  return filterBackendRouteResponse(response, params);
 }
 
-function menuListQueryKey(params: MenuSearchParams) {
-  return ['systemManage', 'menuList', params] as const;
+function backendRouteListQueryKey(params: MenuSearchParams) {
+  return ['route', 'backendRouteList', params] as const;
 }
 
-function renderMenuIcon(record: MenuTableRecord) {
-  if (!record.icon) return null;
-
-  return (
-    <SvgIcon
-      className="text-icon text-primary"
-      icon={record.iconType === '1' ? record.icon : undefined}
-      localIcon={record.iconType === '2' ? record.icon : undefined}
-    />
+function renderRouteIcon(record: MenuTableRecord) {
+  const icon = record.localIcon ? (
+    <SvgIcon className="text-20px" localIcon={record.localIcon} />
+  ) : (
+    <SvgIcon className="text-20px" icon={record.icon || DEFAULT_MENU_ICON} />
   );
+
+  return <span className="inline-flex w-full items-center justify-center">{icon}</span>;
+}
+
+function getMenuTitle(record: MenuTableRecord, t: (key: string) => string) {
+  return getTranslatedRouteTitle(record.i18nKey, t) ?? getFallbackMenuTitle(record);
+}
+
+function getTranslatedRouteTitle(i18nKey: string | null, t: (key: string) => string) {
+  if (!i18nKey) return null;
+
+  const candidates = [i18nKey, ...getRouteI18nFallbackKeys(i18nKey)];
+
+  for (const candidate of candidates) {
+    const translated = t(candidate);
+
+    if (translated !== candidate) {
+      return translated;
+    }
+  }
+
+  return null;
+}
+
+function getRouteI18nFallbackKeys(i18nKey: string) {
+  const match = i18nKey.match(/^route\.\([^)]+\)_(.+)$/);
+
+  if (!match?.[1]) return [];
+
+  return [`route.${match[1]}`];
+}
+
+function getFallbackMenuTitle(record: MenuTableRecord) {
+  const candidates = [record.title, record.name, record.path];
+
+  return candidates.find(Boolean) ?? record.id;
+}
+
+function createLayoutOptions(): Common.Option<Router.MenuCategoryKey>[] {
+  return menuCategoryKeys.map(key => ({
+    label: key,
+    value: key
+  }));
+}
+
+function createExtraOptions(): Common.Option<Router.Extra>[] {
+  return (Object.keys(menuExtras) as Router.Extra[]).map(key => ({
+    label: key,
+    value: key
+  }));
 }
 
 export const Route = createFileRoute('/(admin)/manage/menu/')({
   component: MenuManage,
   staticData: {
     i18nKey: 'route.manage_menu',
+    keepAlive: true,
     menu: {
       icon: 'material-symbols:account-tree-outline',
       order: 3
@@ -305,16 +368,5 @@ export const Route = createFileRoute('/(admin)/manage/menu/')({
     permissions: ['R_ADMIN'],
     title: 'menu'
   },
-  validateSearch: validateMenuSearch
+  validateSearch: MenuSearchSchema
 });
-
-function validateMenuSearch(search: Record<string, unknown>): Partial<MenuSearchParams> {
-  return normalizeMenuSearchParams({
-    current: search.current as MenuSearchParams['current'],
-    menuName: search.menuName as MenuSearchParams['menuName'],
-    menuType: search.menuType as MenuSearchParams['menuType'],
-    routePath: search.routePath as MenuSearchParams['routePath'],
-    size: search.size as MenuSearchParams['size'],
-    status: search.status as MenuSearchParams['status']
-  });
-}

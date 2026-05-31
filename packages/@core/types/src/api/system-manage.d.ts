@@ -85,14 +85,6 @@ declare global {
       desc: string;
     };
 
-    /**
-     * 图标类型
-     *
-     * - "1": iconify 图标
-     * - "2": 本地图标
-     */
-    type IconType = '1' | '2';
-
     /** 菜单路由参数 */
     type MenuRouteQuery = {
       /** 参数 Key */
@@ -135,8 +127,6 @@ declare global {
       component?: string;
       /** 图标名称（iconify 图标名或本地图标名） */
       icon: string;
-      /** 图标类型 */
-      iconType: IconType;
       /** 菜单名称 */
       menuName: string;
       /** 菜单类型 */

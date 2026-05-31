@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 
 import { translateOptions } from '@/utils/common';
 
-import { enableStatusOptions, menuTypeOptions } from './shared';
+import { routeMenuTypeOptions } from './shared';
 import type { MenuSearchParams } from './shared';
 
 interface MenuSearchProps {
   /** Ant Design search form instance controlled by the table hook. */
   form: TableSearchProps<MenuSearchParams>['form'];
+  /** Available app layout category options. */
+  layoutOptions: Common.Option<string>[];
   /** Reset search form and submitted query params. */
   reset: TableSearchProps<MenuSearchParams>['reset'];
   /** Submit search form. */
@@ -20,7 +22,7 @@ interface MenuSearchProps {
 }
 
 const MenuSearch = (props: MenuSearchProps) => {
-  const { form, reset, search, searchParams } = props;
+  const { form, layoutOptions, reset, search, searchParams } = props;
 
   const { t } = useTranslation();
 
@@ -47,19 +49,15 @@ const MenuSearch = (props: MenuSearchProps) => {
           <Form.Item className="m-0" label={t('page.manage.menu.menuType')} name="menuType">
             <Select
               allowClear
-              options={translateOptions(menuTypeOptions)}
+              options={translateOptions(routeMenuTypeOptions)}
               placeholder={t('page.manage.menu.form.menuType')}
             />
           </Form.Item>
         </Col>
 
         <Col lg={6} md={12} span={24}>
-          <Form.Item className="m-0" label={t('page.manage.menu.menuStatus')} name="status">
-            <Select
-              allowClear
-              options={translateOptions(enableStatusOptions)}
-              placeholder={t('page.manage.menu.form.menuStatus')}
-            />
+          <Form.Item className="m-0" label={t('page.manage.menu.layout')} name="layout">
+            <Select allowClear options={layoutOptions} placeholder={t('page.manage.menu.form.layout')} />
           </Form.Item>
         </Col>
 
