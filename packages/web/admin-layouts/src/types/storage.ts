@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/require-module-specifiers
 declare global {
   namespace StorageType {
     interface Local {

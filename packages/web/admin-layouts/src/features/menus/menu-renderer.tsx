@@ -98,6 +98,18 @@ function createHorizontalMenuLabel(label: ReactNode, extra: ReactNode) {
   );
 }
 
+function createMenuItemLabel(label: ReactNode, extra: ReactNode | undefined, isHorizontalRootMenu: boolean) {
+  if (!extra) {
+    return label;
+  }
+
+  if (isHorizontalRootMenu) {
+    return createHorizontalMenuLabel(label, extra);
+  }
+
+  return createSubMenuLabel(label, extra);
+}
+
 function createAntdMenuItem(
   menu: Menu.CommonMenu,
   options: RenderAntdMenuItemsOptions = {},
@@ -110,11 +122,7 @@ function createAntdMenuItem(
     return {
       ...rest,
       children: children.map(child => createAntdMenuItem(child, options, level + 1)),
-      label: extra
-        ? isHorizontalRootMenu
-          ? createHorizontalMenuLabel(label, extra)
-          : createSubMenuLabel(label, extra)
-        : label
+      label: createMenuItemLabel(label, extra, isHorizontalRootMenu)
     } as AntdMenuItems[number];
   }
 

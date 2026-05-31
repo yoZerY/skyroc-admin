@@ -1,7 +1,6 @@
 export { default as AdminLayout } from './AdminLayout';
 export type { AdminLayoutProps } from './AdminLayout';
 export type { AdminLayoutLogoComponent, AdminLayoutLogoProps, AdminLayoutSlots } from './context';
-export { normalizePath } from './features/menus/menu-generator';
 export type {
   CreateAdminDynamicRouteLoaderOptions,
   NormalizeBackendRouteResponseOptions
@@ -12,6 +11,7 @@ export {
   createBackendRouteNormalizer,
   normalizeBackendRouteResponse
 } from './features/menus/dynamic-routes';
+export { normalizePath } from './features/menus/menu-generator';
 export type {
   GeneratedMenu,
   GeneratedMenus,
