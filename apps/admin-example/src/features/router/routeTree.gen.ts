@@ -88,6 +88,7 @@ import { Route as adminMultiMenuSecondIndexRouteImport } from './../../pages/(ad
 import { Route as adminMultiMenuFirstIndexRouteImport } from './../../pages/(admin)/multi-menu/first/index'
 import { Route as adminManageUserIndexRouteImport } from './../../pages/(admin)/manage/user/index'
 import { Route as adminManageRoleIndexRouteImport } from './../../pages/(admin)/manage/role/index'
+import { Route as adminManageMenuIndexRouteImport } from './../../pages/(admin)/manage/menu/index'
 import { Route as adminInteractionThemeIndexRouteImport } from './../../pages/(admin)/interaction/theme/index'
 import { Route as adminInteractionNotificationIndexRouteImport } from './../../pages/(admin)/interaction/notification/index'
 import { Route as adminInteractionFeedbackIndexRouteImport } from './../../pages/(admin)/interaction/feedback/index'
@@ -511,6 +512,11 @@ const adminManageRoleIndexRoute = adminManageRoleIndexRouteImport.update({
   path: '/role/',
   getParentRoute: () => adminManageLayoutRoute,
 } as any)
+const adminManageMenuIndexRoute = adminManageMenuIndexRouteImport.update({
+  id: '/menu/',
+  path: '/menu/',
+  getParentRoute: () => adminManageLayoutRoute,
+} as any)
 const adminInteractionThemeIndexRoute =
   adminInteractionThemeIndexRouteImport.update({
     id: '/theme/',
@@ -719,6 +725,7 @@ export interface FileRoutesByFullPath {
   '/interaction/feedback/': typeof adminInteractionFeedbackIndexRoute
   '/interaction/notification/': typeof adminInteractionNotificationIndexRoute
   '/interaction/theme/': typeof adminInteractionThemeIndexRoute
+  '/manage/menu/': typeof adminManageMenuIndexRoute
   '/manage/role/': typeof adminManageRoleIndexRoute
   '/manage/user/': typeof adminManageUserIndexRoute
   '/multi-menu/first/': typeof adminMultiMenuFirstIndexRoute
@@ -803,6 +810,7 @@ export interface FileRoutesByTo {
   '/interaction/feedback': typeof adminInteractionFeedbackIndexRoute
   '/interaction/notification': typeof adminInteractionNotificationIndexRoute
   '/interaction/theme': typeof adminInteractionThemeIndexRoute
+  '/manage/menu': typeof adminManageMenuIndexRoute
   '/manage/role': typeof adminManageRoleIndexRoute
   '/manage/user': typeof adminManageUserIndexRoute
   '/multi-menu/first': typeof adminMultiMenuFirstIndexRoute
@@ -906,6 +914,7 @@ export interface FileRoutesById {
   '/(admin)/interaction/feedback/': typeof adminInteractionFeedbackIndexRoute
   '/(admin)/interaction/notification/': typeof adminInteractionNotificationIndexRoute
   '/(admin)/interaction/theme/': typeof adminInteractionThemeIndexRoute
+  '/(admin)/manage/menu/': typeof adminManageMenuIndexRoute
   '/(admin)/manage/role/': typeof adminManageRoleIndexRoute
   '/(admin)/manage/user/': typeof adminManageUserIndexRoute
   '/(admin)/multi-menu/first/': typeof adminMultiMenuFirstIndexRoute
@@ -1009,6 +1018,7 @@ export interface FileRouteTypes {
     | '/interaction/feedback/'
     | '/interaction/notification/'
     | '/interaction/theme/'
+    | '/manage/menu/'
     | '/manage/role/'
     | '/manage/user/'
     | '/multi-menu/first/'
@@ -1093,6 +1103,7 @@ export interface FileRouteTypes {
     | '/interaction/feedback'
     | '/interaction/notification'
     | '/interaction/theme'
+    | '/manage/menu'
     | '/manage/role'
     | '/manage/user'
     | '/multi-menu/first'
@@ -1195,6 +1206,7 @@ export interface FileRouteTypes {
     | '/(admin)/interaction/feedback/'
     | '/(admin)/interaction/notification/'
     | '/(admin)/interaction/theme/'
+    | '/(admin)/manage/menu/'
     | '/(admin)/manage/role/'
     | '/(admin)/manage/user/'
     | '/(admin)/multi-menu/first/'
@@ -1775,6 +1787,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof adminManageRoleIndexRouteImport
       parentRoute: typeof adminManageLayoutRoute
     }
+    '/(admin)/manage/menu/': {
+      id: '/(admin)/manage/menu/'
+      path: '/menu'
+      fullPath: '/manage/menu/'
+      preLoaderRoute: typeof adminManageMenuIndexRouteImport
+      parentRoute: typeof adminManageLayoutRoute
+    }
     '/(admin)/interaction/theme/': {
       id: '/(admin)/interaction/theme/'
       path: '/theme'
@@ -2048,6 +2067,7 @@ interface adminManageLayoutRouteChildren {
   adminManageIndexRoute: typeof adminManageIndexRoute
   adminManageRoleIdRoute: typeof adminManageRoleIdRoute
   adminManageUserIdRoute: typeof adminManageUserIdRoute
+  adminManageMenuIndexRoute: typeof adminManageMenuIndexRoute
   adminManageRoleIndexRoute: typeof adminManageRoleIndexRoute
   adminManageUserIndexRoute: typeof adminManageUserIndexRoute
 }
@@ -2056,6 +2076,7 @@ const adminManageLayoutRouteChildren: adminManageLayoutRouteChildren = {
   adminManageIndexRoute: adminManageIndexRoute,
   adminManageRoleIdRoute: adminManageRoleIdRoute,
   adminManageUserIdRoute: adminManageUserIdRoute,
+  adminManageMenuIndexRoute: adminManageMenuIndexRoute,
   adminManageRoleIndexRoute: adminManageRoleIndexRoute,
   adminManageUserIndexRoute: adminManageUserIndexRoute,
 }
