@@ -37,6 +37,7 @@ apps/admin/.env*
 | `apps/admin/.env.test` | test mode 覆盖项。当前主要覆盖测试环境后端地址和其他服务地址。 |
 | `apps/admin/.env.prod` | prod mode 覆盖项。当前主要覆盖生产环境后端地址和其他服务地址。 |
 | `apps/admin/vite.config.ts` | 应用 Vite 入口。直接使用 `@skyroc/web-admin-vite` 的 `defineConfig`。 |
+| `apps/admin-example/vite.config.ts` | 示例应用 Vite 入口。沿用同一套 admin preset，只额外指定示例应用 dev server 端口。 |
 | `apps/admin/src/types/vite-env.d.ts` | `import.meta.env` 类型声明。新增 env 时应同步这里。 |
 | `apps/admin/src/utils/service.ts` | 前端请求层根据 env 生成真实 baseURL 或代理 baseURL。 |
 | `packages/web/admin-vite/src/config.ts` | `defineConfig` 主入口，负责读取 env、生成 preset、合并原始 Vite 配置。 |
@@ -94,7 +95,17 @@ const env = loadEnv(configEnv.mode, application.envDir ?? root);
 | `VITE_ICON_LOCAL_PREFIX` | 本地 svg 图标前缀，当前 `globalConfig.localIconPrefix` 会读取它。 |
 | `VITE_ICONIFY_URL` | `setupAdminPlugins()` 中的 Iconify 离线服务地址。 |
 
-`@skyroc/web-admin-vite` 的图标插件也可以通过 `application.plugins.unpluginIcon` 和 `application.plugins.autoImport` 传入图标相关 options。应用运行时读取的 env 和构建插件 options 不要混在一起：页面和运行时读取 `import.meta.env`，构建期插件差异放到 `vite.config.ts`。
+`@skyroc/web-admin-vite` 的图标插件也可以通过 `application.plugins.unpluginIcon`、`application.plugins.unocss` 和 `application.plugins.autoImport` 传入图标相关 options。应用运行时读取的 env 和构建插件 options 不要混在一起：页面和运行时读取 `import.meta.env`，构建期插件差异放到 `vite.config.ts`。
+
+默认情况下不需要在 `vite.config.ts` 里专门写图标配置。`@skyroc/web-admin-vite` 会按当前应用启动目录解析 `src/assets/svg-icon`，并同时配置：
+
+| 插件配置 | 作用 |
+| --- | --- |
+| `application.plugins.unpluginIcon` | 注册本地 SVG sprite 和 `unplugin-icons` 组件。 |
+| `application.plugins.unocss` | 让 UnoCSS icon preset 能识别 Iconify 和本地 SVG class。 |
+| `application.plugins.autoImport` | 给 `icon-*` 组件自动导入 resolver 提供相同的图标前缀配置。 |
+
+只有改本地图标目录、前缀、scale 或 SVG transform 时，才需要在这三处传入同一组图标 options，避免 sprite、UnoCSS class 和自动导入 resolver 使用不同规则。
 
 ### 请求和后端 code
 
@@ -142,6 +153,25 @@ export default defineConfig({
 ```
 
 这表示 `apps/admin` 接受共享 Vite 预设的大部分默认值，只声明本应用的 SCSS 全局注入。
+
+`apps/admin-example/vite.config.ts` 也是同一套写法，只额外保留示例应用端口：
+
+```ts
+import { defineConfig } from '@skyroc/web-admin-vite';
+
+export default defineConfig({
+  application: {
+    css: {
+      additionalData: '@use "@/styles/scss/global.scss" as *;'
+    },
+    server: {
+      port: 9528
+    }
+  }
+});
+```
+
+这已经是当前推荐写法。图标仍走 admin-vite 默认插件链路，不要为了说明 icon 在这里重复配置 `vite-plugin-svg-icons`、`unplugin-icons` 或 UnoCSS icon preset。
 
 `defineConfig` 支持三种写法：
 
@@ -374,6 +404,34 @@ export default defineConfig({
 
 谨慎使用全量禁用。当前应用依赖 TanStack Router、UnoCSS、图标注册和 auto-import 等插件，关掉后通常还要在 `vite` 字段里补回等价配置。
 
+### 修改本地图标目录或前缀
+
+默认目录是当前应用的 `src/assets/svg-icon`。如果确实要改成本应用下的其他目录，需要让三个内置插件保持一致：
+
+```ts
+import { fileURLToPath } from 'node:url';
+
+import { defineConfig } from '@skyroc/web-admin-vite';
+
+const iconOptions = {
+  iconPrefix: 'icon',
+  localIconPath: fileURLToPath(new URL('./src/assets/custom-svg-icon', import.meta.url)),
+  localIconPrefix: 'icon-local'
+};
+
+export default defineConfig({
+  application: {
+    plugins: {
+      autoImport: iconOptions,
+      unocss: iconOptions,
+      unpluginIcon: iconOptions
+    }
+  }
+});
+```
+
+如果只是新增一个业务图标，把 SVG 放进 `src/assets/svg-icon` 即可，不需要改 `vite.config.ts`。菜单里写 `menu.localIcon: '文件名'`，组件里写 `<SvgIcon localIcon="文件名" />`。
+
 ## 常见误区
 
 | 误区 | 正确做法 |
@@ -396,7 +454,7 @@ export default defineConfig({
 | 代理没有创建 | 是否是 dev server，是否不是 preview，`VITE_HTTP_PROXY` 是否为 `Y`。 |
 | 代理目标不对 | 当前 mode 读取的是 `.env.test` 还是 `.env.prod`，`VITE_SERVICE_BASE_URL` 是否被 mode 文件覆盖。 |
 | 其他服务请求 undefined | `VITE_OTHER_SERVICE_BASE_URL` 是否能被 JSON5 解析，请求层是否使用了存在的 key。 |
-| 图标或自动导入异常 | 先看 `application.plugins.unpluginIcon` / `autoImport`，再看 `VITE_ICON_LOCAL_PREFIX` 等运行时配置是否被误用。 |
+| 图标或自动导入异常 | 先看 `application.plugins.unpluginIcon` / `unocss` / `autoImport` 是否使用同一组图标 options，再看 `VITE_ICON_LOCAL_PREFIX` 等运行时配置是否被误用。 |
 | 构建产物路径不对 | `VITE_BASE_URL`、`application.base` 和部署路径是否一致。 |
 
 ## 相关位置
@@ -405,6 +463,7 @@ export default defineConfig({
 | --- | --- |
 | 启动时如何消费 `BUILD_TIME`、主题、布局和 i18n | [启动流程](../architecture/bootstrap) |
 | 项目启动、构建和预览命令 | [快速开始](../getting-started/quick-start) |
+| 组件、菜单和动态菜单图标用法 | [图标使用](../theme/icons) |
 | 请求实例如何使用 baseURL 和业务 code | [请求概览](../request/overview) |
 | 切换真实后端和代理细节 | [代理与后端对接](../request/proxy-and-backend) |
 | 共享 Vite 预设完整 API | `docs/web-kit-docs/content/docs/admin-vite.mdx`、`packages/web/admin-vite/README.md` |
