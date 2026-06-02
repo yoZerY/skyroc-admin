@@ -18,10 +18,6 @@ export const Route = createFileRoute('/(auth)/login')({
   validateSearch: LoginSearchSchema,
   beforeLoad: async ({ context, search }) => {
     if (context.isLoggedIn) {
-      if (!context.isAuthInitialized) {
-        await context.initAuth();
-      }
-
       throw redirect({ to: search.redirect || context.getHomeRoute() });
     }
   },
