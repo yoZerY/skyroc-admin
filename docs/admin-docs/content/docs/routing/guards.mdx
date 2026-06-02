@@ -1,9 +1,11 @@
 ---
-title: 权限守卫
-description: 理解 guardAdminRoute、登录拦截、用户初始化、静态权限、动态权限、超级角色和 403
+title: 路由守卫
+description: 理解 guardAdminRoute、登录拦截、用户初始化、router context、外链处理和守卫执行链路
 ---
 
-这一页解释 `apps/admin` 如何决定一个后台路由能不能进入。重点是把登录态、用户初始化、菜单生成、静态权限、动态权限和外链处理放在同一条链路里看，而不是只看某一个页面的 `beforeLoad`。
+这一页解释 `apps/admin` 如何决定一个后台路由能不能进入。重点是把登录态、用户初始化、router context 和外链处理放在同一条链路里看，而不是只看某一个页面的 `beforeLoad`。
+
+守卫只负责“能不能进”的流程编排：登录、初始化、外链、回退。其中**权限判定**是守卫链路里的一个步骤，但模型和判定规则单独成页，见 [权限](./permission)。
 
 ## 当前事实
 
@@ -13,9 +15,7 @@ description: 理解 guardAdminRoute、登录拦截、用户初始化、静态权
 | 守卫函数 | `apps/admin/src/features/router/guard.ts` 的 `guardAdminRoute()`。 |
 | 用户初始化 | `apps/admin/src/features/auth/use-auth.ts` 的 `initAuth()`。 |
 | 菜单和授权索引 | `@skyroc/web-admin-layouts` 的 `useMenus()`、`menuGenerator`、`quickReferenceMenus`。 |
-| 静态权限判断 | `hasMatchedRoutePermission(matches, userInfo)`。 |
-| 动态直达授权 | `hasAuthorizedRoutePath(currentRoutePath, userInfo)`。 |
-| 超级角色 | `.env` 的 `VITE_STATIC_SUPER_ROLE`，当前为 `R_SUPER`。 |
+| 权限判定 | 委托给 `hasMatchedRoutePermission()` 和 `hasAuthorizedRoutePath()`，规则见 [权限](./permission)。 |
 | 路由模式 | `.env` 的 `VITE_AUTH_ROUTE_MODE`，当前默认为 `static`。 |
 
 ## 适用场景
@@ -24,10 +24,9 @@ description: 理解 guardAdminRoute、登录拦截、用户初始化、静态权
 | --- | --- |
 | 未登录访问后台被重定向到登录页 | `guardAdminRoute()`、`getLoginRedirectSearch()` |
 | 登录后用户信息或菜单没有初始化 | `useAuth().initAuth()`、`queryUserInfoOptions()`、`initMenus(data)` |
-| 静态路由进入 403 | 页面 `staticData.permissions`、用户 `roles`、`VITE_STATIC_SUPER_ROLE` |
-| 动态菜单模式直接输入 URL 进入 403 | 后端路由树、`quickReferenceMenus`、`hasAuthorizedRoutePath()` |
 | 外链菜单被打开后当前页跳回首页 | `staticData.href`、`getRouteSwitchFallbackPath()` |
 | 退出登录后 tabs 或菜单状态残留 | `clearAuth()`、`clearMenus()`、`cacheTabs()` |
+| 进入 403（静态或动态权限失败） | 见 [权限](./permission) |
 
 ## 守卫所在位置
 
@@ -48,7 +47,7 @@ export const Route = createFileRoute('/(admin)')({
 
 ## 完整执行链路
 
-进入后台页面时，链路可以简化为：
+先看“在哪里触发”：进入后台页面时，三个 `beforeLoad` 依次执行，最终落到 `guardAdminRoute()`。
 
 ```text
 RouterProvider
@@ -57,15 +56,40 @@ pages/__root.tsx beforeLoad
   -> 已登录但未初始化时 context.initAuth()
 pages/(admin)/layout.tsx beforeLoad
   -> guardAdminRoute()
-    -> 未登录：跳 /login
-    -> 初始化或复用 userInfo
-    -> 用户信息失败：clearAuth 后跳 /login
-    -> static 模式：校验 matched route permissions
-    -> dynamic 模式：校验当前 path 是否在授权菜单索引中
-    -> href 外链：打开新窗口并回退当前页
 ```
 
-这条链路的核心是：router context 来自 `useAuth()`，而 `useAuth()` 又连接 React Query 用户信息、菜单初始化和本地 token 状态。
+再看 `guardAdminRoute()` 内部“怎么判断”。每一步都有明确的失败走向，任何一步抛出 `redirect` 都会中断后续流程：
+
+```text
+进入 (admin) 下任意后台页面
+   │
+   ▼
+[1] context.isLoggedIn ?
+   │  否 ───────────────▶ redirect /login（非首页时带 redirect=当前 href）
+   │  是
+   ▼
+[2] resolveUserInfo()
+   │  已初始化且有 userInfo ─▶ 直接复用
+   │  否则 await context.initAuth()
+   ▼
+[3] userInfo 有效 ?
+   │  否 ───────────────▶ clearAuth() ─▶ redirect /login
+   │  是
+   ▼
+[4] 权限判定（按 VITE_AUTH_ROUTE_MODE，见「权限」页）
+   │  static : hasMatchedRoutePermission(matches, userInfo)
+   │  dynamic: hasAuthorizedRoutePath(currentPath, userInfo)
+   │  不通过 ─────────────▶ redirect /403
+   │  通过
+   ▼
+[5] matched route 命中 staticData.href ?
+   │  是（且非 preload）──▶ window.open(href) ─▶ redirect 回退当前页（首页 / 404）
+   │  否
+   ▼
+放行 ─▶ 渲染后台页面
+```
+
+这张图的核心是：router context 来自 `useAuth()`，而 `useAuth()` 又连接 React Query 用户信息、菜单初始化和本地 token 状态。`[1][2][3][5]` 都属于守卫流程；`[4]` 只在这里被调用，判定逻辑见 [权限](./permission)。
 
 ## Router context 从哪里来
 
@@ -99,7 +123,7 @@ const RouterProvider = memo(() => {
 });
 ```
 
-所以守卫里拿到的 `context.isLoggedIn`、`context.userInfo`、`context.initAuth()` 都来自当前应用认证状态，不是 TanStack Router 自己维护的状态。
+所以守卫里拿到的 `context.isLoggedIn`、`context.userInfo`、`context.initAuth()` 都来自当前应用认证状态，不是 TanStack Router 自己维护的状态。权限判定也是直接读 `context.userInfo.roles`。
 
 ## 用户初始化
 
@@ -170,78 +194,15 @@ if (context.isLoggedIn) {
 }
 ```
 
-## 静态权限
+## 权限判定步骤
 
-静态模式由 `.env` 控制：
-
-```text
-VITE_AUTH_ROUTE_MODE=static
-```
-
-在静态模式下，守卫会检查当前 matched routes 上所有 `staticData.permissions`：
+用户信息就绪后，守卫会按当前路由模式做权限判定：
 
 ```ts
 if (import.meta.env.VITE_AUTH_ROUTE_MODE === 'static' && !hasMatchedRoutePermission(matches, userInfo)) {
   throw redirect({ to: '/403' });
 }
-```
 
-`hasMatchedRoutePermission()` 会对每个 match 调用 `hasRoutePermission()`。权限规则是：
-
-| 路由配置 | 用户角色 | 结果 |
-| --- | --- | --- |
-| 未配置 `permissions` | 任意 | 允许。 |
-| 配置 `permissions` | 命中任意一个权限 | 允许。 |
-| 配置 `permissions` | 包含超级角色 | 允许。 |
-| 配置 `permissions` | 都不命中 | 403。 |
-
-超级角色来自：
-
-```text
-VITE_STATIC_SUPER_ROLE=R_SUPER
-```
-
-例如角色管理页当前需要超级角色：
-
-```ts
-staticData: {
-  title: 'role',
-  i18nKey: 'route.manage_role',
-  menu: {
-    icon: 'carbon:user-role',
-    order: 2
-  },
-  permissions: ['R_SUPER']
-}
-```
-
-如果父 layout route 和子页面都配置了 `permissions`，静态模式会要求 matched route 全部通过。也就是说，子页面有权限但父级无权限，仍然会进入 403。
-
-## 动态权限和直接 URL 授权
-
-动态模式下，菜单和授权索引来自后端路由接口。`bootstrap.tsx` 配置：
-
-```ts
-setupAdminLayouts({
-  loadDynamicRoutes: loadAdminDynamicRoutes,
-  routeMode: globalConfig.routeMode
-});
-```
-
-`useMenus().initMenus()` 在 dynamic 模式下会加载后端路由：
-
-```ts
-const routeData = await loadDynamicRoutes();
-const { allMenus, home, quickReferenceMenus } = menuGenerator.generate({
-  backendRoutes: routeData.routes,
-  home: routeData.home,
-  userInfo
-});
-```
-
-守卫随后检查当前路由 path：
-
-```ts
 const currentRoutePath = getCurrentRoutePath(matches);
 
 if (currentRoutePath && !hasAuthorizedRoutePath(currentRoutePath, userInfo)) {
@@ -249,39 +210,7 @@ if (currentRoutePath && !hasAuthorizedRoutePath(currentRoutePath, userInfo)) {
 }
 ```
 
-`hasAuthorizedRoutePath()` 只有在 dynamic 模式下才真正检查：
-
-```ts
-if (routeMode !== 'dynamic') {
-  return true;
-}
-
-const menu = getQuickReferenceMenuByPath(path);
-
-return Boolean(menu && hasRoutePermission(menu, userInfo));
-```
-
-这解决的是动态菜单模式下的“直接输入 URL”问题：即使某个页面组件存在，只要后端没有把这个 path 返回到当前用户的授权菜单树中，用户直接访问也会被拦到 `/403`。
-
-### 动态模式必须满足的条件
-
-| 条件 | 原因 |
-| --- | --- |
-| 后端返回的 `path` 要和前端 route path 一致 | `quickReferenceMenus` 按规范化 path 查找当前路由。 |
-| 后端节点要带正确的 `permissions` | 动态模式的直接 URL 授权读取后端节点权限。 |
-| 前端仍然要有真实页面文件 | TanStack Router 只渲染前端 route tree 中存在的组件。 |
-| 后端返回的 `home` 应是可访问 route path | 登录后首页会用动态 `home` 覆盖默认首页。 |
-
-## 403 的来源
-
-当前进入 `/403` 主要有两个来源：
-
-| 来源 | 触发条件 |
-| --- | --- |
-| 静态权限失败 | `VITE_AUTH_ROUTE_MODE=static`，matched routes 的 `staticData.permissions` 未通过。 |
-| 动态授权失败 | `VITE_AUTH_ROUTE_MODE=dynamic`，当前 path 不在 `quickReferenceMenus` 中，或节点权限未通过。 |
-
-用户信息初始化失败不会进 `/403`，而是清理认证后回 `/login`。未登录也不会进 `/403`，而是回 `/login`。
+这一步只负责“判定失败就跳 `/403`”。判定本身的规则——权限模型、静态权限、动态授权、超级角色、403 来源——全部在 [权限](./permission) 里说明。
 
 ## 外链处理
 
@@ -331,23 +260,14 @@ if (href && !preload) {
 | 登录后菜单为空 | `initMenus(data)` 是否执行，静态模式是否有可见 `staticData.menu`，动态模式接口是否返回 routes。 |
 | 切换用户后看见旧菜单 | `clearAuth()` 是否执行了 `queryClient.clear()` 和 `clearMenus()`。 |
 
-### 403 异常
-
-| 现象 | 先检查 |
-| --- | --- |
-| 静态模式某页面 403 | 页面和父 layout 的 `staticData.permissions`，用户 `roles`，`VITE_STATIC_SUPER_ROLE`。 |
-| 动态模式菜单里没有该页面 | 后端路由树是否返回该 path，path 是否和前端规范化 path 一致。 |
-| 动态模式菜单有但直接访问 403 | 后端节点 `permissions` 是否和用户 roles 匹配。 |
-| 动态模式点击菜单 404 | 前端是否真的有对应 `apps/admin/src/pages` 页面和生成的 route tree。 |
+> 403 相关排查见 [权限](./permission)。
 
 ## 常见误区
 
 | 误区 | 正确理解 |
 | --- | --- |
-| 403 一定是 token 失效 | token 或用户信息失败会回 `/login`；403 表示已经进入权限或授权路径判断。 |
-| 静态模式只检查最后一个页面的权限 | 当前使用 `matches.every`，父级 layout route 的权限也会参与。 |
-| 动态模式只要前端页面存在就能访问 | 必须在后端授权路由树中存在当前 path。 |
-| 超级角色只影响菜单显示 | 超级角色在 `hasAnyRoutePermission()` 中统一生效，菜单生成和守卫都会使用。 |
+| 403 一定是 token 失效 | token 或用户信息失败会回 `/login`；403 表示已经进入权限或授权路径判断，见 [权限](./permission)。 |
+| 每个后台页面都要自己写登录守卫 | 后台页面挂在 `(admin)` 下即可复用 `(admin)/layout.tsx` 的 `guardAdminRoute()`。 |
 | 外链点击由菜单组件处理 | 当前外链统一由 `guardAdminRoute()` 处理，避免绕过权限。 |
 | 在页面组件里再请求用户信息更安全 | 当前用户初始化已经由 root 的已登录预热和后台 layout 守卫收口；页面里重复初始化会制造状态竞争。 |
 
@@ -355,6 +275,7 @@ if (href && !preload) {
 
 | 主题 | 继续查看 |
 | --- | --- |
+| 权限模型、静态/动态权限、超级角色、403 | [权限](./permission) |
 | 页面文件、路由组和 route tree | [路由概览](./overview) |
 | `staticData`、`permissions`、`href`、`activeMenu` | [路由元信息](./route-meta) |
 | 启动时注入 `setupAdminLayouts` | [启动流程](../architecture/bootstrap) |

@@ -48,7 +48,8 @@
 | `configuration/storage-and-cache.mdx` | 存储与缓存 | 看懂浏览器缓存和运行时缓存 | storage 前缀、token、语言、tabs、主题、React Query 清理 | `utils/storage.ts`, `features/auth`, `admin-theme`, `admin-layouts` |
 | `routing/overview.mdx` | 路由概览 | 创建和理解页面路由 | TanStack Router、`routeTree.gen.ts`、路由组、动态路由 | `features/router`, `pages` |
 | `routing/route-meta.mdx` | 路由元信息 | 配菜单、标题、图标、外链 | `staticData`、`i18nKey`、`menu`、`activeMenu`、隐藏菜单 | `pages/*`, `types/router.d.ts` |
-| `routing/guards-and-permissions.mdx` | 权限守卫 | 理解登录拦截和 403 | `guardAdminRoute`、静态/动态权限、超级角色、用户初始化 | `guard.ts`, `use-auth.ts` |
+| `routing/guards.mdx` | 路由守卫 | 理解登录拦截和守卫链路 | `guardAdminRoute`、用户初始化、router context、外链处理 | `guard.ts`, `use-auth.ts` |
+| `routing/permission.mdx` | 权限 | 理解权限模型和 403 | 权限模型、静态/动态权限、超级角色、`hasMatchedRoutePermission` | `permissions.ts`, `guard.ts` |
 | `layout/overview.mdx` | 布局系统 | 知道主布局如何组装 | `WebAdminLayout`、logo、footer、通知、头像 slot | `(admin)/layout.tsx` |
 | `layout/menus-and-tabs.mdx` | 菜单与标签页 | 配置菜单、动态菜单、tabs | `setupAdminLayouts`、`menuCategories`、`menuNodeCallback`、`menuExtras`、cache tabs | `features/menus`, `bootstrap.tsx` |
 | `request/overview.mdx` | 请求概览 | 看懂请求封装 | `request`、`demoRequest`、业务 code、token、错误提示适配 | `service/request/index.ts` |
@@ -108,7 +109,7 @@
 
 - 第一次跑项目：`getting-started/quick-start.mdx` -> `getting-started/editor-setup.mdx` -> `getting-started/project-structure.mdx`。
 - 看懂启动和应用骨架：`architecture/bootstrap.mdx` -> `layout/overview.mdx` -> `layout/menus-and-tabs.mdx`。
-- 开发页面和路由：`routing/overview.mdx` -> `routing/route-meta.mdx` -> `routing/guards-and-permissions.mdx`。
+- 开发页面和路由：`routing/overview.mdx` -> `routing/route-meta.mdx` -> `routing/guards.mdx` -> `routing/permission.mdx`。
 - 接接口和数据：`request/overview.mdx` -> `request/service-modules.mdx` -> `request/proxy-and-backend.mdx`。
 - 改主题、语言和图标：`theme/overview.mdx` -> `theme/i18n-and-icons.mdx`。
 - 部署上线：`deployment/build-and-deploy.mdx` -> `faq.mdx`。
@@ -148,7 +149,8 @@
 - `configuration/storage-and-cache.mdx`
 - `routing/overview.mdx`
 - `routing/route-meta.mdx`
-- `routing/guards-and-permissions.mdx`
+- `routing/guards.mdx`
+- `routing/permission.mdx`
 - `request/overview.mdx`
 - `layout/overview.mdx`
 - `layout/menus-and-tabs.mdx`
