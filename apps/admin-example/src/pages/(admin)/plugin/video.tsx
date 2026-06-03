@@ -7,7 +7,7 @@ import Player from 'xgplayer';
 
 import { ExamplePanel, PluginPageHeader } from './modules/shared';
 
-const videoUrl = 'https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/byted-player-videos/1.0.0/xgplayer-demo.mp4';
+const videoUrl = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
 
 const VideoDemo = () => {
   const playerRef = useRef<HTMLDivElement | null>(null);

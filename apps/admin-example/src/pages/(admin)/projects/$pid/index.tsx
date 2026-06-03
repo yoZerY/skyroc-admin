@@ -21,7 +21,7 @@ const ProjectDetail = () => {
   return (
     <ACard className="h-full card-wrapper" size="small" variant="borderless">
       <div className="w-full flex justify-center">
-        <div className="max-w-2xl w-full px-4">
+        <div className="w-full px-4">
           <div className="overflow-hidden border border-border rounded-8px bg-container">
             <div className="bg-primary px-24px py-20px">
               <Typography.Title className="m-0! text-white!" level={4}>

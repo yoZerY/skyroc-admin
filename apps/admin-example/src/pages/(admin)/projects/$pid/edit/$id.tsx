@@ -24,7 +24,7 @@ const ProjectsEditId = () => {
   return (
     <ACard className="h-full card-wrapper" size="small" variant="borderless">
       <div className="h-full flex flex-col items-center justify-center">
-        <div className="max-w-3xl w-full">
+        <div className="w-full">
           <div className="overflow-hidden border border-border rounded-8px bg-container">
             <div className="bg-primary px-24px py-20px">
               <Typography.Title className="m-0! text-white!" level={4}>
