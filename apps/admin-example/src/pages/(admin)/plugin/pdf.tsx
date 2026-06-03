@@ -1,6 +1,9 @@
 // oxlint-disable import/no-unassigned-import
 import { createFileRoute } from '@tanstack/react-router';
-import { Button, Checkbox, Pagination, Skeleton, Space } from 'antd';
+import { Button, Checkbox, Pagination, Skeleton, Space, message } from 'antd';
+import { saveAs } from 'file-saver';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
+import printJS from 'print-js';
 import { useState } from 'react';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -12,15 +15,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.m
 
 const pdfSource = 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf';
 const rotations = [0, 90, 180, 270] as const;
+const pdfFileName = 'react-plugin-demo.pdf';
+const pdfMimeType = 'application/pdf';
 
 const PdfDemo = () => {
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null);
   const [showAllPages, setShowAllPages] = useState(false);
   const [rotationIndex, setRotationIndex] = useState(0);
 
-  function handleDocumentLoadSuccess(document: { numPages: number }) {
+  function handleDocumentLoadSuccess(document: PDFDocumentProxy) {
     setPageCount(document.numPages);
+    setPdfDocument(document);
   }
 
   function handleShowAllPagesChange(event: { target: { checked: boolean } }) {
@@ -32,15 +41,57 @@ const PdfDemo = () => {
     setRotationIndex(index => (index + 1) % rotations.length);
   }
 
-  function handlePrint() {
-    window.open(pdfSource, '_blank', 'noopener,noreferrer');
+  async function getPdfBlob() {
+    if (!pdfDocument) {
+      throw new Error('PDF 文档还没有加载完成');
+    }
+
+    const data = await pdfDocument.getData();
+    const buffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer;
+
+    return new Blob([buffer], { type: pdfMimeType });
   }
 
-  function handleDownload() {
-    const link = document.createElement('a');
-    link.href = pdfSource;
-    link.download = 'react-plugin-demo.pdf';
-    link.click();
+  async function handlePrint() {
+    setIsPrinting(true);
+
+    try {
+      const blob = await getPdfBlob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      printJS({
+        documentTitle: pdfFileName,
+        fallbackPrintable: pdfSource,
+        onError() {
+          URL.revokeObjectURL(blobUrl);
+          setIsPrinting(false);
+          message.error('PDF 打印失败');
+        },
+        onPrintDialogClose() {
+          URL.revokeObjectURL(blobUrl);
+          setIsPrinting(false);
+        },
+        printable: blobUrl,
+        type: 'pdf'
+      });
+    } catch {
+      message.error('PDF 文档还没有加载完成');
+      setIsPrinting(false);
+    }
+  }
+
+  async function handleDownload() {
+    setIsDownloading(true);
+
+    try {
+      const blob = await getPdfBlob();
+
+      saveAs(blob, pdfFileName);
+    } catch {
+      message.error('PDF 下载失败');
+    } finally {
+      setIsDownloading(false);
+    }
   }
 
   return (
@@ -57,8 +108,10 @@ const PdfDemo = () => {
             显示全部页面
           </Checkbox>
           <Button onClick={handleRotate}>旋转 90°</Button>
-          <Button onClick={handlePrint}>打印</Button>
-          <Button type="primary" onClick={handleDownload}>
+          <Button disabled={!pdfDocument} loading={isPrinting} onClick={handlePrint}>
+            打印
+          </Button>
+          <Button disabled={!pdfDocument} loading={isDownloading} type="primary" onClick={handleDownload}>
             下载
           </Button>
         </Space>
