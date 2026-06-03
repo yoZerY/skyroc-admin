@@ -89,7 +89,7 @@ export const BentoShowcase = () => {
     <div className="grid gap-4 md:grid-cols-3 auto-rows-auto">
 
       {/* 大卡片：用户设置面板（占 2 列） */}
-      <Card className="md:col-span-2 overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm shadow-lg shadow-primary/5">
+      <Card classNames={{ root: 'md:col-span-2 overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm shadow-lg shadow-primary/5' }}>
         <div className="border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
             <Icon icon="lucide:settings" className="size-4 text-muted-foreground" />
@@ -155,7 +155,7 @@ export const BentoShowcase = () => {
       </Card>
 
       {/* 通知中心 */}
-      <Card className="overflow-hidden md:row-span-2 border-border/60 bg-card/60 backdrop-blur-sm shadow-lg shadow-info/5">
+      <Card classNames={{ root: 'overflow-hidden md:row-span-2 border-border/60 bg-card/60 backdrop-blur-sm shadow-lg shadow-info/5' }}>
         <div className="border-b border-border px-5 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -197,7 +197,7 @@ export const BentoShowcase = () => {
       </Card>
 
       {/* 数据统计 */}
-      <Card className="overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm shadow-lg shadow-success/5">
+      <Card classNames={{ root: 'overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm shadow-lg shadow-success/5' }}>
         <div className="border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
             <Icon icon="lucide:bar-chart-3" className="size-4 text-muted-foreground" />
@@ -230,7 +230,7 @@ export const BentoShowcase = () => {
       </Card>
 
       {/* Tabs 演示 */}
-      <Card className="overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm">
+      <Card classNames={{ root: 'overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm' }}>
         <div className="border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
             <Icon icon="lucide:folder-kanban" className="size-4 text-muted-foreground" />
@@ -257,7 +257,7 @@ export const BentoShowcase = () => {
       </Card>
 
       {/* 文本格式控件 + Tag 展示 */}
-      <Card className="overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm">
+      <Card classNames={{ root: 'overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm' }}>
         <div className="border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
             <Icon icon="lucide:toggle-right" className="size-4 text-muted-foreground" />
@@ -288,7 +288,7 @@ export const BentoShowcase = () => {
       </Card>
 
       {/* 颜色主题 */}
-      <Card className="overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm">
+      <Card classNames={{ root: 'overflow-hidden border-border/60 bg-card/60 backdrop-blur-sm' }}>
         <div className="border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
             <Icon icon="lucide:palette" className="size-4 text-muted-foreground" />
