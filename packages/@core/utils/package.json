@@ -90,6 +90,7 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
+    "@skyroc/type-utils": "workspace:*",
     "clsx": "catalog:utils",
     "colord": "catalog:utils",
     "crypto-js": "catalog:utils",

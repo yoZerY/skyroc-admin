@@ -1685,6 +1685,9 @@ importers:
 
   packages/@core/utils:
     dependencies:
+      '@skyroc/type-utils':
+        specifier: workspace:*
+        version: link:../type-utils
       clsx:
         specifier: catalog:utils
         version: 2.1.1
