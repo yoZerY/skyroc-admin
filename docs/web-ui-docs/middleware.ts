@@ -7,21 +7,21 @@ const { rewrite: rewriteDocs } = rewritePath(
   `${docsContentRoute}{/*path}/content.md`,
 );
 const { rewrite: rewriteSuffix } = rewritePath(
-  `${docsRoute}{/*path}.md`,
+  `${docsRoute}{/*path}.mdx`,
   `${docsContentRoute}{/*path}/content.md`,
 );
 
-export default function proxy(request: NextRequest) {
-  const result = rewriteSuffix(request.nextUrl.pathname);
-  if (result) {
-    return NextResponse.rewrite(new URL(result, request.nextUrl));
+export default function middleware(request: NextRequest) {
+  const suffixPath = rewriteSuffix(request.nextUrl.pathname);
+  if (suffixPath) {
+    return NextResponse.rewrite(new URL(suffixPath, request.nextUrl));
   }
 
   if (isMarkdownPreferred(request)) {
-    const result = rewriteDocs(request.nextUrl.pathname);
+    const docsPath = rewriteDocs(request.nextUrl.pathname);
 
-    if (result) {
-      return NextResponse.rewrite(new URL(result, request.nextUrl));
+    if (docsPath) {
+      return NextResponse.rewrite(new URL(docsPath, request.nextUrl));
     }
   }
 

@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "deploy": "pnpm run worker:build && opennextjs-cloudflare deploy",
     "dev": "next dev",
     "start": "next start",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx",
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "worker:build": "opennextjs-cloudflare build"
   },
   "dependencies": {
     "fumadocs-core": "16.8.1",
@@ -33,6 +38,7 @@
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "1.13.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/mdx": "^2.0.13",
     "@types/node": "^25.6.0",
@@ -42,6 +48,7 @@
     "tailwindcss": "^4.2.2",
     "typescript": "catalog:core",
     "oxlint": "^1.60.0",
-    "@types/hast": "^3.0.4"
+    "@types/hast": "^3.0.4",
+    "wrangler": "4.51.0"
   }
 }

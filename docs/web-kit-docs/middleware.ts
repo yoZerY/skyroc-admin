@@ -11,7 +11,7 @@ const { rewrite: rewriteSuffix } = rewritePath(
   `${docsContentRoute}{/*path}/content.md`,
 );
 
-export default function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const suffixPath = rewriteSuffix(request.nextUrl.pathname);
   if (suffixPath) {
     return NextResponse.rewrite(new URL(suffixPath, request.nextUrl));

@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "deploy": "pnpm run worker:build && opennextjs-cloudflare deploy",
     "dev": "next dev --port 8848",
-    "start": "serve out",
+    "start": "next start",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx",
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "worker:build": "opennextjs-cloudflare build"
   },
   "dependencies": {
     "@orama/orama": "^3.1.18",
@@ -22,6 +27,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "1.13.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/mdx": "^2.0.13",
     "@types/node": "^25.6.0",
@@ -29,8 +35,8 @@
     "@types/react-dom": "^19.2.3",
     "oxlint": "catalog:dev",
     "postcss": "^8.5.9",
-    "serve": "^14.2.6",
     "tailwindcss": "^4.2.2",
-    "typescript": "catalog:core"
+    "typescript": "catalog:core",
+    "wrangler": "4.51.0"
   }
 }
