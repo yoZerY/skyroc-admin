@@ -4,7 +4,14 @@ import * as echarts from 'echarts';
 import type { EChartsOption } from 'echarts';
 import { useEffect, useRef } from 'react';
 
-import { barOption, createGaugeOption, lineOption, pieOption, radarOption } from '../modules/chart-options';
+import {
+  barOption,
+  createGaugeUpdateOption,
+  gaugeOption,
+  lineOption,
+  pieOption,
+  radarOption
+} from '../modules/chart-options';
 import { ExamplePanel, PluginPageHeader } from '../modules/shared';
 
 interface ChartPreviewProps {
@@ -55,6 +62,7 @@ const GaugeClock = () => {
     if (!chartRef.current) return;
 
     const chart = echarts.init(chartRef.current);
+    chart.setOption(gaugeOption);
 
     function updateGauge() {
       const date = new Date();
@@ -62,7 +70,7 @@ const GaugeClock = () => {
       const minute = date.getMinutes() + second / 60;
       const hour = (date.getHours() % 12) + minute / 60;
 
-      chart.setOption(createGaugeOption(hour, minute, second));
+      chart.setOption(createGaugeUpdateOption(hour, minute, second));
     }
 
     function resizeChart() {
@@ -82,7 +90,7 @@ const GaugeClock = () => {
 
   return (
     <ExamplePanel icon="mdi:gauge" title="仪表盘时钟">
-      <div ref={chartRef} style={{ height: 460 }} />
+      <div ref={chartRef} style={{ height: 640 }} />
     </ExamplePanel>
   );
 };
